@@ -54,6 +54,7 @@ class ProductController extends Controller
     }
 
     /**
+     * фунціонал для api
      * @param Request $request
      * @return JsonResponse
      */
@@ -65,7 +66,7 @@ class ProductController extends Controller
     }
 
     /**
-     * Відображення даних
+     * Відображення даних по get запиту
      * @param Request $request
      * @param string $category alias
      * @param array $filters
@@ -77,6 +78,7 @@ class ProductController extends Controller
 //        $products = $this->productRepository->showProductsWithFormat($filters, $category, $sorting);
         return view('shop', ['products' => $this->getProducts($request, $filters, $category, $sorting)]);
     }
+
     /**
      * Відображення сторінки з продуктом
      * @param $alias
