@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Product;
 use App\Repositories\ProductRepository;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Http\JsonResponse;
@@ -25,28 +24,6 @@ class ProductController extends Controller
     public function index()
     {
         return view('vue.shop');
-    }
-
-// for delete
-
-    public function showWithFilter(Request $request, $category = 1, $filter = ''){
-        //dd($request->get('order'));
-        $products = Product::where([
-            ['status', '=', '1'],
-        ])->join('categories', function ($join) use ($category){
-            $join->on('products.category_id', '=', 'categories.id')
-                ->where('categories.slug', '=', $category);
-        });
-        if ($filter){
-            $filter = explode('-', $filter);
-            $products = $products->join('product_attribute', function ($join) use ($filter){
-                $join->on('products.id', '=', 'product_attribute.product_id')
-                    ->whereIn('product_attribute.attribute_id',  $filter);
-            });
-        }
-        $products = $products->paginate(5);
-        //dd($products);
-        return view('shop', ['products' => $products]);
     }
 
     /**
