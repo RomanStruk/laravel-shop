@@ -110,3 +110,5 @@ Route::get('/shop2', 'ProductController@index');
 Route::get('/category/get/json', 'CategoriesController@getDataCategoriesJson');
 Route::get('/filter/get/json', 'AttributeController@getDataAttributesJson');
 
+
+Route::get('/test', 'ProductController@apiTest');

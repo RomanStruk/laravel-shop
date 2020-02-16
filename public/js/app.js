@@ -38906,7 +38906,7 @@ var render = function() {
       { staticClass: "list-group list-group-flush" },
       _vm._l(_vm.categoriesData, function(categories, index) {
         return _c("Category-item-component", {
-          key: index,
+          key: categories.id,
           staticClass: "list-group-item list-group-item-action pl-0 pb-0 pt-0",
           attrs: { item: categories },
           on: { "emit-choose-category": _vm.functionOnEmitChooseCategory }
@@ -39001,7 +39001,7 @@ var render = function() {
           },
           _vm._l(_vm.item.children, function(child, index) {
             return _c("Category-item-component", {
-              key: index,
+              key: child.id,
               staticClass:
                 "list-group-item list-group-item-action  pl-2 pb-0 pt-0",
               attrs: { item: child },

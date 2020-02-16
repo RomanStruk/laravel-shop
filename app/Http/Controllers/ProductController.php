@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Category;
 use App\Repositories\ProductRepository;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Http\JsonResponse;
@@ -86,5 +87,21 @@ class ProductController extends Controller
      */
     public function showSingleProduct($alias){
         return view('product', ['product' => $this->productRepository->findByAlias($alias)]);
+    }
+
+    public function apiTest()
+    {
+        $categories = Category::where('parent_id', '=', Null)->get();
+        // Let's Map the results from [$query]
+        $map = $categories->map(function($items){
+            $items['count_products'] = $items->countProducts();
+            $items['children'] = $items->children->map(function ($child){
+                 $child['count_products'] = $child->countProducts();
+                return $child;
+            });
+           return $items;
+        });
+        dd($map);
+        return $map;
     }
 }

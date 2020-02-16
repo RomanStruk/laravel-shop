@@ -20,7 +20,7 @@
             <Category-item-component
                 class="list-group-item list-group-item-action  pl-2 pb-0 pt-0"
                 v-for="(child, index) in item.children"
-                :key="index"
+                :key="child.id"
                 :item="child"
                 @make-folder="$emit('make-folder', $event)"
                 @add-item="$emit('add-item', $event)"
