@@ -32,6 +32,7 @@ class ProductRepository
     }
 
     /**
+     * Формування запитів на виборку по фільтрам та категорії
      * @param array $filters
      * @param int $category
      * @param string $sortBy
