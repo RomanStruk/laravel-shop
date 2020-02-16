@@ -1,16 +1,13 @@
 <?php
 
-
 namespace App\Repositories;
 
-
 use App\Product as Model;
+use App\Repositories\RepositoryInterface\ProductRepositoryInterface;
 use Illuminate\Database\Query\Builder;
-use Illuminate\Http\Request;
-use Illuminate\Pagination\Paginator;
 use DB;
 
-class ProductRepository
+class ProductRepository implements ProductRepositoryInterface
 {
     /**
      * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator
@@ -79,17 +76,18 @@ class ProductRepository
             $products = $products->orderBy('products.price', 'asc'); //от дешевых к дорогим
         }elseif ($sorting == 'price_desc'){
             $products = $products->orderBy('products.price', 'desc'); //от дорогих к дешевым
-        }elseif ($sorting == 'rating'){
+        //}elseif ($sorting == 'rating'){
 //            $products = $products->orderBy('price', 'desc'); //по рейтингу
         }elseif ($sorting == 'new'){
             $products = $products->orderBy('products.created_at', 'asc'); //новинки
-        }elseif ($sorting == 'popular'){
+       // }elseif ($sorting == 'popular'){
 //            $products = $products->orderBy('price', 'desc'); //популярные
         }
         return $products;
     }
 
     /**
+     *
      * @param Builder $product
      * @param integer $pagination
      * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator
