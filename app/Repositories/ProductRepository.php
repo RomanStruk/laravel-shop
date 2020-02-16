@@ -4,7 +4,7 @@
 namespace App\Repositories;
 
 
-use App\Product;
+use App\Product as Model;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\Paginator;
@@ -17,7 +17,7 @@ class ProductRepository
      */
     public function showWithPagination()
     {
-        $product = Product::where('status', '=', '1');
+        $product = Model::where('status', '=', '1');
         return $this->withPagination($product);
     }
 
@@ -28,7 +28,7 @@ class ProductRepository
      */
     public function findByAlias($alias)
     {
-        return Product::where('alias', '=', $alias)->firstOrFail();
+        return Model::where('alias', '=', $alias)->firstOrFail();
     }
 
     /**
@@ -40,7 +40,7 @@ class ProductRepository
      */
     public function showProductsWithFormat($filters = [], $category = 0, $sortBy = '')
     {
-        $products = Product::where('status', '=', '1');
+        $products = Model::where('status', '=', '1');
         if ($filters){
             foreach ($filters as $f){
                 $products = $products->whereExists(function ($query) use($f) {
