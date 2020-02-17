@@ -3,7 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Category;
-use App\Repositories\ProductRepository;
+use App\Order;
+use App\Repositories\RepositoryInterface\ProductRepositoryInterface;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -12,12 +13,9 @@ use Illuminate\View\View;
 class ProductController extends Controller
 {
 
-    /**
-     * @var ProductRepository
-     */
     private $productRepository;
 
-    public function __construct(ProductRepository $productRepository)
+    public function __construct(ProductRepositoryInterface $productRepository)
     {
         $this->productRepository = $productRepository;
     }
@@ -89,19 +87,10 @@ class ProductController extends Controller
         return view('product', ['product' => $this->productRepository->findByAlias($alias)]);
     }
 
-    public function apiTest()
+    public function apiTest(Request $request)
     {
-        $categories = Category::where('parent_id', '=', Null)->get();
-        // Let's Map the results from [$query]
-        $map = $categories->map(function($items){
-            $items['count_products'] = $items->countProducts();
-            $items['children'] = $items->children->map(function ($child){
-                 $child['count_products'] = $child->countProducts();
-                return $child;
-            });
-           return $items;
-        });
-        dd($map);
-        return $map;
+        $order = Order::with('user', 'products')->get();
+        dump($order);
+        return view('index');
     }
 }

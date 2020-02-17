@@ -68,7 +68,7 @@ Route::get('/cart', function () {
 
 
 Route::get('/checkout', function () {
-    return view('checkout');
+    return view('vue.checkout');
 });
 
 
@@ -106,9 +106,9 @@ Route::group(['prefix' => 'admin', 'middleware' => ['web', 'auth']], function ()
 });
 
 Route::get('/shop/json', 'ProductController@apiShowProducts');
-Route::get('/shop2', 'ProductController@index');
+Route::get('/shop2', 'ProductController@index')->middleware('web');
 Route::get('/category/get/json', 'CategoriesController@getDataCategoriesJson');
 Route::get('/filter/get/json', 'AttributeController@getDataAttributesJson');
 
 
-Route::get('/test', 'ProductController@apiTest');
+Route::get('/test', 'ProductController@apiTest')->middleware('web');

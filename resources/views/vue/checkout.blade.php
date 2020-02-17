@@ -2,12 +2,12 @@
 
 @section('content')
     <!-- Breadcrumb Start -->
-<div class="breadcrumb-area pt-60 pb-55 pt-sm-30 pb-sm-20">
+<div class="breadcrumb-area  pt-sm-30 pb-sm-20">
     <div class="container">
         <div class="breadcrumb">
             <ul>
                 <li><a href="index.html">Home</a></li>
-                <li class="active"><a href="checkout.html">Checkout</a></li>
+                <li class="active"><a href="/checkout">Оформлення замовлення</a></li>
             </ul>
         </div>
     </div>
@@ -19,7 +19,7 @@
     <div class="container">
         <!-- Section Title Start -->
         <div class="section-title mb-20">
-            <h2>checkout</h2>
+            <h2>Оформлення замовлення</h2>
         </div>
         <!-- Section Title Start End -->
         <div class="row">
@@ -262,99 +262,7 @@
                     </div>
                 </div>
                 <div class="col-lg-6 col-md-6">
-                    <div class="your-order">
-                        <h3>Your order</h3>
-                        <div class="your-order-table table-responsive">
-                            <table>
-                                <thead>
-                                <tr>
-                                    <th class="product-name">Product</th>
-                                    <th class="product-total">Total</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                <tr class="cart_item">
-                                    <td class="product-name">
-                                        Products Name Here <strong class="product-quantity"> × 1</strong>
-                                    </td>
-                                    <td class="product-total">
-                                        <span class="amount">£165.00</span>
-                                    </td>
-                                </tr>
-                                <tr class="cart_item">
-                                    <td class="product-name">
-                                        Products Name Here <strong class="product-quantity"> × 1</strong>
-                                    </td>
-                                    <td class="product-total">
-                                        <span class="amount">£50.00</span>
-                                    </td>
-                                </tr>
-                                </tbody>
-                                <tfoot>
-                                <tr class="cart-subtotal">
-                                    <th>Cart Subtotal</th>
-                                    <td><span class="amount">£215.00</span></td>
-                                </tr>
-                                <tr class="order-total">
-                                    <th>Order Total</th>
-                                    <td><strong><span class="amount">£215.00</span></strong>
-                                    </td>
-                                </tr>
-                                </tfoot>
-                            </table>
-                        </div>
-                        <div class="payment-method">
-                            <div class="payment-accordion">
-                                <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
-                                    <div class="panel panel-default">
-                                        <div class="panel-heading" role="tab" id="headingOne">
-                                            <h4 class="panel-title">
-                                                <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                                                    Direct Bank Transfer
-                                                </a>
-                                            </h4>
-                                        </div>
-                                        <div id="collapseOne" class="panel-collapse collapse  in show" role="tabpanel" aria-labelledby="headingOne">
-                                            <div class="panel-body">
-                                                <p>Make your payment directly into our bank account. Please use your Order ID as the payment reference. Your order won’t be shipped until the funds have cleared in our account.</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="panel panel-default">
-                                        <div class="panel-heading" role="tab" id="headingTwo">
-                                            <h4 class="panel-title">
-                                                <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-                                                    Cheque Payment
-                                                </a>
-                                            </h4>
-                                        </div>
-                                        <div id="collapseTwo" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo">
-                                            <div class="panel-body">
-                                                <p>Please send your cheque to Store Name, Store Street, Store Town, Store State / County, Store Postcode.</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="panel panel-default">
-                                        <div class="panel-heading" role="tab" id="headingThree">
-                                            <h4 class="panel-title">
-                                                <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
-                                                    PayPal
-                                                </a>
-                                            </h4>
-                                        </div>
-                                        <div id="collapseThree" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
-                                            <div class="panel-body">
-                                                <p>Pay via PayPal; you can pay with your credit card if you don’t have a PayPal account.</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="order-button-payment">
-                                    <input type="submit" value="Place order" />
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    <your-order-component></your-order-component>
                 </div>
             </div>
         </form>
