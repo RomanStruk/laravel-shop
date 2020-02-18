@@ -70,6 +70,7 @@ Route::get('/cart', function () {
 Route::get('/checkout', function () {
     return view('vue.checkout');
 });
+Route::post('/checkout', 'OrderController@checkOut')->name('checkout');
 
 
 Route::get('/compare', function () {
