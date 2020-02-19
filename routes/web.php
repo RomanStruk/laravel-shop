@@ -62,9 +62,6 @@ Route::get('/blog-details', function () {
     return view('blog-details');
 });
 
-Route::get('/cart', function () {
-    return view('cart');
-});
 
 
 Route::get('/checkout', function () {

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Category;
 use App\Order;
+use App\Product;
 use App\Repositories\RepositoryInterface\ProductRepositoryInterface;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Http\JsonResponse;
@@ -89,8 +90,8 @@ class ProductController extends Controller
 
     public function apiTest(Request $request)
     {
-        $order = Order::with('user', 'products')->get();
-        dump($order);
-        return view('index');
+        $order = Product::with('comments')->findOrFail(1);
+        dd($order->comments);
+        //return view('index');
     }
 }

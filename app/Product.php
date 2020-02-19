@@ -22,4 +22,9 @@ class Product extends Model
         return $this->hasOne('App\Category');
     }
 
+    public function comments()
+    {
+        return $this->hasMany('App\Comment');
+    }
+
 }

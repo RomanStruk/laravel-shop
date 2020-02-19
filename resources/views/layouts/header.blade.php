@@ -96,7 +96,6 @@
                                             </ul>
                                         </li>
                                         <li><a href="{{ url('compare') }}">Порівняння товару</a></li>
-                                        <li><a href="{{ url('cart') }}">Сторінка кредитки</a></li>
                                         <li><a href="{{ url('checkout') }}">Сторінка оформлення замовлення</a></li>
                                         <li><a href="{{ url('wishlist') }}">Сторінка побажань</a></li>
                                     </ul>
