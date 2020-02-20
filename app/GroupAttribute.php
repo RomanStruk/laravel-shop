@@ -10,7 +10,7 @@ class GroupAttribute extends Model
 
     public function allAttributes()
     {
-        return $this->hasMany('\App\Attribute', 'group_id', 'id');
+        return $this->hasMany('\App\Attribute');
     }
     //
 }

@@ -68,12 +68,10 @@
                                             <!-- Product Image End -->
                                             <!-- Product Content Start -->
                                             <div class="pro-content">
-                                                <div class="product-rating">
-                                                    <i class="fa fa-star"></i>
-                                                    <i class="fa fa-star"></i>
-                                                    <i class="fa fa-star"></i>
-                                                    <i class="fa fa-star"></i>
-                                                    <i class="fa fa-star"></i>
+                                                <div class="rating">
+                                                    <i class="fa " v-for="n in 5"
+                                                       v-bind:class="[(product.rating < n) ? 'fa-star-o' : 'fa-star']"
+                                                    ></i>
                                                 </div>
                                                 <h4><a :href="'/product/' + product.alias">{{ product.title }}</a></h4>
                                                 <p><span class="price">${{ product.price}}</span><del class="prev-price">${{ product.old_price}}</del></p>
@@ -106,12 +104,10 @@
                                     <!-- Product Image End -->
                                     <!-- Product Content Start -->
                                     <div class="pro-content">
-                                        <div class="product-rating">
-                                            <i class="fa fa-star"/>
-                                            <i class="fa fa-star"/>
-                                            <i class="fa fa-star"/>
-                                            <i class="fa fa-star"/>
-                                            <i class="fa fa-star"/>
+                                        <div class="rating">
+                                            <i class="fa " v-for="n in 5"
+                                               v-bind:class="[(product.rating < n) ? 'fa-star-o' : 'fa-star']"
+                                            ></i>
                                         </div>
                                         <h4><a :href="'/product/' + product.alias">{{product.title}}</a></h4>
                                         <p>

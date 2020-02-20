@@ -39,7 +39,7 @@ Route::group(['prefix' => '/shop', 'middleware' => ['web']], function () {
         'uses' => 'ProductController@showProducts'
     ]);
     Route::get('/', [
-        'uses' => 'ProductController@showProducts',
+        'uses' => 'ProductController@index',
         'as' => 'shop_main'
     ]);
 });
@@ -47,6 +47,8 @@ Route::group(['prefix' => '/shop', 'middleware' => ['web']], function () {
 Route::get('/product/{alias}', 'ProductController@showSingleProduct')
     ->name('product')
     ->middleware('test')->middleware('web');
+Route::post('/comment/create', 'CommentController@create')->name('comment.create')->middleware('web');
+
 Route::get('/about', function () {
     return view('about');
 });
@@ -104,7 +106,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['web', 'auth']], function ()
 });
 
 Route::get('/shop/json', 'ProductController@apiShowProducts');
-Route::get('/shop2', 'ProductController@index')->middleware('web');
+Route::get('/shop2', 'ProductController@showProducts')->middleware('web')->name('shop2');
 Route::get('/category/get/json', 'CategoriesController@getDataCategoriesJson');
 Route::get('/filter/get/json', 'AttributeController@getDataAttributesJson');
 

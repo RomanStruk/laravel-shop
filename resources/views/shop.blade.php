@@ -19,7 +19,7 @@
                     @include('sidebar.categories')
                     <!-- Categories End -->
 
-                    @if(Route::current()->getName() != 'shop_main')
+                    @if(Route::current()->getName() != 'shop2')
                         @include('sidebar.filtr-sidebar')
                     @endif
 

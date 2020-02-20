@@ -2,7 +2,7 @@
 
 use Illuminate\Database\Seeder;
 
-class ProductAttributeTableSeeder extends Seeder
+class AttributeProductTableSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -81,6 +81,6 @@ class ProductAttributeTableSeeder extends Seeder
                 'product_id' => 4
             ]
         ];
-        DB::table('product_attribute')->insert($data);
+        DB::table('attribute_product')->insert($data);
     }
 }

@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateProductAttribute extends Migration
+class CreateAttributeProduct extends Migration
 {
     /**
      * Run the migrations.
@@ -13,7 +13,7 @@ class CreateProductAttribute extends Migration
      */
     public function up()
     {
-        Schema::create('product_attribute', function (Blueprint $table) {
+        Schema::create('attribute_product', function (Blueprint $table) {
             $table->bigIncrements('id');
 
             $table->bigInteger('attribute_id')->unsigned()->nullable();
@@ -32,6 +32,6 @@ class CreateProductAttribute extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('product_attribute');
+        Schema::dropIfExists('attribute_product');
     }
 }

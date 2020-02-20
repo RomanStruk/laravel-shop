@@ -9,6 +9,22 @@
     <!-- Product Thumbnail Start -->
     <div class="main-product-thumbnail pb-60">
         <div class="container">
+            @if ($errors->any())
+                <div class="alert alert-danger">
+                    <ul>
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
+                @if (\Session::has('success'))
+                    <div class="alert alert-success">
+                        <ul>
+                            <li>{!! \Session::get('success') !!}</li>
+                        </ul>
+                    </div>
+                @endif
             <div class="row">
                 <!-- Main Thumbnail Image Start -->
                 <div class="col-lg-5">
@@ -55,15 +71,17 @@
                         <h3 class="product-header">{{$product->title}}</h3>
                         <div class="rating-summary fix mtb-10">
                             <div class="rating f-left">
-                                <i class="fa fa-star"></i>
-                                <i class="fa fa-star"></i>
-                                <i class="fa fa-star-o"></i>
-                                <i class="fa fa-star-o"></i>
-                                <i class="fa fa-star-o"></i>
+                                @for($i = 1; $i <= 5; $i++)
+                                    @if($i <= $product->rating)
+                                        <i class="fa fa-star"></i>
+                                    @else
+                                        <i class="fa fa-star-o"></i>
+                                    @endif
+                                @endfor
                             </div>
                             <div class="rating-feedback f-left">
-                                <a href="#">(1* відгук)</a>
-                                <a href="#">додати ваш відгук</a>
+                                <a href="#comments">({{ $product->count_comments }} відгук-ів)</a>
+                                <a href="#comments">додати ваш відгук</a>
                             </div>
                         </div>
                         <div class="pro-price mb-10">
@@ -78,8 +96,8 @@
                         <basket-button-component></basket-button-component>
                         <div class="product-link">
                             <ul class="list-inline">
-                                <li><a href="wishlist.html">Add to Wish List</a></li>
-                                <li><a href="compare.html">Add to compare</a></li>
+                                <li><a href="/wishlist">Додати до списку бажань</a></li>
+                                <li><a href="/compare">Додати до порівняння</a></li>
                                 <li><a href="#">Email</a></li>
                             </ul>
                         </div>
@@ -100,9 +118,9 @@
         <div class="container">
             <div class="row">
                 <div class="col-sm-12">
-                    <ul class="main-thumb-desc nav">
+                    <ul id="comments" class="main-thumb-desc nav">
                         <li><a class="active" data-toggle="tab" href="#dtail">Деталі</a></li>
-                        <li><a data-toggle="tab" href="#review">Відгуки 1</a></li>
+                        <li><a data-toggle="tab" href="#review">Відгуки {{ $product->count_comments }}</a></li>
                     </ul>
                     <!-- Product Thumbnail Tab Content Start -->
                     <div class="tab-content thumb-content border-default">
@@ -114,58 +132,34 @@
                             <comments-component></comments-component>
                             <!-- Reviews Start -->
                             <div class="review border-default universal-padding mt-30">
-                                <h2 class="review-title mb-30">You're reviewing: <br><span>Go-Get'r Pushup Grips</span>
-                                </h2>
-                                <p class="review-mini-title">your rating</p>
-                                <ul class="review-list">
-                                    <!-- Single Review List Start -->
-                                    <li>
-                                        <span>Quality</span>
-                                        <i class="fa fa-star"></i>
-                                        <i class="fa fa-star"></i>
-                                        <i class="fa fa-star"></i>
-                                        <i class="fa fa-star-o"></i>
-                                        <i class="fa fa-star-o"></i>
-                                    </li>
-                                    <!-- Single Review List End -->
-                                    <!-- Single Review List Start -->
-                                    <li>
-                                        <span>price</span>
-                                        <i class="fa fa-star"></i>
-                                        <i class="fa fa-star"></i>
-                                        <i class="fa fa-star-o"></i>
-                                        <i class="fa fa-star-o"></i>
-                                        <i class="fa fa-star-o"></i>
-                                    </li>
-                                    <!-- Single Review List End -->
-                                    <!-- Single Review List Start -->
-                                    <li>
-                                        <span>value</span>
-                                        <i class="fa fa-star"></i>
-                                        <i class="fa fa-star"></i>
-                                        <i class="fa fa-star"></i>
-                                        <i class="fa fa-star"></i>
-                                        <i class="fa fa-star-o"></i>
-                                    </li>
-                                    <!-- Single Review List End -->
-                                </ul>
+                                <h2 class="review-title mb-30">Ви рецензуєте:</h2>
                                 <!-- Reviews Field Start -->
                                 <div class="riview-field mt-40">
-                                    <form autocomplete="off" action="#" method="post">
+                                    <form autocomplete="off" action="{{ route('comment.create') }}" method="post">
                                         @csrf
                                         <input type="hidden" id="id_product" name="id_product" value="{{$product->id}}">
-                                        <input type="hidden" id="alias" name="id_product" value="{{$product->alias}}">
+                                        <input type="hidden" id="alias" name="alias" value="{{$product->alias}}">
                                         <div class="form-group">
-                                            <label class="req" for="sure-name">Nickname</label>
-                                            <input type="text" class="form-control" id="sure-name" required="required">
-                                        </div>
-                                        <div class="form-group">
-                                            <label class="req" for="subject">Summary</label>
-                                            <input type="text" class="form-control" id="subject" required="required">
+                                            <label class="req">Рейтинг</label>
+                                            <label class="fa fa-star">
+                                                <input type="radio" name="rating" value="1" required="required">
+                                            </label>
+                                            <label class="fa fa-star">
+                                                <input type="radio" name="rating" value="2" required="required">
+                                            </label>
+                                            <label class="fa fa-star">
+                                                <input type="radio" name="rating" value="3" required="required">
+                                            </label>
+                                            <label class="fa fa-star">
+                                                <input type="radio" name="rating" value="4" required="required">
+                                            </label>
+                                            <label class="fa fa-star">
+                                                <input type="radio" name="rating" value="5" required="required">
+                                            </label>
                                         </div>
                                         <div class="form-group">
                                             <label class="req" for="comments">Review</label>
-                                            <textarea class="form-control" rows="5" id="comments"
+                                            <textarea name="text" class="form-control" rows="5" id="comments"
                                                       required="required"></textarea>
                                         </div>
                                         <button type="submit" class="btn-submit">Submit Review</button>

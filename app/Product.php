@@ -8,23 +8,22 @@ class Product extends Model
 {
     //
     public function product_attributes(){
-        return $this->belongsToMany('App\Attribute', 'product_attribute', 'product_id', 'attribute_id');
+        return $this->belongsToMany('App\Attribute');
     }
 
     public function pr_attr($arr)
     {
-        return $this->belongsToMany('App\Attribute', 'product_attribute', 'product_id', 'attribute_id')
+        return $this->belongsToMany('App\Attribute')
             ->whereIn('id', $arr);
     }
 
     public function category()
     {
-        return $this->hasOne('App\Category');
+        return $this->belongsTo('App\Category');
     }
 
     public function comments()
     {
         return $this->hasMany('App\Comment');
     }
-
 }

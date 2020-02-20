@@ -25,7 +25,7 @@ class ProductRepository implements ProductRepositoryInterface
      */
     public function findByAlias($alias)
     {
-        return Model::where('alias', '=', $alias)->firstOrFail();
+        return Model::with('comments')->where('alias', '=', $alias)->firstOrFail();
     }
 
     /**
@@ -37,14 +37,14 @@ class ProductRepository implements ProductRepositoryInterface
      */
     public function showProductsWithFormat($filters = [], $category = 0, $sortBy = '')
     {
-        $products = Model::where('status', '=', '1');
+        $products = Model::with('comments')->where('status', '=', '1');
         if ($filters){
             foreach ($filters as $f){
                 $products = $products->whereExists(function ($query) use($f) {
                     $query->select(DB::raw(1))
-                        ->from('product_attribute')
-                        ->whereRaw('product_attribute.product_id = products.id')
-                        ->whereIn('product_attribute.attribute_id', $f)
+                        ->from('attribute_product')
+                        ->whereRaw('attribute_product.product_id = products.id')
+                        ->whereIn('attribute_product.attribute_id', $f)
                     ;
                 });
             }

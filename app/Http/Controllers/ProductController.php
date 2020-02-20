@@ -48,8 +48,15 @@ class ProductController extends Controller
             }
         }
         $category = ($request->has('category') && !$category) ? (int)$request->get('category') : $category;
-        $sort_by = ($request->has('sorter') && !$sort_by) ? $request->get('sorter'): $sort_by;
-        return $this->productRepository->showProductsWithFormat($filters, $category, $sort_by);
+        $sort_by = ($request->has('sorter') && !$sort_by) ? $request->get('sorter') : $sort_by;
+        $product = $this->productRepository->showProductsWithFormat($filters, $category, $sort_by);
+        (function() use (&$product){
+            collect($product->items())->map(function ($child) {
+                $child['rating'] = $child->comments->avg('rating'); // середній рейтинг
+                return $child;
+            });
+        })();
+        return $product;
 
     }
 
@@ -84,14 +91,20 @@ class ProductController extends Controller
      * @param $alias
      * @return Factory|View
      */
-    public function showSingleProduct($alias){
-        return view('product', ['product' => $this->productRepository->findByAlias($alias)]);
+    public function showSingleProduct($alias)
+    {
+        $product = $this->productRepository->findByAlias($alias);
+        $product['rating'] = $product->comments->avg('rating'); // середній рейтинг
+        $product['count_comments'] = $product->comments->count(); // кількість коментарів
+
+        return view('product', ['product' => $product]);
     }
 
     public function apiTest(Request $request)
     {
         $order = Product::with('comments')->findOrFail(1);
-        dd($order->comments);
+        $order['rating'] = $order->comments->avg('rating');
+        dd($order);
         //return view('index');
     }
 }
