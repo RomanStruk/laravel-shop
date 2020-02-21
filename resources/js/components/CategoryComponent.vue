@@ -36,13 +36,6 @@
                 console.log(id);
                 this.$emit('event-choose-category', id)
             },
-
-
-
-
-            onChooseCategory(id){
-                this.$emit('event-choose-category', id)
-            },
             categories: function(){
                 axios.get('/category/get/json').then((response) => {
                     console.log(response.data);
@@ -54,7 +47,5 @@
     }
 </script>
 <style>
-    .show {
-        display: block;
-    }
+
 </style>

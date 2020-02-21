@@ -46,17 +46,23 @@ Route::group(['prefix' => '/shop', 'middleware' => ['web']], function () {
 
 Route::get('/product/{alias}', 'ProductController@showSingleProduct')
     ->name('product')
-    ->middleware('test')->middleware('web');
-Route::post('/comment/create', 'CommentController@create')->name('comment.create')->middleware('web');
+    ->middleware('test')
+    ->middleware('web');
+
+Route::post('/product/{id}/comment/create', 'CommentController@create')
+    ->name('comment.create')
+    ->middleware('web');
+
+Route::post('/checkout', 'OrderController@checkOut')
+    ->name('checkout');
+
 
 Route::get('/about', function () {
     return view('about');
 });
-
 Route::get('/account', function () {
     return view('account');
 })->middleware(['web', 'auth']);;
-
 Route::get('/blog', function () {
     return view('blog');
 });
@@ -69,7 +75,6 @@ Route::get('/blog-details', function () {
 Route::get('/checkout', function () {
     return view('vue.checkout');
 });
-Route::post('/checkout', 'OrderController@checkOut')->name('checkout');
 
 
 Route::get('/compare', function () {

@@ -13,30 +13,32 @@
 <script>
     export default {
         name: "BasketButton",
+        props:[
+            'data'
+        ],
         data: function(){
             return {
                 product: {
-                    id: document.querySelector('#id_product').getAttribute('value'),                  // додати індитифікатор
-                    count: 1,                                        // кількість
-                    title: document.querySelector('.product-header').textContent,             // назва
-                    price: Number(document.querySelector('.price').textContent),            // ціна
-                    img: document.querySelector('#product_img').getAttribute('src'),                // зображення
-                    url: document.querySelector('#alias').getAttribute('value')               // скороч назва
+                    count: 1,                                        // кількість          // скороч назва
                 }
             }
+        },
+        mounted() {
+            console.log(this.data);
+            console.log('this.data');
         },
         methods: {
             // function додавання в корзину
             onBasketList(){
                 this.localStorage.basket_list.push({
-                    id:     this.product.id,                    // додати індитифікатор
+                    id:     this.data.id,                    // додати індитифікатор
                     count:  Number(this.product.count),         // кількість
-                    title:  this.product.title,                 // назва
-                    price:  this.product.price,                 // ціна
-                    img:    this.product.img,                   // зображення
-                    url:    this.product.url                    // скороч назва
+                    title:  this.data.title,                 // назва
+                    price:  this.data.price,                 // ціна
+                    img:    this.data.img,                   // зображення
+                    url:    this.data.alias                    // скороч назва
                 });
-                this.localStorage.basket_list_sum += this.product.price*Number(this.product.count);
+                this.localStorage.basket_list_sum += this.data.price*Number(this.product.count);
             },
         }
     }

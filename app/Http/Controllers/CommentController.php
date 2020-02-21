@@ -8,19 +8,18 @@ use Illuminate\Http\Request;
 
 class CommentController extends Controller
 {
-    public function apiGetComments(Request $request)
+    public function apiGetComments($product)
     {
-//        dd($request);
-        $comments = Comment::with('user')->where('product_id', '=', $request->get('product_id'))->get();
+        $comments = Comment::with('user')->where('product_id', '=', $product)->get();
         return $comments;
     }
 
-    public function create(StoreCommentPost $request)
+    public function create(StoreCommentPost $request, $product)
     {
 
         $validated = $request->validated();
         $comment = new Comment();
-        $comment->product_id = $validated['id_product'];
+        $comment->product_id = $product;
         $comment->user_id = auth()->id();
         $comment->text = $validated['text'];
         $comment->rating = $validated['rating'];

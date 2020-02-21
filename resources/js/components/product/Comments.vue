@@ -5,7 +5,8 @@
             <h2>customer review</h2>
         </div>
         <div
-            v-if="commentsData.length">
+            v-if="commentsData.length"
+        >
 
             <div class="review-list"
                  v-for="comment in commentsData"
@@ -32,6 +33,9 @@
 <script>
     export default {
         name: "Comments",
+        props:[
+            'productid'
+        ],
         data: function () {
             return {
                 is_refresh: false,
@@ -45,11 +49,7 @@
         methods: {
             comments: function () {
                 this.is_refresh = true;
-                axios.get('/api/comments', {
-                    params: {
-                        product_id: document.querySelector('#id_product').getAttribute('value')
-                    }
-                }).then((response) => {
+                axios.get('/api/comments/product/'+this.productid).then((response) => {
                     this.commentsData = response.data; // обєднання всії завантажених даних
                 });
                 this.is_refresh = false;

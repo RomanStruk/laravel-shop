@@ -28,7 +28,6 @@ class StoreCommentPost extends FormRequest
         return [
             'text' => 'required',
             'rating' => 'required|numeric|between:1,5',
-            'id_product' => 'required|numeric|exists:products,id'
         ];
     }
 }

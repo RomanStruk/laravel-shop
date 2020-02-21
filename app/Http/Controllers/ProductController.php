@@ -6,6 +6,7 @@ use App\Category;
 use App\Order;
 use App\Product;
 use App\Repositories\RepositoryInterface\ProductRepositoryInterface;
+use DB;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -50,7 +51,7 @@ class ProductController extends Controller
         $category = ($request->has('category') && !$category) ? (int)$request->get('category') : $category;
         $sort_by = ($request->has('sorter') && !$sort_by) ? $request->get('sorter') : $sort_by;
         $product = $this->productRepository->showProductsWithFormat($filters, $category, $sort_by);
-        (function() use (&$product){
+        (function () use (&$product) {
             collect($product->items())->map(function ($child) {
                 $child['rating'] = $child->comments->avg('rating'); // середній рейтинг
                 return $child;
@@ -96,14 +97,21 @@ class ProductController extends Controller
         $product = $this->productRepository->findByAlias($alias);
         $product['rating'] = $product->comments->avg('rating'); // середній рейтинг
         $product['count_comments'] = $product->comments->count(); // кількість коментарів
-
+        $this->productRepository->updateVisits($product->id); //оновлення кількості переглядів
         return view('product', ['product' => $product]);
     }
 
+
+
     public function apiTest(Request $request)
     {
-        $order = Product::with('comments')->findOrFail(1);
-        $order['rating'] = $order->comments->avg('rating');
+        DB::enableQueryLog();
+        $order = Product::with('comments')
+            ->withCount(['comments as average_rating' => function ($query) {
+                $query->select(DB::raw('coalesce(avg(rating),0)'));
+            }])->orderByDesc('average_rating')->paginate(5);
+
+        dd(DB::getQueryLog());
         dd($order);
         //return view('index');
     }

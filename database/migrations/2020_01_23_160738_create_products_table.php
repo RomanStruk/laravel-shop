@@ -29,6 +29,7 @@ class CreateProductsTable extends Migration
             $table->string('img',255)->nullable();
             $table->enum('hit',['0','1'])->default(0)->index();
             $table->integer('in_stock')->default(1);
+            $table->bigInteger('visits')->default(0);
 
             $table->timestamps();
             $table->softDeletes();

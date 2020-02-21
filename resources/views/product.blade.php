@@ -93,7 +93,7 @@
                             <p><span class="in-stock">в наявності</span><span class="sku">{{$product->in_stock}}</span>
                             </p>
                         </div>
-                        <basket-button-component></basket-button-component>
+                        <basket-button-component v-bind:data="{{json_encode($product)}}"></basket-button-component>
                         <div class="product-link">
                             <ul class="list-inline">
                                 <li><a href="/wishlist">Додати до списку бажань</a></li>
@@ -129,15 +129,14 @@
                         </div>
                         <div id="review" class="tab-pane">
 
-                            <comments-component></comments-component>
+                            <comments-component v-bind:productid="{{$product->id}}"></comments-component>
                             <!-- Reviews Start -->
                             <div class="review border-default universal-padding mt-30">
                                 <h2 class="review-title mb-30">Ви рецензуєте:</h2>
                                 <!-- Reviews Field Start -->
                                 <div class="riview-field mt-40">
-                                    <form autocomplete="off" action="{{ route('comment.create') }}" method="post">
+                                    <form autocomplete="off" action="{{ route('comment.create', ['id'=> $product->id]) }}" method="post">
                                         @csrf
-                                        <input type="hidden" id="id_product" name="id_product" value="{{$product->id}}">
                                         <input type="hidden" id="alias" name="alias" value="{{$product->alias}}">
                                         <div class="form-group">
                                             <label class="req">Рейтинг</label>
