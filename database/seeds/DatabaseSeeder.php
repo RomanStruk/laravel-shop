@@ -15,7 +15,10 @@ class DatabaseSeeder extends Seeder
         $this->call(ProductsTableSeeder::class);
         $this->call(GroupAttributesTableSeeder::class); //групи атребутів
         $this->call(AttributeTableSeeder::class); // атребути
-        $this->call(ProductAttributeTableSeeder::class); // связь атребутів і продуктів
+        $this->call(AttributeProductTableSeeder::class); // связь атребутів і продуктів
         $this->call(CategoriesSeeder::class);
+        $this->call(OrdersTableSeeder::class);
+        $this->call(OrderProductTableSeeder::class);
+        $this->call(CommentsTableSeeder::class);
     }
 }

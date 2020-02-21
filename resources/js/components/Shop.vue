@@ -24,8 +24,8 @@
                     <div class="grid-list-top border-default universal-padding fix mb-30">
                         <div class="grid-list-view f-left">
                             <ul class="list-inline nav">
-                                <li><a data-toggle="tab" href="#grid-view"><i class="fa fa-th"/></a></li>
-                                <li><a  class="active" data-toggle="tab" href="#list-view"><i class="fa fa-list-ul"/></a></li>
+                                <li><a  class="active" data-toggle="tab" href="#grid-view"><i class="fa fa-th"/></a></li>
+                                <li><a data-toggle="tab" href="#list-view"><i class="fa fa-list-ul"/></a></li>
                                 <li><span class="grid-item-list"> Items {{pages_from}}-{{pages_to}} of {{pages_total}}</span></li>
                             </ul>
                         </div>
@@ -68,12 +68,10 @@
                                             <!-- Product Image End -->
                                             <!-- Product Content Start -->
                                             <div class="pro-content">
-                                                <div class="product-rating">
-                                                    <i class="fa fa-star"></i>
-                                                    <i class="fa fa-star"></i>
-                                                    <i class="fa fa-star"></i>
-                                                    <i class="fa fa-star"></i>
-                                                    <i class="fa fa-star"></i>
+                                                <div class="rating">
+                                                    <i class="fa " v-for="n in 5"
+                                                       v-bind:class="[(product.rating < n) ? 'fa-star-o' : 'fa-star']"
+                                                    ></i>
                                                 </div>
                                                 <h4><a :href="'/product/' + product.alias">{{ product.title }}</a></h4>
                                                 <p><span class="price">${{ product.price}}</span><del class="prev-price">${{ product.old_price}}</del></p>
@@ -88,6 +86,13 @@
                                                 </div>
                                             </div>
                                             <!-- Product Content End -->
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-4 col-sm-6"
+                                         v-if="(current_page < last_page)"
+                                    >
+                                        <div class="single-product">
+                                            <div class="mx-auto load " @click="loadNextPage"></div>
                                         </div>
                                     </div>
                                     <!-- Single Product End -->
@@ -106,12 +111,10 @@
                                     <!-- Product Image End -->
                                     <!-- Product Content Start -->
                                     <div class="pro-content">
-                                        <div class="product-rating">
-                                            <i class="fa fa-star"/>
-                                            <i class="fa fa-star"/>
-                                            <i class="fa fa-star"/>
-                                            <i class="fa fa-star"/>
-                                            <i class="fa fa-star"/>
+                                        <div class="rating">
+                                            <i class="fa " v-for="n in 5"
+                                               v-bind:class="[(product.rating < n) ? 'fa-star-o' : 'fa-star']"
+                                            ></i>
                                         </div>
                                         <h4><a :href="'/product/' + product.alias">{{product.title}}</a></h4>
                                         <p>
@@ -134,15 +137,18 @@
                                     </div>
                                     <!-- Product Content End -->
                                 </div>
+                                <div class="row"
+                                    v-if="(current_page < last_page)"
+                                >
+                                    <div class="mx-auto load " @click="loadNextPage"></div>
+                                </div>
                                 <!-- Single Product End -->
                             </div>
                             <!-- #list view End -->
                         </div>
                         <!-- Grid & List Main Area End -->
 
-                        <div class="col-lg-6 mr-auto ml-auto">
-                            <button class="btn btn-block btn-success" @click="loadNextPage">Download More</button>
-                        </div>
+
                     </div>
                 </div>
                 <!-- product Categorie List End -->
@@ -168,6 +174,8 @@
                 pages_total: 1,                                     //
                 pages_from: 1,                                      //
                 pages_to: 1,                                        //
+                current_page: 0,
+                last_page: 1,
 
                 basket_list: [],                                    // кощик до купівлі
                 sortingProducts: 'popular',                              // сортування
@@ -249,7 +257,11 @@
                     this.page++;                                                    // збільшити номер ст яку грузим
                     this.pages_to = response.data.to;                               // скільки завантажено
                     this.resultData = this.resultData.concat(response.data.data);   // обєднання всії завантажених даних
+                    this.current_page = response.data.current_page;
+                    this.last_page = response.data.last_page;
+
                     console.log('Успіщний запит з фільтром');                       // debug
+                    // console.log(response.data);                                  // debug
                 }).catch(function (error) {
                     console.log(error);                             // debug error
                 });
@@ -258,3 +270,13 @@
         }
     }
 </script>
+<style scoped>
+    .load{
+        background-image: url("/img/load.png");
+        height: 64px;
+        width: 64px;
+        background-repeat: no-repeat;
+        background-size: 100%;
+        cursor: pointer;
+    }
+</style>

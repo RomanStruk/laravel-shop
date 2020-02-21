@@ -39,22 +39,30 @@ Route::group(['prefix' => '/shop', 'middleware' => ['web']], function () {
         'uses' => 'ProductController@showProducts'
     ]);
     Route::get('/', [
-        'uses' => 'ProductController@showProducts',
+        'uses' => 'ProductController@index',
         'as' => 'shop_main'
     ]);
 });
 
 Route::get('/product/{alias}', 'ProductController@showSingleProduct')
     ->name('product')
-    ->middleware('test')->middleware('web');
+    ->middleware('test')
+    ->middleware('web');
+
+Route::post('/product/{id}/comment/create', 'CommentController@create')
+    ->name('comment.create')
+    ->middleware('web');
+
+Route::post('/checkout', 'OrderController@checkOut')
+    ->name('checkout');
+
+
 Route::get('/about', function () {
     return view('about');
 });
-
 Route::get('/account', function () {
     return view('account');
 })->middleware(['web', 'auth']);;
-
 Route::get('/blog', function () {
     return view('blog');
 });
@@ -62,13 +70,10 @@ Route::get('/blog-details', function () {
     return view('blog-details');
 });
 
-Route::get('/cart', function () {
-    return view('cart');
-});
 
 
 Route::get('/checkout', function () {
-    return view('checkout');
+    return view('vue.checkout');
 });
 
 
@@ -106,7 +111,9 @@ Route::group(['prefix' => 'admin', 'middleware' => ['web', 'auth']], function ()
 });
 
 Route::get('/shop/json', 'ProductController@apiShowProducts');
-Route::get('/shop2', 'ProductController@index');
+Route::get('/shop2', 'ProductController@showProducts')->middleware('web')->name('shop2');
 Route::get('/category/get/json', 'CategoriesController@getDataCategoriesJson');
 Route::get('/filter/get/json', 'AttributeController@getDataAttributesJson');
 
+
+Route::get('/test', 'ProductController@apiTest')->middleware('web');

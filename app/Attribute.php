@@ -7,8 +7,12 @@ use Illuminate\Database\Eloquent\Model;
 class Attribute extends Model
 {
     public function products(){
-        return $this->belongsToMany('App\Product', 'product_attribute', 'attribute_id', 'product_id')
-            ->withPivot('product_id');
+        return $this->belongsToMany('App\Product');
+    }
+
+    public function group()
+    {
+        return $this->belongsTo('App\GroupAttribute');
     }
 
     public function products_id(){

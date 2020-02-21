@@ -18,7 +18,7 @@ class CategoriesSeeder extends Seeder
                 'slug' => 'computers-notebooks'
             ],
             [
-                'parent_id' => Null,
+                'parent_id' => 1,
                 'name' => 'Смартфоны, ТВ и электроника',
                 'slug' => 'telefony-tv-i-ehlektronika'
             ],

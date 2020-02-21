@@ -15,25 +15,15 @@ class CategoriesController extends Controller
     public static function getDataCategories()
     {
         $categories = Category::with('children')->where('parent_id', '=', Null)->get();
-        $result = [];
-        foreach ($categories as $category){
-            $children = [];
-            $parent_count = $category->countProducts();
-            foreach ($category->children as $rr){
-                //dd($rr->countProducts());
-                $rr['count_products'] = $rr->countProducts();
-                $parent_count += $rr['count_products'];
-                $children[] = $rr;
-            }
-            $result[$category->id] = [
-                'id' => $category->id,
-                'parent_id' => $category->parent_id,
-                'name' => $category->name,
-                'slug' => $category->slug,
-                'count_products' => $parent_count,
-                'children' => $children
-            ];
-        }
+        $result = $categories->map(function($items){
+            $items['count_products'] = $items->countProducts();
+            $items['children'] = $items->children
+                ->map(function ($child){
+                    $child['count_products'] = $child->countProducts();
+                    return $child;
+                });
+            return $items;
+        });
         return $result;
     }
 

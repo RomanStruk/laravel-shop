@@ -34,7 +34,7 @@
                             </li>
                             <!-- Language End -->
                             <!-- Currency Start -->
-                            <li><a href="#">Currency:  USD <i class="fa fa-angle-down"></i></a>
+                            <li><a href="#">Currency: USD <i class="fa fa-angle-down"></i></a>
                                 <ul class="ht-dropdown">
                                     <li><a href="#">USD</a></li>
                                     <li><a href="#">GBP</a></li>
@@ -96,7 +96,6 @@
                                             </ul>
                                         </li>
                                         <li><a href="{{ url('compare') }}">Порівняння товару</a></li>
-                                        <li><a href="{{ url('cart') }}">Сторінка кредитки</a></li>
                                         <li><a href="{{ url('checkout') }}">Сторінка оформлення замовлення</a></li>
                                         <li><a href="{{ url('wishlist') }}">Сторінка побажань</a></li>
                                     </ul>
@@ -120,11 +119,12 @@
                                         <li><a href="{{ url('account') }}">Особистий кабінет</a></li>
                                         <li>
                                             <a class="dropdown-item" href="{{ route('logout') }}"
-                                           onclick="event.preventDefault();
+                                               onclick="event.preventDefault();
                                                      document.getElementById('logout-form').submit();">
-                                            {{ __('Logout') }}
-                                        </a>
-                                            <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                                                {{ __('Logout') }}
+                                            </a>
+                                            <form id="logout-form" action="{{ route('logout') }}" method="POST"
+                                                  style="display: none;">
                                                 @csrf
                                             </form>
                                         </li>
@@ -144,15 +144,31 @@
                         <ul>
                             <li><a href="{{url('compare')}}"><i class="fa fa-cog"></i></a>
                                 <ul class="ht-dropdown">
-                                    <li><a href="{{url('login')}}">Login</a></li>
-                                    <li><a href="{{url('register')}}">Register</a></li>
-                                    <li><a href="{{url('account')}}">Account</a></li>
+                                    @guest
+                                        <li>
+                                            <a href="{{ route('login') }}">{{ __('Login') }}</a>
+                                        </li>
+                                        @if (Route::has('register'))
+                                            <li>
+                                                <a href="{{ route('register') }}">{{ __('Register') }}</a>
+                                            </li>
+                                        @endif
+                                    @else
+                                        <li><a href="{{url('account')}}">Account</a></li>
+                                        <li>
+                                            <a href="{{ route('logout') }}"
+                                               onclick="event.preventDefault();
+                                                     document.getElementById('logout-form').submit();">
+                                                {{ __('Logout') }}
+                                            </a>
+                                        </li>
+                                    @endguest
                                 </ul>
                             </li>
                             <li><a href="wishlist.html"><i class="fa fa-heart-o"></i></a></li>
 
 
-                                <basket-component></basket-component>
+                            <basket-component></basket-component>
 
                         </ul>
                     </div>

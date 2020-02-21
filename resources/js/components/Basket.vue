@@ -28,7 +28,7 @@
                 <div class="cart-footer fix">
                     <h5>total :<span class="f-right">${{localStorage.basket_list_sum}}</span></h5>
                     <div class="cart-actions">
-                        <a class="checkout" href="checkout.html">Checkout</a>
+                        <a class="checkout" href="/checkout">Оформити замовлення</a>
                     </div>
                 </div>
                 <!-- Cart Footer Inner End -->
@@ -45,23 +45,19 @@
             }
         },
         watch:{
-            list(){
-                console.log('ok');
-            }
 
         },
         mounted() {
-
-            //app.$emit('remove', '123456');
-            console.log('Basket Component mounted.');
+            // console.log('Basket Component mounted.');
         },
         created() {
-            //console.log(this.parent);
             //eventBus.$emit("userchange", this.testvarev);
         },
         methods: {
             deleteBasketItem(index){
-                this.localStorage.basket_list_sum -= this.localStorage.basket_list[index].price;
+                this.localStorage.basket_list_sum -=
+                    this.localStorage.basket_list[index].price*
+                    this.localStorage.basket_list[index].count;
                 this.localStorage.basket_list.splice(index, 1);
             }
         }

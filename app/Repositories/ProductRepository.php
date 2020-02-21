@@ -25,7 +25,7 @@ class ProductRepository implements ProductRepositoryInterface
      */
     public function findByAlias($alias)
     {
-        return Model::where('alias', '=', $alias)->firstOrFail();
+        return Model::with('comments')->where('alias', '=', $alias)->firstOrFail();
     }
 
     /**
@@ -37,14 +37,14 @@ class ProductRepository implements ProductRepositoryInterface
      */
     public function showProductsWithFormat($filters = [], $category = 0, $sortBy = '')
     {
-        $products = Model::where('status', '=', '1');
+        $products = Model::with('comments')->where('status', '=', '1');
         if ($filters){
             foreach ($filters as $f){
                 $products = $products->whereExists(function ($query) use($f) {
                     $query->select(DB::raw(1))
-                        ->from('product_attribute')
-                        ->whereRaw('product_attribute.product_id = products.id')
-                        ->whereIn('product_attribute.attribute_id', $f)
+                        ->from('attribute_product')
+                        ->whereRaw('attribute_product.product_id = products.id')
+                        ->whereIn('attribute_product.attribute_id', $f)
                     ;
                 });
             }
@@ -76,12 +76,14 @@ class ProductRepository implements ProductRepositoryInterface
             $products = $products->orderBy('products.price', 'asc'); //от дешевых к дорогим
         }elseif ($sorting == 'price_desc'){
             $products = $products->orderBy('products.price', 'desc'); //от дорогих к дешевым
-        //}elseif ($sorting == 'rating'){
-//            $products = $products->orderBy('price', 'desc'); //по рейтингу
+        }elseif ($sorting == 'rating'){
+            $products = $products->withCount(['comments as average_rating' => function($query) {
+                $query->select(DB::raw('coalesce(avg(rating),0)'));
+            }])->orderByDesc('average_rating');
         }elseif ($sorting == 'new'){
             $products = $products->orderBy('products.created_at', 'asc'); //новинки
-       // }elseif ($sorting == 'popular'){
-//            $products = $products->orderBy('price', 'desc'); //популярные
+        }elseif ($sorting == 'popular'){
+            $products = $products->orderBy('visits', 'desc'); //популярные
         }
         return $products;
     }
@@ -95,5 +97,15 @@ class ProductRepository implements ProductRepositoryInterface
     private function withPagination($product, $pagination = 5)
     {
         return $product->paginate($pagination);
+    }
+
+    public function updateVisits($id)
+    {
+        $model = Model::find($id);
+        $model->visits = $model->visits + 1;
+
+        // disable the timestamps before saving
+        $model->timestamps = false;
+        $model->save();
     }
 }

@@ -16,7 +16,8 @@ class CreateAttributesTable extends Migration
         Schema::create('attributes', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('value', 255); //name attribute  example: red/blue....
-            $table->integer('group_id')->unsigned();
+            $table->bigInteger('group_attribute_id')->unsigned();
+            $table->foreign('group_attribute_id')->references('id')->on('group_attributes');
         });
     }
 

@@ -62,7 +62,11 @@
         methods: {
             attributeGroup: function(){
                 this.is_refresh = true;                     // заглушка під чаз завантаження
-                axios.get('/filter/get/json').              // завантаження даних
+                axios.get('/filter/get/json',{
+                    params: {
+                        category: this.categoty_id
+                    }
+                }).                                         // завантаження даних
                 then((response) => {
                     //console.log(response.data);
                     this.filterGroup = response.data;       // обєднання всії завантажених даних
