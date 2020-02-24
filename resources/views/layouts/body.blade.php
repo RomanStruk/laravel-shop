@@ -93,6 +93,8 @@
     @include('layouts.footer')
     <!-- Footer End -->
 </div>
+<script src="{{ mix('js/manifest.js')}}"></script>
+<script src="{{ mix('js/vendor.js')}}"></script>
 <script src="{{ asset('js/app.js') }}"></script>
 <!-- Wrapper End -->
 <!-- jquery 3.12.4 -->

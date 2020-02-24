@@ -25,6 +25,7 @@ class CreateOrdersTable extends Migration
             $table->string('email', 255);
             $table->string('type_delivery', 255);
             $table->string('pay_method', 255);
+            $table->enum('status', [1, 2, 3, 4, 5])->default('1');
 
 
             $table->timestamps();

@@ -129,7 +129,7 @@
                         </div>
                         <div id="review" class="tab-pane">
 
-                            <comments-component v-bind:productid="{{$product->id}}"></comments-component>
+                            <comments-component v-bind:productid='@json($product->id)'></comments-component>
                             <!-- Reviews Start -->
                             <div class="review border-default universal-padding mt-30">
                                 <h2 class="review-title mb-30">Ви рецензуєте:</h2>

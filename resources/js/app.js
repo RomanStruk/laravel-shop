@@ -40,4 +40,3 @@ Vue.use(reactiveStorage, {
 const app = new Vue({
     el: '#app',
 });
-

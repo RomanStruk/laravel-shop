@@ -105,9 +105,11 @@ Route::get('/404', function () {
 
 Auth::routes();
 
-Route::get('/home', 'HomeController@index')->name('home');
+
 Route::group(['prefix' => 'admin', 'middleware' => ['web', 'auth']], function (){
-    Route::get('/', ['uses' => 'Admin\HomeController@showIndex', 'as' => 'admin_index']);
+    Route::get('/', ['uses' => 'Admin\HomeController@index', 'as' => 'admin.dashboard.index']);
+    Route::get('/order', ['uses' => 'Admin\OrderController@index', 'as' => 'admin.order.index']);
+    Route::get('/order/{id}', ['uses' => 'Admin\OrderController@revision', 'as' => 'admin.order.revision']);
 });
 
 Route::get('/shop/json', 'ProductController@apiShowProducts');
