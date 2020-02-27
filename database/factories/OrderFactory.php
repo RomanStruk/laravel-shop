@@ -7,8 +7,9 @@ use Faker\Generator as Faker;
 
 $factory->define(Order::class, function (Faker $faker) {
     return [
-        'user_id' => 1,
-        'name' => $faker->name,
+        'user_id' => function () {
+            return factory(App\User::class)->create()->id;
+        },
         'phone' => $faker->phoneNumber,
         'city_code' => 1234,
         'email' => $faker->unique()->email,

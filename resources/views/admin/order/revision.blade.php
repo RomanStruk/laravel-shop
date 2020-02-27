@@ -19,7 +19,7 @@
                 </tr>
                 <tr>
                     <td><button data-toggle="tooltip" title="" class="btn btn-info btn-xs" data-original-title="Payment Method"><i class="fa fa-credit-card fa-fw"></i></button></td>
-                    <td>Cash On Delivery</td>
+                    <td>Готівкою при доставці</td>
                 </tr>
                 <tr>
                     <td><button data-toggle="tooltip" title="" class="btn btn-info btn-xs" data-original-title="Shipping Method"><i class="fa fa-truck fa-fw"></i></button></td>
@@ -108,32 +108,47 @@
             <thead>
             <tr>
                 <td class="text-left">Product</td>
-                <td class="text-left">Model</td>
+                <td class="text-left">Категорія</td>
                 <td class="text-right">Quantity</td>
-                <td class="text-right">Unit Price</td>
+                <td class="text-right">Ціна за одиницю</td>
                 <td class="text-right">Total</td>
             </tr>
             </thead>
             <tbody>
+            @foreach($order->products as $product)
             <tr>
-                <td class="text-left"><a href="https://demo.opencart.com/admin/index.php?route=catalog/product/edit&amp;user_token=Bajgcy6cPAOTrKM99s2ql0t4NpOP3k2c&amp;product_id=47">HP LP3065</a> <br>
-                    &nbsp;<small> - Delivery Date: 2011-04-22</small> </td>
-                <td class="text-left">Product 21</td>
+                <td class="text-left">
+                    <a href="/admin/index.php?route=catalog/product/edit&amp;product_id=47">{{$product->title}}</a> <br>
+                    &nbsp;<small> - Дата доставки: 2011-04-22</small> </td>
+                <td class="text-left">{{$product->category->name}}</td>
                 <td class="text-right">1</td>
-                <td class="text-right">$100.00</td>
-                <td class="text-right">$100.00</td>
+                <td class="text-right">${{ $product->price }}</td>
+                <td class="text-right">${{ $product->price }}</td>
             </tr>
+            @endforeach
             <tr>
                 <td colspan="4" class="text-right">Sub-Total</td>
-                <td class="text-right">$100.00</td>
+                <td class="text-right">${{ $order->sum }}</td>
             </tr>
             <tr>
-                <td colspan="4" class="text-right">Flat Shipping Rate</td>
-                <td class="text-right">$5.00</td>
+                <td colspan="4" class="text-right">Єдиний тариф доставки</td>
+                <td class="text-right">${{ $order->shipping->shipping_rate }}</td>
             </tr>
             <tr>
                 <td colspan="4" class="text-right">Total</td>
-                <td class="text-right">$105.00</td>
+                <td class="text-right">${{ $order->sum }}</td>
+            </tr>
+            </tbody>
+        </table>
+        <table class="table table-bordered">
+            <thead>
+            <tr>
+                <td>Customer Comment</td>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>Надзвичайний наказ, будь ласка, врахуйте</td>
             </tr>
             </tbody>
         </table>
@@ -201,14 +216,17 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <label class="col-sm-2 control-label" for="input-override"><span data-toggle="tooltip" title="" data-original-title="If the customers order is being blocked from changing the order status due to an anti-fraud extension enable override.">Override</span></label>
                             <div class="col-sm-10">
+                            <label class="col-sm-2 control-label" for="input-override">
+                                <span data-toggle="tooltip" title="" data-original-title="Якщо замовлення замовника блокується для зміни статусу замовлення через розширення проти шахрайства, увімкніть можливість скасування.">не брати до уваги
+
+</span></label>
                                 <input type="checkbox" name="override" value="1" id="input-override">
                             </div>
                         </div>
                         <div class="form-group">
-                            <label class="col-sm-2 control-label" for="input-notify">Notify Customer</label>
                             <div class="col-sm-10">
+                                <label class="col-sm-2 control-label" for="input-notify">Повідомити Замовника</label>
                                 <input type="checkbox" name="notify" value="1" id="input-notify">
                             </div>
                         </div>

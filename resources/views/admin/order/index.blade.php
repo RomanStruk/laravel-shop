@@ -19,7 +19,7 @@
                                         href="https://demo.opencart.com/admin/index.php?route=sale/order&amp;user_token=Bajgcy6cPAOTrKM99s2ql0t4NpOP3k2c&amp;sort=o.order_id&amp;order=ASC"
                                         class="desc">Order ID</a></td>
                                 <td class="text-left"><a
-                                        href="https://demo.opencart.com/admin/index.php?route=sale/order&amp;user_token=Bajgcy6cPAOTrKM99s2ql0t4NpOP3k2c&amp;sort=customer&amp;order=ASC">Customer</a>
+                                        href="#sort=customer&amp;order=ASC">Замовник</a>
                                 </td>
                                 <td class="text-left"><a
                                         href="https://demo.opencart.com/admin/index.php?route=sale/order&amp;user_token=Bajgcy6cPAOTrKM99s2ql0t4NpOP3k2c&amp;sort=order_status&amp;order=ASC">Status</a>
@@ -44,9 +44,9 @@
                                     <input type="hidden" name="shipping_code[]" value="flat.flat">
                                 </td>
                                 <td class="text-right">{{ $order->id }}</td>
-                                <td class="text-left">{{ $order->name }}</td>
+                                <td class="text-left">{{ $order->user->name }}</td>
                                 <td class="text-left">{{ $order->status }}</td>
-                                <td class="text-right">$ </td>
+                                <td class="text-right">${{$order->soldProducts->sum('product_price')}}</td>
                                 <td class="text-left">{{ $order->created_at }}</td>
                                 <td class="text-left">{{ $order->updated_at }}</td>
                                 <td class="text-right">

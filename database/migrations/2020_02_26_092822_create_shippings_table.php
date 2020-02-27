@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateOrderProductTable extends Migration
+class CreateShippingsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,14 +13,17 @@ class CreateOrderProductTable extends Migration
      */
     public function up()
     {
-        Schema::create('order_product', function (Blueprint $table) {
+        Schema::create('shippings', function (Blueprint $table) {
             $table->bigIncrements('id');
 
             $table->bigInteger('order_id')->unsigned();
-            $table->foreign('order_id')->references('id')->on('orders');
+//            $table->foreign('order_id')->references('id')->on('orders');
 
-            $table->bigInteger('product_id')->unsigned();
-            $table->foreign('product_id')->references('id')->on('products');
+            $table->enum('method', ['courier', 'novaposhta']);
+            $table->float('shipping_rate')->default(0);
+
+
+            $table->timestamps();
         });
     }
 
@@ -31,6 +34,6 @@ class CreateOrderProductTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('order_product');
+        Schema::dropIfExists('shippings');
     }
 }

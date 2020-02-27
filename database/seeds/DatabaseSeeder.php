@@ -12,13 +12,14 @@ class DatabaseSeeder extends Seeder
     public function run()
     {
         $this->call(UsersTableSeeder::class);
+        $this->call(CategoriesSeeder::class);
         $this->call(ProductsTableSeeder::class);
         $this->call(GroupAttributesTableSeeder::class); //групи атребутів
         $this->call(AttributeTableSeeder::class); // атребути
         $this->call(AttributeProductTableSeeder::class); // связь атребутів і продуктів
-        $this->call(CategoriesSeeder::class);
         $this->call(OrdersTableSeeder::class);
         $this->call(OrderProductTableSeeder::class);
         $this->call(CommentsTableSeeder::class);
+        $this->call(SoldProductSeeder::class);
     }
 }

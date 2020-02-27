@@ -26,6 +26,8 @@ Vue.component('basket-component', require('./components/Basket.vue').default);
 Vue.component('your-order-component', require('./components/YourOrderComponent.vue').default);
 Vue.component('basket-button-component', require('./components/product/BasketButton.vue').default);
 Vue.component('comments-component', require('./components/product/Comments.vue').default);
+Vue.component('check-out-form-shipping', require('./components/checkout/CheckOutFormShipping.vue').default);
+Vue.component('check-out-form-main', require('./components/checkout/CheckOutFormMain.vue').default);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to

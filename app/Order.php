@@ -42,8 +42,22 @@ class Order extends Model
         return $this->belongsTo('App\User');
     }
 
+
     public function products()
     {
-        return $this->belongsToMany('App\Product');
+        return $this->belongsToMany(
+            'App\Product',
+            'sold_products',
+            'order_id',
+            'product_id');
+    }
+
+    public function soldProducts()
+    {
+        return $this->hasMany('App\SoldProduct' );
+    }
+
+    public function shipping(){
+        return $this->hasOne('App\Shipping');
     }
 }

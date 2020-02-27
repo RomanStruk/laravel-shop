@@ -11,7 +11,7 @@
                 </thead>
                 <tbody>
                 <tr class="cart_item"
-                    v-for="order in localStorage.basket_list"t.html
+                    v-for="order in localStorage.basket_list"
                 >
                     <td class="product-name">
                         {{ order.title}} <strong class="product-quantity"> × {{ order.count}}</strong></td>

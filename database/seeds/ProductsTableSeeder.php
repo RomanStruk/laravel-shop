@@ -108,7 +108,7 @@ class ProductsTableSeeder extends Seeder
 
             [
                 'id' => '7',
-                'category_id' => '10',
+                'category_id' => \App\Category::orderByRaw('RAND()')->first()->id,
                 'brand_id' => '3',
                 'title' => 'Q&Q Water Resistance VFQ - Кью Кью Вотер Резинтент ФВ',
                 'alias' => 'q-and-q-q956j302y',
@@ -201,7 +201,7 @@ class ProductsTableSeeder extends Seeder
 
             [
                 'id' => '13',
-                'category_id' => '15',
+                'category_id' => \App\Category::orderByRaw('RAND()')->first()->id,
                 'brand_id' => '2',
                 'title' => 'Android Watch BQ-1 - Андроид часы БКЬю',
                 'alias' => 'chasy-3',
@@ -217,7 +217,7 @@ class ProductsTableSeeder extends Seeder
 
             [
                 'id' => '14',
-                'category_id' => '13',
+                'category_id' => \App\Category::orderByRaw('RAND()')->first()->id,
                 'brand_id' => '2',
                 'title' => 'Sport Watch BQ-009 - Часы спортивные Ультра',
                 'alias' => 'chasy-4',
@@ -233,7 +233,7 @@ class ProductsTableSeeder extends Seeder
 
             [
                 'id' => '15',
-                'category_id' => '16',
+                'category_id' => \App\Category::orderByRaw('RAND()')->first()->id,
                 'brand_id' => '2',
                 'title' => 'Apple Watch B Sport - Эпл Часы 4',
                 'alias' => 'chasy-5',
@@ -265,7 +265,7 @@ class ProductsTableSeeder extends Seeder
 
             [
                 'id' => '17',
-                'category_id' => '11',
+                'category_id' => \App\Category::orderByRaw('RAND()')->first()->id,
                 'brand_id' => '2',
                 'title' => 'Sumsung Gear Pro F-sport - Самсунг Геар Про Ф Спорт',
                 'alias' => 'chasy-7',
@@ -282,7 +282,7 @@ class ProductsTableSeeder extends Seeder
 
             [
                 'id' => '18',
-                'category_id' => '11',
+                'category_id' => \App\Category::orderByRaw('RAND()')->first()->id,
                 'brand_id' => '2',
                 'title' => 'Очко Вані',
                 'alias' => 'chasy-8',
