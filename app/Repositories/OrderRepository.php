@@ -8,7 +8,7 @@ class OrderRepository
 {
     public function getAll()
     {
-        return Model::all();
+        return Model::with('products')->with('user')->get();
     }
 
     public function getOrder($id)

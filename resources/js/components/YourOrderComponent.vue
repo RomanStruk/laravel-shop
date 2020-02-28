@@ -13,7 +13,9 @@
                 <tr class="cart_item"
                     v-for="order in localStorage.basket_list"
                 >
+
                     <td class="product-name">
+                        <input type="hidden" name="products[]" :value="order.id"/>
                         {{ order.title}} <strong class="product-quantity"> × {{ order.count}}</strong></td>
                     <td class="product-total"><span class="amount">£{{ order.price}}</span></td>
                 </tr>

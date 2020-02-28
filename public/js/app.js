@@ -669,6 +669,8 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: "YourOrderComponent",
   data: function data() {
@@ -749,13 +751,87 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
       city: '',
       cities: {},
+      city_ref: '',
+      warehouses: {},
+      type_delivery: '',
       is_refresh: false,
-      selected: false
+      selected: false,
+      show_list: false,
+      next_steep: false
     };
   },
   watch: {
@@ -766,19 +842,44 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
       this.selected = false;
       console.log(this.city); // debug
+    },
+    type_delivery: function type_delivery() {
+      if (this.type_delivery === 'Pickup') {
+        this.loadWarehouses();
+        this.show_list = true;
+      }
+
+      if (this.type_delivery === 'Courier') {
+        this.show_list = false;
+      }
     }
   },
   methods: {
-    choose: function choose(city) {
+    nextSteep: function nextSteep() {
+      this.next_steep = true;
+    },
+    loadWarehouses: function loadWarehouses() {
+      var _this = this;
+
+      axios.post('/api/shipping/warehouses', {
+        'warehouses': this.city_ref
+      }).then(function (response) {
+        _this.warehouses = response.data;
+        console.log(_this.warehouses);
+      });
+    },
+    choose: function choose(city, ref) {
       this.selected = true;
       this.city = city;
+      this.city_ref = ref;
       this.cities = {};
+      console.log(this.city_ref); // debug
     },
     loadCities: function () {
       var _loadCities = _asyncToGenerator(
       /*#__PURE__*/
       _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee() {
-        var _this = this;
+        var _this2 = this;
 
         return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee$(_context) {
           while (1) {
@@ -790,10 +891,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                 return axios.post('api/shipping/city', {
                   'city': this.city
                 }).then(function (response) {
-                  _this.cities = response.data;
-                  console.log('Успіщний запит з city'); // debug
-
-                  console.log(response.data); // debug
+                  _this2.cities = response.data;
                 })["catch"](function (error) {
                   console.log(error); // debug error
                 });
@@ -1089,7 +1187,7 @@ exports = module.exports = __webpack_require__(/*! ../../../../node_modules/css-
 
 
 // module
-exports.push([module.i, "\n.custom-cursor[data-v-5caf2ff1]:hover{\n    cursor: pointer;\n}\n", ""]);
+exports.push([module.i, "\n.custom-cursor[data-v-5caf2ff1]:hover {\n    cursor: pointer;\n}\n", ""]);
 
 // exports
 
@@ -2121,6 +2219,10 @@ var render = function() {
           _vm._l(_vm.localStorage.basket_list, function(order) {
             return _c("tr", { staticClass: "cart_item" }, [
               _c("td", { staticClass: "product-name" }, [
+                _c("input", {
+                  attrs: { type: "hidden", name: "products[]" },
+                  domProps: { value: order.id }
+                }),
                 _vm._v("\n                    " + _vm._s(order.title) + " "),
                 _c("strong", { staticClass: "product-quantity" }, [
                   _vm._v(" × " + _vm._s(order.count))
@@ -2203,70 +2305,228 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("div", { staticClass: "row" }, [
-    _c("h3", [_vm._v("Контактні дані")]),
-    _vm._v(" "),
+  return _c("div", { staticClass: "col-lg-6 col-md-6" }, [
     _c("div", { staticClass: "row" }, [
-      _vm._m(0),
+      _c("h3", [_vm._v("Контактні дані")]),
       _vm._v(" "),
-      _c("div", { staticClass: "col-md-12" }, [
-        _c("div", { staticClass: "checkout-form-list" }, [
-          _c("label", [
-            _vm._v("Місто "),
-            _c("span", { staticClass: "required" }, [_vm._v("*")]),
-            _vm._v(" "),
-            _c("input", {
-              directives: [
-                {
-                  name: "model",
-                  rawName: "v-model",
-                  value: _vm.city,
-                  expression: "city"
-                }
-              ],
-              attrs: { name: "city", type: "text", placeholder: "", value: "" },
-              domProps: { value: _vm.city },
-              on: {
-                input: function($event) {
-                  if ($event.target.composing) {
-                    return
-                  }
-                  _vm.city = $event.target.value
-                }
-              }
-            })
-          ]),
-          _vm._v(" "),
-          _c("div", { staticClass: "col-12" }, [
-            _c(
-              "div",
-              { staticClass: "list-group" },
-              _vm._l(_vm.cities.data, function(ct) {
-                return _c(
-                  "span",
+      _c("div", { staticClass: "row" }, [
+        _vm._m(0),
+        _vm._v(" "),
+        _c("div", { staticClass: "col-md-12" }, [
+          _c("div", { staticClass: "checkout-form-list" }, [
+            _c("label", [
+              _vm._v("Місто "),
+              _c("span", { staticClass: "required" }, [_vm._v("*")]),
+              _vm._v(" "),
+              _c("input", {
+                directives: [
                   {
-                    staticClass:
-                      "list-group-item list-group-item-action list-group-item-warning custom-cursor",
-                    attrs: { href: "#" },
-                    on: {
-                      click: function($event) {
-                        return _vm.choose(ct.Description)
-                      }
+                    name: "model",
+                    rawName: "v-model",
+                    value: _vm.city,
+                    expression: "city"
+                  }
+                ],
+                attrs: {
+                  id: "go_city",
+                  name: "city",
+                  type: "text",
+                  placeholder: "",
+                  value: ""
+                },
+                domProps: { value: _vm.city },
+                on: {
+                  input: function($event) {
+                    if ($event.target.composing) {
+                      return
                     }
-                  },
-                  [_vm._v(_vm._s(ct.Description))]
-                )
-              }),
-              0
-            )
+                    _vm.city = $event.target.value
+                  }
+                }
+              })
+            ]),
+            _vm._v(" "),
+            _c("div", { staticClass: "col-12" }, [
+              _c(
+                "div",
+                { staticClass: "list-group" },
+                _vm._l(_vm.cities.data, function(ct) {
+                  return _c(
+                    "span",
+                    {
+                      staticClass:
+                        "list-group-item list-group-item-action list-group-item-warning custom-cursor",
+                      attrs: { href: "#" },
+                      on: {
+                        click: function($event) {
+                          return _vm.choose(ct.Description, ct.Ref)
+                        }
+                      }
+                    },
+                    [
+                      _vm._v(
+                        _vm._s(ct.Description) +
+                          ", " +
+                          _vm._s(ct.RegionsDescription) +
+                          ", " +
+                          _vm._s(ct.AreaDescription)
+                      )
+                    ]
+                  )
+                }),
+                0
+              )
+            ])
           ])
-        ])
+        ]),
+        _vm._v(" "),
+        _vm._m(1),
+        _vm._v(" "),
+        _vm._m(2)
       ]),
       _vm._v(" "),
-      _vm._m(1),
-      _vm._v(" "),
-      _vm._m(2)
-    ])
+      _c("div", { staticClass: "row" }, [
+        _c(
+          "button",
+          {
+            staticClass: "btn btn-primary",
+            attrs: { type: "button" },
+            on: {
+              click: function($event) {
+                return _vm.nextSteep()
+              }
+            }
+          },
+          [_vm._v("Далі")]
+        )
+      ])
+    ]),
+    _vm._v(" "),
+    _vm.next_steep
+      ? _c("div", { staticClass: "row mt-10" }, [
+          _c("h3", [_vm._v("Вибір способів доставки й оплати")]),
+          _vm._v(" "),
+          _c("div", { staticClass: "col-md-12" }, [
+            _c("div", { staticClass: "row" }, [
+              _c("div", { staticClass: "col-md-3" }, [
+                _vm._v("Доставка в "),
+                _c("a", { attrs: { href: "#go_city" } }, [
+                  _vm._v(_vm._s(_vm.city))
+                ])
+              ]),
+              _vm._v(" "),
+              _c("div", { staticClass: "col-md-5" }),
+              _vm._v(" "),
+              _vm._m(3)
+            ]),
+            _vm._v(" "),
+            _c("div", { staticClass: "row" }, [
+              _c("div", { staticClass: "col-md-3" }),
+              _vm._v(" "),
+              _c("div", { staticClass: "col-md-5" }, [
+                _c("label", [
+                  _c("input", {
+                    directives: [
+                      {
+                        name: "model",
+                        rawName: "v-model",
+                        value: _vm.type_delivery,
+                        expression: "type_delivery"
+                      }
+                    ],
+                    key: "Courier",
+                    attrs: {
+                      type: "radio",
+                      name: "type_delivery",
+                      value: "Courier"
+                    },
+                    domProps: { checked: _vm._q(_vm.type_delivery, "Courier") },
+                    on: {
+                      change: function($event) {
+                        _vm.type_delivery = "Courier"
+                      }
+                    }
+                  }),
+                  _vm._v(" Кур'єр на вашу адресу")
+                ])
+              ]),
+              _vm._v(" "),
+              _c("div", { staticClass: "col-md-4" }, [_vm._v("59 грн")])
+            ]),
+            _vm._v(" "),
+            _c("div", { staticClass: "row" }, [
+              _c("div", { staticClass: "col-md-3" }),
+              _vm._v(" "),
+              _c("div", { staticClass: "col-md-5" }, [
+                _c("label", [
+                  _c("input", {
+                    directives: [
+                      {
+                        name: "model",
+                        rawName: "v-model",
+                        value: _vm.type_delivery,
+                        expression: "type_delivery"
+                      }
+                    ],
+                    key: "Pickup",
+                    attrs: {
+                      type: "radio",
+                      name: "type_delivery",
+                      value: "Pickup"
+                    },
+                    domProps: { checked: _vm._q(_vm.type_delivery, "Pickup") },
+                    on: {
+                      change: function($event) {
+                        _vm.type_delivery = "Pickup"
+                      }
+                    }
+                  }),
+                  _vm._v(" Самовивіз з Нової Пошти\n                    ")
+                ]),
+                _vm._v(" "),
+                _vm.show_list
+                  ? _c("div", { staticClass: "form-group" }, [
+                      _c(
+                        "label",
+                        { attrs: { for: "exampleFormControlSelect1" } },
+                        [_vm._v("Виберіть відповідне відділення:")]
+                      ),
+                      _vm._v(" "),
+                      _c(
+                        "select",
+                        {
+                          staticClass: "form-control form-control-sm",
+                          attrs: {
+                            name: "warehouse",
+                            id: "exampleFormControlSelect1"
+                          }
+                        },
+                        _vm._l(_vm.warehouses.data, function(house) {
+                          return _c(
+                            "option",
+                            { domProps: { value: house.Ref } },
+                            [
+                              _vm._v(
+                                "\n                                " +
+                                  _vm._s(house.Description) +
+                                  "\n                            "
+                              )
+                            ]
+                          )
+                        }),
+                        0
+                      )
+                    ])
+                  : _vm._e()
+              ]),
+              _vm._v(" "),
+              _c("div", { staticClass: "col-md-4" }, [_vm._v("60 грн")])
+            ])
+          ]),
+          _vm._v(" "),
+          _vm._m(4)
+        ])
+      : _vm._e()
   ])
 }
 var staticRenderFns = [
@@ -2317,6 +2577,61 @@ var staticRenderFns = [
           _c("input", {
             attrs: { name: "phone", type: "text", placeholder: "", value: "" }
           })
+        ])
+      ])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "col-md-4" }, [
+      _c("a", { attrs: { href: "#go_city" } }, [_vm._v("Змінити місто")])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "col-md-12" }, [
+      _c("div", { staticClass: "row" }, [
+        _c("div", { staticClass: "col-md-3" }, [_vm._v("Оплата")]),
+        _vm._v(" "),
+        _c("div", { staticClass: "col-md-9" }, [
+          _c("label", [
+            _c("input", {
+              attrs: { type: "radio", name: "pay_method", value: "on_place" }
+            }),
+            _vm._v(" Оплата при отриманні\n                        замовлення")
+          ])
+        ])
+      ]),
+      _vm._v(" "),
+      _c("div", { staticClass: "row" }, [
+        _c("div", { staticClass: "col-md-3" }),
+        _vm._v(" "),
+        _c("div", { staticClass: "col-md-9" }, [
+          _c("label", [
+            _c("input", {
+              attrs: { type: "radio", name: "pay_method", value: "google_pay" }
+            }),
+            _vm._v(" Google Pay ")
+          ])
+        ])
+      ]),
+      _vm._v(" "),
+      _c("div", { staticClass: "row" }, [
+        _c("div", { staticClass: "col-md-3" }),
+        _vm._v(" "),
+        _c("div", { staticClass: "col-md-9" }, [
+          _c("label", [
+            _c("input", {
+              attrs: { type: "radio", name: "pay_method", value: "credit_card" }
+            }),
+            _vm._v(
+              " Оплатити зараз карткою\n                        Visa/Mastercard "
+            )
+          ])
         ])
       ])
     ])

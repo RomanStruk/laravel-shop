@@ -88,10 +88,7 @@
         <form action="{{ route('checkout') }}" method="post">
             @csrf
             <div class="row">
-                <div class="col-lg-6 col-md-6">
                     <check-out-form-main></check-out-form-main>
-                    <check-out-form-shipping></check-out-form-shipping>
-                </div>
                 <div class="col-lg-6 col-md-6">
                     <your-order-component></your-order-component>
                 </div>

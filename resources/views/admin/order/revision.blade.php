@@ -100,7 +100,9 @@
             <tbody>
             <tr>
                 <td class="text-left">Jayabharathi Periyasamy<br>sri kasthuri ladies,chennai<br>chennai 607105<br>Tamil Nadu<br>India</td>
-                <td class="text-left">Jayabharathi Periyasamy<br>sri kasthuri ladies,chennai<br>chennai 607105<br>Tamil Nadu<br>India</td>
+                <td class="text-left">
+                    {{ $order->shipping->address }}
+                </td>
             </tr>
             </tbody>
         </table>

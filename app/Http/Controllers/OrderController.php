@@ -12,10 +12,11 @@ class OrderController extends Controller
         $validator = Validator::make($request->all(), [
             'name' => 'required',
             'phone' => 'required|numeric|min:12',
-            'city_code' => 'required|integer',
+            'city' => 'required',
             'email' => 'required|email:rfc|unique:users|max:255',
             'type_delivery' => 'required',
-            'pay_method' => 'required'
+            'pay_method' => 'required',
+            'products' => 'required|array',
         ]);
 
         if ($validator->fails()) {

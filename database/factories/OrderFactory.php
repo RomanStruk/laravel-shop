@@ -11,9 +11,7 @@ $factory->define(Order::class, function (Faker $faker) {
             return factory(App\User::class)->create()->id;
         },
         'phone' => $faker->phoneNumber,
-        'city_code' => 1234,
         'email' => $faker->unique()->email,
-        'type_delivery' => '',
         'pay_method' => ''
     ];
 });
