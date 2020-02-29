@@ -22,5 +22,13 @@ class UsersTableSeeder extends Seeder
                 'password' => Hash::make('12345'),
             ]
         ]);
+        factory(App\User::class, 50)->create()->each(function($user) {
+            /** @var App\User $user */
+            $detail = factory(App\UserDetail::class)->make(['user_id' => $user->id]);
+            $user->detail()->save($detail);
+
+            $order = factory(App\Order::class,3)->make(['user_id' => $user->id]);
+            $user->orders()->insert($order->toArray());
+        });
     }
 }

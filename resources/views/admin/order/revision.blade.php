@@ -1,213 +1,272 @@
 @extends('admin.layouts.app')
 
 @section('content')
-<div class="row">
-    <div class="col-md-4">
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <h3 class="panel-title"><i class="fa fa-shopping-cart"></i> Order Details</h3>
-            </div>
-            <table class="table">
-                <tbody>
-                <tr>
-                    <td style="width: 1%;"><button data-toggle="tooltip" title="" class="btn btn-info btn-xs" data-original-title="Store"><i class="fa fa-shopping-cart fa-fw"></i></button></td>
-                    <td><a href="https://demo.opencart.com/" target="_blank">Your Store</a></td>
-                </tr>
-                <tr>
-                    <td><button data-toggle="tooltip" title="" class="btn btn-info btn-xs" data-original-title="Date Added"><i class="fa fa-calendar fa-fw"></i></button></td>
-                    <td>23/02/2020</td>
-                </tr>
-                <tr>
-                    <td><button data-toggle="tooltip" title="" class="btn btn-info btn-xs" data-original-title="Payment Method"><i class="fa fa-credit-card fa-fw"></i></button></td>
-                    <td>Готівкою при доставці</td>
-                </tr>
-                <tr>
-                    <td><button data-toggle="tooltip" title="" class="btn btn-info btn-xs" data-original-title="Shipping Method"><i class="fa fa-truck fa-fw"></i></button></td>
-                    <td>Flat Shipping Rate</td>
-                </tr>
-                </tbody>
-            </table>
-        </div>
-    </div>
-    <div class="col-md-4">
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <h3 class="panel-title"><i class="fa fa-user"></i> Customer Details</h3>
-            </div>
-            <table class="table">
-                <tbody><tr>
-                    <td style="width: 1%;"><button data-toggle="tooltip" title="" class="btn btn-info btn-xs" data-original-title="Customer"><i class="fa fa-user fa-fw"></i></button></td>
-                    <td> <a href="https://demo.opencart.com/admin/index.php?route=customer/customer/edit&amp;user_token=Bajgcy6cPAOTrKM99s2ql0t4NpOP3k2c&amp;customer_id=70497" target="_blank">Jayabharathi Periyasamy</a> </td>
-                </tr>
-                <tr>
-                    <td><button data-toggle="tooltip" title="" class="btn btn-info btn-xs" data-original-title="Customer Group"><i class="fa fa-group fa-fw"></i></button></td>
-                    <td>Default</td>
-                </tr>
-                <tr>
-                    <td><button data-toggle="tooltip" title="" class="btn btn-info btn-xs" data-original-title="E-Mail"><i class="fa fa-envelope-o fa-fw"></i></button></td>
-                    <td><a href="mailto:jayabharathiece2019@gmail.com">jayabharathiece2019@gmail.com</a></td>
-                </tr>
-                <tr>
-                    <td><button data-toggle="tooltip" title="" class="btn btn-info btn-xs" data-original-title="Telephone"><i class="fa fa-phone fa-fw"></i></button></td>
-                    <td>6385348798</td>
-                </tr>
-                </tbody></table>
-        </div>
-    </div>
-    <div class="col-md-4">
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <h3 class="panel-title"><i class="fa fa-cog"></i> Options</h3>
-            </div>
-            <table class="table">
-                <tbody>
-                <tr>
-                    <td>Invoice</td>
-                    <td id="invoice" class="text-right"></td>
-                    <td style="width: 1%;" class="text-center"> <button id="button-invoice" data-loading-text="Loading..." data-toggle="tooltip" title="" class="btn btn-success btn-xs" data-original-title="Generate"><i class="fa fa-cog"></i></button>
-                    </td>
-                </tr>
-                <tr>
-                    <td>Reward Points</td>
-                    <td class="text-right">300</td>
-                    <td class="text-center"> <button id="button-reward-add" data-loading-text="Loading..." data-toggle="tooltip" title="" class="btn btn-success btn-xs" data-original-title="Add Reward Points"><i class="fa fa-plus-circle"></i></button>
-                    </td>
-                </tr>
-                <tr>
-                    <td>Affiliate
-                    </td>
-                    <td class="text-right">$0.00</td>
-                    <td class="text-center"> <button disabled="disabled" class="btn btn-success btn-xs"><i class="fa fa-plus-circle"></i></button>
-                    </td>
-                </tr>
-                </tbody>
-            </table>
-        </div>
-    </div>
-</div>
-<div class="panel panel-default">
-    <div class="panel-heading">
-        <h3 class="panel-title"><i class="fa fa-info-circle"></i> Order (#8704)</h3>
-    </div>
-    <div class="panel-body">
-        <table class="table table-bordered">
-            <thead>
-            <tr>
-                <td style="width: 50%;" class="text-left">Payment Address</td>
-                <td style="width: 50%;" class="text-left">Shipping Address</td>
-            </tr>
-            </thead>
-            <tbody>
-            <tr>
-                <td class="text-left">Jayabharathi Periyasamy<br>sri kasthuri ladies,chennai<br>chennai 607105<br>Tamil Nadu<br>India</td>
-                <td class="text-left">
-                    {{ $order->shipping->address }}
-                </td>
-            </tr>
-            </tbody>
-        </table>
-        <table class="table table-bordered">
-            <thead>
-            <tr>
-                <td class="text-left">Product</td>
-                <td class="text-left">Категорія</td>
-                <td class="text-right">Quantity</td>
-                <td class="text-right">Ціна за одиницю</td>
-                <td class="text-right">Total</td>
-            </tr>
-            </thead>
-            <tbody>
-            @foreach($order->products as $product)
-            <tr>
-                <td class="text-left">
-                    <a href="/admin/index.php?route=catalog/product/edit&amp;product_id=47">{{$product->title}}</a> <br>
-                    &nbsp;<small> - Дата доставки: 2011-04-22</small> </td>
-                <td class="text-left">{{$product->category->name}}</td>
-                <td class="text-right">1</td>
-                <td class="text-right">${{ $product->price }}</td>
-                <td class="text-right">${{ $product->price }}</td>
-            </tr>
-            @endforeach
-            <tr>
-                <td colspan="4" class="text-right">Sub-Total</td>
-                <td class="text-right">${{ $order->sum }}</td>
-            </tr>
-            <tr>
-                <td colspan="4" class="text-right">Єдиний тариф доставки</td>
-                <td class="text-right">${{ $order->shipping->shipping_rate }}</td>
-            </tr>
-            <tr>
-                <td colspan="4" class="text-right">Total</td>
-                <td class="text-right">${{ $order->sum }}</td>
-            </tr>
-            </tbody>
-        </table>
-        <table class="table table-bordered">
-            <thead>
-            <tr>
-                <td>Customer Comment</td>
-            </tr>
-            </thead>
-            <tbody>
-            <tr>
-                <td>Надзвичайний наказ, будь ласка, врахуйте</td>
-            </tr>
-            </tbody>
-        </table>
-    </div>
-</div>
-<div class="panel panel-default">
-    <div class="panel-heading">
-        <h3 class="panel-title"><i class="fa fa-comment-o"></i> Order History</h3>
-    </div>
-    <div class="panel-body">
-        <ul class="nav nav-tabs">
-            <li class="active"><a href="#tab-history" data-toggle="tab">History</a></li>
-            <li><a href="#tab-additional" data-toggle="tab">Additional</a></li>
-        </ul>
-        <div class="tab-content">
-            <div class="tab-pane active" id="tab-history">
-                <div id="history"><div class="table-responsive">
-                        <table class="table table-bordered">
-                            <thead>
-                            <tr>
-                                <td class="text-left">Date Added</td>
-                                <td class="text-left">Comment</td>
-                                <td class="text-left">Status</td>
-                                <td class="text-left">Customer Notified</td>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <tr>
-                                <td class="text-left">23/02/2020</td>
-                                <td class="text-left"></td>
-                                <td class="text-left">Pending</td>
-                                <td class="text-left">No</td>
-                            </tr>
-                            </tbody>
-                        </table>
+
+    <div class="card-deck mb-2">
+        <div class="card">
+            <h5 class="card-header">
+                <i class="fa fa-shopping-cart"></i> Деталі замовлення
+            </h5>
+            <div class="card-body">
+                <div class="row pb-1 pt-1 border-bottom">
+                    <div class="col-2">
+                        <button data-toggle="tooltip" title="" class="btn btn-info btn-xs" data-original-title="Store">
+                            <i class="fa fa-shopping-cart fa-fw"></i></button>
                     </div>
-                    <div class="row">
-                        <div class="col-sm-6 text-left"></div>
-                        <div class="col-sm-6 text-right">Showing 1 to 1 of 1 (1 Pages)</div>
+                    <div class="col-8">
+                        @if ($order->detailStatus() == 'Pending')
+                            <div class="text-dark font-weight-bold bg-warning">Очікує на розгляд</div>
+                        @elseif ($order->detailStatus() == 'Canceled')
+                            <div class="text-light font-weight-bold bg-danger">Скасовано</div>
+                        @elseif ($order->detailStatus() == 'Complete')
+                            <div class="text-light font-weight-bold bg-success">Закінчений</div>
+                        @endif
                     </div>
                 </div>
-                <br>
-                <fieldset>
-                    <legend>Add Order History</legend>
-                    <form class="form-horizontal">
-                        <div class="form-group">
-                            <label class="col-sm-2 control-label" for="input-order-status">Order Status</label>
+                <div class="row pb-1 pt-1 border-bottom">
+                    <div class="col-2">
+                        <button data-toggle="tooltip" title="" class="btn btn-info btn-xs"
+                                data-original-title="Date Added"><i class="fa fa-calendar fa-fw"></i></button>
+                    </div>
+                    <div class="col-8">
+                        {{$order->created_at}}
+                    </div>
+                </div>
+                <div class="row pb-1 pt-1 border-bottom">
+                    <div class="col-2">
+                        <button data-toggle="tooltip" title="" class="btn btn-info btn-xs"
+                                data-original-title="Payment Method"><i class="fa fa-credit-card fa-fw"></i></button>
+                    </div>
+                    <div class="col-8">
+                        @if ($order->pay_method == '1')
+                            Готівкою при доставці
+                        @elseif ($order->pay_method == '2')
+                            Google Pay
+                        @elseif ($order->pay_method == '3')
+                            Оплатити зараз карткою Visa/Mastercard
+                        @endif
+                    </div>
+                </div>
+                <div class="row pt-1">
+                    <div class="col-2">
+                        <button data-toggle="tooltip" title="" class="btn btn-info btn-xs"
+                                data-original-title="Shipping Method"><i class="fa fa-truck fa-fw"></i></button>
+                    </div>
+                    <div class="col-8">
+                        @if ($order->shipping->method == 'courier')
+                            Кур'єр
+                        @elseif ($order->shipping->method == 'novaposhta')
+                            Самовивіз з Нової Пошти
+                        @else
+                            Помилка!
+                        @endif
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h5 class="card-header"><i class="fa fa-user"></i> Інформація про клієнта</h5>
+            <div class="card-body">
+                <div class="row pb-1 pt-1 border-bottom">
+                    <div class="col-2">
+                        <button data-toggle="tooltip" title="" class="btn btn-info btn-xs"
+                                data-original-title="Customer"><i class="fa fa-user fa-fw"></i></button>
+                    </div>
+                    <div class="col-8">
+                        <a href="{{route('admin.show.index', ['id' => $order->user->id])}}" target="_blank">
+                            {{$order->user->detail->first_name}} {{$order->user->detail->last_name}}
+                        </a>
+                    </div>
+                </div>
+                <div class="row pb-1 pt-1 border-bottom">
+                    <div class="col-2">
+                        <button data-toggle="tooltip" title="" class="btn btn-info btn-xs"
+                                data-original-title="Customer Group"><i class="fa fa-group fa-fw"></i></button>
+                    </div>
+                    <div class="col-8">Default</div>
+                </div>
+                <div class="row pb-1 pt-1 border-bottom">
+                    <div class="col-2">
+                        <button data-toggle="tooltip" title="" class="btn btn-info btn-xs" data-original-title="E-Mail">
+                            <i class="fa fa-envelope-o fa-fw"></i></button>
+                    </div>
+                    <div class="col-8">
+                        <a href="mailto:{{$order->user->email}}">{{$order->user->email}}</a>
+                    </div>
+                </div>
+                <div class="row pb-1 pt-1 border-bottom">
+                    <div class="col-2">
+                        <button data-toggle="tooltip" title="" class="btn btn-info btn-xs"
+                                data-original-title="Telephone"><i class="fa fa-phone fa-fw"></i></button>
+                    </div>
+                    <div class="col-8">{{$order->user->detail->phone}}</div>
+                </div>
+            </div>
+        </div>
+        <div class="card">
+            <h5 class="card-header"><i class="fa fa-cog"></i> Options</h5>
+            <div class="card-body">
+                <div class="row pb-1 pt-1 border-bottom">
+                    <div class="col-6">Invoice</div>
+                    <div class="col-3"></div>
+                    <div class="col-2">
+                        <button id="button-invoice" data-loading-text="Loading..." data-toggle="tooltip" title=""
+                                class="btn btn-success btn-xs" data-original-title="Generate"><i class="fa fa-cog"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="row pb-1 pt-1 border-bottom">
+                    <div class="col-6">Reward Points</div>
+                    <div class="col-3">300</div>
+                    <div class="col-2">
+                        <button id="button-reward-add" data-loading-text="Loading..." data-toggle="tooltip" title=""
+                                class="btn btn-success btn-xs" data-original-title="Add Reward Points"><i
+                                class="fa fa-plus-circle"></i></button>
+                    </div>
+                </div>
+                <div class="row pb-1 pt-1 border-bottom">
+                    <div class="col-6">Affiliate</div>
+                    <div class="col-3">$0.00</div>
+                    <div class="col-2">
+                        <button disabled="disabled" class="btn btn-success btn-xs"><i class="fa fa-plus-circle"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    @if ($errors->any())
+        <div class="alert alert-danger">
+            <ul>
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
+    @if (\Session::has('success'))
+        <div class="alert alert-success">
+            <ul>
+                <li>{!! \Session::get('success') !!}</li>
+            </ul>
+        </div>
+    @endif
+    <div class="card mt-3">
+        <h3 class="card-header"><i class="fa fa-info-circle"></i> Order (#{{$order->id}})</h3>
+        <div class="card-body">
+            <table class="table table-bordered">
+                <thead class="thead-light">
+                <tr>
+                    <th class="text-left">Адреса доставки</th>
+                    <th>Коментар замовника</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td class="text-left">
+                        {{ $order->shipping->address }}
+                    </td>
+                    <td>{{$order->comment}}</td>
+                </tr>
+                </tbody>
+            </table>
+
+            <table class="table table-bordered">
+                <thead class="thead-light">
+                <tr>
+                    <th class="text-center">#id</th>
+                    <th class="text-left">Product</th>
+                    <th class="text-left">Категорія</th>
+                    <th class="text-right">Quantity</th>
+                    <th class="text-right">Ціна за одиницю</th>
+                    <th class="text-right">Total</th>
+                </tr>
+                </thead>
+                <tbody>
+                @foreach($order->products as $product)
+                    <tr>
+                        <td class="text-center">{{ $product->id }}</td>
+                        <td class="text-left">
+                            <a href="/admin/index.php?route=catalog/product/edit&amp;product_id=47">{{$product->title}}</a>
+
+                        </td>
+                        <td class="text-left">{{$product->category->name}}</td>
+                        <td class="text-right">1</td>
+                        <td class="text-right">${{ $product->price }}</td>
+                        <td class="text-right">${{ $product->price }}</td>
+                    </tr>
+                @endforeach
+                <tr>
+                    <td colspan="5" class="text-right">Sub-Total</td>
+                    <td class="text-right">${{ $order->sum }}</td>
+                </tr>
+                <tr>
+                    <td colspan="5" class="text-right">Єдиний тариф доставки</td>
+                    <td class="text-right">${{ $order->shipping->shipping_rate }}</td>
+                </tr>
+                <tr>
+                    <td colspan="5" class="text-right">Total</td>
+                    <td class="text-right">${{ $order->sum }}</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="card mt-3">
+        <h3 class="card-header"><i class="fa fa-comment-o"></i> Історія Замовленя</h3>
+        <div class="card-body">
+            <ul class="nav nav-tabs">
+                <li class="nav-item ">
+                    <a class="nav-link active" href="#tab-history" data-toggle="tab">Історія</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#tab-additional" data-toggle="tab">Додатково</a>
+                </li>
+            </ul>
+            <div class="tab-content">
+                <div class="tab-pane border-right border-left p-3 active" id="tab-history">
+                    <div id="history">
+                        <div class="table-responsive">
+                            <table class="table table-bordered">
+                                <thead class="thead-light">
+                                <tr>
+                                    <th class="text-left">Статус</th>
+                                    <th class="text-left">Коментарій</th>
+                                    <th class="text-left">Дата</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                @foreach($order->details as $detail)
+                                    <tr @if ($loop->last)
+                                        class="table-primary"
+                                        @endif
+                                    >
+                                        <td class="text-left">{{$detail->status}}</td>
+                                        <td class="text-left">{{$detail->comment}}</td>
+                                        <td class="text-left">{{$detail->date_added}}</td>
+                                    </tr>
+                                @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <br>
+                    <h4>Add Order History</h4>
+                    <form action="{{route('admin.order.editStatus', ['id' => $order->id])}}" method="post">
+                        @csrf
+                        <div class="form-group row">
+                            <label for="input-order-status" class="col-sm-2 col-form-label">Статус замовлення</label>
                             <div class="col-sm-10">
-                                <select name="order_status_id" id="input-order-status" class="form-control">
-                                    <option value="7">Canceled</option>
+                                <select name="status" id="input-order-status" class="form-control">
+                                    <option value="Canceled">Canceled</option>
                                     <option value="9">Canceled Reversal</option>
                                     <option value="13">Chargeback</option>
                                     <option value="5">Complete</option>
                                     <option value="8">Denied</option>
                                     <option value="14">Expired</option>
                                     <option value="10">Failed</option>
-                                    <option value="1" selected="selected">Pending</option>
+                                    <option value="Pending" selected="selected">Pending</option>
                                     <option value="15">Processed</option>
                                     <option value="2">Processing</option>
                                     <option value="11">Refunded</option>
@@ -217,62 +276,65 @@
                                 </select>
                             </div>
                         </div>
-                        <div class="form-group">
+                        <div class="form-group row">
+                            <div class="col-sm-2">
+                                <label class="form-check-label" for="gridCheck2">Повідомити Замовника</label>
+                            </div>
+                            <div class="col-sm-2">
+                                <select name="send_mail" id="gridCheck2" class="form-control">
+                                    <option value="0" selected>Ні</option>
+                                    <option value="1">Так</option>
+                                </select>
+                            </div>
+                            <div class="col-sm-8"></div>
+                        </div>
+                        <div class="form-group row">
+                            <div class="col-sm-2"><label for="input-comment">Коментар</label></div>
                             <div class="col-sm-10">
-                            <label class="col-sm-2 control-label" for="input-override">
-                                <span data-toggle="tooltip" title="" data-original-title="Якщо замовлення замовника блокується для зміни статусу замовлення через розширення проти шахрайства, увімкніть можливість скасування.">не брати до уваги
-
-</span></label>
-                                <input type="checkbox" name="override" value="1" id="input-override">
+                                <textarea name="comment" rows="5" id="input-comment" class="form-control"></textarea>
                             </div>
                         </div>
-                        <div class="form-group">
+                        <div class="form-group row">
                             <div class="col-sm-10">
-                                <label class="col-sm-2 control-label" for="input-notify">Повідомити Замовника</label>
-                                <input type="checkbox" name="notify" value="1" id="input-notify">
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="col-sm-2 control-label" for="input-comment">Comment</label>
-                            <div class="col-sm-10">
-                                <textarea name="comment" rows="8" id="input-comment" class="form-control"></textarea>
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fa fa-plus-circle"></i> Add History
+                                </button>
                             </div>
                         </div>
                     </form>
-                </fieldset>
-                <div class="text-right">
-                    <button id="button-history" data-loading-text="Loading..." class="btn btn-primary"><i class="fa fa-plus-circle"></i> Add History</button>
                 </div>
-            </div>
-            <div class="tab-pane" id="tab-additional"> <div class="table-responsive">
-                    <table class="table table-bordered">
-                        <thead>
-                        <tr>
-                            <td colspan="2">Browser</td>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <tr>
-                            <td>IP Address</td>
-                            <td>162.158.165.174</td>
-                        </tr>
-                        <tr>
-                            <td>Forwarded IP</td>
-                            <td>45.251.33.66</td>
-                        </tr>
-                        <tr>
-                            <td>User Agent</td>
-                            <td>Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3235.0 Safari/537.36</td>
-                        </tr>
-                        <tr>
-                            <td>Accept Language</td>
-                            <td>en-US,en;q=0.9</td>
-                        </tr>
-                        </tbody>
-                    </table>
+                <div class="tab-pane" id="tab-additional">
+                    <div class="table-responsive">
+                        <table class="table table-bordered">
+                            <thead>
+                            <tr>
+                                <td colspan="2">Browser</td>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <td>IP Address</td>
+                                <td>162.158.165.174</td>
+                            </tr>
+                            <tr>
+                                <td>Forwarded IP</td>
+                                <td>45.251.33.66</td>
+                            </tr>
+                            <tr>
+                                <td>User Agent</td>
+                                <td>Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko)
+                                    Chrome/63.0.3235.0 Safari/537.36
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Accept Language</td>
+                                <td>en-US,en;q=0.9</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
 @endsection

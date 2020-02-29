@@ -37,11 +37,12 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Order extends Model
 {
+    protected $guarded = [];
+
     public function user()
     {
         return $this->belongsTo('App\User');
     }
-
 
     public function products()
     {
@@ -50,5 +51,15 @@ class Order extends Model
 
     public function shipping(){
         return $this->hasOne('App\Shipping');
+    }
+
+    public function details()
+    {
+        return $this->hasMany('App\OrderDetail');
+    }
+
+    public function detailStatus()
+    {
+        return $this->details()->orderBy('date_added', 'desc')->first()->status;
     }
 }

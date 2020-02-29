@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Order;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Validator;
 
@@ -26,5 +28,13 @@ class OrderController extends Controller
         }
 
         return $request->all();
+/*        $test = new Order();
+        $test->user_id = 1;
+        $test->pay_method = '1';
+        $test->comment = 'dfsdfsdfsdf';
+        $test->created_at = Carbon::now();
+        $test->updated_at = Carbon::now();
+
+        $test->save();*/
     }
 }

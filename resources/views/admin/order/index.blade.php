@@ -5,7 +5,7 @@
         <div class="col-md-9 col-md-pull-3 col-sm-12">
             <div class="panel panel-default">
                 <div class="panel-heading">
-                    <h3 class="panel-title"><i class="fa fa-list"></i> Order List</h3>
+                    <h3 class="panel-title"><i class="fa fa-list"></i> Список замовлень</h3>
                 </div>
                 <div class="panel-body">
                     <form method="post" action="" enctype="multipart/form-data" id="form-order">
@@ -45,29 +45,24 @@
                                 </td>
                                 <td class="text-right">{{ $order->id }}</td>
                                 <td class="text-left">{{ $order->user->name }}</td>
-                                <td class="text-left">{{ $order->status }}</td>
+                                <td class="text-left">{{ $order->detailStatus() }}</td>
                                 <td class="text-right">${{$order->products->sum('price')}}</td>
                                 <td class="text-left">{{ $order->created_at }}</td>
                                 <td class="text-left">{{ $order->updated_at }}</td>
                                 <td class="text-right">
-                                    <div style="min-width: 120px;">
-                                        <div class="btn-group">
-                                            <a
-                                                href="{{ route( 'admin.order.revision', ['id' => $order->id]) }}"
-                                                data-toggle="tooltip" title="" class="btn btn-primary"
-                                                data-original-title="View">
-                                                <i class="fa fa-eye"></i>
-                                            </a>
-                                            <button type="button" data-toggle="dropdown"
-                                                    class="btn btn-primary dropdown-toggle">
-                                                <span class="caret"></span>
-                                            </button>
-                                            <ul class="dropdown-menu dropdown-menu-right">
-                                                <li>
-                                                    <a href="https://demo.opencart.com/admin/index.php?route=sale/order/edit&amp;user_token=Bajgcy6cPAOTrKM99s2ql0t4NpOP3k2c&amp;order_id=8704"><i
-                                                            class="fa fa-pencil"></i> Edit</a></li>
-                                                <li><a href="8704"><i class="fa fa-trash-o"></i> Delete</a></li>
-                                            </ul>
+                                    <div class="btn-group">
+                                        <a
+                                            href="{{ route( 'admin.order.revision', ['id' => $order->id]) }}"
+                                            data-toggle="tooltip" title="" class="btn btn-primary"
+                                            data-original-title="View">
+                                            <i class="fa fa-eye"></i>
+                                        </a>
+                                        <button type="button" class="btn btn-primary dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            <span class="sr-only">Toggle Dropdown</span>
+                                        </button>
+                                        <div class="dropdown-menu">
+                                            <a class="dropdown-item" href="#"><i class="fa fa-pencil"></i> Edit</a>
+                                            <a class="dropdown-item" href="#"><i class="fa fa-trash-o"></i> Delete</a>
                                         </div>
                                     </div>
                                 </td>

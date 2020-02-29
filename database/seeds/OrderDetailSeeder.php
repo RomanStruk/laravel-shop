@@ -1,9 +1,9 @@
 <?php
 
-use App\Shipping;
+use App\OrderDetail;
 use Illuminate\Database\Seeder;
 
-class ShippingSeeder extends Seeder
+class OrderDetailSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -14,8 +14,7 @@ class ShippingSeeder extends Seeder
     {
         $orders = App\Order::all();
         foreach ($orders as $order){
-            factory(Shipping::class)->make(['order_id' => $order->id])->save();
+            factory(OrderDetail::class)->make(['order_id' => $order->id])->save();
         }
-//        factory(Shipping::class, 100)->create();
     }
 }

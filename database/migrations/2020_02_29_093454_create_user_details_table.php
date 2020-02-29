@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateOrdersTable extends Migration
+class CreateUserDetailsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,19 +13,17 @@ class CreateOrdersTable extends Migration
      */
     public function up()
     {
-        Schema::create('orders', function (Blueprint $table) {
+        Schema::create('user_details', function (Blueprint $table) {
             $table->bigIncrements('id');
 
             $table->bigInteger('user_id')->unsigned();
             $table->foreign('user_id')->references('id')->on('users');
 
-            $table->enum('pay_method', [1, 2, 3])->default('1');
+            $table->string('first_name', 255);
+            $table->string('last_name', 255);
+            $table->string('phone', 255);
 
-            $table->text('comment');
-
-            $table->timestamps();
         });
-        //\DB::statement('ALTER TABLE orders AUTO_INCREMENT = 1000;');
     }
 
     /**
@@ -35,6 +33,6 @@ class CreateOrdersTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('orders');
+        Schema::dropIfExists('user_details');
     }
 }

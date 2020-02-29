@@ -110,6 +110,9 @@ Route::group(['prefix' => 'admin', 'middleware' => ['web', 'auth']], function ()
     Route::get('/', ['uses' => 'Admin\HomeController@index', 'as' => 'admin.dashboard.index']);
     Route::get('/order', ['uses' => 'Admin\OrderController@index', 'as' => 'admin.order.index']);
     Route::get('/order/{id}', ['uses' => 'Admin\OrderController@revision', 'as' => 'admin.order.revision']);
+    Route::post('/order/status/edit/{id}', ['uses' => 'Admin\OrderController@editStatus', 'as' => 'admin.order.editStatus']);
+
+    Route::get('/user/{id}', ['uses' => 'Admin\UserController@show', 'as' => 'admin.show.index']);
 });
 
 Route::get('/shop/json', 'ProductController@apiShowProducts');

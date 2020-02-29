@@ -10,12 +10,11 @@ $factory->define(Shipping::class, function (Faker $faker) {
         'order_id' => App\Order::orderByRaw('RAND()')->first()->id,
         'method' => $faker->randomElement(['courier', 'novaposhta']),
         'shipping_rate' => $faker->randomFloat(2, 0, 20),
-
-        'address' => 'Пункт приймання-видачі (до 30 кг): вул. Незалежності, 32
+        'address' => $faker->randomElement(['Пункт приймання-видачі (до 30 кг): вул. Незалежності, 32
                     Седлище, Незалежності, 32
                     Волинська область
-                    Старовижівський р-н
-                    ',
+                    Старовижівський р-н', $faker->address()]),
+
         'ref_code' => '0db4cb18-4b3a-11e4-ab6d-005056801329'
     ];
 });

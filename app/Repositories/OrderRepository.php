@@ -8,7 +8,11 @@ class OrderRepository
 {
     public function getAll()
     {
-        return Model::with('products')->with('user')->get();
+        return Model::with('products')
+            ->with('user')
+            ->with('details')
+//            ->limit(5)
+            ->get();
     }
 
     public function getOrder($id)
