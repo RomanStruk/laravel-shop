@@ -6,15 +6,19 @@ use App\Shipping as Model;
 // Доставка
 class ShippingRepository
 {
-    private function apiData($url, $api_key, $model, $method, $rule, $find, $limit = 5){
+
+    const KEY = 'f2595f7fe8718f38f17195c10127fcb2';
+    const URL = 'https://api.novaposhta.ua/v2.0/json/';
+
+    private function apiData($api_key, $model, $method, $rule, $find, $limit = 5){
         $curl = curl_init();
         curl_setopt_array($curl, [
-            CURLOPT_URL => $url,
+            CURLOPT_URL => self::URL,
             CURLOPT_RETURNTRANSFER => True,
             CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
             CURLOPT_CUSTOMREQUEST => "POST",
             CURLOPT_POSTFIELDS =>  '{
-            "apiKey": "'.$api_key.'",
+            "apiKey": "'.self::KEY.'",
             "modelName": "'.$model.'",
             "calledMethod": "'.$method.'",
             "methodProperties": {
@@ -37,21 +41,54 @@ class ShippingRepository
 
     public function findCity($city)
     {
-        $url = "https://api.novaposhta.ua/v2.0/json/";
         $api_key = 'f2595f7fe8718f38f17195c10127fcb2';
         $model = 'AddressGeneral';
         $method = 'getSettlements';
         $rule = 'FindByString';
-        return $this->apiData($url, $api_key, $model, $method, $rule, $city);
+        return $this->apiData($api_key, $model, $method, $rule, $city);
+    }
+
+    public function findRef($ref)
+    {
+        $api_key = 'f2595f7fe8718f38f17195c10127fcb2';
+        $model = 'AddressGeneral';
+        $method = 'getSettlements';
+        $rule = 'Ref';
+        return $this->apiData($api_key, $model, $method, $rule, $ref);
     }
 
     public function findWarehouses($warehouses)
     {
-        $url = "https://api.novaposhta.ua/v2.0/json/";
         $api_key = 'f2595f7fe8718f38f17195c10127fcb2';
         $model = 'AddressGeneral';
         $method = 'getWarehouses';
         $rule = 'SettlementRef';
-        return $this->apiData($url, $api_key, $model, $method, $rule, $warehouses);
+        return $this->apiData($api_key, $model, $method, $rule, $warehouses);
+    }
+
+    public function getParserWarehouses($warehouses)
+    {
+        $data = collect($this->findWarehouses($warehouses));
+        if (count($data->get('errors'))>=1) return false;
+//        dd($data);
+        $result = [];
+        foreach ($data->get('data') as $item) {
+            $result[$item->Ref] = $item->Description;
+        }
+        return $result;
+    }
+
+    public function parserResult($data)
+    {
+        $data = collect($data);
+//        dd($result);
+        if (count($data->get('errors'))>=1) return false;
+        if ($data->get('info')->totalCount <> 1) return false;
+        return [
+            'city_ref' => $data->get('data')[0]->Ref,
+            'city' => $data->get('data')[0]->SettlementTypeDescription. ' '. $data->get('data')[0]->Description,
+            'region' => $data->get('data')[0]->RegionsDescription,
+            'area' => $data->get('data')[0]->AreaDescription,
+        ];
     }
 }

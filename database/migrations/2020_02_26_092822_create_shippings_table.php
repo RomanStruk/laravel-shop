@@ -22,8 +22,17 @@ class CreateShippingsTable extends Migration
             $table->enum('method', ['courier', 'novaposhta']);
             $table->float('shipping_rate')->default(0);
 
-            $table->text('address');
-            $table->string('ref_code');
+            $table->string('city');
+            $table->string('region');
+            $table->string('area');
+            $table->string('city_ref');
+
+            $table->text('street')->nullable();
+            $table->integer('house')->nullable();
+            $table->integer('flat')->nullable();
+
+            $table->string('warehouse_ref')->nullable();
+            $table->string('warehouse_title')->nullable();
         });
     }
 

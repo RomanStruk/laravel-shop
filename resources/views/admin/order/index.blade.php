@@ -44,9 +44,9 @@
                                     <input type="hidden" name="shipping_code[]" value="flat.flat">
                                 </td>
                                 <td class="text-right">{{ $order->id }}</td>
-                                <td class="text-left">{{ $order->user->name }}</td>
-                                <td class="text-left">{{ $order->detailStatus() }}</td>
-                                <td class="text-right">${{$order->products->sum('price')}}</td>
+                                <td class="text-left">{{ $order->user->detail->first_name }} {{ $order->user->detail->last_name }}</td>
+                                <td class="text-left">{{$order->getStatus($order->detail_status)}}</td>
+                                <td class="text-right">${{$order->sum_price}}</td>
                                 <td class="text-left">{{ $order->created_at }}</td>
                                 <td class="text-left">{{ $order->updated_at }}</td>
                                 <td class="text-right">
@@ -61,7 +61,7 @@
                                             <span class="sr-only">Toggle Dropdown</span>
                                         </button>
                                         <div class="dropdown-menu">
-                                            <a class="dropdown-item" href="#"><i class="fa fa-pencil"></i> Edit</a>
+                                            <a class="dropdown-item" href="{{route('admin.order.edit', ['id' => $order->id])}}"><i class="fa fa-pencil"></i> Edit</a>
                                             <a class="dropdown-item" href="#"><i class="fa fa-trash-o"></i> Delete</a>
                                         </div>
                                     </div>

@@ -2,7 +2,9 @@
 
 namespace App;
 
+use App\Status\Status;
 use Illuminate\Database\Eloquent\Model;
+use InvalidArgumentException;
 
 /**
  * App\Order
@@ -34,6 +36,12 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Order whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Order whereUserId($value)
  * @mixin \Eloquent
+ * @property string $comment
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\OrderDetail[] $details
+ * @property-read int|null $details_count
+ * @property-read \App\Payment $payment
+ * @property-read \App\Shipping $shipping
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Order whereComment($value)
  */
 class Order extends Model
 {
@@ -49,7 +57,8 @@ class Order extends Model
         return $this->belongsToMany('App\Product');
     }
 
-    public function shipping(){
+    public function shipping()
+    {
         return $this->hasOne('App\Shipping');
     }
 
@@ -58,8 +67,40 @@ class Order extends Model
         return $this->hasMany('App\OrderDetail');
     }
 
-    public function detailStatus()
+    public function payment()
     {
-        return $this->details()->orderBy('date_added', 'desc')->first()->status;
+        return $this->hasOne(\App\Payment::class);
     }
+
+    use Status;
+
+    const STATUS_PENDING    = 1;
+    const STATUS_PROCESSING = 2;
+    const STATUS_COMPLETED  = 3;
+    const STATUS_CANCELED   = 4;
+    const STATUS_DENIED     = 5;
+    const STATUS_FAILED     = 6;
+    const STATUS_REVERSED   = 7;
+
+    /**
+     * Return list of status codes and labels
+     * @return array
+     */
+    public static function listStatus()
+    {
+        return [
+            self::STATUS_PENDING    => 'Очікує на розгляд',
+            self::STATUS_PROCESSING => 'Обробляється',
+            self::STATUS_COMPLETED  => 'Завершений',
+            self::STATUS_CANCELED   => 'Скасовано',
+            self::STATUS_DENIED     => 'Відхілити',
+            self::STATUS_FAILED     => 'Не вдалося',
+            self::STATUS_REVERSED   => 'Повернутий',
+        ];
+    }
+/*    public function detailStatus()
+    {
+        return $this->details->sortByDesc('date_added')->first()['status'];
+//        return $this->details()->orderBy('date_added', 'desc')->first()->status;
+    }*/
 }

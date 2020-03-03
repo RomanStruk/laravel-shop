@@ -11,6 +11,6 @@ $factory->define(OrderDetail::class, function (Faker $faker) {
         'order_id' => null,
         'date_added' => Carbon::now(),
         'comment' => 'Create',
-        'status' => 'Pending',
+        'status' => '1',
     ];
 });

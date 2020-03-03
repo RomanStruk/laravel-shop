@@ -19,8 +19,6 @@ class CreateOrdersTable extends Migration
             $table->bigInteger('user_id')->unsigned();
             $table->foreign('user_id')->references('id')->on('users');
 
-            $table->enum('pay_method', [1, 2, 3])->default('1');
-
             $table->text('comment');
 
             $table->timestamps();

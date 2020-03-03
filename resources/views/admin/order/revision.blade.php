@@ -1,7 +1,14 @@
 @extends('admin.layouts.app')
 
 @section('content')
+    <h1>Перегляд замовлення #{{$order->id}}</h1>
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/admin">Домашня</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Перегляд</li>
 
+        </ol>
+    </nav>
     <div class="card-deck mb-2">
         <div class="card">
             <h5 class="card-header">
@@ -14,12 +21,18 @@
                             <i class="fa fa-shopping-cart fa-fw"></i></button>
                     </div>
                     <div class="col-8">
-                        @if ($order->detailStatus() == 'Pending')
-                            <div class="text-dark font-weight-bold bg-warning">Очікує на розгляд</div>
-                        @elseif ($order->detailStatus() == 'Canceled')
-                            <div class="text-light font-weight-bold bg-danger">Скасовано</div>
-                        @elseif ($order->detailStatus() == 'Complete')
-                            <div class="text-light font-weight-bold bg-success">Закінчений</div>
+                        @if ($order->detail_status == $order::STATUS_PENDING)
+                            <div class="text-dark font-weight-bold bg-warning">
+                                {{$order->getStatus($order->detail_status)}}
+                            </div>
+                        @elseif ($order->detail_status == $order::STATUS_CANCELED)
+                            <div class="text-light font-weight-bold bg-danger">
+                                {{$order->getStatus($order->detail_status)}}
+                            </div>
+                        @elseif ($order->detail_status == $order::STATUS_PROCESSING)
+                            <div class="text-light font-weight-bold bg-success">
+                                {{$order->getStatus($order->detail_status)}}
+                            </div>
                         @endif
                     </div>
                 </div>
@@ -38,12 +51,22 @@
                                 data-original-title="Payment Method"><i class="fa fa-credit-card fa-fw"></i></button>
                     </div>
                     <div class="col-8">
-                        @if ($order->pay_method == '1')
+                        @if ($order->payment->method == 'receipt')
                             Готівкою при доставці
-                        @elseif ($order->pay_method == '2')
+                        @elseif ($order->payment->method == 'google-pay')
                             Google Pay
-                        @elseif ($order->pay_method == '3')
-                            Оплатити зараз карткою Visa/Mastercard
+                            @if ($order->payment->paid == '0')
+                                <div class="bg-success">(Оплачено)</div>
+                            @elseif ($order->payment->paid == '1')
+                                <div class="bg-danger">(Не оплачено)</div>
+                            @endif
+                        @elseif ($order->payment->method == 'card')
+                            Оплатита карткою Visa/Mastercard
+                            @if ($order->payment->paid == '0')
+                                <div class="bg-success">(Оплачено)</div>
+                            @elseif ($order->payment->paid == '1')
+                                <div class="bg-danger">(Не оплачено)</div>
+                            @endif
                         @endif
                     </div>
                 </div>
@@ -108,7 +131,9 @@
             <h5 class="card-header"><i class="fa fa-cog"></i> Options</h5>
             <div class="card-body">
                 <div class="row pb-1 pt-1 border-bottom">
-                    <div class="col-6">Invoice</div>
+                    <div class="col-6">
+                        <a href="{{route('admin.order.edit', ['id' => $order->id])}}">Редагувати</a>
+                    </div>
                     <div class="col-3"></div>
                     <div class="col-2">
                         <button id="button-invoice" data-loading-text="Loading..." data-toggle="tooltip" title=""
@@ -164,10 +189,20 @@
                 </thead>
                 <tbody>
                 <tr>
-                    <td class="text-left">
-                        {{ $order->shipping->address }}
+                    <td class="text-left col-5">
+                        {{ $order->shipping->city }},
+                        {{ $order->shipping->region }},
+                        {{ $order->shipping->area }}
+                        <br>
+                        @if($order->shipping->method == 'courier')
+                            {{ $order->shipping->street }},
+                            {{ $order->shipping->house }},
+                            {{ $order->shipping->flat }}
+                        @elseif($order->shipping->method == 'novaposhta')
+                            {{ $order->shipping->warehouse_title }}
+                        @endif
                     </td>
-                    <td>{{$order->comment}}</td>
+                    <td class="col-8">{{$order->comment}}</td>
                 </tr>
                 </tbody>
             </table>
@@ -199,7 +234,7 @@
                 @endforeach
                 <tr>
                     <td colspan="5" class="text-right">Sub-Total</td>
-                    <td class="text-right">${{ $order->sum }}</td>
+                    <td class="text-right">${{ $order->sum_price }}</td>
                 </tr>
                 <tr>
                     <td colspan="5" class="text-right">Єдиний тариф доставки</td>
@@ -207,7 +242,7 @@
                 </tr>
                 <tr>
                     <td colspan="5" class="text-right">Total</td>
-                    <td class="text-right">${{ $order->sum }}</td>
+                    <td class="text-right">${{ $order->total_price }}</td>
                 </tr>
                 </tbody>
             </table>
@@ -242,7 +277,7 @@
                                         class="table-primary"
                                         @endif
                                     >
-                                        <td class="text-left">{{$detail->status}}</td>
+                                        <td class="text-left">{{$order->getStatus($detail->status)}}</td>
                                         <td class="text-left">{{$detail->comment}}</td>
                                         <td class="text-left">{{$detail->date_added}}</td>
                                     </tr>
@@ -252,27 +287,18 @@
                         </div>
                     </div>
                     <br>
-                    <h4>Add Order History</h4>
-                    <form action="{{route('admin.order.editStatus', ['id' => $order->id])}}" method="post">
+                    <h4>Додати історію замовлень</h4>
+                    <form action="{{route('admin.order.updateStatus', ['order' => $order->id])}}" method="post">
                         @csrf
                         <div class="form-group row">
                             <label for="input-order-status" class="col-sm-2 col-form-label">Статус замовлення</label>
                             <div class="col-sm-10">
                                 <select name="status" id="input-order-status" class="form-control">
-                                    <option value="Canceled">Canceled</option>
-                                    <option value="9">Canceled Reversal</option>
-                                    <option value="13">Chargeback</option>
-                                    <option value="5">Complete</option>
-                                    <option value="8">Denied</option>
-                                    <option value="14">Expired</option>
-                                    <option value="10">Failed</option>
-                                    <option value="Pending" selected="selected">Pending</option>
-                                    <option value="15">Processed</option>
-                                    <option value="2">Processing</option>
-                                    <option value="11">Refunded</option>
-                                    <option value="12">Reversed</option>
-                                    <option value="3">Shipped</option>
-                                    <option value="16">Voided</option>
+                                    @foreach($order::listStatus() as $key => $status)
+                                        <option value="{{$key}}"
+                                        @if ($key == $order->detail_status) selected="selected" @endif
+                                        >{{$status}}</option>
+                                    @endforeach
                                 </select>
                             </div>
                         </div>

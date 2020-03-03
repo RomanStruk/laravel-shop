@@ -107,10 +107,32 @@ Auth::routes();
 
 
 Route::group(['prefix' => 'admin', 'middleware' => ['web', 'auth']], function (){
-    Route::get('/', ['uses' => 'Admin\HomeController@index', 'as' => 'admin.dashboard.index']);
-    Route::get('/order', ['uses' => 'Admin\OrderController@index', 'as' => 'admin.order.index']);
-    Route::get('/order/{id}', ['uses' => 'Admin\OrderController@revision', 'as' => 'admin.order.revision']);
-    Route::post('/order/status/edit/{id}', ['uses' => 'Admin\OrderController@editStatus', 'as' => 'admin.order.editStatus']);
+    Route::get('/', [
+        'uses' => 'Admin\HomeController@index',
+        'as' => 'admin.dashboard.index'
+    ]);
+    Route::get('/order', [
+        'uses' => 'Admin\OrderController@index',
+        'as' => 'admin.order.index'
+    ]);
+
+    Route::get('/order/{id}', [
+        'uses' => 'Admin\OrderController@show',
+        'as' => 'admin.order.revision'
+    ]);
+    Route::post('/order/{order}', [
+        'uses' => 'Admin\OrderController@update',
+        'as' => 'admin.order.update'
+    ]);
+
+    Route::post('/order/status/{order}/update', [
+        'uses' => 'Admin\OrderController@updateStatus',
+        'as' => 'admin.order.updateStatus'
+    ]);
+    Route::get('/order/{id}/edit', [
+        'uses' => 'Admin\OrderController@edit',
+        'as' => 'admin.order.edit'
+    ]);
 
     Route::get('/user/{id}', ['uses' => 'Admin\UserController@show', 'as' => 'admin.show.index']);
 });
