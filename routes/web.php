@@ -124,6 +124,10 @@ Route::group(['prefix' => 'admin', 'middleware' => ['web', 'auth']], function ()
         'uses' => 'Admin\OrderController@update',
         'as' => 'admin.order.update'
     ]);
+    Route::delete('/order/{order}', [
+        'uses' => 'Admin\OrderController@destroy',
+        'as' => 'admin.order.destroy'
+    ]);
 
     Route::post('/order/status/{order}/update', [
         'uses' => 'Admin\OrderController@updateStatus',
@@ -135,6 +139,8 @@ Route::group(['prefix' => 'admin', 'middleware' => ['web', 'auth']], function ()
     ]);
 
     Route::get('/user/{id}', ['uses' => 'Admin\UserController@show', 'as' => 'admin.show.index']);
+
+    Route::resource('category', 'Admin\CategoryController');
 });
 
 Route::get('/shop/json', 'ProductController@apiShowProducts');

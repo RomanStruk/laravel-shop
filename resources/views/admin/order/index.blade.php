@@ -1,6 +1,23 @@
 @extends('admin.layouts.app')
 
 @section('content')
+
+    @if ($errors->any())
+        <div class="alert alert-danger">
+            <ul>
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
+    @if (\Session::has('success'))
+        <div class="alert alert-success">
+            <ul>
+                <li>{!! \Session::get('success') !!}</li>
+            </ul>
+        </div>
+    @endif
     <div class="row">
         <div class="col-md-9 col-md-pull-3 col-sm-12">
             <div class="panel panel-default">
@@ -8,7 +25,6 @@
                     <h3 class="panel-title"><i class="fa fa-list"></i> Список замовлень</h3>
                 </div>
                 <div class="panel-body">
-                    <form method="post" action="" enctype="multipart/form-data" id="form-order">
                         <table class="table table-bordered table-hover">
                             <thead>
                             <tr>
@@ -62,7 +78,11 @@
                                         </button>
                                         <div class="dropdown-menu">
                                             <a class="dropdown-item" href="{{route('admin.order.edit', ['id' => $order->id])}}"><i class="fa fa-pencil"></i> Edit</a>
-                                            <a class="dropdown-item" href="#"><i class="fa fa-trash-o"></i> Delete</a>
+                                            <form method="POST" action="{{route('admin.order.destroy', ['order' => $order->id])}}" >
+                                                @csrf
+                                                @method('DELETE')
+                                                <button class="dropdown-item" value="submit" type="submit"><i class="fa fa-trash-o"></i> Delete</button>
+                                            </form>
                                         </div>
                                     </div>
                                 </td>
@@ -71,7 +91,6 @@
 
                             </tbody>
                         </table>
-                    </form>
                     <div class="row">
                         <div class="col-sm-6 text-left">
                             <ul class="pagination">

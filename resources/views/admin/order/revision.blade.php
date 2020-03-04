@@ -142,7 +142,13 @@
                     </div>
                 </div>
                 <div class="row pb-1 pt-1 border-bottom">
-                    <div class="col-6">Reward Points</div>
+                    <div class="col-6">
+                        <form method="POST" action="{{route('admin.order.destroy', ['order' => $order->id])}}">
+                            @csrf
+                            @method('DELETE')
+                            <button class="dropdown-item" value="submit" type="submit">Delete</button>
+                        </form>
+                    </div>
                     <div class="col-3">300</div>
                     <div class="col-2">
                         <button id="button-reward-add" data-loading-text="Loading..." data-toggle="tooltip" title=""

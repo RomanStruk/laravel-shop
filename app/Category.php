@@ -24,6 +24,9 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Category extends Model
 {
+    public $fillable = ['name', 'slug', 'parent_id', 'description'];
+    public $timestamps = false;
+
     public function countProducts()
     {
         return $this->hasMany('App\Product')->count();

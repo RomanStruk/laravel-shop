@@ -4,6 +4,7 @@ namespace App;
 
 use App\Status\Status;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use InvalidArgumentException;
 
 /**
@@ -46,6 +47,8 @@ use InvalidArgumentException;
 class Order extends Model
 {
     protected $guarded = [];
+    use SoftDeletes;
+    protected $dates = ['deleted_at'];
 
     public function user()
     {

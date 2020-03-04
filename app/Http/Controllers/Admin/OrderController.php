@@ -9,20 +9,34 @@ use App\Order;
 use App\OrderDetail;
 use App\Repositories\OrderRepository;
 use App\Repositories\ShippingRepository;
+use App\Services\OrderService;
+use Exception;
 
 class OrderController extends Controller
 {
-
+    /**
+     * @var OrderRepository
+     */
     private $orderRepository;
+
     /**
      * @var ShippingRepository
      */
     private $shippingRepository;
 
-    public function __construct(OrderRepository $orderRepository, ShippingRepository $shippingRepository)
+    /**
+     * @var OrderService
+     */
+    private $orderService;
+
+    public function __construct(
+        OrderRepository $orderRepository,
+        ShippingRepository $shippingRepository,
+        OrderService $orderService)
     {
         $this->orderRepository = $orderRepository;
         $this->shippingRepository = $shippingRepository;
+        $this->orderService = $orderService;
     }
 
     public function index()
@@ -35,6 +49,15 @@ class OrderController extends Controller
     {
         $order = $this->orderRepository->getOrder($order);
         return view('admin.order.revision')->with('order', $order);
+    }
+
+    public function destroy(Order $order)
+    {
+        try {
+            $order->delete();
+        } catch (Exception $e) {
+        }
+        return redirect()->route('admin.order.index')->with('success', 'Замовлення успішно видалено');
     }
 
     public function edit($order)
@@ -60,7 +83,9 @@ class OrderController extends Controller
 
         $shipping = $request->only(['street', 'house', 'flat', 'warehouse_ref']);
         $shipping['method'] = $request->input('shipping_method');
-        $shipping['warehouse_title'] = $this->shippingRepository->getParserWarehouses($order->shipping->city_ref)[$request->input('warehouse_ref')];
+        if ($shipping['method'] == 'novaposhta'){
+            $shipping['warehouse_title'] = $this->shippingRepository->getParserWarehouses($order->shipping->city_ref)[$request->input('warehouse_ref')];
+        }
         if ($order->shipping->city_ref != $request->input('city_ref')){
             $city = $this->shippingRepository->findRef($request->input('city_ref'));
             $data = $this->shippingRepository->parserResult($city);
