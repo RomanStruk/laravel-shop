@@ -6,8 +6,10 @@ namespace App\Tasks\Shipping;
 
 use App\Repositories\ShippingRepository;
 use Exception;
+use Psy\Exception\ErrorException;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 
-class GetWarehousesByCityRef
+class GetCityByRefTask
 {
     /**
      * @var ShippingRepository
@@ -22,25 +24,22 @@ class GetWarehousesByCityRef
         $this->repository = ShippingRepository::getInstance();
     }
 
+
     /**
-     * Get warehouses of city
      * @param $cityRef
-     * @return array|bool
+     * @return array
      * @throws Exception
      */
     public function get($cityRef)
     {
-        $result = $this->repository->findWarehouses($cityRef);
-
-        if (count($result->errors)>=1) throw new Exception($result->errors);
-
-        if ($result->info->totalCount == 0) return [];
-
+        $result = $this->repository->findRef($cityRef);
+//        dd($result);
+        if (count($result->errors)>=1) throw new Exception($result->errors);;
+        if ($result->info->totalCount <> 1) throw new Exception('totalCount <> 1');
         $data = [];
-        foreach ($result->data as $item) {
-            $data[$item->Ref] = $item;
+        foreach ($result->data[0] as $key => $value){
+            $data[$key] = $value;
         }
         return $data;
-
     }
 }

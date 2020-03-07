@@ -14,9 +14,6 @@ class UpdateProducts
      */
     private $repository;
 
-    /**
-     * OrderTasks constructor.
-     */
     public function __construct()
     {
         $this->repository = OrderRepository::getInstance();

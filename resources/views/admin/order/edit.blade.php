@@ -211,7 +211,7 @@
                                     <option value="{{$key}}"
                                     @if ($key == $order->shipping->warehouse_ref) selected="selected" @endif
                                     >
-                                        {{$warehouse}}
+                                        {{$warehouse->Description}}
                                     </option>
                                     @endforeach
                                 </select>

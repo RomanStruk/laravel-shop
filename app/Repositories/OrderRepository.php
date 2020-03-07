@@ -83,16 +83,6 @@ class OrderRepository extends BaseRepository
 
     /**
      * @param Model $order
-     * @return bool|null
-     * @throws Exception
-     */
-    public function delete(Model $order)
-    {
-        return $order->delete();
-    }
-
-    /**
-     * @param Model $order
      * @param $input
      */
     public function updateProducts(Model $order, $input)

@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 
 use App\Repositories\ShippingRepository;
+use App\Tasks\Shipping\GetCitiesByNameTask;
+use App\Tasks\Shipping\GetCityByRefTask;
 use Illuminate\Http\Request;
 
 class ShippingController extends Controller
@@ -15,9 +17,9 @@ class ShippingController extends Controller
      * ShippingController constructor.
      * @param ShippingRepository $shippingRepository
      */
-    public function __construct(ShippingRepository $shippingRepository)
+    public function __construct()
     {
-        $this->shippingRepository = $shippingRepository;
+        $this->shippingRepository = ShippingRepository::getInstance();
     }
 
     /**
@@ -26,6 +28,8 @@ class ShippingController extends Controller
      */
     public function apiGetCity($city)
     {
+
+//        dd((new GetCitiesByNameTask())->get($city)['0']->Description);
         return response()->json(
             $this->shippingRepository->findCity($city)
         );
@@ -48,6 +52,7 @@ class ShippingController extends Controller
      */
     public function apiGetWarehouses($warehouses)
     {
+//        dd((new GetCityByRefTask())->get($warehouses));
         return response()->json(
             $this->shippingRepository->findWarehouses($warehouses)
         );

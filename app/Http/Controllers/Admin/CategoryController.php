@@ -2,6 +2,13 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Actions\Category\AdminFormCreateCategoryAction;
+use App\Actions\Category\DeleteCategoryAction;
+use App\Actions\Category\FormEditCategoryAction;
+use App\Actions\Category\GetCategoryAction;
+use App\Actions\Category\GetCategoryOrderByAction;
+use App\Actions\Category\SaveCategoryAction;
+use App\Actions\Category\UpdateCategoryAction;
 use App\Category;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CategoryRequest;
@@ -17,39 +24,37 @@ class CategoryController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @param CategoryService $service
+     * @param GetCategoryOrderByAction $action
      * @return Factory|View
      */
-    public function index(CategoryService $service)
+    public function index(GetCategoryOrderByAction $action)
     {
+//        dd($action->run(1));
         return view('admin.category.index')
-            ->with('categories', $service->categoriesOrderBy());
+            ->with('categories', $action->run());
     }
 
     /**
      * Show the form for creating a new resource.
      *
-     * @param CategoryService $service
+     * @param AdminFormCreateCategoryAction $action
      * @return Factory|View
      */
-    public function create(CategoryService $service)
+    public function create(AdminFormCreateCategoryAction $action)
     {
-        return view('admin.category.create')
-            ->with('category', [])
-            ->with('categories', $service->categories())
-            ->with('delimiter' , '');
+        return view('admin.category.create', $action->run());
     }
 
     /**
      * Store a newly created resource in storage.
      *
      * @param CategoryRequest $request
-     * @param CategoryService $service
+     * @param SaveCategoryAction $action
      * @return RedirectResponse
      */
-    public function store(CategoryRequest $request, CategoryService $service)
+    public function store(CategoryRequest $request, SaveCategoryAction $action)
     {
-        $id = $service->save($request);
+        $id = $action->run($request);
         return redirect()
             ->route('category.edit', ['category' => $id])
             ->with('success', __('category.save'));
@@ -58,29 +63,26 @@ class CategoryController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param Category $category
-     * @param CategoryService $service
+     * @param FormEditCategoryAction $action
+     * @param int $category
      * @return Factory|View
      */
-    public function edit(CategoryService $service, Category $category)
+    public function edit(FormEditCategoryAction $action, int $category)
     {
-        return view('admin.category.edit', [
-            'category' => $category,
-            'categories' => $service->categories(),
-            'delimiter' => '']);
+        return view('admin.category.edit', $action->run($category));
     }
 
     /**
      * Update the specified resource in storage.
      *
      * @param CategoryRequest $request
-     * @param CategoryService $service
+     * @param UpdateCategoryAction $action
      * @param integer $category
      * @return RedirectResponse
      */
-    public function update(CategoryRequest $request, CategoryService $service, $category)
+    public function update(CategoryRequest $request, UpdateCategoryAction $action, $category)
     {
-        $service->update($request, $category);
+        $action->run($request, $category);
         return redirect()
             ->back()
             ->with('success', __('category.update'));
@@ -89,13 +91,13 @@ class CategoryController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param CategoryService $service
+     * @param DeleteCategoryAction $action
      * @param integer $category
      * @return RedirectResponse
      */
-    public function destroy(CategoryService $service, $category)
+    public function destroy(DeleteCategoryAction $action, $category)
     {
-        $service->delete($category);
+        $action->run($category);
         return redirect()->back()->with('success', __('category.delete'));
     }
 }

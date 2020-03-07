@@ -25,9 +25,9 @@ class DeleteTask
 
     public function delete($id)
     {
-        $order = $this->repository->find($id);
         try {
-            $this->repository->delete($order);
+            $order = $this->repository->find($id);
+            return $order->delete();
         } catch (Exception $e) {
             throw new ModelNotFoundException();
         }

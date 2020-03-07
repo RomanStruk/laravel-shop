@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Actions\Order\DeleteAction;
+use App\Actions\Order\DeleteOrderAction;
 use App\Actions\Order\EditOrderAction;
 use App\Actions\Order\GetAllOrdersAction;
 use App\Actions\Order\GetOrderByIdAction;
-use App\Actions\Order\UpdateAction;
+use App\Actions\Order\UpdateOrderAction;
 use App\Actions\Order\UpdateOrderStatusAction;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\OrderRequest;
@@ -41,11 +41,11 @@ class OrderController extends Controller
     }
 
     /**
-     * @param DeleteAction $action
+     * @param DeleteOrderAction $action
      * @param integer $id
      * @return RedirectResponse
      */
-    public function destroy(DeleteAction $action, $id)
+    public function destroy(DeleteOrderAction $action, $id)
     {
         $action->run($id);
         return redirect()->route('admin.order.index')->with('success', 'Замовлення успішно видалено');
@@ -63,12 +63,13 @@ class OrderController extends Controller
 
 
     /**
-     * @param UpdateAction $action
+     * @param UpdateOrderAction $action
      * @param OrderRequest $request
      * @param int $orderId
      * @return RedirectResponse
+     * @throws \Exception
      */
-    public function update(UpdateAction $action, OrderRequest $request, $orderId)
+    public function update(UpdateOrderAction $action, OrderRequest $request, $orderId)
     {
         $action->run($request, $orderId);
         return redirect()->back()->with('success', 'Замовлення успішно змінено');

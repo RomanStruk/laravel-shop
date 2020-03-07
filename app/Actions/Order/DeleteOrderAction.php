@@ -6,10 +6,10 @@ namespace App\Actions\Order;
 
 use App\Tasks\Order\DeleteTask;
 
-class DeleteAction
+class DeleteOrderAction
 {
     public function run($id)
     {
-        (new DeleteTask())->delete($id);
+       return (new DeleteTask())->delete($id);
     }
 }
