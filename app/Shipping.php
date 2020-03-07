@@ -40,6 +40,19 @@ use Illuminate\Database\Eloquent\Model;
 class Shipping extends Model
 {
     public $timestamps = false;
+    public $fillable = [
+        'method',
+        'shipping_rate',
+        'city',
+        'region',
+        'area',
+        'city_ref',
+        'street',
+        'house',
+        'flat',
+        'warehouse_ref',
+        'warehouse_title',
+    ];
 
     public function order()
     {

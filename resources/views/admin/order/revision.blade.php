@@ -9,6 +9,22 @@
 
         </ol>
     </nav>
+    @if ($errors->any())
+        <div class="alert alert-danger">
+            <ul>
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
+    @if (\Session::has('success'))
+        <div class="alert alert-success">
+            <ul>
+                <li>{!! \Session::get('success') !!}</li>
+            </ul>
+        </div>
+    @endif
     <div class="card-deck mb-2">
         <div class="card">
             <h5 class="card-header">
@@ -30,6 +46,10 @@
                                 {{$order->getStatus($order->detail_status)}}
                             </div>
                         @elseif ($order->detail_status == $order::STATUS_PROCESSING)
+                            <div class="text-light font-weight-bold bg-success">
+                                {{$order->getStatus($order->detail_status)}}
+                            </div>
+                        @elseif ($order->detail_status == $order::STATUS_COMPLETED)
                             <div class="text-light font-weight-bold bg-success">
                                 {{$order->getStatus($order->detail_status)}}
                             </div>
@@ -167,22 +187,7 @@
             </div>
         </div>
     </div>
-    @if ($errors->any())
-        <div class="alert alert-danger">
-            <ul>
-                @foreach ($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                @endforeach
-            </ul>
-        </div>
-    @endif
-    @if (\Session::has('success'))
-        <div class="alert alert-success">
-            <ul>
-                <li>{!! \Session::get('success') !!}</li>
-            </ul>
-        </div>
-    @endif
+
     <div class="card mt-3">
         <h3 class="card-header"><i class="fa fa-info-circle"></i> Order (#{{$order->id}})</h3>
         <div class="card-body">

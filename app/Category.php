@@ -5,7 +5,7 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * App\Category
+ * App\CategoryService
  *
  * @property int $id
  * @property int|null $parent_id
@@ -34,5 +34,9 @@ class Category extends Model
     //
     public function children(){
         return $this->hasMany(self::class, 'parent_id');
+    }
+
+    public function parent(){
+        return $this->hasOne(self::class, 'id','parent_id');
     }
 }

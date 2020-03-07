@@ -2,12 +2,13 @@
 
 namespace App\Providers;
 
-use App\Http\Controllers\AttributeController;
+use App\Category;
+use App\Http\Controllers\BrandsController;
+use App\Observers\CategoryObserver;
 use App\Observers\OrderDetailObserver;
 use App\Observers\OrderObserver;
 use App\Order;
 use App\OrderDetail;
-use App\Status\Status;
 use Blade;
 use Illuminate\Support\ServiceProvider;
 
@@ -32,12 +33,11 @@ class AppServiceProvider extends ServiceProvider
     {
         Order::observe(OrderObserver::class);
         OrderDetail::observe(OrderDetailObserver::class);
+        Category::observe(CategoryObserver::class);
 
         // TODO дереткива на створення відобрадення брендів @brands
         Blade::directive('brands', function () {
-            return \App\Http\Controllers\BrandsController::showBrandList();
+            return BrandsController::showBrandList();
         });
-        // @include('sidebar.content-single-sidebar')
-        //view()->composer('sidebar.content-single-sidebar', 'App\Http\Controllers\AttributeController@compose');
     }
 }

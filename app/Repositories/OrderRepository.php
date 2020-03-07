@@ -3,42 +3,105 @@
 
 namespace App\Repositories;
 use App\Order as Model;
+use App\OrderDetail;
+use Exception;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
+use PhpParser\Node\Expr\AssignOp\Mod;
 
-class OrderRepository
+class OrderRepository extends BaseRepository
 {
 
-    public function getAll()
-    {
-        $results = Model::with('products')
-            ->with('user')
-            ->with('user.detail')
-            ->with('details')
-            ->with('payment')
-            ->with('shipping')
-//            ->limit(5)
-            ->get();
-        $results->map(function ($order) {
-            $order['detail_status'] = $order->details->sortByDesc('date_added')->first()['status'];
-            $order['sum_price'] = $order->products->sum('price');
-            return $order;
-        });
-        return $results;
-    }
+    /**
+     * @var Collection
+     */
+    protected $model = null;
 
-    public function getOrder($id)
+    /**
+     * @param Builder $model
+     * @return Builder
+     */
+    protected function withRelationships(Builder $model)
     {
-        $order = Model::with('products')
+        return $model->with('products')
             ->with('products.category')
             ->with('user')
             ->with('user.detail')
             ->with('details')
             ->with('payment')
-            ->with('shipping')
-            ->findOrFail($id);
-        $order['sum_price'] = $order->products->sum('price');
-        $order['total_price'] = $order['sum_price'] + $order->shipping->shipping_rate;
-        $order['detail_status'] = $order->details->sortByDesc('date_added')->first()['status'];
-//        dd($order);
-        return $order;
+            ->with('shipping');
+    }
+
+    /**
+     * @return Collection
+     */
+    public function getAllWithRelationships()
+    {
+        return $this->model = $this->withRelationships(Model::query())->get();
+    }
+
+    /**
+     * @param $id
+     * @return Collection
+     */
+    public function getOrderWithRelationships($id)
+    {
+//        dd($this->withRelationships(Model::query())->where('id', $id)->get(), collect([$this->withRelationships(Model::query())->findOrFail($id)]));
+//        dd(collect([$this->withRelationships(Model::query())->findOrFail($id)]));
+        return $this->model = $this->withRelationships(Model::query())->where('id', $id)->get();
+    }
+
+    /**
+     * @return Collection
+     */
+    public function getOrderStatus()
+    {
+        $this->model->map(function ($order) {
+            return $order->detail_status = $order->details->sortByDesc('date_added')->first()->status;
+        });
+        return $this->model;
+    }
+
+    /**
+     * @param $id
+     * @return Model
+     */
+    public function find($id)
+    {
+        return Model::findOrFail($id);
+    }
+
+    /**
+     * @param Model $order
+     * @param $data
+     * @return bool
+     */
+    public function update(Model $order, $data)
+    {
+        return $order->update($data);
+    }
+
+    /**
+     * @param Model $order
+     * @return bool|null
+     * @throws Exception
+     */
+    public function delete(Model $order)
+    {
+        return $order->delete();
+    }
+
+    /**
+     * @param Model $order
+     * @param $input
+     */
+    public function updateProducts(Model $order, $input)
+    {
+        $order->products()->sync($input);
+    }
+
+    public function setOrderStatus(Model $order, array $input)
+    {
+        $order->details()->save(new OrderDetail($input));
     }
 }

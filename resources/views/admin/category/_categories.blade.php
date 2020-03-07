@@ -9,6 +9,10 @@
                 @if ($category->id == $categoryItem->id)
                 disabled=""
                 @endif
+
+                @if ($category->id == $categoryItem->parent_id)
+                disabled=""
+                @endif
             @endisset
     >
         {{ $delimiter ?? '' }}{{ $categoryItem->name ?? '' }}

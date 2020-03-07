@@ -140,7 +140,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['web', 'auth']], function ()
 
     Route::get('/user/{id}', ['uses' => 'Admin\UserController@show', 'as' => 'admin.show.index']);
 
-    Route::resource('category', 'Admin\CategoryController');
+    Route::resource('category', 'Admin\CategoryController')->except(['show']);
 });
 
 Route::get('/shop/json', 'ProductController@apiShowProducts');

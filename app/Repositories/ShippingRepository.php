@@ -4,7 +4,7 @@
 namespace App\Repositories;
 use App\Shipping as Model;
 // Доставка
-class ShippingRepository
+class ShippingRepository extends Repository
 {
 
     const KEY = 'f2595f7fe8718f38f17195c10127fcb2';
@@ -90,5 +90,24 @@ class ShippingRepository
             'region' => $data->get('data')[0]->RegionsDescription,
             'area' => $data->get('data')[0]->AreaDescription,
         ];
+    }
+
+    public function update(Model $shipping, $input)
+    {
+
+        if ($shipping->city_ref != $input['city_ref']){
+            $city = $this->findRef($input['city_ref']);
+            $data = $this->parserResult($city);
+            if ($data){
+                $input += $data;
+            }
+        }elseif ($input['method'] == 'novaposhta'){
+            $warehouses = $this->getParserWarehouses($input['city_ref']);
+            $input['warehouse_title'] = 'Don`t choose';
+            if (key_exists('warehouse_ref', $warehouses)){
+                $input['warehouse_title'] = $warehouses[$input['warehouse_ref']];
+            }
+        }
+        $shipping->update($input);
     }
 }

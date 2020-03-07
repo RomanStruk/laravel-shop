@@ -1,7 +1,7 @@
 <?php
 
 
-namespace App\Status;
+namespace App\Traits;
 
 
 use InvalidArgumentException;

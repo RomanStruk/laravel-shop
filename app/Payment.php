@@ -26,7 +26,7 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Payment extends Model
 {
-//    public $fillable = ['paid', 'method'];
+    public $fillable = ['paid', 'method'];
 
     /**
      * @param array $fillable

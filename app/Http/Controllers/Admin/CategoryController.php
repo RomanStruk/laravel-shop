@@ -5,70 +5,68 @@ namespace App\Http\Controllers\Admin;
 use App\Category;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CategoryRequest;
+use App\Services\CategoryService;
+use Illuminate\Contracts\View\Factory;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
+use Illuminate\View\View;
 
 class CategoryController extends Controller
 {
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     * @param CategoryService $service
+     * @return Factory|View
      */
-    public function index()
+    public function index(CategoryService $service)
     {
-        $categories = Category::all();
-        return view('admin.category.index')->with('categories', $categories);
+        return view('admin.category.index')
+            ->with('categories', $service->categoriesOrderBy());
     }
 
     /**
      * Show the form for creating a new resource.
      *
-     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     * @param CategoryService $service
+     * @return Factory|View
      */
-    public function create()
+    public function create(CategoryService $service)
     {
-//        dd(Category::with('children')->where('parent_id', null)->get());
-        return view('admin.category.create', [
-            'category' => [],
-            'categories' => Category::with('children')->where('parent_id', null)->get(),
-            'delimiter' => ''
-        ]);
-//        return view('admin.category.create')->with('');
+        return view('admin.category.create')
+            ->with('category', [])
+            ->with('categories', $service->categories())
+            ->with('delimiter' , '');
     }
 
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @param CategoryRequest $request
+     * @param CategoryService $service
+     * @return RedirectResponse
      */
-    public function store(Request $request)
+    public function store(CategoryRequest $request, CategoryService $service)
     {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Category  $category
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Category $category)
-    {
-        //
+        $id = $service->save($request);
+        return redirect()
+            ->route('category.edit', ['category' => $id])
+            ->with('success', __('category.save'));
     }
 
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Category  $category
-     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     * @param Category $category
+     * @param CategoryService $service
+     * @return Factory|View
      */
-    public function edit(Category $category)
+    public function edit(CategoryService $service, Category $category)
     {
         return view('admin.category.edit', [
             'category' => $category,
-            'categories' => Category::with('children')->where('parent_id', 0)->get(),
+            'categories' => $service->categories(),
             'delimiter' => '']);
     }
 
@@ -76,23 +74,28 @@ class CategoryController extends Controller
      * Update the specified resource in storage.
      *
      * @param CategoryRequest $request
-     * @param \App\Category $category
-     * @return \Illuminate\Http\RedirectResponse
+     * @param CategoryService $service
+     * @param integer $category
+     * @return RedirectResponse
      */
-    public function update(CategoryRequest $request, Category $category)
+    public function update(CategoryRequest $request, CategoryService $service, $category)
     {
-        $category->update($request->only(['name', 'slug', 'parent_id', 'description']));
-        return redirect()->back()->with('success', 'Категорія успішно змінена');
+        $service->update($request, $category);
+        return redirect()
+            ->back()
+            ->with('success', __('category.update'));
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Category  $category
-     * @return \Illuminate\Http\Response
+     * @param CategoryService $service
+     * @param integer $category
+     * @return RedirectResponse
      */
-    public function destroy(Category $category)
+    public function destroy(CategoryService $service, $category)
     {
-        //
+        $service->delete($category);
+        return redirect()->back()->with('success', __('category.delete'));
     }
 }

@@ -4,8 +4,7 @@
     <h1>Редагування категорії</h1>
     <nav aria-label="breadcrumb">
         <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="/">Домашня</a></li>
-            <li class="breadcrumb-item"><a href="{{route('category.show', ['category' => $category->id])}}">Категорія</a></li>
+            <li class="breadcrumb-item"><a href="{{route('category.index')}}">Домашня</a></li>
             <li class="breadcrumb-item active" aria-current="page">Редагувати</li>
         </ol>
     </nav>

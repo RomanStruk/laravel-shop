@@ -29,7 +29,7 @@
             this.categories();
             //this.treeData = this.categoriesData;
 
-            console.log('Category Component mounted.');
+            console.log('CategoryService Component mounted.');
         },
         methods: {
             functionOnEmitChooseCategory: function(id){

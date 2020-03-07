@@ -330,7 +330,7 @@
                         </ul>
                     </div>
                     <!-- Recent Post End -->
-                    <!-- Category Post Start -->
+                    <!-- CategoryService Post Start -->
                     <div class="categorie recent-post same-sidebar">
                         <h3 class="sidebar-title mt-40">categories</h3>
                         <ul class="categorie-list">
@@ -341,7 +341,7 @@
                             <li><a href="#">Power Saw</a></li>
                         </ul>
                     </div>
-                    <!-- Category Post End -->
+                    <!-- CategoryService Post End -->
                     <!-- Meta Post Start -->
                     <div class="categorie recent-post same-sidebar">
                         <h3 class="sidebar-title mt-40">others</h3>

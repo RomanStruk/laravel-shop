@@ -4,7 +4,7 @@
     <h1>Додати категорію</h1>
     <nav aria-label="breadcrumb">
         <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="/">Домашня</a></li>
+            <li class="breadcrumb-item"><a href="{{route('category.index')}}">Домашня</a></li>
             <li class="breadcrumb-item active" aria-current="page">Додати</li>
         </ol>
     </nav>

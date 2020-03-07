@@ -27,7 +27,7 @@ class CategoryRequest extends FormRequest
         return [
             'name' => 'required|string|min:4',
             'slug' => [
-                'required',
+                'present',
                 Rule::unique('categories', 'slug')->ignore($this->route('category'))
             ],
             'parent_id' => 'required|numeric|min:0',
