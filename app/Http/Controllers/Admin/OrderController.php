@@ -11,9 +11,9 @@ use App\Actions\Order\UpdateOrderStatusAction;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\OrderRequest;
 use App\Http\Requests\StatusOrderRequest;
-use App\Services\OrderService;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 class OrderController extends Controller
@@ -21,12 +21,14 @@ class OrderController extends Controller
 
     /**
      * @param GetAllOrdersAction $action
+     * @param Request $request
      * @return Factory|View
      */
-    public function index(GetAllOrdersAction $action)
+    public function index(GetAllOrdersAction $action, Request $request)
     {
+//        dd($request->all());
         return view('admin.order.index')
-            ->with('orders', $action->run());
+            ->with('orders', $action->run($request));
     }
 
     /**

@@ -4,7 +4,7 @@
 
     <h2>
         <i class="fa fa-list"></i> Список категорії
-        <a href="{{route('category.create')}}" title="Додати">
+        <a href="{{route('admin.category.create')}}" title="Додати">
             <i class="fa fa-plus-circle" aria-hidden="true"></i>
         </a>
     </h2>
@@ -48,10 +48,10 @@
                                 <td class="text-right">
                                     <div class="btn-group">
                                         <a  class="btn btn-primary"
-                                           href="{{route('category.edit', ['category' => $category->id])}}">
+                                           href="{{route('admin.category.edit', ['category' => $category->id])}}">
                                             <i class="fa fa-pencil"></i>
                                         </a>
-                                        <form method="POST" action="{{route('category.destroy', ['category' => $category->id])}}" >
+                                        <form method="POST" action="{{route('admin.category.destroy', ['category' => $category->id])}}" >
                                             @csrf
                                             @method('DELETE')
                                             <button class="btn btn-primary" value="submit" type="submit">

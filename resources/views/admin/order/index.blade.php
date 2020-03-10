@@ -178,7 +178,7 @@
                     <div class="form-group">
                         <label class="control-label" for="input-date-added">Date Added</label>
                         <div class="input-group date">
-                            <input type="text" name="filter_date_added" value="" placeholder="Date Added"
+                            <input type="date" name="filter_date_added" value="" placeholder="Date Added"
                                    data-date-format="YYYY-MM-DD" id="input-date-added" class="form-control">
                             <span class="input-group-btn">
 <button type="button" class="btn btn-default"><i class="fa fa-calendar"></i></button>
@@ -187,7 +187,7 @@
                     <div class="form-group">
                         <label class="control-label" for="input-date-modified">Date Modified</label>
                         <div class="input-group date">
-                            <input type="text" name="filter_date_modified" value="" placeholder="Date Modified"
+                            <input type="date" name="filter_date_modified" value="" placeholder="Date Modified"
                                    data-date-format="YYYY-MM-DD" id="input-date-modified" class="form-control">
                             <span class="input-group-btn">
 <button type="button" class="btn btn-default"><i class="fa fa-calendar"></i></button>

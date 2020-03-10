@@ -11,5 +11,5 @@ class DeleteCategoryAction
     public function run($id)
     {
         return (new DeleteCategoryTask())->delete($id);
-}
+    }
 }

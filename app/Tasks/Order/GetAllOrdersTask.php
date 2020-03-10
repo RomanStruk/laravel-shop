@@ -4,7 +4,10 @@
 namespace App\Tasks\Order;
 
 
+use App\Order;
+use App\Repositories\Filters\BaseFilter;
 use App\Repositories\OrderRepository;
+use Illuminate\Http\Request;
 
 class GetAllOrdersTask
 {
@@ -21,10 +24,12 @@ class GetAllOrdersTask
         $this->repository = OrderRepository::getInstance();
     }
 
-    public function get()
+    public function get(Request $request)
     {
         $orders = $this->repository->getAllWithRelationships();
-        $orders->map(function ($order) {
+//        $orders = Order::with('products');
+//        $orders = (new BaseFilter($orders, $request))->apply()->get();
+            $orders->map(function ($order) {
 //            $order->detail_status = $this->repository->getOrderStatus($order);
             $order->sum_price = $order->products->sum('price');
             return $order;

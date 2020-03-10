@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Category;
 use App\Order;
 use App\Product;
+use App\Repositories\ProductRepository;
 use App\Repositories\RepositoryInterface\ProductRepositoryInterface;
 use DB;
 use Illuminate\Contracts\View\Factory;
@@ -17,9 +18,9 @@ class ProductController extends Controller
 
     private $productRepository;
 
-    public function __construct(ProductRepositoryInterface $productRepository)
+    public function __construct()
     {
-        $this->productRepository = $productRepository;
+        $this->productRepository = ProductRepository::getInstance();
     }
 
     public function index()
