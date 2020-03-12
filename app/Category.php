@@ -21,6 +21,9 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Category whereParentId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Category whereSlug($value)
  * @mixin \Eloquent
+ * @property string|null $description
+ * @property-read \App\Category $parent
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Category whereDescription($value)
  */
 class Category extends Model
 {

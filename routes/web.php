@@ -25,18 +25,8 @@ Route::get('/index-3', function () {
 Route::group(['prefix' => '/shop', 'middleware' => ['web']], function () {
 
     Route::get('/category/{cat}', [
-        'uses' => 'ProductController@showProducts',
+        'uses' => 'ProductController@index',
         'as' => 'shop_category'
-    ]);
-    Route::get('/category/{cat}/filter/{filter}', [
-        'uses' => 'ProductController@showProducts',
-        'as' => 'shop_category_filter'
-    ]);
-    Route::post('/category/{cat}/filter/{filter}', [
-        'uses' => 'ProductController@showProducts'
-    ]);;
-    Route::post('/category/{cat}', [
-        'uses' => 'ProductController@showProducts'
     ]);
     Route::get('/', [
         'uses' => 'ProductController@index',
@@ -149,7 +139,7 @@ Route::group([
 });
 
 Route::get('/shop/json', 'ProductController@apiShowProducts');
-Route::get('/shop2', 'ProductController@showProducts')->middleware('web')->name('shop2');
+Route::get('/shop2', 'ProductController@index2')->middleware('web')->name('shop2');
 Route::get('/category/get/json', 'CategoriesController@getDataCategoriesJson');
 Route::get('/filter/get/json', 'AttributeController@getDataAttributesJson');
 

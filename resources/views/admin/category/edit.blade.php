@@ -4,7 +4,7 @@
     <h1>Редагування категорії</h1>
     <nav aria-label="breadcrumb">
         <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="{{route('category.index')}}">Домашня</a></li>
+            <li class="breadcrumb-item"><a href="{{route('admin.category.index')}}">Домашня</a></li>
             <li class="breadcrumb-item active" aria-current="page">Редагувати</li>
         </ol>
     </nav>
@@ -25,7 +25,7 @@
         </div>
     @endif
 
-        <form action="{{ route('category.update', ['category' => $category->id]) }}" method="post">
+        <form action="{{ route('admin.category.update', ['category' => $category->id]) }}" method="post">
             @csrf
             @method('PATCH')
             @include('admin.category._form')

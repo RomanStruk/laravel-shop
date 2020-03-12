@@ -83,6 +83,7 @@ class ProductRepository extends Repository implements ProductRepositoryInterface
      */
     public function showProductsWithFormat($filters = [], $category = 0, $sortBy = '')
     {
+//        dd($filters);
         $products = Model::with('comments')->where('status', '=', '1');
         if ($filters){
             foreach ($filters as $f){

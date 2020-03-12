@@ -109,7 +109,7 @@ __webpack_require__.r(__webpack_exports__);
   mounted: function mounted() {
     this.categories(); //this.treeData = this.categoriesData;
 
-    console.log('Category Component mounted.');
+    console.log('CategoryService Component mounted.');
   },
   methods: {
     functionOnEmitChooseCategory: function functionOnEmitChooseCategory(id) {
@@ -236,7 +236,6 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-//
 //
 //
 //
@@ -523,6 +522,7 @@ __webpack_require__.r(__webpack_exports__);
       sortingProducts: 'popular',
       // сортування
       //get
+      attribute: [],
       filter: [],
       page: 1,
       category_id: null
@@ -600,6 +600,29 @@ __webpack_require__.r(__webpack_exports__);
           category: this.category_id,
           sorter: this.sortingProducts,
           page: this.page
+        },
+        paramsSerializer: function paramsSerializer(params) {
+          var tmp = [];
+          params.filter.forEach(function (item) {
+            tmp.push("attribute[".concat(item.group_attribute_id, "][]=").concat(item.id));
+          });
+
+          if (params.category) {
+            tmp.push("category=".concat(params.category));
+          }
+
+          if (params.sorter === 'price_asc') {
+            tmp.push("price=asc");
+          }
+
+          if (params.sorter === 'price_desc') {
+            tmp.push("price=desc");
+          } else {
+            tmp.push("".concat(params.sorter));
+          }
+
+          tmp.push("page=".concat(params.page));
+          return tmp.join('&');
         }
       }).then(function (response) {
         _this.pages_total = response.data.total; // скільки всього елементів
@@ -613,7 +636,8 @@ __webpack_require__.r(__webpack_exports__);
         _this.current_page = response.data.current_page;
         _this.last_page = response.data.last_page;
         console.log('Успіщний запит з фільтром'); // debug
-        // console.log(response.data);                                  // debug
+
+        console.log(response.data); // debug
       })["catch"](function (error) {
         console.log(error); // debug error
       });
@@ -1672,20 +1696,16 @@ var render = function() {
                       expression: "checkbox"
                     }
                   ],
-                  key: attribute.id,
                   staticClass: "custom-control-input",
                   attrs: {
                     type: "checkbox",
-                    name: "radio_" + attributes.id,
+                    name: "attribute[" + attributes.id + "][]",
                     id: "check" + attribute.id
                   },
                   domProps: {
-                    value: attributes.id + "-" + attribute.id,
+                    value: attribute,
                     checked: Array.isArray(_vm.checkbox)
-                      ? _vm._i(
-                          _vm.checkbox,
-                          attributes.id + "-" + attribute.id
-                        ) > -1
+                      ? _vm._i(_vm.checkbox, attribute) > -1
                       : _vm.checkbox
                   },
                   on: {
@@ -1694,7 +1714,7 @@ var render = function() {
                         $$el = $event.target,
                         $$c = $$el.checked ? true : false
                       if (Array.isArray($$a)) {
-                        var $$v = attributes.id + "-" + attribute.id,
+                        var $$v = attribute,
                           $$i = _vm._i($$a, $$v)
                         if ($$el.checked) {
                           $$i < 0 && (_vm.checkbox = $$a.concat([$$v]))
@@ -1854,7 +1874,7 @@ var render = function() {
                             [_vm._v("по рейтингу")]
                           ),
                           _vm._v(" "),
-                          _c("option", { attrs: { value: "new" } }, [
+                          _c("option", { attrs: { value: "novelty" } }, [
                             _vm._v("новинки")
                           ]),
                           _vm._v(" "),
@@ -1911,7 +1931,7 @@ var render = function() {
                                   return _c("i", {
                                     staticClass: "fa ",
                                     class: [
-                                      product.rating < n
+                                      product.average_rating < n
                                         ? "fa-star-o"
                                         : "fa-star"
                                     ]
@@ -2021,7 +2041,9 @@ var render = function() {
                             return _c("i", {
                               staticClass: "fa ",
                               class: [
-                                product.rating < n ? "fa-star-o" : "fa-star"
+                                product.average_rating < n
+                                  ? "fa-star-o"
+                                  : "fa-star"
                               ]
                             })
                           }),

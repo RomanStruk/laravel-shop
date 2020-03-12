@@ -2,6 +2,8 @@
 
 namespace App;
 
+use App\Repositories\Filters\ProductsFilter;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -52,18 +54,27 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Product whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Product whereVisits($value)
  * @mixin \Eloquent
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Product filter(\App\Repositories\Filters\ProductsFilter $productsFilter, $filter)
  */
 class Product extends Model
 {
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::addGlobalScope('rating', function (Builder $builder) {
+            $builder->withCount(['comments as average_rating' => function($query) {
+                $query->select(\DB::raw('coalesce(avg(rating),0)'));
+            }]);
+        });
+        static::addGlobalScope('count_comments', function (Builder $builder) {
+            $builder->withCount('comments');
+        });
+    }
+
     //
     public function product_attributes(){
         return $this->belongsToMany('App\Attribute');
-    }
-
-    public function pr_attr($arr)
-    {
-        return $this->belongsToMany('App\Attribute')
-            ->whereIn('id', $arr);
     }
 
     public function category()
@@ -74,5 +85,10 @@ class Product extends Model
     public function comments()
     {
         return $this->hasMany('App\Comment');
+    }
+
+    public function scopeFilter(Builder $query, ProductsFilter $productsFilter, $filter)
+    {
+        return $productsFilter->apply($query, $filter);
     }
 }

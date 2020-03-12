@@ -43,6 +43,13 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property-read \App\Payment $payment
  * @property-read \App\Shipping $shipping
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Order whereComment($value)
+ * @property \Illuminate\Support\Carbon|null $deleted_at
+ * @method static bool|null forceDelete()
+ * @method static \Illuminate\Database\Query\Builder|\App\Order onlyTrashed()
+ * @method static bool|null restore()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Order whereDeletedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Order withTrashed()
+ * @method static \Illuminate\Database\Query\Builder|\App\Order withoutTrashed()
  */
 class Order extends Model
 {
@@ -101,9 +108,5 @@ class Order extends Model
             self::STATUS_REVERSED   => 'Повернутий',
         ];
     }
-/*    public function detailStatus()
-    {
-        return $this->details->sortByDesc('date_added')->first()['status'];
-//        return $this->details()->orderBy('date_added', 'desc')->first()->status;
-    }*/
+
 }

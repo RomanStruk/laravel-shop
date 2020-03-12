@@ -24,7 +24,7 @@
         </div>
     @endif
     <div class="row">
-        <div class="col-md-12 col-md-pull-3 col-sm-12">
+        <div class="col-md-9 col-md-pull-3 col-sm-12">
             <div class="panel panel-default">
                 <div class="panel-body">
                     <table class="table table-bordered table-hover">
@@ -75,6 +75,57 @@
 
                 </div>
             </div>
+        </div>
+        <div id="filter-order" class="col-md-3 col-md-push-9 col-sm-12 hidden-sm hidden-xs">
+            <form method="GET" action="{{route('admin.product.index')}}">
+                <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title"><i class="fa fa-filter"></i> Filter</h3>
+                </div>
+                <div class="panel-body">
+                    <div class="form-group">
+                        <label class="control-label" for="input-product-id">Product ID</label>
+                        <input type="text" name="filter_product_id" value="" placeholder="Order ID" id="input-product-id"
+                               class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label" for="input-product-category">Order Category</label>
+                        <select id="input-product-category" name="category" class="form-control">
+                            <option value="">-- Категорія не вибрана --</option>
+                            @php $delimiter = ''; @endphp
+                            @include('admin.category._categories')
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label" for="input-product-status">Order Status</label>
+                        <select name="status" id="input-product-status" class="form-control">
+                            <option value="">Всі</option>
+                            <option value="0">Скриті</option>
+                            <option value="1">Активні</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label" for="input-date-added">Date Added</label>
+                        <div class="input-group date">
+                            <input type="date" name="filter_date_added" value="" placeholder="Date Added"
+                                   data-date-format="YYYY-MM-DD" id="input-date-added" class="form-control">
+                            </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label" for="input-date-modified">Date Modified</label>
+                        <div class="input-group date">
+                            <input type="date" name="filter_date_modified" value="" placeholder="Date Modified"
+                                   data-date-format="YYYY-MM-DD" id="input-date-modified" class="form-control">
+                            </div>
+                    </div>
+                    <div class="form-group text-right">
+                        <button type="submit" id="button-filter" class="btn btn-default"><i class="fa fa-filter"></i>
+                            Filter
+                        </button>
+                    </div>
+                </div>
+            </div>
+            </form>
         </div>
     </div>
 @endsection

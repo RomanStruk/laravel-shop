@@ -21,6 +21,7 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\UserDetail wherePhone($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\UserDetail whereUserId($value)
  * @mixin \Eloquent
+ * @property-read \App\User $user
  */
 class UserDetail extends Model
 {

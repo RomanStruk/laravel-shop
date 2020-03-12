@@ -36,6 +36,8 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Shipping whereStreet($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Shipping whereWarehouseRef($value)
  * @mixin \Eloquent
+ * @property string|null $warehouse_title
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Shipping whereWarehouseTitle($value)
  */
 class Shipping extends Model
 {

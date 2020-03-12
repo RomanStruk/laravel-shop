@@ -11517,3 +11517,45 @@ body {
   margin-left: 0;
 }
 
+/*----------------------------------------*/
+
+/* 11. Product Page CSS
+/*----------------------------------------*/
+
+.product-thumbnail {
+  margin-top: 15px;
+}
+
+.product-thumbnail img {
+  width: 100%;
+}
+
+.thumb-menu.nav a {
+  width: 25%;
+  border: 1px solid transparent;
+}
+
+.thumb-menu.nav a.active {
+  border: 1px solid #ddd;
+}
+
+.main-product-thumbnail .tab-content img,
+.product-thumbnail .thumb-menu div img {
+  width: 100%;
+  border: 1px solid #ebebeb;
+}
+
+.fancybox-thumbs > ul > li {
+  height: 120px;
+}
+
+.product-thumbnail {
+  margin-top: 15px;
+}
+
+.product-header {
+  text-transform: capitalize;
+  font-size: 18px;
+  font-weight: 500;
+}
+

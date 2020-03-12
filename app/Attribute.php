@@ -29,7 +29,7 @@ class Attribute extends Model
 
     public function group()
     {
-        return $this->belongsTo('App\GroupAttribute');
+        return $this->belongsTo('App\GroupAttribute', 'group_attribute_id', 'id');
     }
 
 

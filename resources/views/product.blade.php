@@ -72,7 +72,7 @@
                         <div class="rating-summary fix mtb-10">
                             <div class="rating f-left">
                                 @for($i = 1; $i <= 5; $i++)
-                                    @if($i <= $product->rating)
+                                    @if($i <= $product->average_rating)
                                         <i class="fa fa-star"></i>
                                     @else
                                         <i class="fa fa-star-o"></i>
@@ -80,7 +80,7 @@
                                 @endfor
                             </div>
                             <div class="rating-feedback f-left">
-                                <a href="#comments">({{ $product->count_comments }} відгук-ів)</a>
+                                <a href="#comments">({{ $product->comments_count }} відгук-ів)</a>
                                 <a href="#comments">додати ваш відгук</a>
                             </div>
                         </div>
