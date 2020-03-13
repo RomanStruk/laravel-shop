@@ -9,7 +9,7 @@ $factory->define(Shipping::class, function (Faker $faker) {
     return [
         'order_id' => App\Order::orderByRaw('RAND()')->first()->id,
         'method' => $faker->randomElement(['courier', 'novaposhta']),
-        'shipping_rate' => $faker->randomFloat(2, 0, 20),
+        'shipping_rate' => $faker->numberBetween(100, 5000),
 /*        'address' => $faker->randomElement(['Пункт приймання-видачі (до 30 кг): вул. Незалежності, 32
                     Седлище, Незалежності, 32
                     Волинська область

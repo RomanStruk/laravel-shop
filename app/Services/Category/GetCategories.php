@@ -16,8 +16,6 @@ class GetCategories
                 ->where('parent_id', '=', 0)
                 ->get();
         }
-        return Category::with('children')
-            ->with('parent')
-            ->get();
+        return Category::select(['id', 'slug', 'name'])->get();
     }
 }

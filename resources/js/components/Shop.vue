@@ -74,7 +74,7 @@
                                                     ></i>
                                                 </div>
                                                 <h4><a :href="'/product/' + product.alias">{{ product.title }}</a></h4>
-                                                <p><span class="price">${{ product.price}}</span><del class="prev-price">${{ product.old_price}}</del></p>
+                                                <p><span class="price">${{ product.price/100}}</span><del class="prev-price">${{ product.old_price/100}}</del></p>
                                                 <div class="pro-actions">
                                                     <div class="actions-secondary">
                                                         <a href="wishlist.html" data-toggle="tooltip" title="Add to Wishlist"><i class="fa fa-heart"></i></a>

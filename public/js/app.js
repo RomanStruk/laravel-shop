@@ -1952,10 +1952,10 @@ var render = function() {
                               _vm._v(" "),
                               _c("p", [
                                 _c("span", { staticClass: "price" }, [
-                                  _vm._v("$" + _vm._s(product.price))
+                                  _vm._v("$" + _vm._s(product.price / 100))
                                 ]),
                                 _c("del", { staticClass: "prev-price" }, [
-                                  _vm._v("$" + _vm._s(product.old_price))
+                                  _vm._v("$" + _vm._s(product.old_price / 100))
                                 ])
                               ]),
                               _vm._v(" "),

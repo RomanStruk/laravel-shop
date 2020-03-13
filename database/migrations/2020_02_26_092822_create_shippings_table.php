@@ -20,7 +20,7 @@ class CreateShippingsTable extends Migration
 //            $table->foreign('order_id')->references('id')->on('orders');
 
             $table->enum('method', ['courier', 'novaposhta']);
-            $table->float('shipping_rate')->default(0);
+            $table->integer('shipping_rate')->default(0);
 
             $table->string('city');
             $table->string('region');

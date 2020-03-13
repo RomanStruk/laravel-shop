@@ -46,8 +46,9 @@
             </a>
         </li>
     </ul>
-    <form action="{{route('admin.product.edit', ['product' => $product->id])}}" method="post">
+    <form action="{{route('admin.product.update', ['product' => $product->id])}}" method="post">
         @csrf
+        @method('PATCH')
         <div class="tab-content p-3 border-left border-right border-bottom mb-2" id="myTabContent">
             <div class="tab-pane fade show active" id="main" role="tabpanel" aria-labelledby="home-tab">
                 <div class="form-group row">
@@ -67,11 +68,28 @@
                 <div class="form-group row">
                     <label class="col-sm-2 col-form-label" for="last-name">Категорія</label>
                     <div class="col-sm-10">
-                        <select id="input-category" class="form-control" name="category">
+                        <select id="input-category" class="form-control" name="category_id">
                             @foreach($categories as $category)
                                 <option value="{{$category->id}}" selected="selected">{{$category->name}}</option>
                             @endforeach
                         </select>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-sm-2 ">
+                        Статус
+                    </div>
+                    <div class="col-sm-10">
+                        <label class="col-form-label">Видимий
+                            <input type="radio" name="status" class="radio-inline" value="1"
+                            @if($product->status == '1') checked @endif
+                            >
+                        </label>
+                        <label class="col-form-label">Скритий
+                            <input type="radio" name="status" class="radio-inline" value="0"
+                                   @if($product->status == '0') checked @endif
+                            >
+                        </label>
                     </div>
                 </div>
                 <div class="form-group row">
@@ -97,21 +115,19 @@
             </div>
             <div class="tab-pane fade" id="price" role="tabpanel" aria-labelledby="profile-tab">
                 <div class="form-group row">
-                    <label class="col-sm-2 col-form-label" for="input-price">
+                    <label class="col-sm-2 col-form-label" for="input-new-price">
                         Ціна
                     </label>
                     <div class="col-sm-10">
-                        <input id="input-price" name="price" type="number" value="{{$product->old_price}}"
-                               class="form-control">
-                    </div>
-                </div>
-                <div class="form-group row">
-                    <label class="col-sm-2 col-form-label" for="input-new-price">
-                        Нова ціна
-                    </label>
-                    <div class="col-sm-10">
-                        <input id="input-new-price" name="new_price" type="number" value="{{$product->price}}"
-                               class="form-control">
+                        <div class="input-group">
+                            <input id="input-new-price" name="price" type="text" value="@price($product->price)"
+                                   class="form-control" aria-label="Dollar amount (with dot and two decimal places)">
+                            <div class="input-group-append">
+                                <span class="input-group-text">$</span>
+                                <span class="input-group-text">0.00</span>
+                            </div>
+                        </div>
+
                     </div>
                 </div>
                 <div class="form-group row">
@@ -119,7 +135,7 @@
                         Кількість товарів
                     </label>
                     <div class="col-sm-10">
-                        <input id="input-in-stock" name="new_price" type="number" value="{{$product->in_stock}}"
+                        <input id="input-in-stock" name="in_stock" type="number" value="{{$product->in_stock}}"
                                class="form-control">
                     </div>
                 </div>
@@ -133,8 +149,8 @@
                         <div class="col-sm-10">
                             @foreach($attributes->allAttributes as $attribute)
                                 <div class="form-check form-check-inline">
-                                    <input class="form-check-input" type="checkbox"
-                                           id="inlineCheckbox{{$attribute->id}}" value="option1"
+                                    <input class="form-check-input" type="checkbox" name="attributes[]"
+                                           id="inlineCheckbox{{$attribute->id}}" value="{{$attribute->id}}"
                                         @if($product->product_attributes->firstWhere('id', '=', $attribute->id))
                                             checked
                                             @endif

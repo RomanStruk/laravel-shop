@@ -85,8 +85,8 @@
                             </div>
                         </div>
                         <div class="pro-price mb-10">
-                            <p>$<span class="price">{{$product->price}}</span>
-                                <del class="prev-price">-{{$product->old_price}}</del>
+                            <p>$<span class="price">@price($product->price)</span>
+                                <del class="prev-price">-@price($product->old_price)</del>
                             </p>
                         </div>
                         <div class="pro-ref mb-15">

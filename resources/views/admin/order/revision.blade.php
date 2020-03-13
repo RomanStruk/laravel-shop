@@ -239,21 +239,21 @@
                         </td>
                         <td class="text-left">{{$product->category->name}}</td>
                         <td class="text-right">1</td>
-                        <td class="text-right">${{ $product->price }}</td>
-                        <td class="text-right">${{ $product->price }}</td>
+                        <td class="text-right">$@price($product->price)</td>
+                        <td class="text-right">$@price($product->price)</td>
                     </tr>
                 @endforeach
                 <tr>
                     <td colspan="5" class="text-right">Sub-Total</td>
-                    <td class="text-right">${{ $order->sum_price }}</td>
+                    <td class="text-right">$@price($order->sum_price)</td>
                 </tr>
                 <tr>
                     <td colspan="5" class="text-right">Єдиний тариф доставки</td>
-                    <td class="text-right">${{ $order->shipping->shipping_rate }}</td>
+                    <td class="text-right">$@price( $order->shipping->shipping_rate )</td>
                 </tr>
                 <tr>
                     <td colspan="5" class="text-right">Total</td>
-                    <td class="text-right">${{ $order->total_price }}</td>
+                    <td class="text-right">$@price($order->total_price)</td>
                 </tr>
                 </tbody>
             </table>

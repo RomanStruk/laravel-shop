@@ -2,13 +2,15 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Actions\Product\AdminIndexProductAction;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\ProductRequest;
 use App\Product;
 use App\Services\Attribute\GetAttributes;
 use App\Services\Category\GetCategories;
+use App\Services\Product\DeleteProductById;
 use App\Services\Product\GetProductByIdOrSlug;
 use App\Services\Product\GetProductsByLimit;
+use App\Services\Product\UpdateProductById;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -65,7 +67,7 @@ class ProductController extends Controller
      * @param int $id
      * @return Factory|View
      */
-    public function show(GetProductByIdOrSlug $getProduct, GetAttributes $getAttributes , $id)
+    public function show(GetProductByIdOrSlug $getProduct, GetAttributes $getAttributes, $id)
     {
         $product = $getProduct->handel($id);
         $attributes = $getAttributes->handel();
@@ -103,23 +105,39 @@ class ProductController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param Request $request
-     * @param Product $product
-     * @return Response
+     * @param ProductRequest $request
+     * @param UpdateProductById $updateProductById
+     * @param $productId
+     * @return \Illuminate\Http\RedirectResponse
      */
-    public function update(Request $request, Product $product)
+    public function update(ProductRequest $request, UpdateProductById $updateProductById, $productId)
     {
-        //
+        $update = $request->only([
+            'title',
+            'alias',
+            'category_id',
+            'keywords',
+            'description',
+            'content',
+            'price',
+            'status',
+            'in_stock',
+        ]);
+        $attributes = $request->input('attributes');
+        $updateProductById->handel($productId, $update, $attributes);
+        return redirect()->back()->with('success', __('product.update'));;
     }
 
     /**
      * Remove the specified resource from storage.
      *
+     * @param DeleteProductById $deleteProductById
      * @param Product $product
-     * @return Response
+     * @return \Illuminate\Http\RedirectResponse
      */
-    public function destroy(Product $product)
+    public function destroy(DeleteProductById $deleteProductById, $product)
     {
-        //
+        $deleteProductById->handel($product, true);
+        return redirect()->back()->with('success', __('product.delete'));
     }
 }

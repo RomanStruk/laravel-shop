@@ -11,76 +11,35 @@ class AttributeProductTableSeeder extends Seeder
      */
     public function run()
     {
-        //
-        $data = [
-            [
-                'attribute_id' => 1,
-                'product_id' => 1
-            ],
-            [
-                'attribute_id' => 3,
-                'product_id' => 1
-            ],
-            [
-                'attribute_id' => 13,
-                'product_id' => 1
-            ],
-            [
-                'attribute_id' => 17,
-                'product_id' => 1
-            ],
 
-            [
-                'attribute_id' => 2,
-                'product_id' => 2
-            ],
-            [
-                'attribute_id' => 4,
-                'product_id' => 2
-            ],
-            [
-                'attribute_id' => 12,
-                'product_id' => 2
-            ],
-            [
-                'attribute_id' => 17,
-                'product_id' => 2
-            ],
-
-            [
-                'attribute_id' => 2,
-                'product_id' => 3
-            ],
-            [
-                'attribute_id' => 4,
-                'product_id' => 3
-            ],
-            [
-                'attribute_id' => 12,
-                'product_id' => 3
-            ],
-            [
-                'attribute_id' => 17,
-                'product_id' => 3
-            ],
-
-            [
-                'attribute_id' => 2,
-                'product_id' => 4
-            ],
-            [
-                'attribute_id' => 4,
-                'product_id' => 4
-            ],
-            [
-                'attribute_id' => 12,
-                'product_id' => 4
-            ],
-            [
-                'attribute_id' => 17,
-                'product_id' => 4
-            ]
-        ];
+        $products = \App\Product::all();
+        $data = [];
+        foreach ($products as $key => $product){
+            $data[] = [
+                'product_id' => $product->id,
+                'attribute_id' => rand(1, 7)
+            ];
+            $data[] = [
+                'product_id' => $product->id,
+                'attribute_id' => rand(8, 11)
+            ];
+            $data[] = [
+                'product_id' => $product->id,
+                'attribute_id' => rand(12, 16)
+            ];
+            $data[] = [
+                'product_id' => $product->id,
+                'attribute_id' => rand(17, 20)
+            ];
+            $data[] = [
+                'product_id' => $product->id,
+                'attribute_id' => rand(21, 24)
+            ];
+            $data[] = [
+                'product_id' => $product->id,
+                'attribute_id' => rand(25, 27)
+            ];
+        }
         DB::table('attribute_product')->insert($data);
     }
 }

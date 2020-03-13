@@ -21,8 +21,8 @@ class CreateProductsTable extends Migration
             $table->string('title',255);
             $table->string('alias',255)->unique();
             $table->text('content')->nullable();
-            $table->float('price')->default(0);
-            $table->float('old_price')->default(0)->nullable();
+            $table->integer('price')->default(0);
+            $table->integer('old_price')->default(0)->nullable();
             $table->enum('status',['0','1'])->default(1);
             $table->string('keywords',255)->default(NULL)->nullable();
             $table->string('description',255)->default(NULL)->nullable();

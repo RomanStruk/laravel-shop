@@ -287,8 +287,8 @@ class ProductsTableSeeder extends Seeder
                 'title' => 'Очко Вані',
                 'alias' => 'chasy-8',
                 'content' => '<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam tristique, diam in consequat iaculis, est purus iaculis mauris, imperdiet facilisis ante ligula at nulla.</p>',
-                'price' => 1,
-                'old_price' => 0.5,
+                'price' => 50,
+                'old_price' => 500,
                 'status' => '1',
                 'keywords' => 'watch',
                 'description' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam tristique, diam in consequat iaculis, est purus iaculis mauris, imperdiet facilisis ante ligula at nulla.',
@@ -299,5 +299,6 @@ class ProductsTableSeeder extends Seeder
         ];
 
         DB::table('products')->insert($data);
+//        factory(\App\Order::class)->create()->each(function($user) {});
     }
 }

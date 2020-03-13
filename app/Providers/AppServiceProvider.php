@@ -39,5 +39,8 @@ class AppServiceProvider extends ServiceProvider
         Blade::directive('brands', function () {
             return BrandsController::showBrandList();
         });
+        Blade::directive('price', function ($expression) {
+            return "<?php echo round(($expression/100), 2); ?>";
+        });
     }
 }
