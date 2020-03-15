@@ -17,7 +17,7 @@ class CreateShippingsTable extends Migration
             $table->bigIncrements('id');
 
             $table->bigInteger('order_id')->unsigned();
-//            $table->foreign('order_id')->references('id')->on('orders');
+            $table->foreign('order_id')->references('id')->on('orders');
 
             $table->enum('method', ['courier', 'novaposhta']);
             $table->integer('shipping_rate')->default(0);

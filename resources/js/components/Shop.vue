@@ -60,9 +60,9 @@
                                         <div class="single-product">
                                             <!-- Product Image Start -->
                                             <div class="pro-img">
-                                                <a :href="url">
-                                                    <img class="primary-img" :src="product.img" alt="single-product">
-                                                    <img class="secondary-img" src="/img/products/2.jpg" alt="single-product">
+                                                <a :href="'/product/' + product.alias">
+                                                    <img class="primary-img" :src="product.media[0].url" alt="single-product">
+                                                    <img class="secondary-img" :src="product.media[0].url" alt="single-product">
                                                 </a>
                                             </div>
                                             <!-- Product Image End -->
@@ -74,7 +74,8 @@
                                                     ></i>
                                                 </div>
                                                 <h4><a :href="'/product/' + product.alias">{{ product.title }}</a></h4>
-                                                <p><span class="price">${{ product.price/100}}</span><del class="prev-price">${{ product.old_price/100}}</del></p>
+                                                <p><span class="price">${{ product.price}}</span>
+                                                    <del v-if="product.old_price>product.price" class="prev-price">${{ product.old_price}}</del></p>
                                                 <div class="pro-actions">
                                                     <div class="actions-secondary">
                                                         <a href="wishlist.html" data-toggle="tooltip" title="Add to Wishlist"><i class="fa fa-heart"></i></a>
@@ -103,9 +104,9 @@
                                 <div class="single-product" v-for="(product, index_product) in resultData">
                                     <!-- Product Image Start -->
                                     <div class="pro-img">
-                                        <a href="">
-                                            <img class="primary-img" :src="product.img" alt="single-product">
-                                            <img class="secondary-img" src="img/products/2.jpg" alt="single-product">
+                                        <a :href="'/product/' + product.alias">
+                                            <img class="primary-img" :src="product.media[0].url" alt="single-product">
+                                            <img class="secondary-img" :src="product.media[0].url" alt="single-product">
                                         </a>
                                     </div>
                                     <!-- Product Image End -->
@@ -119,7 +120,7 @@
                                         <h4><a :href="'/product/' + product.alias">{{product.title}}</a></h4>
                                         <p>
                                             <span class="price">${{product.price}}</span>
-                                            <del class="prev-price">${{product.old_price}}</del>
+                                            <del v-if="product.old_price>product.price" class="prev-price">${{product.old_price}}</del>
                                         </p>
                                         <p>{{product.description}}</p>
                                         <div class="pro-actions">

@@ -23,33 +23,28 @@ var app = new Vue({
   el: '#app'
 });
 
-var fa = __webpack_require__(/*! fontawesome */ "./node_modules/fontawesome/index.js");
+var fa = __webpack_require__(/*! fontawesome */ "./node_modules/fontawesome/index.js"); // Example starter JavaScript for disabling form submissions if there are invalid fields
 
-$(function () {
-  var settings = {
-    "async": true,
-    "crossDomain": true,
-    "url": "https://api.novaposhta.ua/v2.0/json/",
-    "method": "POST",
-    "headers": {
-      "content-type": "application/json"
-    },
-    "processData": false,
-    // "data": {
-    //     "apiKey": "f2595f7fe8718f38f17195c10127fcb2",
-    //     "modelName": "Address",
-    //     "calledMethod": "searchSettlements",
-    //     "methodProperties": {
-    //         "CityName": "київ",
-    //         "Limit": 5
-    //     }
-    // },
-    "data": "{" + "\"apiKey\": \"f2595f7fe8718f38f17195c10127fcb2\"," + "\"modelName\": \"AddressGeneral\"," + "\"calledMethod\": \"getWarehouses\"," + "\"methodProperties\": {" + " \"CityName\": \"Седлище\"," + " \"Limit\": 5" + "}" + "}"
-  }; //console.log(settings.data);
-  // $.ajax(settings).done(function (response) {
-  //    console.log(response);
-  // });
-});
+
+(function () {
+  'use strict';
+
+  window.addEventListener('load', function () {
+    // Fetch all the forms we want to apply custom Bootstrap validation styles to
+    var forms = document.getElementsByClassName('needs-validation'); // Loop over them and prevent submission
+
+    var validation = Array.prototype.filter.call(forms, function (form) {
+      form.addEventListener('submit', function (event) {
+        if (form.checkValidity() === false) {
+          event.preventDefault();
+          event.stopPropagation();
+        }
+
+        form.classList.add('was-validated');
+      }, false);
+    });
+  }, false);
+})();
 
 /***/ }),
 

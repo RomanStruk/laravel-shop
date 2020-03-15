@@ -9,10 +9,6 @@
 
     <title>{{ config('app.name', 'Laravel') }}</title>
 
-    <!-- Scripts -->
-    <script src="{{ mix('js/manifest.js')}}"></script>
-    <script src="{{ mix('js/vendor.js')}}"></script>
-    <script src="{{ mix('adm/js/app.js')}}"></script>
     <!-- Styles -->
     <link href="{{ asset('adm/css/app.css') }}" rel="stylesheet">
 </head>
@@ -31,5 +27,9 @@
 </div>
 <script src="https://kit.fontawesome.com/1455e3d372.js" crossorigin="anonymous"></script>
 </body>
+<!-- Scripts -->
+<script src="{{ mix('js/manifest.js')}}"></script>
+<script src="{{ mix('js/vendor.js')}}"></script>
+<script src="{{ mix('adm/js/app.js')}}"></script>
 
 </html>

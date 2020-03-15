@@ -44,7 +44,7 @@
                                 <td class="text-right">{{ $product->id }}</td>
                                 <td class="text-left">{{ $product->title }}</td>
                                 <td class="text-left">{{ $product->category->name }}</td>
-                                <td class="text-left">@price( $product->price )</td>
+                                <td class="text-left">{{ $product->price }}</td>
                                 <td class="text-left">{{ $product->in_stock }}</td>
                                 <td class="text-right">
                                     <div class="btn-group">
@@ -72,7 +72,7 @@
 
                         </tbody>
                     </table>
-
+                    {{ $products->links() }}
                 </div>
             </div>
         </div>

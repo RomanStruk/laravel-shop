@@ -498,6 +498,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -900,9 +901,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       console.log(this.city_ref); // debug
     },
     loadCities: function () {
-      var _loadCities = _asyncToGenerator(
-      /*#__PURE__*/
-      _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee() {
+      var _loadCities = _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee() {
         var _this2 = this;
 
         return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee$(_context) {
@@ -1904,23 +1903,29 @@ var render = function() {
                         return _c("div", { staticClass: "col-lg-4 col-sm-6" }, [
                           _c("div", { staticClass: "single-product" }, [
                             _c("div", { staticClass: "pro-img" }, [
-                              _c("a", { attrs: { href: _vm.url } }, [
-                                _c("img", {
-                                  staticClass: "primary-img",
-                                  attrs: {
-                                    src: product.img,
-                                    alt: "single-product"
-                                  }
-                                }),
-                                _vm._v(" "),
-                                _c("img", {
-                                  staticClass: "secondary-img",
-                                  attrs: {
-                                    src: "/img/products/2.jpg",
-                                    alt: "single-product"
-                                  }
-                                })
-                              ])
+                              _c(
+                                "a",
+                                {
+                                  attrs: { href: "/product/" + product.alias }
+                                },
+                                [
+                                  _c("img", {
+                                    staticClass: "primary-img",
+                                    attrs: {
+                                      src: product.media[0].url,
+                                      alt: "single-product"
+                                    }
+                                  }),
+                                  _vm._v(" "),
+                                  _c("img", {
+                                    staticClass: "secondary-img",
+                                    attrs: {
+                                      src: product.media[0].url,
+                                      alt: "single-product"
+                                    }
+                                  })
+                                ]
+                              )
                             ]),
                             _vm._v(" "),
                             _c("div", { staticClass: "pro-content" }, [
@@ -1952,11 +1957,14 @@ var render = function() {
                               _vm._v(" "),
                               _c("p", [
                                 _c("span", { staticClass: "price" }, [
-                                  _vm._v("$" + _vm._s(product.price / 100))
+                                  _vm._v("$" + _vm._s(product.price))
                                 ]),
-                                _c("del", { staticClass: "prev-price" }, [
-                                  _vm._v("$" + _vm._s(product.old_price / 100))
-                                ])
+                                _vm._v(" "),
+                                product.old_price > product.price
+                                  ? _c("del", { staticClass: "prev-price" }, [
+                                      _vm._v("$" + _vm._s(product.old_price))
+                                    ])
+                                  : _vm._e()
                               ]),
                               _vm._v(" "),
                               _c("div", { staticClass: "pro-actions" }, [
@@ -2017,20 +2025,27 @@ var render = function() {
                   _vm._l(_vm.resultData, function(product, index_product) {
                     return _c("div", { staticClass: "single-product" }, [
                       _c("div", { staticClass: "pro-img" }, [
-                        _c("a", { attrs: { href: "" } }, [
-                          _c("img", {
-                            staticClass: "primary-img",
-                            attrs: { src: product.img, alt: "single-product" }
-                          }),
-                          _vm._v(" "),
-                          _c("img", {
-                            staticClass: "secondary-img",
-                            attrs: {
-                              src: "img/products/2.jpg",
-                              alt: "single-product"
-                            }
-                          })
-                        ])
+                        _c(
+                          "a",
+                          { attrs: { href: "/product/" + product.alias } },
+                          [
+                            _c("img", {
+                              staticClass: "primary-img",
+                              attrs: {
+                                src: product.media[0].url,
+                                alt: "single-product"
+                              }
+                            }),
+                            _vm._v(" "),
+                            _c("img", {
+                              staticClass: "secondary-img",
+                              attrs: {
+                                src: product.media[0].url,
+                                alt: "single-product"
+                              }
+                            })
+                          ]
+                        )
                       ]),
                       _vm._v(" "),
                       _c("div", { staticClass: "pro-content" }, [
@@ -2063,9 +2078,11 @@ var render = function() {
                             _vm._v("$" + _vm._s(product.price))
                           ]),
                           _vm._v(" "),
-                          _c("del", { staticClass: "prev-price" }, [
-                            _vm._v("$" + _vm._s(product.old_price))
-                          ])
+                          product.old_price > product.price
+                            ? _c("del", { staticClass: "prev-price" }, [
+                                _vm._v("$" + _vm._s(product.old_price))
+                              ])
+                            : _vm._e()
                         ]),
                         _vm._v(" "),
                         _c("p", [_vm._v(_vm._s(product.description))]),

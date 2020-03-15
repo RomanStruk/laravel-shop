@@ -62,7 +62,7 @@
                                 <td class="text-right">{{ $order->id }}</td>
                                 <td class="text-left">{{ $order->user->detail->first_name }} {{ $order->user->detail->last_name }}</td>
                                 <td class="text-left">{{$order->getStatus($order->detail_status)}}</td>
-                                <td class="text-right">$@price($order->sum_price)</td>
+                                <td class="text-right">{{$order->sum_price}}</td>
                                 <td class="text-left">{{ $order->created_at }}</td>
                                 <td class="text-left">{{ $order->updated_at }}</td>
                                 <td class="text-right">

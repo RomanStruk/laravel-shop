@@ -145,3 +145,7 @@ Route::get('/filter/get/json', 'AttributeController@getDataAttributesJson');
 
 
 Route::get('/test', 'ProductController@apiTest')->middleware('web');
+
+Route::get('/php', function (){
+   phpinfo();
+});

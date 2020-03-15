@@ -20,6 +20,8 @@ use Illuminate\Database\Eloquent\Model;
  */
 class GroupAttribute extends Model
 {
+    public $timestamps = false;
+
     protected $table = 'group_attributes';
 
     public function allAttributes()

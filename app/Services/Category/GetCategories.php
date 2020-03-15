@@ -8,9 +8,9 @@ use App\Category;
 
 class GetCategories
 {
-    public function handel($root = true)
+    public function handel($onlyRoot = true)
     {
-        if ($root){
+        if ($onlyRoot){
             return Category::with('children')
                 ->with('parent')
                 ->where('parent_id', '=', 0)

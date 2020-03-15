@@ -60,4 +60,13 @@ class Shipping extends Model
     {
         return $this->belongsTo('App\Order');
     }
+
+    public function getShippingRateAttribute($value)
+    {
+        return round(($value/100), 2);
+    }
+    public function setShippingRateAttribute($value)
+    {
+        $this->attributes['shipping_rate'] = (int)((float)$value*100);
+    }
 }

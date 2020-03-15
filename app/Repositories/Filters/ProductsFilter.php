@@ -19,7 +19,7 @@ class ProductsFilter extends BaseFilter
     {
         if (! is_numeric($value)) return ;
 
-        $this->builder->where('status', '=', $value);
+        $this->builder->where('status', '=', (int)$value);
     }
 
     public function categoryFilter($value)
@@ -62,7 +62,7 @@ class ProductsFilter extends BaseFilter
 
     public function noveltyFilter($value)
     {
-        $this->builder->orderBy('products.created_at', 'asc'); //новинки
+        $this->builder->orderBy('products.created_at', 'desc'); //новинки
     }
 
     public function popularFilter($value)

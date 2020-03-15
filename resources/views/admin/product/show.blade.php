@@ -1,10 +1,14 @@
 @extends('admin.layouts.app')
 
 @section('content')
-    <h1>Перегляд товару #{{$product->id}}</h1>
+    <h1>Перегляд товару #{{$product->id}}
+        <a href="{{route('admin.product.edit', ['product' => $product->id])}}" title="Редагувати">
+            <i class="fa fa-edit" aria-hidden="true"></i>
+        </a>
+    </h1>
     <nav aria-label="breadcrumb">
         <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="/admin">Домашня</a></li>
+            <li class="breadcrumb-item"><a href="{{route('admin.product.index')}}">Домашня</a></li>
             <li class="breadcrumb-item active" aria-current="page">Перегляд</li>
 
         </ol>
@@ -69,32 +73,20 @@
     <div class="row">
         <div class="col-lg-5">
             <div class="tab-content">
-                <div id="thumb1" class="tab-pane active">
-                    <a data-fancybox="images" href="/img/products/1.jpg">
-                        <img src="/img/products/1.jpg" id="product_img" alt="product-view"></a>
+                @foreach($product->media as $media)
+                <div id="thumb_{{$media->id}}" class="tab-pane @if ($loop->first) active @endif">
+                    <a data-fancybox="images" href="{{$media->url}}">
+                        <img class="img" src="{{$media->url}}" id="product_img" alt="product-view"></a>
                 </div>
-                <div id="thumb2" class="tab-pane"><a data-fancybox="images" href="/img/products/2.jpg">
-                        <img src="/img/products/2.jpg" alt="product-view"></a>
-                </div>
-                <div id="thumb3" class="tab-pane">
-                    <a data-fancybox="images" href="/img/products/3.jpg">
-                        <img src="/img/products/3.jpg" alt="product-view">
-                    </a>
-                </div>
-                <div id="thumb4" class="tab-pane">
-                    <a data-fancybox="images" href="/img/products/4.jpg">
-                        <img src="/img/products/4.jpg" alt="product-view">
-                    </a></div>
+                @endforeach
             </div>
             <div class="product-thumbnail">
-                <div class="thumb-menu nav"><a data-toggle="tab" href="#thumb1" class="active">
-                        <img src="/img/products/1.jpg" alt="product-thumbnail">
+                <div class="thumb-menu nav">
+                    @foreach($product->media as $media)
+                    <a data-toggle="tab" href="#thumb_{{$media->id}}" class="@if ($loop->first) active @endif">
+                        <img src="{{$media->url}}" alt="product-thumbnail">
                     </a>
-                    <a data-toggle="tab" href="#thumb2">
-                        <img src="/img/products/2.jpg" alt="product-thumbnail">
-                    </a> <a data-toggle="tab" href="#thumb3">
-                        <img src="/img/products/3.jpg" alt="product-thumbnail"></a>
-                    <a data-toggle="tab" href="#thumb4"><img src="/img/products/4.jpg" alt="product-thumbnail"></a>
+                    @endforeach
                 </div>
             </div>
         </div>
@@ -118,9 +110,8 @@
                     </div>
                 </div>
                 <div class="pro-price mb-10">
-                    <p>$<span class="price">@price($product->price)</span>
-                        <del class="prev-price">-@price($product->old_price)</del>
-                    </p>
+                    <p>Ціна <b>{{$product->price}}</b> $ <br>
+                    Стара ціна <b>{{$product->old_price}}</b> $</p>
                 </div>
                 <div class="pro-ref mb-15">
                     <p>
@@ -129,9 +120,19 @@
                     </p>
                 </div>
 
-                <p class="ptb-20">
-                    {{$product->description}}
-                </p></div>
+                <div class="row">
+                    <div class="col-2">Ключові слова</div>
+                    <div class="col-10">{{$product->keywords}}</div>
+                </div>
+                <div class="row">
+                    <div class="col-2">Опис</div>
+                    <div class="col-10">{{$product->description}}</div>
+                </div>
+                <div class="row">
+                    <div class="col-2">Текст</div>
+                    <div class="col-10">{{$product->content}}</div>
+                </div>
+            </div>
         </div>
     </div>
 

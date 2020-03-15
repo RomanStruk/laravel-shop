@@ -10,12 +10,14 @@ class DeleteProductById
 {
     public function handel($id, $forceDelete = false)
     {
+        $product = Product::withTrashed()->findOrFail($id);
         try {
             if ($forceDelete){
-                return Product::firstOrFail($id)->forceDelete();
+                return $product->forceDelete();
             }
-            return Product::firstOrFail($id)->delete();
+            return $product->delete();
         } catch (\Exception $e) {
+            throw abort(304);
         }
     }
 

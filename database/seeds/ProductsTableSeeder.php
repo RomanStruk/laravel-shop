@@ -24,7 +24,7 @@ class ProductsTableSeeder extends Seeder
                 'status' => '1',
                 'keywords' => 'watch',
                 'description' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam tristique, diam in consequat iaculis, est purus iaculis mauris, imperdiet facilisis ante ligula at nulla.',
-                'img' => '/img/products/4.jpg',
+
                 'hit' => '1',
             ],
             [
@@ -39,7 +39,7 @@ class ProductsTableSeeder extends Seeder
                 'status' => '1',
                 'keywords' => 'watch',
                 'description' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam tristique, diam in consequat iaculis, est purus iaculis mauris, imperdiet facilisis ante ligula at nulla.',
-                'img' => '/img/products/4.jpg',
+
                 'hit' => '1',
             ],
             [
@@ -54,7 +54,7 @@ class ProductsTableSeeder extends Seeder
                 'status' => '1',
                 'keywords' => 'watch',
                 'description' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam tristique, diam in consequat iaculis, est purus iaculis mauris, imperdiet facilisis ante ligula at nulla.',
-                'img' => '/img/products/4.jpg',
+
                 'hit' => '1',
             ],
             [
@@ -69,7 +69,7 @@ class ProductsTableSeeder extends Seeder
                 'status' => '1',
                 'keywords' => 'watch',
                 'description' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam tristique, diam in consequat iaculis, est purus iaculis mauris, imperdiet facilisis ante ligula at nulla.',
-                'img' => '/img/products/4.jpg',
+
                 'hit' => '1',
             ],
 
@@ -86,7 +86,7 @@ class ProductsTableSeeder extends Seeder
                 'status' => '1',
                 'keywords' => 'watch',
                 'description' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam tristique, diam in consequat iaculis, est purus iaculis mauris, imperdiet facilisis ante ligula at nulla.',
-                'img' => '/img/products/4.jpg',
+
                 'hit' => '1',
             ],
             [
@@ -101,7 +101,7 @@ class ProductsTableSeeder extends Seeder
                 'status' => '1',
                 'keywords' => 'watch',
                 'description' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam tristique, diam in consequat iaculis, est purus iaculis mauris, imperdiet facilisis ante ligula at nulla.',
-                'img' => '/img/products/4.jpg',
+
                 'hit' => '1',
             ],
 
@@ -118,7 +118,7 @@ class ProductsTableSeeder extends Seeder
                 'status' => '1',
                 'keywords' => 'watch',
                 'description' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam tristique, diam in consequat iaculis, est purus iaculis mauris, imperdiet facilisis ante ligula at nulla.',
-                'img' => '/img/products/4.jpg',
+
                 'hit' => '1',
             ],
             [
@@ -133,7 +133,7 @@ class ProductsTableSeeder extends Seeder
                 'status' => '1',
                 'keywords' => 'watch',
                 'description' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam tristique, diam in consequat iaculis, est purus iaculis mauris, imperdiet facilisis ante ligula at nulla.',
-                'img' => '/img/products/4.jpg',
+
                 'hit' => '1',
             ],
             [
@@ -148,7 +148,7 @@ class ProductsTableSeeder extends Seeder
                 'status' => '1',
                 'keywords' => 'watch',
                 'description' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam tristique, diam in consequat iaculis, est purus iaculis mauris, imperdiet facilisis ante ligula at nulla.',
-                'img' => '/img/products/4.jpg',
+
                 'hit' => '1',
             ],
             [
@@ -163,7 +163,7 @@ class ProductsTableSeeder extends Seeder
                 'status' => '1',
                 'keywords' => 'watch',
                 'description' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam tristique, diam in consequat iaculis, est purus iaculis mauris, imperdiet facilisis ante ligula at nulla.',
-                'img' => '/img/products/4.jpg',
+
                 'hit' => '1',
             ],
 
@@ -180,7 +180,7 @@ class ProductsTableSeeder extends Seeder
                 'status' => '1',
                 'keywords' => 'watch',
                 'description' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam tristique, diam in consequat iaculis, est purus iaculis mauris, imperdiet facilisis ante ligula at nulla.',
-                'img' => '/img/products/4.jpg',
+
                 'hit' => '0',
             ],
             [
@@ -195,7 +195,7 @@ class ProductsTableSeeder extends Seeder
                 'status' => '1',
                 'keywords' => 'watch',
                 'description' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam tristique, diam in consequat iaculis, est purus iaculis mauris, imperdiet facilisis ante ligula at nulla.',
-                'img' => '/img/products/4.jpg',
+
                 'hit' => '0',
             ],
 
@@ -211,7 +211,7 @@ class ProductsTableSeeder extends Seeder
                 'status' => '1',
                 'keywords' => 'watch',
                 'description' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam tristique, diam in consequat iaculis, est purus iaculis mauris, imperdiet facilisis ante ligula at nulla.',
-                'img' => '/img/products/4.jpg',
+
                 'hit' => '0',
             ],
 
@@ -227,7 +227,7 @@ class ProductsTableSeeder extends Seeder
                 'status' => '1',
                 'keywords' => 'watch',
                 'description' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam tristique, diam in consequat iaculis, est purus iaculis mauris, imperdiet facilisis ante ligula at nulla.',
-                'img' => '/img/products/4.jpg',
+
                 'hit' => '0',
             ],
 
@@ -243,7 +243,7 @@ class ProductsTableSeeder extends Seeder
                 'status' => '1',
                 'keywords' => 'watch',
                 'description' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam tristique, diam in consequat iaculis, est purus iaculis mauris, imperdiet facilisis ante ligula at nulla.',
-                'img' => '/img/products/4.jpg',
+
                 'hit' => '0',
             ],
 
@@ -259,7 +259,7 @@ class ProductsTableSeeder extends Seeder
                 'status' => '1',
                 'keywords' => 'watch',
                 'description' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam tristique, diam in consequat iaculis, est purus iaculis mauris, imperdiet facilisis ante ligula at nulla.',
-                'img' => '/img/products/4.jpg',
+
                 'hit' => '0',
             ],
 
@@ -275,7 +275,7 @@ class ProductsTableSeeder extends Seeder
                 'status' => '1',
                 'keywords' => 'watch',
                 'description' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam tristique, diam in consequat iaculis, est purus iaculis mauris, imperdiet facilisis ante ligula at nulla.',
-                'img' => '/img/products/4.jpg',
+
                 'hit' => '0',
             ],
 
@@ -292,7 +292,6 @@ class ProductsTableSeeder extends Seeder
                 'status' => '1',
                 'keywords' => 'watch',
                 'description' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam tristique, diam in consequat iaculis, est purus iaculis mauris, imperdiet facilisis ante ligula at nulla.',
-                'img' => '/img/products/4.jpg',
                 'hit' => '0',
             ],
 

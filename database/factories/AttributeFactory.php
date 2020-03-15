@@ -7,6 +7,8 @@ use Faker\Generator as Faker;
 
 $factory->define(Attribute::class, function (Faker $faker) {
     return [
-        //
+        'id' => null,
+        'value' => $faker->slug,
+        'group_attribute_id' => 1
     ];
 });

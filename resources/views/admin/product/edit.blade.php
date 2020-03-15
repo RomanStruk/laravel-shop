@@ -4,8 +4,8 @@
     <h1>Редагування товару #{{$product->id}}</h1>
     <nav aria-label="breadcrumb">
         <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="/admin">Домашня</a></li>
-            <li class="breadcrumb-item active" aria-current="page">Перегляд</li>
+            <li class="breadcrumb-item"><a href="{{route('admin.product.index')}}">Домашня</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Редагування товару</li>
 
         </ol>
     </nav>
@@ -120,7 +120,7 @@
                     </label>
                     <div class="col-sm-10">
                         <div class="input-group">
-                            <input id="input-new-price" name="price" type="text" value="@price($product->price)"
+                            <input id="input-new-price" name="price" type="text" value="{{$product->price}}"
                                    class="form-control" aria-label="Dollar amount (with dot and two decimal places)">
                             <div class="input-group-append">
                                 <span class="input-group-text">$</span>

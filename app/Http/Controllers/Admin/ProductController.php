@@ -7,6 +7,9 @@ use App\Http\Requests\ProductRequest;
 use App\Product;
 use App\Services\Attribute\GetAttributes;
 use App\Services\Category\GetCategories;
+use App\Services\Media\SaveMediaFile;
+use App\Services\Media\SaveToDbMediaFile;
+use App\Services\Product\CreateProductService;
 use App\Services\Product\DeleteProductById;
 use App\Services\Product\GetProductByIdOrSlug;
 use App\Services\Product\GetProductsByLimit;
@@ -15,6 +18,7 @@ use Illuminate\Contracts\View\Factory;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\View\View;
+use App\Http\Resources\Product as ProductResource;
 
 class ProductController extends Controller
 {
@@ -28,6 +32,7 @@ class ProductController extends Controller
      */
     public function index(Request $request, GetProductsByLimit $getProducts, GetCategories $categories)
     {
+//        dd($request->except('limit'));
         $products = $getProducts->handel(
             $request->except('limit'),
             $request->get('limit')
@@ -41,22 +46,46 @@ class ProductController extends Controller
     /**
      * Show the form for creating a new resource.
      *
-     * @return Response
+     * @param GetCategories $getCategories
+     * @param GetAttributes $getAttributes
+     * @return Factory|View
      */
-    public function create()
+    public function create(GetCategories $getCategories, GetAttributes $getAttributes)
     {
-        //
+        $categories = $getCategories->handel(false);
+        $groups = $getAttributes->handel();
+        return view('admin.product.create')
+            ->with('categories', $categories)
+            ->with('groups', $groups);
     }
 
     /**
      * Store a newly created resource in storage.
      *
-     * @param Request $request
-     * @return Response
+     * @param ProductRequest $request
+     * @param CreateProductService $createProductService
+     * @param UpdateProductById $updateProductById
+     * @param SaveMediaFile $saveMediaFile
+     * @param SaveToDbMediaFile $dbMediaFileService
+     * @return \Illuminate\Http\RedirectResponse
      */
-    public function store(Request $request)
+    public function store(ProductRequest $request,
+                          CreateProductService $createProductService,
+                          UpdateProductById $updateProductById,
+                          SaveMediaFile $saveMediaFile,
+                          SaveToDbMediaFile $dbMediaFileService)
     {
-        //
+        $insertData = $request->validated();
+        $productId = $createProductService->handel($insertData);
+        $files=[];
+        foreach($request->file('media') as $file){
+                $fileData = $saveMediaFile->handel($file, 'shop/'.$productId);
+                $files[] = $dbMediaFileService->handel($fileData, '', '', '');
+        }
+        $updateProductById->handel($productId, false, $insertData['attributes'], $files);
+
+        return redirect()->route('admin.product.show', ['product' => $productId])
+            ->with('success', __('product.save'));
     }
 
     /**
@@ -137,7 +166,7 @@ class ProductController extends Controller
      */
     public function destroy(DeleteProductById $deleteProductById, $product)
     {
-        $deleteProductById->handel($product, true);
+        $deleteProductById->handel($product, false);
         return redirect()->back()->with('success', __('product.delete'));
     }
 }

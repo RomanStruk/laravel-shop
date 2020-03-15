@@ -56,11 +56,29 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Product whereVisits($value)
  * @mixin \Eloquent
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Product filter(\App\Repositories\Filters\ProductsFilter $productsFilter, $filter)
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Media[] $media
+ * @property-read int|null $media_count
+ * @method static bool|null forceDelete()
+ * @method static \Illuminate\Database\Query\Builder|\App\Product onlyTrashed()
+ * @method static bool|null restore()
+ * @method static \Illuminate\Database\Query\Builder|\App\Product withTrashed()
+ * @method static \Illuminate\Database\Query\Builder|\App\Product withoutTrashed()
  */
 class Product extends Model
 {
     use SoftDeletes;
-    protected $dates = ['deleted_at'];
+//    protected $dates = ['deleted_at'];
+
+    public $fillable = ['title',
+        'alias',
+        'category_id',
+        'keywords',
+        'description',
+        'content',
+        'price',
+        'in_stock',
+        'status',];
+
     protected static function boot()
     {
         parent::boot();
@@ -93,5 +111,27 @@ class Product extends Model
     public function scopeFilter(Builder $query, ProductsFilter $productsFilter, $filter)
     {
         return $productsFilter->apply($query, $filter);
+    }
+
+    public function media()
+    {
+        return $this->belongsToMany(Media::class);
+    }
+
+    public function getPriceAttribute($value)
+    {
+        return round(($value/100), 2);
+    }
+    public function setPriceAttribute($value)
+    {
+        $this->attributes['price'] = (int)((float)$value*100);
+    }
+    public function getOldPriceAttribute($value)
+    {
+        return round(($value/100), 2);
+    }
+    public function setOldPriceAttribute($value)
+    {
+        $this->attributes['old_price'] = (int)((float)$value*100);
     }
 }

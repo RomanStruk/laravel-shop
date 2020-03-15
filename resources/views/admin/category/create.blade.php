@@ -4,7 +4,7 @@
     <h1>Додати категорію</h1>
     <nav aria-label="breadcrumb">
         <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="{{route('category.index')}}">Домашня</a></li>
+            <li class="breadcrumb-item"><a href="{{route('admin.category.index')}}">Домашня</a></li>
             <li class="breadcrumb-item active" aria-current="page">Додати</li>
         </ol>
     </nav>
@@ -25,7 +25,7 @@
         </div>
     @endif
 
-        <form action="{{ route('category.store') }}" method="post">
+        <form action="{{ route('admin.category.store') }}" method="post">
             @csrf
 
             @include('admin.category._form')
