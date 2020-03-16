@@ -3,6 +3,8 @@
 namespace Tests\Feature\Media;
 
 use App\Media;
+use App\Services\Media\DeleteMediaFile;
+use App\Services\Media\DeleteMediaFileFromDb;
 use App\Services\Media\SaveMediaFile;
 use App\Services\Media\SaveToDbMediaFile;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -91,5 +93,59 @@ class MediaSaveTest extends TestCase
         // перевірка чи існує такий файл на диску
         Storage::disk($disc)->assertExists(Media::find($mediaId)->path);
 
+    }
+
+    public function test_delete_file()
+    {
+        // setup
+        $disc = 'public';
+        $image = UploadedFile::fake()->image('avatar.jpg', 100, 100)->size(1000);
+        // збереження файду на диск і отримання інформації про нього
+        $mediaSave = new SaveMediaFile();
+        $data = $mediaSave->handel($image, 'tests');
+        // перевірка доступу до збереженого файла
+        Storage::disk($disc)->assertExists($data['path']);
+        // end setup
+
+        // deleting
+        $service = new DeleteMediaFile();
+        $returnBoolean = $service->handel($data['path'], $disc);
+
+        // перевірка ркзультату видалення файла
+        $this->assertTrue($returnBoolean);
+        // перевірка доступу до не існуючого файла
+        Storage::disk($disc)->assertMissing($data['path']);
+    }
+
+    public function test_delete_file_from_db_and_storage()
+    {
+        // setup
+        $disc = 'public';
+        $image = UploadedFile::fake()->image('avatar.jpg', 100, 100)->size(1000);
+        // збереження файду на диск і отримання інформації про нього
+        $mediaSave = new SaveMediaFile();
+        $data = $mediaSave->handel($image, 'tests');
+        // перевірка доступу до збереженого файла
+        Storage::disk($disc)->assertExists($data['path']);
+
+        // Збереження файла до бд і отримання id медіа
+        $saveMethod = new SaveToDbMediaFile();
+        $mediaId = $saveMethod->handel($data, 'Some File', 'keywords', 'description');
+        // перевірка чи існує такий файл в бд
+        $this->assertTrue((boolean)$mediaId);
+        // end setup
+
+        // deleting
+        $serviceDbDelete = new DeleteMediaFileFromDb();
+        $result = $serviceDbDelete->handel($mediaId);
+        $service = new DeleteMediaFile();
+        $returnBoolean = $service->handel($result['path'], $result['disc']);
+
+        // перевірка чи не існує такий файл в бд
+        $this->assertFalse((boolean)Media::find($mediaId));
+        // перевірка ркзультату видалення файла
+        $this->assertTrue($returnBoolean);
+        // перевірка доступу до не існуючого файла
+        Storage::disk($disc)->assertMissing($data['path']);
     }
 }
