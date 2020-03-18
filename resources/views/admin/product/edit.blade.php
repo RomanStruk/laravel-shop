@@ -45,10 +45,18 @@
                 Фільтри
             </a>
         </li>
+        <li class="nav-item">
+            <a class="nav-link" id="products-tab" data-toggle="tab" href="#media" role="tab"
+               aria-controls="profile"
+               aria-selected="false">
+                Медіа файли
+            </a>
+        </li>
     </ul>
-    <form action="{{route('admin.product.update', ['product' => $product->id])}}" method="post">
+    <form action="{{route('admin.product.update', ['product' => $product->id])}}" method="post" enctype="multipart/form-data">
         @csrf
         @method('PATCH')
+        <input type="hidden" name="q" value="1">
         <div class="tab-content p-3 border-left border-right border-bottom mb-2" id="myTabContent">
             <div class="tab-pane fade show active" id="main" role="tabpanel" aria-labelledby="home-tab">
                 <div class="form-group row">
@@ -162,6 +170,68 @@
                         </div>
                     @endforeach
                 </div>
+            </div>
+            <div class="tab-pane fade" id="media" role="tabpanel" aria-labelledby="profile-tab">
+                <div class="form-group row">
+                    <label class="col-sm-2 col-form-label" for="input-in-stock">
+                        Завантажити
+                    </label>
+                    <div class="col-sm-10">
+                        <div class="custom-file">
+                            <input type="file" name="media[]" class="custom-file-input" id="inputGroupFile01" multiple>
+                            <label class="custom-file-label" for="inputGroupFile01">Choose file</label>
+                        </div>
+                    </div>
+                </div>
+                <table class="table table-bordered table-hover">
+                    <thead>
+                    <tr>
+                        <td class="text-right col-1">
+                            <input type="checkbox" onclick="$('input[name*=\'files\']').prop('checked', this.checked);">
+                        </td>
+                        <td class="text-left col-3">Зображення</td>
+                        <td class="text-left col-5">Назва</td>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    @foreach($product->media as $file)
+                        <tr>
+                            <td class="text-right">
+                                <input type="checkbox" name="files[]" value="{{ $file->id }}">
+                            </td>
+                            <td class="text-left">
+                                <img src="{{$file->url}}" alt="{{$file->name}}" class="card-img-top">
+                            </td>
+                            <td class="text-left">{{ $file->name }}</td>
+                        </tr>
+                    @endforeach
+
+                    </tbody>
+                </table>
+                <div class="form-group row">
+                    <label class="col-sm-2 col-form-label" for="input-in-stock">
+                        З вибраними
+                    </label>
+                    <div class="col-sm-10">
+                        <select name="action" class="form-control">
+                            <option value="0">Нічого не робити</option>
+                            <option value="1">Видалити</option>
+                        </select>
+                    </div>
+                </div>
+
+{{--                <div class="form-group row">--}}
+{{--                    @foreach($product->media as $file)--}}
+{{--                        <div class="card" style="width: 18rem;">--}}
+{{--                            <img src="{{$file->url}}" alt="{{$file->name}}" class="card-img-top">--}}
+{{--                            <div class="card-body">--}}
+{{--                                <p class="card-text">{{$file->name}}</p>--}}
+{{--                            </div>--}}
+{{--                        </div>--}}
+
+
+{{--                    @endforeach--}}
+{{--                </div>--}}
             </div>
         </div>
         <div class="form-group row">

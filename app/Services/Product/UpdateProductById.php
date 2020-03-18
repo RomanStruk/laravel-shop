@@ -31,6 +31,7 @@ class UpdateProductById
             $product->product_attributes()->sync($attributes);
         if ($media)
             $product->media()->sync($media);
+//            $product->media()->associate($media);
 
     }
 

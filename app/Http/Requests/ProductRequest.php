@@ -25,11 +25,15 @@ class ProductRequest extends FormRequest
      */
     public function rules()
     {
+//        dd(request()->method());
         return [
             'title' => ['required', 'filled', 'between:4,255'],
-            'alias' => [
+            'alias' => request()->method() == 'PATCH'?[
                 'required',
                 Rule::unique('products', 'alias')->ignore($this->route('product'))
+            ]:[
+                'required',
+                'unique:products,alias'
             ],
             'category_id' => ['required', 'integer', 'exists:categories,id'],
             'keywords' => ['required', 'string', 'filled', 'between:4,255'],
@@ -39,15 +43,22 @@ class ProductRequest extends FormRequest
             'status' => ['required', 'in:1,0'],
             'in_stock' => ['required', 'integer', 'min:1'],
             'attributes' => ['array', 'distinct', 'exists:attributes,id'],
-            'media' => 'required',
-            'media.*' => 'mimes:png,jpeg,jpg'
+            'media.*' => request()->method() == 'POST'?
+                ['mimes:png,jpeg,jpg']:
+                ['nullable', 'mimes:png,jpeg,jpg'],
+            'action' =>request()->method() == 'POST'?
+                ['nullable']:
+                ['required', 'in:0,1'],
+            'files' => request()->method() == 'POST'?
+                ['nullable']:
+                ['required_if:action,1', 'exists:media,id'],
         ];
     }
 
     protected function prepareForValidation()
     {
         $this->merge(['status' => $this->has('status') ? 1 : 0]);
-        if (empty($this->alias)){
+        if (empty($this->alias) and ! empty($this->title)){
             $this->merge(['alias' => \Str::slug($this->title). rand(1,99)]);
         }
     }

@@ -69,4 +69,9 @@ class ProductsFilter extends BaseFilter
     {
         $this->builder->orderBy('visits', 'desc'); //популярные
     }
+
+    public function dateFilter($value)
+    {
+        $this->builder->orderBy('created_at', 'desc'); //date
+    }
 }

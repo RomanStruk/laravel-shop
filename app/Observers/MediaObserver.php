@@ -1,0 +1,65 @@
+<?php
+
+namespace App\Observers;
+
+use App\Media;
+use App\Services\Media\DeleteMediaFile;
+
+class MediaObserver
+{
+    /**
+     * Handle the media "created" event.
+     *
+     * @param  \App\Media  $media
+     * @return void
+     */
+    public function created(Media $media)
+    {
+        //
+    }
+
+    /**
+     * Handle the media "updated" event.
+     *
+     * @param  \App\Media  $media
+     * @return void
+     */
+    public function updated(Media $media)
+    {
+        //
+    }
+
+    /**
+     * Handle the media "deleted" event.
+     *
+     * @param \App\Media $media
+     * @return void
+     */
+    public function deleted(Media $media)
+    {
+        $deleteMediaFile = new DeleteMediaFile();
+        $deleteMediaFile->handel($media->path, $media->disc);
+    }
+
+    /**
+     * Handle the media "restored" event.
+     *
+     * @param  \App\Media  $media
+     * @return void
+     */
+    public function restored(Media $media)
+    {
+        //
+    }
+
+    /**
+     * Handle the media "force deleted" event.
+     *
+     * @param  \App\Media  $media
+     * @return void
+     */
+    public function forceDeleted(Media $media)
+    {
+        //
+    }
+}

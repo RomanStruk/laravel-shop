@@ -7,6 +7,7 @@ use App\Http\Requests\ProductRequest;
 use App\Product;
 use App\Services\Attribute\GetAttributes;
 use App\Services\Category\GetCategories;
+use App\Services\Media\DeleteMediaFileFromDb;
 use App\Services\Media\SaveMediaFile;
 use App\Services\Media\SaveToDbMediaFile;
 use App\Services\Product\CreateProductService;
@@ -33,8 +34,10 @@ class ProductController extends Controller
     public function index(Request $request, GetProductsByLimit $getProducts, GetCategories $categories)
     {
 //        dd($request->except('limit'));
+        $filters = $request->except('limit');
+        $filters['date'] = 'desc';
         $products = $getProducts->handel(
-            $request->except('limit'),
+            $filters,
             $request->get('limit')
         );
 //        dd($products);
@@ -136,10 +139,18 @@ class ProductController extends Controller
      *
      * @param ProductRequest $request
      * @param UpdateProductById $updateProductById
+     * @param SaveMediaFile $saveMediaFile
+     * @param SaveToDbMediaFile $dbMediaFileService
+     * @param GetProductByIdOrSlug $getProductByIdOrSlug
      * @param $productId
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function update(ProductRequest $request, UpdateProductById $updateProductById, $productId)
+    public function update(ProductRequest $request,
+                           UpdateProductById $updateProductById,
+                           SaveMediaFile $saveMediaFile,
+                           SaveToDbMediaFile $dbMediaFileService,
+                           GetProductByIdOrSlug $getProductByIdOrSlug,
+                           $productId)
     {
         $update = $request->only([
             'title',
@@ -153,7 +164,22 @@ class ProductController extends Controller
             'in_stock',
         ]);
         $attributes = $request->input('attributes');
-        $updateProductById->handel($productId, $update, $attributes);
+
+        $files=[];
+        if ($request->has('files') and $request->input('action') == '1'){
+            foreach ($request->input('files') as $item) {
+                (new DeleteMediaFileFromDb())->handel($item);
+            }
+            foreach ($getProductByIdOrSlug->handel($productId)->media as $m)
+                $files[] = $m->id;
+        }
+        if ($request->has('media')){
+            foreach($request->file('media') as $file){
+                $fileData = $saveMediaFile->handel($file, 'shop/'.$productId);
+                $files[] = $dbMediaFileService->handel($fileData, '', '', '');
+            }
+        }
+        $updateProductById->handel($productId, $update, $attributes, $files);
         return redirect()->back()->with('success', __('product.update'));;
     }
 

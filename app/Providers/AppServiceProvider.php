@@ -4,7 +4,9 @@ namespace App\Providers;
 
 use App\Category;
 use App\Http\Controllers\BrandsController;
+use App\Media;
 use App\Observers\CategoryObserver;
+use App\Observers\MediaObserver;
 use App\Observers\OrderDetailObserver;
 use App\Observers\OrderObserver;
 use App\Order;
@@ -34,6 +36,7 @@ class AppServiceProvider extends ServiceProvider
         Order::observe(OrderObserver::class);
         OrderDetail::observe(OrderDetailObserver::class);
         Category::observe(CategoryObserver::class);
+        Media::observe(MediaObserver::class);
 
         // TODO дереткива на створення відобрадення брендів @brands
         Blade::directive('brands', function () {

@@ -138,13 +138,11 @@ class MediaSaveTest extends TestCase
         // deleting
         $serviceDbDelete = new DeleteMediaFileFromDb();
         $result = $serviceDbDelete->handel($mediaId);
-        $service = new DeleteMediaFile();
-        $returnBoolean = $service->handel($result['path'], $result['disc']);
 
         // перевірка чи не існує такий файл в бд
         $this->assertFalse((boolean)Media::find($mediaId));
         // перевірка ркзультату видалення файла
-        $this->assertTrue($returnBoolean);
+        $this->assertTrue((boolean)$result);
         // перевірка доступу до не існуючого файла
         Storage::disk($disc)->assertMissing($data['path']);
     }
