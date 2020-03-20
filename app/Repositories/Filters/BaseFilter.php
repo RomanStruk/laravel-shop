@@ -12,6 +12,7 @@ abstract class BaseFilter
     protected $builder;
     protected $request;
 
+    protected $filtersProtected = [];
     /**
      * BaseFilter
      * @param Builder $builder
@@ -23,6 +24,9 @@ abstract class BaseFilter
         $this->builder = $builder;
         $this->request = $request;
         foreach ($this->filters() as $name => $value){
+            if ($value == '') continue;
+            if (in_array($name, $this->filtersProtected) and !\Auth::check()) continue; //TODO Guardian for filters
+
             if (method_exists($this, $name.'Filter')){
                 $this->{$name.'Filter'}($value);
             }

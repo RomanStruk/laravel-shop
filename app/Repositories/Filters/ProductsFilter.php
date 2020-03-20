@@ -4,8 +4,12 @@
 namespace App\Repositories\Filters;
 
 
+use Carbon\Carbon;
+
 class ProductsFilter extends BaseFilter
 {
+
+    protected $filtersProtected = ['trashed'];
 
     /**
      * @param $value
@@ -73,5 +77,27 @@ class ProductsFilter extends BaseFilter
     public function dateFilter($value)
     {
         $this->builder->orderBy('created_at', 'desc'); //date
+    }
+
+    public function idFilter($value)
+    {
+        $this->builder->where('id', $value); //id
+    }
+
+    public function modifiedFilter($value)
+    {
+        $date = Carbon::createFromFormat('Y-m-d', $value);
+        $this->builder->whereBetween('updated_at', [$date->copy()->startOfDay(), $date->copy()->endOfDay()]); //date modified
+    }
+
+    public function addedFilter($value)
+    {
+        $date = Carbon::createFromFormat('Y-m-d', $value);
+        $this->builder->whereBetween('created_at', [$date->copy()->startOfDay(), $date->copy()->endOfDay()]); //date modified
+    }
+
+    public function trashedFilter($value)
+    {
+        $this->builder->withTrashed(); //withTrashed
     }
 }

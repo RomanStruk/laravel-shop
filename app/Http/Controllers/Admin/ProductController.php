@@ -42,7 +42,7 @@ class ProductController extends Controller
         );
 //        dd($products);
         return view('admin.product.index')
-            ->with('categories', $categories->handel())
+            ->with('categories', $categories->handel(false))
             ->with('products', $products);
     }
 
@@ -101,10 +101,8 @@ class ProductController extends Controller
      */
     public function show(GetProductByIdOrSlug $getProduct, GetAttributes $getAttributes, $id)
     {
-        $product = $getProduct->handel($id);
+        $product = $getProduct->handel($id, ['*'], true);
         $attributes = $getAttributes->handel();
-//        dd($attributes->firstWhere('id', '=', '1')->allAttributes);
-//        dd($product);
         return view('admin.product.show')
             ->with('product', $product)
             ->with('attributes', $attributes);
@@ -124,7 +122,7 @@ class ProductController extends Controller
                          GetAttributes $getAttributes,
                          $id)
     {
-        $product = $getProduct->handel($id);
+        $product = $getProduct->handel($id, ['*'], true);
         $categories = $getCategories->handel(false);
         $groups = $getAttributes->handel();
 //        dd($product, $groups);
@@ -152,17 +150,7 @@ class ProductController extends Controller
                            GetProductByIdOrSlug $getProductByIdOrSlug,
                            $productId)
     {
-        $update = $request->only([
-            'title',
-            'alias',
-            'category_id',
-            'keywords',
-            'description',
-            'content',
-            'price',
-            'status',
-            'in_stock',
-        ]);
+        $update = $request->only(['title', 'alias', 'category_id', 'keywords', 'description', 'content', 'price', 'status', 'in_stock']);
         $attributes = $request->input('attributes');
 
         $files=[];
@@ -170,8 +158,7 @@ class ProductController extends Controller
             foreach ($request->input('files') as $item) {
                 (new DeleteMediaFileFromDb())->handel($item);
             }
-            foreach ($getProductByIdOrSlug->handel($productId)->media as $m)
-                $files[] = $m->id;
+            $files = $getProductByIdOrSlug->handel($productId)->media->pluck('id')->toArray();
         }
         if ($request->has('media')){
             foreach($request->file('media') as $file){
