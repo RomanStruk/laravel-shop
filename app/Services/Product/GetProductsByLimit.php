@@ -26,12 +26,14 @@ class GetProductsByLimit
 
     /**
      * @param $filters
+     * @param array $fields
      * @param int $limit
      * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator
      */
-    public function handel($filters, $limit = 10)
+    public function handel($filters, $fields = ['*'], $limit = 10)
     {
         return Product::filter($this->productsFilter, $filters)
+            ->select($fields)
             ->with('category')
             ->with('media:media.id,media.url')
             ->paginate($limit);

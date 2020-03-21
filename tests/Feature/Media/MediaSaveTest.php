@@ -5,7 +5,7 @@ namespace Tests\Feature\Media;
 use App\Media;
 use App\Services\Media\DeleteMediaFile;
 use App\Services\Media\DeleteMediaFileFromDb;
-use App\Services\Media\SaveMediaFile;
+use App\Services\SaveFile;
 use App\Services\Media\SaveToDbMediaFile;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -28,7 +28,7 @@ class MediaSaveTest extends TestCase
         $name = '';
         $image = UploadedFile::fake()->image('avatar.jpg', 100, 100)->size(1000);
 
-        $mediaSave = new SaveMediaFile();
+        $mediaSave = new SaveFile();
         $data = $mediaSave->handel($image, 'avatars', $name, $disc, $visibility );
 
 
@@ -54,7 +54,7 @@ class MediaSaveTest extends TestCase
         $image = UploadedFile::fake()->image('avatar.jpg', 100, 100)->size(1000);
 
         // збереження файду на диск і отримання інформації про нього
-        $mediaSave = new SaveMediaFile();
+        $mediaSave = new SaveFile();
         $data = $mediaSave->handel($image, 'avatars', $name, $disc, $visibility );
 
         // перевірка імені файла
@@ -77,7 +77,7 @@ class MediaSaveTest extends TestCase
         $image = UploadedFile::fake()->image('avatar.jpg', 100, 100)->size(1000);
 
         // збереження файду на диск і отримання інформації про нього
-        $mediaSave = new SaveMediaFile();
+        $mediaSave = new SaveFile();
         $data = $mediaSave->handel($image, 'avatars', $name, $disc, $visibility );
 
         // перевірка доступу до збереженого файла
@@ -101,7 +101,7 @@ class MediaSaveTest extends TestCase
         $disc = 'public';
         $image = UploadedFile::fake()->image('avatar.jpg', 100, 100)->size(1000);
         // збереження файду на диск і отримання інформації про нього
-        $mediaSave = new SaveMediaFile();
+        $mediaSave = new SaveFile();
         $data = $mediaSave->handel($image, 'tests');
         // перевірка доступу до збереженого файла
         Storage::disk($disc)->assertExists($data['path']);
@@ -123,7 +123,7 @@ class MediaSaveTest extends TestCase
         $disc = 'public';
         $image = UploadedFile::fake()->image('avatar.jpg', 100, 100)->size(1000);
         // збереження файду на диск і отримання інформації про нього
-        $mediaSave = new SaveMediaFile();
+        $mediaSave = new SaveFile();
         $data = $mediaSave->handel($image, 'tests');
         // перевірка доступу до збереженого файла
         Storage::disk($disc)->assertExists($data['path']);

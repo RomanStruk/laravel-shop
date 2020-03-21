@@ -136,6 +136,8 @@ Route::group([
 
     Route::resource('category', 'Admin\CategoryController')->except(['show']);
     Route::resource('product', 'Admin\ProductController');
+    Route::resource('media', 'Admin\MediaController');
+    Route::resource('user', 'Admin\UserController');
 });
 
 Route::get('/shop/json', 'ProductController@apiShowProducts');

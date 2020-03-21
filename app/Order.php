@@ -82,6 +82,15 @@ class Order extends Model
         return $this->hasOne(\App\Payment::class);
     }
 
+    /**
+     * Get sum of price of products
+     * @return mixed
+     */
+    public function getSumPriceAttribute()
+    {
+        return $this->products->sum('price');;
+    }
+
     use Status;
 
     const STATUS_PENDING    = 1;

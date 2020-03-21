@@ -75,7 +75,7 @@
             <div class="tab-content">
                 @foreach($product->media as $media)
                 <div id="thumb_{{$media->id}}" class="tab-pane @if ($loop->first) active @endif">
-                    <a data-fancybox="images" href="{{$media->url}}">
+                    <a data-fancybox="images" href="{{route('admin.media.show', ['medium' => $media->id])}}">
                         <img class="img" src="{{$media->url}}" id="product_img" alt="product-view"></a>
                 </div>
                 @endforeach

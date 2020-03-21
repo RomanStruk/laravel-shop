@@ -60,7 +60,11 @@
                                     <input type="hidden" name="shipping_code[]" value="flat.flat">
                                 </td>
                                 <td class="text-right">{{ $order->id }}</td>
-                                <td class="text-left">{{ $order->user->detail->first_name }} {{ $order->user->detail->last_name }}</td>
+                                <td class="text-left">
+                                    <a href="{{route('admin.user.show', ['user' => $order->user->id])}}">
+                                    {{ $order->user->detail->first_name }} {{ $order->user->detail->last_name }}
+                                    </a>
+                                </td>
                                 <td class="text-left">{{$order->getStatus($order->detail_status)}}</td>
                                 <td class="text-right">{{$order->sum_price}}</td>
                                 <td class="text-left">{{ $order->created_at }}</td>

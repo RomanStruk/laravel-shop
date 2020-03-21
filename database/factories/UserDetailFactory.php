@@ -11,5 +11,9 @@ $factory->define(UserDetail::class, function (Faker $faker) {
         'first_name' => $faker->firstName,
         'last_name' => $faker->lastName,
         'phone' => $faker->phoneNumber,
+        'avatar' => '/storage/avatars/avatar-2.jpg',
+        'country' => $faker->country,
+        'birthday' => $faker->date(),
+        'location' => $faker->streetAddress,
     ];
 });

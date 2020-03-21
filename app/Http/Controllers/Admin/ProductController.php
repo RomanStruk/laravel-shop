@@ -7,9 +7,9 @@ use App\Http\Requests\ProductRequest;
 use App\Product;
 use App\Services\Attribute\GetAttributes;
 use App\Services\Category\GetCategories;
-use App\Services\Media\DeleteMediaFileFromDb;
-use App\Services\Media\SaveMediaFile;
+use App\Services\SaveFile;
 use App\Services\Media\SaveToDbMediaFile;
+use App\Services\Media\UpdateRelationships;
 use App\Services\Product\CreateProductService;
 use App\Services\Product\DeleteProductById;
 use App\Services\Product\GetProductByIdOrSlug;
@@ -17,9 +17,7 @@ use App\Services\Product\GetProductsByLimit;
 use App\Services\Product\UpdateProductById;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 use Illuminate\View\View;
-use App\Http\Resources\Product as ProductResource;
 
 class ProductController extends Controller
 {
@@ -38,6 +36,7 @@ class ProductController extends Controller
         $filters['date'] = 'desc';
         $products = $getProducts->handel(
             $filters,
+            ['*'],
             $request->get('limit')
         );
 //        dd($products);
@@ -68,14 +67,14 @@ class ProductController extends Controller
      * @param ProductRequest $request
      * @param CreateProductService $createProductService
      * @param UpdateProductById $updateProductById
-     * @param SaveMediaFile $saveMediaFile
+     * @param SaveFile $saveMediaFile
      * @param SaveToDbMediaFile $dbMediaFileService
      * @return \Illuminate\Http\RedirectResponse
      */
     public function store(ProductRequest $request,
                           CreateProductService $createProductService,
                           UpdateProductById $updateProductById,
-                          SaveMediaFile $saveMediaFile,
+                          SaveFile $saveMediaFile,
                           SaveToDbMediaFile $dbMediaFileService)
     {
         $insertData = $request->validated();
@@ -83,7 +82,7 @@ class ProductController extends Controller
         $files=[];
         foreach($request->file('media') as $file){
                 $fileData = $saveMediaFile->handel($file, 'shop/'.$productId);
-                $files[] = $dbMediaFileService->handel($fileData, '', '', '');
+                $files[] = $dbMediaFileService->handel($fileData, $insertData['title'], $insertData['keywords'], $insertData['description']);
         }
         $updateProductById->handel($productId, false, $insertData['attributes'], $files);
 
@@ -137,7 +136,7 @@ class ProductController extends Controller
      *
      * @param ProductRequest $request
      * @param UpdateProductById $updateProductById
-     * @param SaveMediaFile $saveMediaFile
+     * @param SaveFile $saveMediaFile
      * @param SaveToDbMediaFile $dbMediaFileService
      * @param GetProductByIdOrSlug $getProductByIdOrSlug
      * @param $productId
@@ -145,7 +144,7 @@ class ProductController extends Controller
      */
     public function update(ProductRequest $request,
                            UpdateProductById $updateProductById,
-                           SaveMediaFile $saveMediaFile,
+                           SaveFile $saveMediaFile,
                            SaveToDbMediaFile $dbMediaFileService,
                            GetProductByIdOrSlug $getProductByIdOrSlug,
                            $productId)
@@ -155,19 +154,17 @@ class ProductController extends Controller
 
         $files=[];
         if ($request->has('files') and $request->input('action') == '1'){
-            foreach ($request->input('files') as $item) {
-                (new DeleteMediaFileFromDb())->handel($item);
-            }
+            (new UpdateRelationships())->handel((int)$productId, $request->input('files'), 'detach');
             $files = $getProductByIdOrSlug->handel($productId)->media->pluck('id')->toArray();
         }
         if ($request->has('media')){
             foreach($request->file('media') as $file){
                 $fileData = $saveMediaFile->handel($file, 'shop/'.$productId);
-                $files[] = $dbMediaFileService->handel($fileData, '', '', '');
+                $files[] = $dbMediaFileService->handel($fileData, $update['title'], $update['keywords'], $update['description']);
             }
         }
         $updateProductById->handel($productId, $update, $attributes, $files);
-        return redirect()->back()->with('success', __('product.update'));;
+        return redirect()->back()->with('success', __('product.update'));
     }
 
     /**

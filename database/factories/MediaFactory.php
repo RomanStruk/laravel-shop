@@ -7,9 +7,9 @@ use Faker\Generator as Faker;
 
 $factory->define(Media::class, function (Faker $faker) {
     return [
-        'url' => '/storage/avatars/7ceBz1f2tlqoXhgEe4QkfjHUmR8Neeh5uLwG0dnQ.jpeg',
+        'url' => '/storage/shop/none/uyl16PguDgQiPaDoL45hVTgZyRgc5Mfc7BeTseHH.jpeg',
         'extension' => 'jpeg',
-        'path' => 'avatars/7ceBz1f2tlqoXhgEe4QkfjHUmR8Neeh5uLwG0dnQ.jpeg',
+        'path' => 'shop/none/uyl16PguDgQiPaDoL45hVTgZyRgc5Mfc7BeTseHH.jpeg',
         'size' => 1024,
         'visibility' => 'public',
         'disc' => 'public',

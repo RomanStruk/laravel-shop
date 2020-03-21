@@ -2,7 +2,9 @@
 
 namespace App;
 
+use App\Repositories\Filters\UsersFilters;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
@@ -66,9 +68,26 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
+    /**
+     * Фільтри
+     * @param Builder $query
+     * @param UsersFilters $usersFilters
+     * @param $filter
+     * @return Builder
+     */
+    public function scopeFilter(Builder $query, UsersFilters $usersFilters, $filter)
+    {
+        return $usersFilters->apply($query, $filter);
+    }
+
     public function detail()
     {
-        return $this->hasOne('App\UserDetail');
+        return $this->hasOne('App\UserDetail')->withDefault();
+    }
+
+    public function comments()
+    {
+        return $this->hasMany(Comment::class);
     }
 
     public function orders()

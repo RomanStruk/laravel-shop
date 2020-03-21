@@ -22,6 +22,10 @@ class CreateUserDetailsTable extends Migration
             $table->string('first_name', 255);
             $table->string('last_name', 255);
             $table->string('phone', 255);
+            $table->string('avatar', 255);
+            $table->string('country', 255);
+            $table->date('birthday');
+            $table->string('location', 255);
 
         });
     }

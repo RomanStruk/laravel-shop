@@ -8,7 +8,7 @@ use App\Media;
 
 class SaveToDbMediaFile
 {
-    public function handel($file, $title, $keywords, $description)
+    public function handel($file, $name, $keywords, $description)
     {
         $insert = [
             'path' => $file['path'],
@@ -17,7 +17,7 @@ class SaveToDbMediaFile
             'url' => $file['url'],
             'visibility' => $file['visibility'],
             'disc' => $file['disc'],
-            'name' => $title,
+            'name' => $name,
             'keywords' => $keywords,
             'description' => $description,
         ];

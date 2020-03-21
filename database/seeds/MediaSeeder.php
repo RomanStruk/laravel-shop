@@ -12,17 +12,18 @@ class MediaSeeder extends Seeder
      */
     public function run()
     {
+        $media[] = (factory(Media::class)->create(['url' => '/img/products/1.jpg']))->id;
+        $media[] = (factory(Media::class)->create(['url' => '/img/products/2.jpg']))->id;
+        $media[] = (factory(Media::class)->create(['url' => '/img/products/3.jpg']))->id;
+        $media[] = (factory(Media::class)->create())->id;
+//        dd($media);
         $products = \App\Product::all();
         foreach ($products as $product){
-                /** @var App\Product $product */
-            $media = factory(Media::class)->make(['url' => '/img/products/1.jpg']);
-            $product->media()->save($media);
-            $media = factory(Media::class)->make(['url' => '/img/products/2.jpg']);
-            $product->media()->save($media);
-            $media = factory(Media::class)->make(['url' => '/img/products/3.jpg']);
-            $product->media()->save($media);
-            $media = factory(Media::class)->make(['url' => '/img/products/4.jpg']);
-            $product->media()->save($media);
+            /** @var App\Product $product */
+            $product->media()->attach($media);
+//            $product->media()->attach($media);
+//            $product->media()->attach($media);
+//            $product->media()->attach($media);
         }
 //        factory(Media::class, 100)->create();
     }

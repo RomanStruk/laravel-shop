@@ -1,13 +1,13 @@
 <?php
 
 
-namespace App\Services\Media;
+namespace App\Services;
 
 
 use Illuminate\Http\UploadedFile;
 use Storage;
 
-class SaveMediaFile
+class SaveFile
 {
     /**
      * @param UploadedFile $file
