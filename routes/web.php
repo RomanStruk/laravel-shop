@@ -132,7 +132,6 @@ Route::group([
         'as' => 'order.updateStatus'
     ]);
 
-    Route::get('/user/{id}', ['uses' => 'Admin\UserController@show', 'as' => 'show.index']);
 
     Route::resource('category', 'Admin\CategoryController')->except(['show']);
     Route::resource('product', 'Admin\ProductController');

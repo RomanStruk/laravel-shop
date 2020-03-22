@@ -8,19 +8,19 @@ use App\User;
 
 class GetUserByIdOrEmail
 {
-    public function handel($idOrLogin, $fields = ['*'], $trashed = false)
+    public function handel($idOrLogin, $fields = ['*'], $trashed = false): User
     {
         $query = is_numeric($idOrLogin) ? ['id' => $idOrLogin] : ['email' => $idOrLogin];
 
         $user = User::select($fields);
 
-//        if ($trashed) $user->withTrashed();
+        if ($trashed) $user->withTrashed();
 
-        return $user
-            ->with('detail')
-            ->where($query)
-            ->get()
-            ->first();
+         $user = $user->with('detail')->where($query)->get()->first();
+         if (! $user){
+             abort(404);
+         }
+        return $user;
     }
 
 }

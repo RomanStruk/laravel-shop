@@ -117,7 +117,7 @@
                                 data-original-title="Customer"><i class="fa fa-user fa-fw"></i></button>
                     </div>
                     <div class="col-8">
-                        <a href="{{route('admin.show.index', ['id' => $order->user->id])}}" target="_blank">
+                        <a href="{{route('admin.user.show', ['user' => $order->user->id])}}" target="_blank">
                             {{$order->user->detail->first_name}} {{$order->user->detail->last_name}}
                         </a>
                     </div>

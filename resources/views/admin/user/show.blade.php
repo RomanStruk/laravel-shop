@@ -1,34 +1,18 @@
 @extends('admin.layouts.app')
 
 @section('content')
-    <h2>
-        Перегляд користувача #{{$user->id}}
-        <a href="{{route('admin.user.edit', ['user' => $user->id])}}" title="Редагувати">
-            <i class="fa fa-edit" aria-hidden="true"></i>
-        </a>
-    </h2>
-    <nav aria-label="breadcrumb">
-        <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="{{route('admin.user.index')}}">Домашня</a></li>
-            <li class="breadcrumb-item active" aria-current="page">Перегляд</li>
-        </ol>
-    </nav>
-    @if ($errors->any())
-        <div class="alert alert-danger">
-            <ul>
-                @foreach ($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                @endforeach
-            </ul>
-        </div>
-    @endif
-    @if (\Session::has('success'))
-        <div class="alert alert-success">
-            <ul>
-                <li>{!! \Session::get('success') !!}</li>
-            </ul>
-        </div>
-    @endif
+    @include('admin.component.title_breadcrumbs', [
+    'title' => 'Перегляд користувача #'.$user->id,
+    'breadcrumbs' => [
+        'Користувачі' => route('admin.user.index'),
+        'Перегляд',
+    ],
+    'actions' => [
+        'edit' => route('admin.user.edit',['user' => $user->id]),
+        'delete' => route('admin.user.destroy',['user' => $user->id])
+]])
+    @include('admin.component.events')
+
     <div class="row bg-info ml-1 mr-1 p-3 rounded-lg">
 
         <div class="col-3">

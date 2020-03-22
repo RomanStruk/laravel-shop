@@ -26,7 +26,7 @@ use Illuminate\Database\Eloquent\Model;
 class UserDetail extends Model
 {
     public $timestamps = false;
-    public $fillable = ['first_name', 'last_name', 'phone'];
+    public $fillable = ['first_name', 'last_name', 'phone', 'avatar', 'country', 'birthday', 'location'];
 
     public function user()
     {
