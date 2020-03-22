@@ -16,11 +16,11 @@ class CreateAttributeProduct extends Migration
         Schema::create('attribute_product', function (Blueprint $table) {
             $table->bigIncrements('id');
 
-            $table->bigInteger('attribute_id')->unsigned()->nullable();
-            $table->foreign('attribute_id')->references('id')->on('attributes');
+            $table->bigInteger('attribute_id')->unsigned();
+            $table->foreign('attribute_id')->references('id')->on('attributes')->onDelete('cascade');
 
-            $table->bigInteger('product_id')->unsigned()->nullable();
-            $table->foreign('product_id')->references('id')->on('products');
+            $table->bigInteger('product_id')->unsigned();
+            $table->foreign('product_id')->references('id')->on('products')->onDelete('cascade');
 
         });
     }

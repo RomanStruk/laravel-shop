@@ -25,6 +25,8 @@
     },
     "dependencies": {
         "bootstrap-dropdown-hover": "^4.2.0",
+        "bootstrap-select": "^1.13.12",
+        "fontawesome": "^5.6.3",
         "vue-reactive-storage": "git+https://github.com/ropbla9/vue-reactive-storage.git"
     }
 }

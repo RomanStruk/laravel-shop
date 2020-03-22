@@ -11,11 +11,10 @@
             >
                 <div class="custom-control custom-checkbox">
                     <input type="checkbox" class="custom-control-input"
-                           :name="'radio_'+attributes.id"
+                           :name="'attribute['+attributes.id+'][]'"
                            :id="'check'+attribute.id "
                            v-model="checkbox"
-                           :value="attributes.id + '-' + attribute.id"
-                           :key="attribute.id"
+                           :value="attribute"
                     >
                     <label class="custom-control-label"
                            :for="'check'+ attribute.id"

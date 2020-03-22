@@ -14,7 +14,7 @@ class CategoriesController extends Controller
 
     public static function getDataCategories()
     {
-        $categories = Category::with('children')->where('parent_id', '=', Null)->get();
+        $categories = Category::with('children')->where('parent_id', '=', 0)->get();
         $result = $categories->map(function($items){
             $items['count_products'] = $items->countProducts();
             $items['children'] = $items->children

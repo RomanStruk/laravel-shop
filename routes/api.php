@@ -17,3 +17,9 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 Route::get('/comments/product/{id}', 'CommentController@apiGetComments');
+
+Route::get('/shipping/warehouses/{warehouses}', 'ShippingController@apiGetWarehouses');
+Route::post('/shipping/warehouses/', 'ShippingController@apiGetWarehousesPost');
+
+Route::get('/shipping/city/{city}', 'ShippingController@apiGetCity');
+Route::post('/shipping/city/', 'ShippingController@apiGetCityPost');

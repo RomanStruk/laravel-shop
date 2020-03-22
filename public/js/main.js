@@ -63,12 +63,6 @@
     $('#showcoupon').on('click', function () {
         $('#checkout_coupon').slideToggle();
     });
-    $('#cbox').on('click', function () {
-        $('#cbox_info').slideToggle();
-    });
-    $('#ship-box').on('click', function () {
-        $('#ship-box-info').slideToggle();
-    });
 
     /*----------------------------
     4. NivoSlider Activation

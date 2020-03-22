@@ -19,16 +19,12 @@ class CreateOrdersTable extends Migration
             $table->bigInteger('user_id')->unsigned();
             $table->foreign('user_id')->references('id')->on('users');
 
-            $table->string('name', 255);
-            $table->string('phone', 255);
-            $table->integer('city_code')->unsigned();
-            $table->string('email', 255);
-            $table->string('type_delivery', 255);
-            $table->string('pay_method', 255);
+            $table->text('comment');
 
-
+            $table->softDeletes();
             $table->timestamps();
         });
+        //\DB::statement('ALTER TABLE orders AUTO_INCREMENT = 1000;');
     }
 
     /**

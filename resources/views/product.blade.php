@@ -28,40 +28,25 @@
             <div class="row">
                 <!-- Main Thumbnail Image Start -->
                 <div class="col-lg-5">
-                    <!-- Thumbnail Large Image start -->
                     <div class="tab-content">
-                        <div id="thumb1" class="tab-pane active">
-                            <a data-fancybox="images" href="/img/products/1.jpg">
-                                <img src="/img/products/1.jpg" id="product_img" alt="product-view"></a>
-                        </div>
-                        <div id="thumb2" class="tab-pane">
-                            <a data-fancybox="images" href="/img/products/2.jpg"><img src="/img/products/2.jpg"
-                                                                                      alt="product-view"></a>
-                        </div>
-                        <div id="thumb3" class="tab-pane">
-                            <a data-fancybox="images" href="/img/products/3.jpg"><img src="/img/products/3.jpg"
-                                                                                      alt="product-view"></a>
-                        </div>
-                        <div id="thumb4" class="tab-pane">
-                            <a data-fancybox="images" href="/img/products/4.jpg"><img src="/img/products/4.jpg"
-                                                                                      alt="product-view"></a>
-                        </div>
+                        @foreach($product->media as $media)
+                            <div id="thumb_{{$media->id}}" class="tab-pane @if ($loop->first) active @endif">
+                                <a data-fancybox="images" href="{{$media->url}}">
+                                    <img class="img" src="{{$media->url}}" id="product_img" alt="product-view"></a>
+                            </div>
+                        @endforeach
                     </div>
-                    <!-- Thumbnail Large Image End -->
-
-                    <!-- Thumbnail Image End -->
                     <div class="product-thumbnail">
                         <div class="thumb-menu nav">
-                            <a class="active" data-toggle="tab" href="#thumb1">
-                                <img src="/img/products/1.jpg" alt="product-thumbnail"></a>
-                            <a data-toggle="tab" href="#thumb2">
-                                <img src="/img/products/2.jpg" alt="product-thumbnail"></a>
-                            <a data-toggle="tab" href="#thumb3">
-                                <img src="/img/products/3.jpg" alt="product-thumbnail"></a>
-                            <a data-toggle="tab" href="#thumb4">
-                                <img src="/img/products/4.jpg" alt="product-thumbnail"></a>
+                            @foreach($product->media as $media)
+                                <a data-toggle="tab" href="#thumb_{{$media->id}}" class="@if ($loop->first) active @endif">
+                                    <img src="{{$media->url}}" alt="product-thumbnail">
+                                </a>
+                            @endforeach
                         </div>
                     </div>
+                    <!-- Thumbnail Large Image start -->
+
                     <!-- Thumbnail image end -->
                 </div>
                 <!-- Main Thumbnail Image End -->
@@ -72,7 +57,7 @@
                         <div class="rating-summary fix mtb-10">
                             <div class="rating f-left">
                                 @for($i = 1; $i <= 5; $i++)
-                                    @if($i <= $product->rating)
+                                    @if($i <= $product->average_rating)
                                         <i class="fa fa-star"></i>
                                     @else
                                         <i class="fa fa-star-o"></i>
@@ -80,13 +65,16 @@
                                 @endfor
                             </div>
                             <div class="rating-feedback f-left">
-                                <a href="#comments">({{ $product->count_comments }} відгук-ів)</a>
+                                <a href="#comments">({{ $product->comments_count }} відгук-ів)</a>
                                 <a href="#comments">додати ваш відгук</a>
                             </div>
                         </div>
                         <div class="pro-price mb-10">
-                            <p>$<span class="price">{{$product->price}}</span>
+                            <p>$
+                                <span class="price">{{$product->price}}</span>
+                                @if($product->old_price > $product->price)
                                 <del class="prev-price">-{{$product->old_price}}</del>
+                                @endif
                             </p>
                         </div>
                         <div class="pro-ref mb-15">
@@ -129,7 +117,7 @@
                         </div>
                         <div id="review" class="tab-pane">
 
-                            <comments-component v-bind:productid="{{$product->id}}"></comments-component>
+                            <comments-component v-bind:productid='@json($product->id)'></comments-component>
                             <!-- Reviews Start -->
                             <div class="review border-default universal-padding mt-30">
                                 <h2 class="review-title mb-30">Ви рецензуєте:</h2>

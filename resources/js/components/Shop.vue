@@ -40,7 +40,7 @@
                                             <option value="price_asc">от дешевых к дорогим</option>
                                             <option value="price_desc">от дорогих к дешевым</option>
                                             <option value="rating" selected="selected">по рейтингу</option>
-                                            <option value="new">новинки</option>
+                                            <option value="novelty">новинки</option>
                                             <option value="popular">популярные</option>
                                         </select>
                                     </label>
@@ -60,9 +60,9 @@
                                         <div class="single-product">
                                             <!-- Product Image Start -->
                                             <div class="pro-img">
-                                                <a :href="url">
-                                                    <img class="primary-img" :src="product.img" alt="single-product">
-                                                    <img class="secondary-img" src="/img/products/2.jpg" alt="single-product">
+                                                <a :href="'/product/' + product.alias">
+                                                    <img class="primary-img" :src="product.media[0].url" alt="single-product">
+                                                    <img class="secondary-img" :src="product.media[0].url" alt="single-product">
                                                 </a>
                                             </div>
                                             <!-- Product Image End -->
@@ -70,11 +70,12 @@
                                             <div class="pro-content">
                                                 <div class="rating">
                                                     <i class="fa " v-for="n in 5"
-                                                       v-bind:class="[(product.rating < n) ? 'fa-star-o' : 'fa-star']"
+                                                       v-bind:class="[(product.average_rating < n) ? 'fa-star-o' : 'fa-star']"
                                                     ></i>
                                                 </div>
                                                 <h4><a :href="'/product/' + product.alias">{{ product.title }}</a></h4>
-                                                <p><span class="price">${{ product.price}}</span><del class="prev-price">${{ product.old_price}}</del></p>
+                                                <p><span class="price">${{ product.price}}</span>
+                                                    <del v-if="product.old_price>product.price" class="prev-price">${{ product.old_price}}</del></p>
                                                 <div class="pro-actions">
                                                     <div class="actions-secondary">
                                                         <a href="wishlist.html" data-toggle="tooltip" title="Add to Wishlist"><i class="fa fa-heart"></i></a>
@@ -103,9 +104,9 @@
                                 <div class="single-product" v-for="(product, index_product) in resultData">
                                     <!-- Product Image Start -->
                                     <div class="pro-img">
-                                        <a href="">
-                                            <img class="primary-img" :src="product.img" alt="single-product">
-                                            <img class="secondary-img" src="img/products/2.jpg" alt="single-product">
+                                        <a :href="'/product/' + product.alias">
+                                            <img class="primary-img" :src="product.media[0].url" alt="single-product">
+                                            <img class="secondary-img" :src="product.media[0].url" alt="single-product">
                                         </a>
                                     </div>
                                     <!-- Product Image End -->
@@ -113,13 +114,13 @@
                                     <div class="pro-content">
                                         <div class="rating">
                                             <i class="fa " v-for="n in 5"
-                                               v-bind:class="[(product.rating < n) ? 'fa-star-o' : 'fa-star']"
+                                               v-bind:class="[(product.average_rating < n) ? 'fa-star-o' : 'fa-star']"
                                             ></i>
                                         </div>
                                         <h4><a :href="'/product/' + product.alias">{{product.title}}</a></h4>
                                         <p>
                                             <span class="price">${{product.price}}</span>
-                                            <del class="prev-price">${{product.old_price}}</del>
+                                            <del v-if="product.old_price>product.price" class="prev-price">${{product.old_price}}</del>
                                         </p>
                                         <p>{{product.description}}</p>
                                         <div class="pro-actions">
@@ -181,6 +182,7 @@
                 sortingProducts: 'popular',                              // сортування
 
                 //get
+                attribute:[],
                 filter: [],
                 page: 1,
                 category_id: null,
@@ -251,7 +253,25 @@
                         category: this.category_id,
                         sorter: this.sortingProducts,
                         page: this.page,
-                    }
+
+                    },
+                    paramsSerializer: function(params) {
+                        let tmp = [];
+                        params.filter.forEach(item => {tmp.push(`attribute[${item.group_attribute_id}][]=${item.id}`)});
+                        if (params.category) {
+                            tmp.push(`category=${params.category}`);
+                        }
+                        if (params.sorter === 'price_asc') {
+                            tmp.push(`price=asc`);
+                        }
+                        if (params.sorter === 'price_desc') {
+                            tmp.push(`price=desc`);
+                        }else {
+                            tmp.push(`${params.sorter}`);
+                        }
+                        tmp.push(`page=${params.page}`);
+                        return tmp.join('&');
+                    },
                 }).then((response) => {
                     this.pages_total = response.data.total;                         // скільки всього елементів
                     this.page++;                                                    // збільшити номер ст яку грузим
@@ -261,7 +281,7 @@
                     this.last_page = response.data.last_page;
 
                     console.log('Успіщний запит з фільтром');                       // debug
-                    // console.log(response.data);                                  // debug
+                    console.log(response.data);                                  // debug
                 }).catch(function (error) {
                     console.log(error);                             // debug error
                 });

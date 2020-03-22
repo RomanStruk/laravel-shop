@@ -13,7 +13,7 @@ class CategoriesSeeder extends Seeder
     {
         $data = [
             [
-                'parent_id' => Null,
+                'parent_id' => 0,
                 'name' => 'Компьютеры и ноутбуки',
                 'slug' => 'computers-notebooks'
             ],
@@ -23,22 +23,22 @@ class CategoriesSeeder extends Seeder
                 'slug' => 'telefony-tv-i-ehlektronika'
             ],
             [
-                'parent_id' => Null,
+                'parent_id' => 0,
                 'name' => 'Бытовая техника, интерьер',
                 'slug' => 'bt'
             ],
             [
-                'parent_id' => Null,
+                'parent_id' => 0,
                 'name' => 'Товары для дома',
                 'slug' => 'tovary-dlya-doma'
             ],
             [
-                'parent_id' => Null,
+                'parent_id' => 0,
                 'name' => 'Одежда, обувь и аксессуары',
                 'slug' => 'shoes_clothes'
             ],
             [
-                'parent_id' => Null,
+                'parent_id' => 0,
                 'name' => 'Инструменты и автотовары',
                 'slug' => 'instrumenty-i-avtotovary'
             ]

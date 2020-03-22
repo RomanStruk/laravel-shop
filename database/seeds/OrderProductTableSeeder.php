@@ -1,5 +1,7 @@
 <?php
 
+use App\Order;
+use App\Product;
 use Illuminate\Database\Seeder;
 
 class OrderProductTableSeeder extends Seeder
@@ -11,20 +13,16 @@ class OrderProductTableSeeder extends Seeder
      */
     public function run()
     {
-        DB::table('order_product')->insert([
-            [
-                'order_id' => 1,
-                'product_id' => 1
-            ],[
-                'order_id' => 1,
-                'product_id' => 6
-            ],[
-                'order_id' => 2,
-                'product_id' => 3
-            ],[
-                'order_id' => 2,
-                'product_id' => 7
-            ]
-        ]);
+        $productIds = Product::pluck('id')->toArray();
+        $orderIds = Order::pluck('id')->toArray();
+
+        $taggables = [];
+        for ($i = 0; $i < (count($orderIds)*4); $i++) {
+            $taggable['product_id'] = $productIds[array_rand($productIds)];
+            $taggable['order_id'] = $orderIds[array_rand($orderIds)];
+            $taggables[] = $taggable;
+        }
+
+        DB::table('order_product')->insert($taggables);
     }
 }

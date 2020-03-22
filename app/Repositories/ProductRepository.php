@@ -3,12 +3,58 @@
 namespace App\Repositories;
 
 use App\Product as Model;
+use App\Repositories\Filters\ProductsFilter;
 use App\Repositories\RepositoryInterface\ProductRepositoryInterface;
-use Illuminate\Database\Query\Builder;
 use DB;
+use Illuminate\Database\Eloquent\Builder;
 
-class ProductRepository implements ProductRepositoryInterface
+class ProductRepository extends Repository implements ProductRepositoryInterface
 {
+    /**
+     * @var array
+     */
+    protected $filters = [];
+
+    /**
+     * @var Builder
+     */
+    protected $model;
+
+    protected function applyFilter()
+    {
+        if ($this->filters) {
+            $this->model = (new ProductsFilter($this->model, $this->filters))->apply();
+            $this->filters = null;
+        }
+    }
+
+    public function withFilters($filters)
+    {
+        $this->filters = $filters;
+        return $this;
+    }
+
+    protected function withRelations()
+    {
+        $this->model = Model::with('category');
+    }
+
+    public function all()
+    {
+        $this->withRelations();
+        $this->applyFilter();
+
+        return $this->model->get();
+    }
+
+    public function pagination()
+    {
+        $this->withRelations();
+        $this->applyFilter();
+
+        return $this->model->paginate();
+    }
+
     /**
      * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator
      */
@@ -37,6 +83,7 @@ class ProductRepository implements ProductRepositoryInterface
      */
     public function showProductsWithFormat($filters = [], $category = 0, $sortBy = '')
     {
+//        dd($filters);
         $products = Model::with('comments')->where('status', '=', '1');
         if ($filters){
             foreach ($filters as $f){

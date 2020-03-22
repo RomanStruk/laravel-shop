@@ -25,18 +25,8 @@ Route::get('/index-3', function () {
 Route::group(['prefix' => '/shop', 'middleware' => ['web']], function () {
 
     Route::get('/category/{cat}', [
-        'uses' => 'ProductController@showProducts',
+        'uses' => 'ProductController@index',
         'as' => 'shop_category'
-    ]);
-    Route::get('/category/{cat}/filter/{filter}', [
-        'uses' => 'ProductController@showProducts',
-        'as' => 'shop_category_filter'
-    ]);
-    Route::post('/category/{cat}/filter/{filter}', [
-        'uses' => 'ProductController@showProducts'
-    ]);;
-    Route::post('/category/{cat}', [
-        'uses' => 'ProductController@showProducts'
     ]);
     Route::get('/', [
         'uses' => 'ProductController@index',
@@ -105,15 +95,59 @@ Route::get('/404', function () {
 
 Auth::routes();
 
-Route::get('/home', 'HomeController@index')->name('home');
-Route::group(['prefix' => 'admin', 'middleware' => ['web', 'auth']], function (){
-    Route::get('/', ['uses' => 'Admin\HomeController@showIndex', 'as' => 'admin_index']);
+
+Route::group([
+    'prefix' => 'admin',
+    'as' => 'admin.',
+    'middleware' => ['web', 'auth']
+], function (){
+    Route::get('/', [
+        'uses' => 'Admin\HomeController@index',
+        'as' => 'dashboard.index'
+    ]);
+    Route::get('/order', [
+        'uses' => 'Admin\OrderController@index',
+        'as' => 'order.index'
+    ]);
+
+    Route::get('/order/{id}', [
+        'uses' => 'Admin\OrderController@show',
+        'as' => 'order.revision'
+    ]);
+    Route::post('/order/{order}', [
+        'uses' => 'Admin\OrderController@update',
+        'as' => 'order.update'
+    ]);
+    Route::delete('/order/{order}', [
+        'uses' => 'Admin\OrderController@destroy',
+        'as' => 'order.destroy'
+    ]);
+    Route::get('/order/{id}/edit', [
+        'uses' => 'Admin\OrderController@edit',
+        'as' => 'order.edit'
+    ]);
+
+    Route::post('/order/status/{order}/update', [
+        'uses' => 'Admin\OrderController@updateStatus',
+        'as' => 'order.updateStatus'
+    ]);
+
+    Route::get('/user/{id}', ['uses' => 'Admin\UserController@show', 'as' => 'show.index']);
+
+    Route::resource('category', 'Admin\CategoryController')->except(['show']);
+    Route::resource('product', 'Admin\ProductController');
+    Route::resource('media', 'Admin\MediaController');
+    Route::resource('user', 'Admin\UserController');
 });
 
 Route::get('/shop/json', 'ProductController@apiShowProducts');
-Route::get('/shop2', 'ProductController@showProducts')->middleware('web')->name('shop2');
+Route::get('/shop2', 'ProductController@index2')->middleware('web')->name('shop2');
 Route::get('/category/get/json', 'CategoriesController@getDataCategoriesJson');
 Route::get('/filter/get/json', 'AttributeController@getDataAttributesJson');
 
 
 Route::get('/test', 'ProductController@apiTest')->middleware('web');
+
+Route::get('/php', function (){
+   phpinfo();
+});
