@@ -8,6 +8,7 @@
         'Додати',
     ]])
     @include('admin.component.events')
+
     <form action="{{ route('admin.user.store') }}" method="post" class="needs-validation"  enctype="multipart/form-data" novalidate>
         @csrf
         <div class="form-group row">

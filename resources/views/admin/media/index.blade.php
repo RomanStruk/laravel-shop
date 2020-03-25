@@ -1,28 +1,22 @@
 @extends('admin.layouts.app')
 
 @section('content')
-    <h2>
-        <i class="fa fa-list"></i> Список медіа файлів
-        <a href="{{route('admin.media.create')}}" title="Додати">
-            <i class="fa fa-plus-circle" aria-hidden="true"></i>
-        </a>
-    </h2>
-    @if ($errors->any())
-        <div class="alert alert-danger">
-            <ul>
-                @foreach ($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                @endforeach
-            </ul>
-        </div>
-    @endif
-    @if (\Session::has('success'))
-        <div class="alert alert-success">
-            <ul>
-                <li>{!! \Session::get('success') !!}</li>
-            </ul>
-        </div>
-    @endif
+    @include('admin.component.title_breadcrumbs', [
+        'title' => 'Список медіа файлів',
+        'breadcrumbs' => [
+            'Медіа',
+        ],
+        'actions' => [
+            'create' => route('admin.media.create')
+        ]
+    ])
+    @include('admin.component.sort', [
+        'route' => route('admin.media.index'),
+        'search' => true,
+        'limit' => true
+    ])
+    @include('admin.component.events')
+
     <table class="table table-bordered table-hover">
         <thead>
         <tr>
@@ -50,25 +44,13 @@
                 <td class="text-left">{{ $media->extension }}</td>
                 <td class="text-left">{{ $media->disc }}</td>
                 <td class="text-right">
-                    <div class="btn-group">
-                        <a
-                            href="{{ route( 'admin.media.show', ['medium' => $media->id]) }}"
-                            data-toggle="tooltip" title="" class="btn btn-primary"
-                            data-original-title="View">
-                            <i class="fa fa-eye"></i>
-                        </a>
-                        <button type="button" class="btn btn-primary dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            <span class="sr-only">Toggle Dropdown</span>
-                        </button>
-                        <div class="dropdown-menu">
-                            <a class="dropdown-item" href="{{route('admin.media.edit', ['medium' => $media->id])}}"><i class="fa fa-pencil"></i> Edit</a>
-                            <form method="POST" action="{{route('admin.media.destroy', ['medium' => $media->id])}}" >
-                                @csrf
-                                @method('DELETE')
-                                <button class="dropdown-item" value="submit" type="submit"><i class="fa fa-trash-o"></i> Delete</button>
-                            </form>
-                        </div>
-                    </div>
+                    @include('admin.component.dropdown_menu', [
+                        'show' => route( 'admin.media.show', ['medium' => $media->id]),
+                        'edit' => route( 'admin.media.edit', ['medium' => $media->id]),
+                        'delete' => route( 'admin.media.destroy', ['medium' => $media->id]),
+
+                    ])
+
                 </td>
             </tr>
         @endforeach

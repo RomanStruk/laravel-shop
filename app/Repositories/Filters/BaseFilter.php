@@ -3,6 +3,7 @@
 namespace App\Repositories\Filters;
 
 use Illuminate\Database\Eloquent\Builder;
+use Str;
 
 abstract class BaseFilter
 {
@@ -25,10 +26,13 @@ abstract class BaseFilter
         $this->request = $request;
         foreach ($this->filters() as $name => $value){
             if ($value == '') continue;
+
+            if (($value) < 0 ) continue ;
+
             if (in_array($name, $this->filtersProtected) and !\Auth::check()) continue; //TODO Guardian for filters
 
-            if (method_exists($this, $name.'Filter')){
-                $this->{$name.'Filter'}($value);
+            if (method_exists($this, Str::camel($name).'Filter')){
+                $this->{Str::camel($name).'Filter'}($value);
             }
         }
         return $this->builder;

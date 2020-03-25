@@ -3,6 +3,7 @@
 namespace App;
 
 use App\Repositories\Filters\UsersFilters;
+use App\Traits\Status;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -80,6 +81,25 @@ class User extends Authenticatable
     public function scopeFilter(Builder $query, UsersFilters $usersFilters, $filter)
     {
         return $usersFilters->apply($query, $filter);
+    }
+
+    use Status;
+
+    const STATUS_ACTIVE   = 1;
+    const STATUS_INACTIVE = 2;
+    const STATUS_DELETED  = 3;
+
+    /**
+     * Return list of status codes and labels
+     * @return array
+     */
+    public static function listStatus()
+    {
+        return [
+            self::STATUS_ACTIVE    => 'Активний',
+            self::STATUS_INACTIVE => 'Не активний',
+            self::STATUS_DELETED  => 'Видалений'
+        ];
     }
 
     public function detail()

@@ -26,6 +26,7 @@ class CreateUserDetailsTable extends Migration
             $table->string('country', 255)->default(NULL)->nullable();
             $table->date('birthday')->default(NULL)->nullable();
             $table->string('location', 255)->default(NULL)->nullable();
+            $table->tinyInteger('status')->default(1);
 
         });
     }

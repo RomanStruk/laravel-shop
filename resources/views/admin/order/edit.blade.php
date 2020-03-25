@@ -1,30 +1,19 @@
 @extends('admin.layouts.app')
 
 @section('content')
-    <h1>Редагування замовлення</h1>
-    <nav aria-label="breadcrumb">
-        <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="/">Домашня</a></li>
-            <li class="breadcrumb-item"><a href="{{route('admin.order.revision', ['id' => $order->id])}}">Замовлення</a></li>
-            <li class="breadcrumb-item active" aria-current="page">Редагувати</li>
-        </ol>
-    </nav>
-    @if ($errors->any())
-        <div class="alert alert-danger">
-            <ul>
-                @foreach ($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                @endforeach
-            </ul>
-        </div>
-    @endif
-    @if (\Session::has('success'))
-        <div class="alert alert-success">
-            <ul>
-                <li>{!! \Session::get('success') !!}</li>
-            </ul>
-        </div>
-    @endif
+    @include('admin.component.title_breadcrumbs', [
+        'title' => 'Редагування замовлення',
+        'breadcrumbs' => [
+            'Замовлення' => route('admin.order.index'),
+            'Перегляд' => route('admin.order.show', ['order' => $order->id]),
+            'Редагувати',
+        ],
+        'actions' => [
+            'delete' => route('admin.order.destroy',['order' => $order->id])
+        ]])
+
+
+    @include('admin.component.events')
 
     <ul class="nav nav-tabs" id="myTab" role="tablist">
         <li class="nav-item">

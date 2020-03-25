@@ -1,30 +1,15 @@
 @extends('admin.layouts.app')
 
 @section('content')
-    <h1>Перегляд замовлення #{{$order->id}}</h1>
-    <nav aria-label="breadcrumb">
-        <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="/admin">Домашня</a></li>
-            <li class="breadcrumb-item active" aria-current="page">Перегляд</li>
+    @include('admin.component.title_breadcrumbs', [
+    'title' => 'Перегляд замовлення #'.$order->id,
+    'breadcrumbs' => [
+        'Замовлення' => route('admin.order.index'),
+        'Перегляд',
+    ]
+    ])
+    @include('admin.component.events')
 
-        </ol>
-    </nav>
-    @if ($errors->any())
-        <div class="alert alert-danger">
-            <ul>
-                @foreach ($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                @endforeach
-            </ul>
-        </div>
-    @endif
-    @if (\Session::has('success'))
-        <div class="alert alert-success">
-            <ul>
-                <li>{!! \Session::get('success') !!}</li>
-            </ul>
-        </div>
-    @endif
     <div class="card-deck mb-2">
         <div class="card">
             <h5 class="card-header">
@@ -152,7 +137,7 @@
             <div class="card-body">
                 <div class="row pb-1 pt-1 border-bottom">
                     <div class="col-6">
-                        <a href="{{route('admin.order.edit', ['id' => $order->id])}}">Редагувати</a>
+                        <a href="{{route('admin.order.edit', ['order' => $order->id])}}">Редагувати</a>
                     </div>
                     <div class="col-3"></div>
                     <div class="col-2">
@@ -234,7 +219,7 @@
                     <tr>
                         <td class="text-center">{{ $product->id }}</td>
                         <td class="text-left">
-                            <a href="/admin/index.php?route=catalog/product/edit&amp;product_id=47">{{$product->title}}</a>
+                            <a href="{{route('admin.product.show', ['product' => $product->id])}}">{{$product->title}}</a>
 
                         </td>
                         <td class="text-left">{{$product->category->name}}</td>

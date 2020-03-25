@@ -1,30 +1,20 @@
 @extends('admin.layouts.app')
 
 @section('content')
-
-    <h2>
-        <i class="fa fa-list"></i> Список категорії
-        <a href="{{route('admin.category.create')}}" title="Додати">
-            <i class="fa fa-plus-circle" aria-hidden="true"></i>
-        </a>
-    </h2>
-
-    @if ($errors->any())
-        <div class="alert alert-danger">
-            <ul>
-                @foreach ($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                @endforeach
-            </ul>
-        </div>
-    @endif
-    @if (\Session::has('success'))
-        <div class="alert alert-success">
-            <ul>
-                <li>{!! \Session::get('success') !!}</li>
-            </ul>
-        </div>
-    @endif
+    @include('admin.component.title_breadcrumbs', [
+    'title' => 'Список категорії',
+    'breadcrumbs' => [
+        'Категорії',
+    ],
+    'actions' => [
+        'create' => route('admin.category.create')
+]])
+    @include('admin.component.sort', [
+    'route' => route('admin.user.index'),
+    'search' => true,
+    'limit' => true
+    ])
+    @include('admin.component.events')
 
     <div class="row">
         <div class="col-md-12 col-md-pull-3 col-sm-12">

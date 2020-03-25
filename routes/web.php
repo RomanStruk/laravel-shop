@@ -105,27 +105,8 @@ Route::group([
         'uses' => 'Admin\HomeController@index',
         'as' => 'dashboard.index'
     ]);
-    Route::get('/order', [
-        'uses' => 'Admin\OrderController@index',
-        'as' => 'order.index'
-    ]);
 
-    Route::get('/order/{id}', [
-        'uses' => 'Admin\OrderController@show',
-        'as' => 'order.revision'
-    ]);
-    Route::post('/order/{order}', [
-        'uses' => 'Admin\OrderController@update',
-        'as' => 'order.update'
-    ]);
-    Route::delete('/order/{order}', [
-        'uses' => 'Admin\OrderController@destroy',
-        'as' => 'order.destroy'
-    ]);
-    Route::get('/order/{id}/edit', [
-        'uses' => 'Admin\OrderController@edit',
-        'as' => 'order.edit'
-    ]);
+    Route::resource('/order', 'Admin\OrderController');
 
     Route::post('/order/status/{order}/update', [
         'uses' => 'Admin\OrderController@updateStatus',

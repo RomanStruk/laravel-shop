@@ -29,7 +29,7 @@ class GetUsersByLimit
      * @param int $limit
      * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator
      */
-    public function handel($filters, $fields = ['*'], $limit = 10)
+    public function handel($filters, $fields = ['*'], $limit = 100)
     {
         return User::filter($this->usersFilters, $filters)
             ->select($fields)

@@ -7,6 +7,7 @@ use App\Http\Requests\ProductRequest;
 use App\Product;
 use App\Services\Attribute\GetAttributes;
 use App\Services\Category\GetCategories;
+use App\Services\PaginateSession;
 use App\Services\SaveFile;
 use App\Services\Media\SaveToDbMediaFile;
 use App\Services\Media\UpdateRelationships;
@@ -27,9 +28,13 @@ class ProductController extends Controller
      * @param Request $request
      * @param GetProductsByLimit $getProducts
      * @param GetCategories $categories
+     * @param PaginateSession $paginateSession
      * @return Factory|View
      */
-    public function index(Request $request, GetProductsByLimit $getProducts, GetCategories $categories)
+    public function index(Request $request,
+                          GetProductsByLimit $getProducts,
+                          GetCategories $categories,
+                            PaginateSession $paginateSession)
     {
 //        dd($request->except('limit'));
         $filters = $request->except('limit');
@@ -37,7 +42,7 @@ class ProductController extends Controller
         $products = $getProducts->handel(
             $filters,
             ['*'],
-            $request->get('limit')
+            $paginateSession->getLimit()
         );
 //        dd($products);
         return view('admin.product.index')

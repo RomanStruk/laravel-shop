@@ -14,14 +14,19 @@ class ProductsFilter extends BaseFilter
     /**
      * @param $value
      */
-    public function titleFilter($value)
+    public function searchFilter($value)
     {
-        $this->builder->where('title', 'like', "%$value%");
+        if (is_numeric($value)){
+            $this->builder->where('id', '=', $value);
+        }else{
+            $this->builder->where('title', 'like', "%$value%");
+        }
     }
 
     public function statusFilter($value)
     {
         if (! is_numeric($value)) return ;
+
 
         $this->builder->where('status', '=', (int)$value);
     }
@@ -90,7 +95,7 @@ class ProductsFilter extends BaseFilter
         $this->builder->whereBetween('updated_at', [$date->copy()->startOfDay(), $date->copy()->endOfDay()]); //date modified
     }
 
-    public function addedFilter($value)
+    public function dateAddedFilter($value)
     {
         $date = Carbon::createFromFormat('Y-m-d', $value);
         $this->builder->whereBetween('created_at', [$date->copy()->startOfDay(), $date->copy()->endOfDay()]); //date modified

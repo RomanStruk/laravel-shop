@@ -4,6 +4,8 @@
 namespace App\Repositories\Filters;
 
 
+use Carbon\Carbon;
+
 class UsersFilters extends BaseFilter
 {
     protected $filtersProtected = ['trashed'];
@@ -12,6 +14,22 @@ class UsersFilters extends BaseFilter
     {
         if (! is_numeric($value)) return ;
 
-        $this->builder->where('status', '=', (int)$value);
+        if ($value < 0) return ;
+
+        $this->builder->whereHas('detail', function ($query) use($value) {
+            $query->where('user_details.status', $value);
+        });
+    }
+
+    public function dateAddedFilter($value)
+    {
+//        dd($value);
+        $date = Carbon::createFromFormat('Y-m-d', $value);
+        $this->builder->whereBetween('created_at', [$date->copy()->startOfDay(), $date->copy()->endOfDay()]); //date modified
+    }
+
+    public function searchFilter($value)
+    {
+        $this->builder->where('email', $value);
     }
 }

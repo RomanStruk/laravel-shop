@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\UserMultipleRequest;
+use App\Services\PaginateSession;
 use App\Services\SaveFile;
 use App\Services\User\CreateUser;
 use App\Services\User\DeleteUserById;
@@ -12,24 +13,28 @@ use App\Services\User\GetUsersByLimit;
 use App\Services\User\UpdateUserById;
 use App\Services\UserDetail\CreateUserDetail;
 use App\Services\UserDetail\UpdateUserDetail;
-use App\User;
 use Illuminate\Http\Request;
 
 class UserController extends Controller
 {
+
     /**
      * Display a listing of the resource.
      *
      * @param Request $request
      * @param GetUsersByLimit $getUsersByLimit
+     * @param PaginateSession $paginateSession
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function index(Request $request, GetUsersByLimit $getUsersByLimit)
+    public function index(Request $request,
+                          GetUsersByLimit $getUsersByLimit,
+                          PaginateSession $paginateSession)
     {
+//dd($request->get('status'));
         $users = $getUsersByLimit->handel(
             $request->except('limit'),
             ['id', 'email'],
-            $request->get('limit')
+            $paginateSession->getLimit()
         );
         return view('admin.user.index')->with('users', $users);
     }
