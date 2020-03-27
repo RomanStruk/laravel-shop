@@ -73,7 +73,7 @@ class ProductFilterTest extends TestCase
         /*start prepare*/
         factory(Category::class)->create(); // category
         $productsDb = factory(Product::class,5)->create(); // 5 products
-        factory(GroupAttribute::class)->create(); // 1 group attribute
+        factory(GroupAttribute::class)->create(); // 1 group group_attribute
         factory(Attribute::class)->create(['id' => 1]); // один атрібут id = 1
         foreach ($productsDb as $product){
             $product->product_attributes()->sync([1]);// один атрібут id = 1 для 5 продуктів
@@ -81,7 +81,7 @@ class ProductFilterTest extends TestCase
         /*end prepare*/
 
         $filters = [
-            'attribute' => '1'
+            'group_attribute' => '1'
         ];
 //        dd($d);
         $products = (new GetProductsByLimit(new ProductsFilter()))->handel($filters);
@@ -92,8 +92,8 @@ class ProductFilterTest extends TestCase
         /*start prepare*/
         factory(Category::class)->create(); // category
         $productsDb = factory(Product::class,5)->create(); // 5 products
-        factory(GroupAttribute::class)->create(); // 1 group attribute
-        factory(GroupAttribute::class)->create(); // 2 group attribute
+        factory(GroupAttribute::class)->create(); // 1 group group_attribute
+        factory(GroupAttribute::class)->create(); // 2 group group_attribute
         factory(Attribute::class)->create(
             ['id' => 1, 'group_attribute_id'=>1]); // атрібут id = 1 group 1
         factory(Attribute::class)->create(
@@ -105,7 +105,7 @@ class ProductFilterTest extends TestCase
 
 
         $filters = [
-            'attribute' => [
+            'group_attribute' => [
                 1 => [1],
                 2 => [2],
             ]
@@ -117,8 +117,8 @@ class ProductFilterTest extends TestCase
     {
         /*start prepare*/
         factory(Category::class)->create(); // category
-        factory(GroupAttribute::class)->create(); // 1 group attribute
-        factory(GroupAttribute::class)->create(); // 2 group attribute
+        factory(GroupAttribute::class)->create(); // 1 group group_attribute
+        factory(GroupAttribute::class)->create(); // 2 group group_attribute
         factory(Attribute::class)->create(
             ['id' => 1, 'group_attribute_id'=>1]); // атрібут id = 1 group 1
         factory(Attribute::class)->create(
@@ -136,7 +136,7 @@ class ProductFilterTest extends TestCase
 
 
         $filters = [
-            'attribute' => [
+            'group_attribute' => [
                 1 => [1],
                 2 => [2],
             ]
@@ -145,7 +145,7 @@ class ProductFilterTest extends TestCase
         $this->assertTrue($products->total() == 1);
 
         $filters2 = [
-            'attribute' => [
+            'group_attribute' => [
                 2 => [2,3],
             ]
         ];

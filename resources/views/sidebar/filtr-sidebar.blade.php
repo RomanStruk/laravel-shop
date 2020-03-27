@@ -9,7 +9,7 @@
                         <div class="custom-control custom-checkbox">
                             <input name="radio_{{$group_attribute->id}}" type="checkbox" class="custom-control-input" id="check{{ $attribute->id }}">
                             <label class="custom-control-label" for="check{{ $attribute->id }}">
-                                <a href="{{ route('shop_main', ['attribute['.$group_attribute->id.'][]' => $attribute->id , 'category' => URL::getRequest()->cat]) }}">{{ $attribute->value }}</a>
+                                <a href="{{ route('shop_main', ['group_attribute['.$group_attribute->id.'][]' => $attribute->id , 'category' => URL::getRequest()->cat]) }}">{{ $attribute->value }}</a>
                             </label>
                         </div>
 

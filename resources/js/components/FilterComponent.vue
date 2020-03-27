@@ -11,7 +11,7 @@
             >
                 <div class="custom-control custom-checkbox">
                     <input type="checkbox" class="custom-control-input"
-                           :name="'attribute['+attributes.id+'][]'"
+                           :name="'group_attribute['+attributes.id+'][]'"
                            :id="'check'+attribute.id "
                            v-model="checkbox"
                            :value="attribute"

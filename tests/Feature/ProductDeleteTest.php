@@ -24,7 +24,7 @@ class ProductDeleteTest extends TestCase
         parent::setUp();
         $this->user = factory(User::class)->create();
         factory(Category::class)->create();
-        factory(GroupAttribute::class,2)->create(); // 1 group attribute
+        factory(GroupAttribute::class,2)->create(); // 1 group group_attribute
         factory(Attribute::class,5)->create(['group_attribute_id' => 1]);
         factory(Product::class, 5)->create();
 

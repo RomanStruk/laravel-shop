@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class ContactRequest extends FormRequest
+class GroupAttributeRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,19 +24,8 @@ class ContactRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' =>'required|max:25',
-            'email' => 'required|email',
-            'website' => '',
-            'subject' => 'required',
-            'message' => 'required'
+            'name' => ['required', 'string', 'min:4'],
+            'value.*' => ['nullable', 'string', 'min:4']
         ];
     }
-
-    public function messages()
-    {
-        return [
-           'email.required' => 'Поле :group_attribute обовязкове до заповнення.'
-        ];
-    }
-
 }

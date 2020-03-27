@@ -41,6 +41,7 @@ class ProductController extends Controller
         $sorting['status'] = '1';
         $products = $getProducts->handel(
             $sorting,
+            ['*'],
             $request->get('limit')
         );
         return response()->json($products);

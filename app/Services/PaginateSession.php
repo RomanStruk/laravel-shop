@@ -38,6 +38,8 @@ class PaginateSession
     {
         if(session()->has('limit')){
             $this->limit = session()->get('limit');
+        }else{
+            $this->limit = 15;
         }
     }
 

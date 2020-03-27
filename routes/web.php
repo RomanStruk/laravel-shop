@@ -12,6 +12,7 @@
 */
 
 
+
 Route::get('/', function () {
     return view('index');
 });
@@ -118,12 +119,13 @@ Route::group([
     Route::resource('product', 'Admin\ProductController');
     Route::resource('media', 'Admin\MediaController');
     Route::resource('user', 'Admin\UserController');
+    Route::resource('group_attribute', 'Admin\GroupAttributeController');
 });
 
 Route::get('/shop/json', 'ProductController@apiShowProducts');
 Route::get('/shop2', 'ProductController@index2')->middleware('web')->name('shop2');
 Route::get('/category/get/json', 'CategoriesController@getDataCategoriesJson');
-Route::get('/filter/get/json', 'AttributeController@getDataAttributesJson');
+Route::get('/filter/get/json', 'GroupAttributeController@getDataAttributesJson');
 
 
 Route::get('/test', 'ProductController@apiTest')->middleware('web');
