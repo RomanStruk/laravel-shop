@@ -112,14 +112,14 @@
             </div>
         </div>
         <div class="form-group row">
-            @foreach($groups as $attributes)
+            @foreach($filters as $filter)
                 <label class="col-sm-2 col-form-label" for="input-category">
-                    {{$attributes->name}}:
+                    {{$filter->name}}:
                 </label>
                 <div class="col-sm-10">
-                    @foreach($attributes->allAttributes as $attribute)
+                    @foreach($filter->allAttributes as $attribute)
                         <div class="form-check form-check-inline">
-                            <input class="form-check-input" type="radio" name="attributes[{{$attributes->id}}]"
+                            <input class="form-check-input" type="radio" name="attributes[{{$filter->id}}]"
                                    id="inlineCheckbox{{$attribute->id}}" value="{{$attribute->id}}">
                             <label class="form-check-label"
                                    for="inlineCheckbox{{$attribute->id}}">{{$attribute->value}}</label>

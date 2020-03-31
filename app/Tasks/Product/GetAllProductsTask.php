@@ -5,7 +5,7 @@ namespace App\Tasks\Product;
 
 
 use App\Product;
-use App\Repositories\Filters\ProductsFilter;
+use App\Repositories\ScopeFilters\ProductsFilter;
 use App\Repositories\ProductRepository;
 use Illuminate\Http\Request;
 

@@ -196,10 +196,10 @@
                             <tbody>
                             @foreach($product->product_attributes as $product_attribute)
                             <tr>
-                                <td>{{$product_attribute->group->name}}</td>
+                                <td>{{$product_attribute->filter->name}}</td>
                                 <td>
-                                    @if($attributes->firstWhere('id', '=', $product_attribute->group->id))
-                                        @foreach($attributes->firstWhere('id', '=', $product_attribute->group->id)->allAttributes as $attr)
+                                    @if($attributes->firstWhere('id', '=', $product_attribute->filter->id))
+                                        @foreach($attributes->firstWhere('id', '=', $product_attribute->filter->id)->allAttributes as $attr)
                                             @if($attr->id == $product_attribute->id)
                                                 <span class="badge badge-primary">{{$product_attribute->value}}</span>
                                             @else

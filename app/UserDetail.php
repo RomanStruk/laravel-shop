@@ -22,12 +22,25 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\UserDetail whereUserId($value)
  * @mixin \Eloquent
  * @property-read \App\User $user
+ * @property string|null $avatar
+ * @property string|null $country
+ * @property string|null $birthday
+ * @property string|null $location
+ * @property int $status
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\UserDetail whereAvatar($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\UserDetail whereBirthday($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\UserDetail whereCountry($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\UserDetail whereLocation($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\UserDetail whereStatus($value)
  */
 class UserDetail extends Model
 {
     public $timestamps = false;
     public $fillable = ['first_name', 'last_name', 'phone', 'avatar', 'country', 'birthday', 'location'];
-
+    protected function serializeDate(\DateTimeInterface $date)
+    {
+        return $date->format('Y-m-d H:i:s');
+    }
     public function user()
     {
         return $this->belongsTo('App\User');

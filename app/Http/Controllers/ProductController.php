@@ -2,12 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Category;
-use App\Order;
 use App\Product;
 use App\Repositories\ProductRepository;
-use App\Repositories\RepositoryInterface\ProductRepositoryInterface;
-use App\Services\Product\GetProductsByLimit;
+use App\Services\Data\Product\GetProductsByLimit;
 use DB;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Http\JsonResponse;
@@ -41,8 +38,7 @@ class ProductController extends Controller
         $sorting['status'] = '1';
         $products = $getProducts->handel(
             $sorting,
-            ['*'],
-            $request->get('limit')
+            ['*']
         );
         return response()->json($products);
     }

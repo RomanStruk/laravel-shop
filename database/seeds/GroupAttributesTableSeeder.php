@@ -31,6 +31,6 @@ class GroupAttributesTableSeeder extends Seeder
                 'name' => 'Цена', //6
             ],
         ];
-        DB::table('group_attributes')->insert($data);
+        DB::table('filters')->insert($data);
     }
 }

@@ -2,27 +2,21 @@
 
 namespace App\Http\Controllers;
 
-use App\GroupAttribute;
+use App\Filter;
+use App\Services\Data\Filter\GetFilters;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 class AttributeController extends Controller
 {
 
-    public static function getDataGroup(){
-        $group = GroupAttribute::all();
-        $group->load('allAttributes'); // жадна загрузка
-        return $group;
-    }
-
-    public function getDataAttributesJson(Request $request)
+    public function getDataAttributesJson(Request $request, GetFilters $getFilters)
     {
-        //return response()->json($request->all());
-        return self::getDataGroup();
+        return $getFilters->handel();
     }
     //
     public function showGroup($id){
-        $group_db = GroupAttribute::find($id);
+        $group_db = Filter::find($id);
         return $group_db;
     }
 

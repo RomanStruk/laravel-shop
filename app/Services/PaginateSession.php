@@ -9,14 +9,23 @@ use Illuminate\Http\Request;
 class PaginateSession
 {
     private $limit;
+    /**
+     * @var Request
+     */
+    private $request;
 
     public function __construct(Request $request)
     {
-        if ($request->has('limit') ){
-            if ($request->input('limit') < 1){
+        $this->request = $request;
+    }
+
+    private function init()
+    {
+        if ($this->request->has('limit') ){
+            if ($this->request->input('limit') < 1){
                 $this->remove();
             }else{
-                $this->put($request->input('limit'));
+                $this->put($this->request->input('limit'));
             }
         }
         $this->update();
@@ -48,6 +57,7 @@ class PaginateSession
      */
     public function getLimit():int
     {
+        $this->init();
         return $this->limit;
     }
 }

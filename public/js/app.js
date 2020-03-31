@@ -605,7 +605,7 @@ __webpack_require__.r(__webpack_exports__);
         paramsSerializer: function paramsSerializer(params) {
           var tmp = [];
           params.filter.forEach(function (item) {
-            tmp.push("attribute[".concat(item.group_attribute_id, "][]=").concat(item.id));
+            tmp.push("attribute[".concat(item.filter_id, "][]=").concat(item.id));
           });
 
           if (params.category) {
@@ -1698,7 +1698,7 @@ var render = function() {
                   staticClass: "custom-control-input",
                   attrs: {
                     type: "checkbox",
-                    name: "attribute[" + attributes.id + "][]",
+                    name: "group_attribute[" + attributes.id + "][]",
                     id: "check" + attribute.id
                   },
                   domProps: {
@@ -3920,7 +3920,7 @@ __webpack_require__.r(__webpack_exports__);
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(/*! /home/roman/Документи/Programming/PHP/laravel.shop/resources/js/app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! /home/vagrant/laravel.shop/resources/js/app.js */"./resources/js/app.js");
 
 
 /***/ })

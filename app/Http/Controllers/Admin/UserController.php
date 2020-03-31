@@ -6,14 +6,17 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\UserMultipleRequest;
 use App\Services\PaginateSession;
 use App\Services\SaveFile;
-use App\Services\User\CreateUser;
-use App\Services\User\DeleteUserById;
-use App\Services\User\GetUserByIdOrEmail;
-use App\Services\User\GetUsersByLimit;
-use App\Services\User\UpdateUserById;
-use App\Services\UserDetail\CreateUserDetail;
-use App\Services\UserDetail\UpdateUserDetail;
+use App\Services\Data\User\CreateUser;
+use App\Services\Data\User\DeleteUserById;
+use App\Services\Data\User\GetUserByIdOrEmail;
+use App\Services\Data\User\GetUsersByLimit;
+use App\Services\Data\User\UpdateUserById;
+use App\Services\Data\UserDetail\CreateUserDetail;
+use App\Services\Data\UserDetail\UpdateUserDetail;
+use Illuminate\Contracts\View\Factory;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\View\View;
 
 class UserController extends Controller
 {
@@ -23,18 +26,14 @@ class UserController extends Controller
      *
      * @param Request $request
      * @param GetUsersByLimit $getUsersByLimit
-     * @param PaginateSession $paginateSession
-     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     * @return Factory|View
      */
     public function index(Request $request,
-                          GetUsersByLimit $getUsersByLimit,
-                          PaginateSession $paginateSession)
+                          GetUsersByLimit $getUsersByLimit)
     {
-//dd($request->get('status'));
         $users = $getUsersByLimit->handel(
             $request->except('limit'),
-            ['id', 'email'],
-            $paginateSession->getLimit()
+            ['id', 'email']
         );
         return view('admin.user.index')->with('users', $users);
     }
@@ -42,7 +41,7 @@ class UserController extends Controller
     /**
      * Show the form for creating a new resource.
      *
-     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     * @return Factory|View
      */
     public function create()
     {
@@ -55,7 +54,7 @@ class UserController extends Controller
      * @param UserMultipleRequest $request
      * @param CreateUser $createUser
      * @param CreateUserDetail $createUserDetail
-     * @return \Illuminate\Http\RedirectResponse
+     * @return RedirectResponse
      */
     public function store(UserMultipleRequest $request,
                           CreateUser $createUser,
@@ -79,7 +78,7 @@ class UserController extends Controller
      *
      * @param GetUserByIdOrEmail $getUserByIdOrEmail
      * @param $userId
-     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     * @return Factory|View
      */
     public function show(GetUserByIdOrEmail $getUserByIdOrEmail, $userId)
     {
@@ -92,7 +91,7 @@ class UserController extends Controller
      *
      * @param GetUserByIdOrEmail $getUserByIdOrEmail
      * @param $userId
-     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     * @return Factory|View
      */
     public function edit(GetUserByIdOrEmail $getUserByIdOrEmail, $userId)
     {
@@ -108,7 +107,7 @@ class UserController extends Controller
      * @param UpdateUserById $updateUserById
      * @param UpdateUserDetail $updateUserDetail
      * @param $userId
-     * @return \Illuminate\Http\RedirectResponse
+     * @return RedirectResponse
      */
     public function update(UserMultipleRequest $request,
                            GetUserByIdOrEmail $getUserByIdOrEmail,
@@ -135,7 +134,7 @@ class UserController extends Controller
      * @param GetUserByIdOrEmail $getUserByIdOrEmail
      * @param DeleteUserById $deleteUserById
      * @param $userId
-     * @return \Illuminate\Http\RedirectResponse
+     * @return RedirectResponse
      */
     public function destroy(GetUserByIdOrEmail $getUserByIdOrEmail,
                             DeleteUserById $deleteUserById,

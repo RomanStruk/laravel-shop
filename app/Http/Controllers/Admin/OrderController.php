@@ -11,6 +11,11 @@ use App\Actions\Order\UpdateOrderStatusAction;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\OrderRequest;
 use App\Http\Requests\StatusOrderRequest;
+use App\Services\Data\Order\DeleteOrder;
+use App\Services\Data\Order\GetOrderById;
+use App\Services\Data\Order\GetOrdersByLimit;
+use App\Services\Data\Order\UpdateOrderStatus;
+use App\Tasks\Shipping\GetWarehousesByCityRef;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -20,47 +25,46 @@ class OrderController extends Controller
 {
 
     /**
-     * @param GetAllOrdersAction $action
+     * @param GetOrdersByLimit $getOrdersByLimit
      * @param Request $request
      * @return Factory|View
      */
-    public function index(GetAllOrdersAction $action, Request $request)
+    public function index(GetOrdersByLimit $getOrdersByLimit, Request $request)
     {
-//        dd($request->all());
+        $orders = $getOrdersByLimit->handel($request->except('limit'));
         return view('admin.order.index')
-            ->with('orders', $action->run($request));
+            ->with('orders', $orders);
     }
 
     /**
-     * @param GetOrderByIdAction $action
+     * @param GetOrderById $getOrderById
      * @param integer $id
      * @return Factory|View
      */
-    public function show(GetOrderByIdAction $action, $id)
+    public function show(GetOrderById $getOrderById, $id)
     {
-        return view('admin.order.revision')
-            ->with('order', $action->run($id));
+        $order = $getOrderById->handel($id);
+
+        return view('admin.order.show')->with('order', $order);
     }
 
-    /**
-     * @param DeleteOrderAction $action
-     * @param integer $id
-     * @return RedirectResponse
-     */
-    public function destroy(DeleteOrderAction $action, $id)
-    {
-        $action->run($id);
-        return redirect()->route('admin.order.index')->with('success', 'Замовлення успішно видалено');
-    }
 
     /**
      * @param EditOrderAction $action
+     * @param GetOrderById $getOrderById
      * @param integer $id
      * @return Factory|View
+     * @throws \Exception
      */
-    public function edit(EditOrderAction $action, $id)
+    public function edit(EditOrderAction $action,GetOrderById $getOrderById, \App\Services\Data\Shipping\GetWarehousesByCityRef $warehousesByCityRef,  $id)
     {
-        return view('admin.order.edit', $action->run($id));
+//        return view('admin.order.edit', $action->run($id));
+        $order = $getOrderById->handel($id);
+        $warehouses = $warehousesByCityRef->handel($order->shipping->city_ref);
+        return view('admin.order.edit', [
+            'warehouses'=> $warehouses,
+            'order'=> $order
+            ]);
     }
 
 
@@ -79,14 +83,29 @@ class OrderController extends Controller
 
     /**
      * Зміна статусу замовлення
-     * @param UpdateOrderStatusAction $action
+     * @param UpdateOrderStatus $updateOrderStatus
      * @param StatusOrderRequest $request
      * @param integer $orderId
      * @return RedirectResponse
      */
-    public function updateStatus(UpdateOrderStatusAction $action, StatusOrderRequest $request, $orderId)
+    public function updateStatus(UpdateOrderStatus $updateOrderStatus,
+                                 StatusOrderRequest $request,
+                                 $orderId)
     {
-        $action->run($request, $orderId);
-        return redirect()->back()->with('success', 'Статус замовлення успішно змінений');
+        $updateOrderStatus->handel($orderId, $request->validated());
+        return redirect()->back()->with('success', __('order.status_updated'));
+    }
+
+
+    /**
+     * @param DeleteOrder $deleteOrder
+     * @param integer $id
+     * @return RedirectResponse
+     */
+    public function destroy(DeleteOrder $deleteOrder, $id)
+    {
+        $deleteOrder->handel($id);
+        return redirect()->route('admin.order.index')
+            ->with('success', __('order.deleted'));
     }
 }

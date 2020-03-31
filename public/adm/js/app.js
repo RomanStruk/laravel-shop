@@ -77,9 +77,9 @@ var fa = __webpack_require__(/*! fontawesome */ "./node_modules/fontawesome/inde
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! /home/roman/Документи/Programming/PHP/laravel.shop/resources/js/admin/app.js */"./resources/js/admin/app.js");
-__webpack_require__(/*! /home/roman/Документи/Programming/PHP/laravel.shop/resources/sass/app.scss */"./resources/sass/app.scss");
-module.exports = __webpack_require__(/*! /home/roman/Документи/Programming/PHP/laravel.shop/resources/sass/admin/app.scss */"./resources/sass/admin/app.scss");
+__webpack_require__(/*! /home/vagrant/laravel.shop/resources/js/admin/app.js */"./resources/js/admin/app.js");
+__webpack_require__(/*! /home/vagrant/laravel.shop/resources/sass/app.scss */"./resources/sass/app.scss");
+module.exports = __webpack_require__(/*! /home/vagrant/laravel.shop/resources/sass/admin/app.scss */"./resources/sass/admin/app.scss");
 
 
 /***/ })

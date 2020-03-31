@@ -2,7 +2,7 @@
 
 namespace App;
 
-use App\Repositories\Filters\ProductsFilter;
+use App\Services\ScopeFilters\ProductsFilter;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -55,7 +55,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Product whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Product whereVisits($value)
  * @mixin \Eloquent
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Product filter(\App\Repositories\Filters\ProductsFilter $productsFilter, $filter)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Product filter(\App\Services\ScopeFilters\ProductsFilter $productsFilter, $filter)
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Media[] $media
  * @property-read int|null $media_count
  * @method static bool|null forceDelete()
@@ -68,7 +68,10 @@ class Product extends Model
 {
     use SoftDeletes;
 //    protected $dates = ['deleted_at'];
-
+    protected function serializeDate(\DateTimeInterface $date)
+    {
+        return $date->format('Y-m-d H:i:s');
+    }
     public $fillable = ['title',
         'alias',
         'category_id',

@@ -13,7 +13,7 @@ class CreateGroupAttributesTable extends Migration
      */
     public function up()
     {
-        Schema::create('group_attributes', function (Blueprint $table) {
+        Schema::create('filters', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('name', 255);
         });
@@ -26,6 +26,6 @@ class CreateGroupAttributesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('group_attributes');
+        Schema::dropIfExists('filters');
     }
 }

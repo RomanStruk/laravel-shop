@@ -3,7 +3,7 @@
 namespace App\Repositories;
 
 use App\Product as Model;
-use App\Repositories\Filters\ProductsFilter;
+use App\Repositories\ScopeFilters\ProductsFilter;
 use App\Repositories\RepositoryInterface\ProductRepositoryInterface;
 use DB;
 use Illuminate\Database\Eloquent\Builder;

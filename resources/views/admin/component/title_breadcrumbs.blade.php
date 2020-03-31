@@ -1,6 +1,6 @@
 <div class="row">
     <div class="col-auto">
-        <h2>{{$title}}</h2>
+        <h2>{{$title}}</i></h2>
     </div>
     <div class="col">
         @if (! empty($actions))
@@ -12,7 +12,7 @@
                 @endisset
                 @isset($actions['edit'])
                 <div class="col-auto p-1">
-                    <a href="{{$actions['edit']}}" title="Редагувати" class="btn btn-primary"><i class="fa fa-edit" aria-hidden="true"></i></a>
+                    <a href="{{$actions['edit']}}" title="Редагувати" class="btn btn-primary"><i class="fa fa-edit"></i></a>
                 </div>
                 @endisset
 

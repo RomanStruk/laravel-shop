@@ -3,7 +3,7 @@
 namespace App\Observers;
 
 use App\Media;
-use App\Services\Media\DeleteMediaFile;
+use App\Services\Data\Media\DeleteMediaFile;
 
 class MediaObserver
 {

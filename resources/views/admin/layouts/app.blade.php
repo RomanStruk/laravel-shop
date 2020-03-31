@@ -11,6 +11,7 @@
 
     <!-- Styles -->
     <link href="{{ asset('adm/css/app.css') }}" rel="stylesheet">
+    <script src="/fontawesome/js/all.js" crossorigin="anonymous"></script>
 </head>
 <body>
 <div id="app">
@@ -25,7 +26,6 @@
         </div>
     </div>
 </div>
-<script src="https://kit.fontawesome.com/1455e3d372.js" crossorigin="anonymous"></script>
 </body>
 <!-- Scripts -->
 <script src="{{ mix('js/manifest.js')}}"></script>

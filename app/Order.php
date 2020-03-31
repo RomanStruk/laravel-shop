@@ -3,7 +3,9 @@
 namespace App;
 
 
+use App\Services\ScopeFilters\OrdersFilter;
 use App\Traits\Status;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -50,12 +52,64 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Order whereDeletedAt($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Order withTrashed()
  * @method static \Illuminate\Database\Query\Builder|\App\Order withoutTrashed()
+
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Order filter(\App\Services\ScopeFilters\OrdersFilter $ordersFilter, $filter)
+ * @method static \Illuminate\Database\Eloquent\Builder select($columns = [])
  */
 class Order extends Model
 {
     use SoftDeletes;
+
     protected $guarded = [];
     protected $dates = ['deleted_at'];
+
+
+    protected function serializeDate(\DateTimeInterface $date)
+    {
+        return $date->format('Y-m-d H:i:s');
+    }
+
+    /**
+     * get current status of Order
+     * @param $value
+     * @return mixed
+     */
+    public function getDetailStatusAttribute($value)
+    {
+        return $this->details->sortByDesc('date_added')->first()->status;
+    }
+
+    /**
+     * Get total_price of Order
+     * @param $value
+     * @return float|mixed
+     */
+    public function getTotalPriceAttribute($value)
+    {
+        return $this->sum_price + $this->shipping->shipping_rate;
+    }
+
+    /**
+     * Get sum of price of products
+     * @return mixed
+     */
+    public function getSumPriceAttribute()
+    {
+        return $this->products->sum('price');;
+    }
+
+
+    /**
+     * Accept Filters
+     * @param Builder $query
+     * @param OrdersFilter $productsFilter
+     * @param $filter
+     * @return Builder
+     */
+    public function scopeFilter(Builder $query, OrdersFilter $productsFilter, $filter)
+    {
+        return $productsFilter->apply($query, $filter);
+    }
 
     public function user()
     {
@@ -82,14 +136,6 @@ class Order extends Model
         return $this->hasOne(\App\Payment::class);
     }
 
-    /**
-     * Get sum of price of products
-     * @return mixed
-     */
-    public function getSumPriceAttribute()
-    {
-        return $this->products->sum('price');;
-    }
 
     use Status;
 

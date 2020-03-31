@@ -4,20 +4,16 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\MediaRequest;
-use App\Media;
 use App\Product;
-use App\Repositories\Filters\ProductsFilter;
-use App\Services\Media\DeleteMediaFileFromDb;
-use App\Services\Media\GetMediaById;
-use App\Services\Media\GetMediasByLimit;
+use App\Services\Data\Media\DeleteMediaFileFromDb;
+use App\Services\Data\Media\GetMediaById;
+use App\Services\Data\Media\GetMediasByLimit;
 use App\Services\SaveFile;
-use App\Services\Media\SaveToDbMediaFile;
-use App\Services\Media\UpdateMediaFile;
-use App\Services\Media\UpdateRelationships;
-use App\Services\Product\GetProductsByLimit;
+use App\Services\Data\Media\SaveToDbMediaFile;
+use App\Services\Data\Media\UpdateMediaFile;
+use App\Services\Data\Media\UpdateRelationships;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 class MediaController extends Controller

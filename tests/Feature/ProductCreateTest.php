@@ -4,7 +4,7 @@ namespace Tests\Feature;
 
 use App\Attribute;
 use App\Category;
-use App\GroupAttribute;
+use App\Filter;
 use App\Product;
 use App\User;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
@@ -25,7 +25,7 @@ class ProductCreateTest extends TestCase
         parent::setUp();
         $this->user = factory(User::class)->create();
         factory(Category::class)->create();
-        factory(GroupAttribute::class,2)->create(); // 1 group group_attribute
+        factory(Filter::class,2)->create(); // 1 group filter
         factory(Attribute::class,5)->create(['group_attribute_id' => 1]);
         factory(Attribute::class,5)->create(['group_attribute_id' => 2]);
         $this->correctData = [

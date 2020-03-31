@@ -15,7 +15,7 @@
             </li>
             <li class="nav-item">
                 <a class="nav-link
-                @if(Route::currentRouteName() == 'admin.dashboard.index') active @endif" href="{{ route('admin.order.index') }}">
+                @if(Route::currentRouteName() == 'admin.order.index') active @endif" href="{{ route('admin.order.index') }}">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
                          stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                          class="feather feather-file">
@@ -27,7 +27,7 @@
             </li>
             <li class="nav-item">
                 <a class="nav-link
-                @if(Route::currentRouteName() == 'admin.dashboard.index') active @endif" href="{{route('admin.category.index')}}">
+                @if(Route::currentRouteName() == 'admin.category.index') active @endif" href="{{route('admin.category.index')}}">
                     <svg class="feather" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
                         <path fill-rule="evenodd" d="M8 3H3v3h5V3zM3 2a1 1 0 00-1 1v3a1 1 0 001 1h5a1 1 0 001-1V3a1 1 0 00-1-1H3zm14 12h-5v3h5v-3zm-5-1a1 1 0 00-1 1v3a1 1 0 001 1h5a1 1 0 001-1v-3a1 1 0 00-1-1h-5zm-4-3H3v7h5v-7zM3 9a1 1 0 00-1 1v7a1 1 0 001 1h5a1 1 0 001-1v-7a1 1 0 00-1-1H3zm14-6h-5v7h5V3zm-5-1a1 1 0 00-1 1v7a1 1 0 001 1h5a1 1 0 001-1V3a1 1 0 00-1-1h-5z" clip-rule="evenodd"></path>
                     </svg>
@@ -36,7 +36,7 @@
             </li>
             <li class="nav-item">
                 <a class="nav-link
-                @if(Route::currentRouteName() == 'admin.dashboard.index') active @endif" href="{{route('admin.product.index')}}">
+                @if(Route::currentRouteName() == 'admin.product.index') active @endif" href="{{route('admin.product.index')}}">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
                          stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                          class="feather feather-shopping-cart">
@@ -49,7 +49,7 @@
             </li>
             <li class="nav-item">
                 <a class="nav-link
-                @if(Route::currentRouteName() == 'admin.dashboard.index') active @endif" href="{{route('admin.user.index')}}">
+                @if(Route::currentRouteName() == 'admin.user.index') active @endif" href="{{route('admin.user.index')}}">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
                          stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                          class="feather feather-users">
@@ -63,7 +63,7 @@
             </li>
             <li class="nav-item">
                 <a class="nav-link
-                @if(Route::currentRouteName() == 'admin.dashboard.index') active @endif" href="{{route('admin.media.index')}}">
+                @if(Route::currentRouteName() == 'admin.media.index') active @endif" href="{{route('admin.media.index')}}">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
                          stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                          class="feather feather-layers">
@@ -76,7 +76,7 @@
             </li>
             <li class="nav-item">
                 <a class="nav-link
-                @if(Route::currentRouteName() == 'admin.group_attribute.*') active @endif" href="{{route('admin.group_attribute.index')}}">
+                @if(Route::currentRouteName() == 'admin.filter.index') active @endif" href="{{route('admin.filter.index')}}">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
                          stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                          class="feather feather-bar-chart-2">
@@ -84,7 +84,7 @@
                         <line x1="12" y1="20" x2="12" y2="4"></line>
                         <line x1="6" y1="20" x2="6" y2="14"></line>
                     </svg>
-                    Атрибути
+                    Фільтри
                 </a>
             </li>
         </ul>

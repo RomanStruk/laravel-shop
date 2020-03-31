@@ -257,7 +257,9 @@
                     },
                     paramsSerializer: function(params) {
                         let tmp = [];
-                        params.filter.forEach(item => {tmp.push(`attribute[${item.group_attribute_id}][]=${item.id}`)});
+                        params.filter.forEach(item => {
+                            tmp.push(`attribute[${item.filter_id}][]=${item.id}`)
+                        });
                         if (params.category) {
                             tmp.push(`category=${params.category}`);
                         }

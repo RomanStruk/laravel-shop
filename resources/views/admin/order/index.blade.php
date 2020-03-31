@@ -70,4 +70,5 @@
         </tbody>
     </table>
 
+    {{ $orders->withQueryString()->links() }}
 @endsection

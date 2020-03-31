@@ -26,11 +26,14 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Payment extends Model
 {
-    public $fillable = ['paid', 'method'];
-
     /**
      * @param array $fillable
      * @return Payment
      */
+    public $fillable = ['paid', 'method'];
 
+    protected function serializeDate(\DateTimeInterface $date)
+    {
+        return $date->format('Y-m-d H:i:s');
+    }
 }

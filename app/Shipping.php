@@ -55,7 +55,10 @@ class Shipping extends Model
         'warehouse_ref',
         'warehouse_title',
     ];
-
+    protected function serializeDate(\DateTimeInterface $date)
+    {
+        return $date->format('Y-m-d H:i:s');
+    }
     public function order()
     {
         return $this->belongsTo('App\Order');

@@ -2,9 +2,9 @@
 
 namespace App;
 
-use App\Repositories\Filters\UsersFilters;
+use App\Services\ScopeFilters\UsersFilters;
 use App\Traits\Status;
-use Illuminate\Contracts\Auth\MustVerifyEmail;
+use DateTimeInterface;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -38,11 +38,26 @@ use Illuminate\Notifications\Notifiable;
  * @property-read \App\UserDetail $detail
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Order[] $orders
  * @property-read int|null $orders_count
+ * @property \Illuminate\Support\Carbon|null $deleted_at
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Comment[] $comments
+ * @property-read int|null $comments_count
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\User filter(\App\Services\ScopeFilters\UsersFilters $usersFilters, $filter)
+ * @method static bool|null forceDelete()
+ * @method static \Illuminate\Database\Query\Builder|\App\User onlyTrashed()
+ * @method static bool|null restore()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\User whereDeletedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\User withTrashed()
+ * @method static \Illuminate\Database\Query\Builder|\App\User withoutTrashed()
  */
 class User extends Authenticatable
 {
     use SoftDeletes;
     use Notifiable;
+
+    protected function serializeDate(DateTimeInterface $date)
+    {
+        return $date->format('Y-m-d H:i:s');
+    }
 
     /**
      * The attributes that are mass assignable.
