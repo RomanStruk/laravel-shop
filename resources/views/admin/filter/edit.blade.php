@@ -11,9 +11,14 @@
     'actions' => [
         'delete' => route('admin.filter.destroy',['filter' => $filter->id])
     ]])
+
+    <!-- Main content -->
+    <section class="content">
     @include('admin.component.events')
 
-    <form action="{{route('admin.filter.update', ['filter' => $filter->id])}}" method="post">
+        <div class="card card-solid">
+            <div class="card-body">
+                <form action="{{route('admin.filter.update', ['filter' => $filter->id])}}" method="post">
         @csrf
         @method('PATCH')
 
@@ -42,4 +47,7 @@
             </div>
         </div>
     </form>
+            </div>
+        </div>
+    </section>
 @endsection

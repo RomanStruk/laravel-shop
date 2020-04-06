@@ -61,7 +61,7 @@
         methods: {
             attributeGroup: function(){
                 this.is_refresh = true;                     // заглушка під чаз завантаження
-                axios.get('/filter/get/json',{
+                axios.get('/api/v1/filter/index', {
                     params: {
                         category: this.categoty_id
                     }

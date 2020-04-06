@@ -49,7 +49,7 @@
         methods: {
             comments: function () {
                 this.is_refresh = true;
-                axios.get('/api/comments/product/'+this.productid).then((response) => {
+                axios.get('/api/v1/comment/index/product/'+this.productid).then((response) => {
                     this.commentsData = response.data; // обєднання всії завантажених даних
                 });
                 this.is_refresh = false;

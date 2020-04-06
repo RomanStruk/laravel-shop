@@ -81,7 +81,7 @@
                             <p><span class="in-stock">в наявності</span><span class="sku">{{$product->in_stock}}</span>
                             </p>
                         </div>
-                        <basket-button-component v-bind:data="{{json_encode($product)}}"></basket-button-component>
+                        <basket-button-component v-bind:data='@json($product)'></basket-button-component>
                         <div class="product-link">
                             <ul class="list-inline">
                                 <li><a href="/wishlist">Додати до списку бажань</a></li>

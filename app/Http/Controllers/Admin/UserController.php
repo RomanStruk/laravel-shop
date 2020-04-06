@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\UserMultipleRequest;
-use App\Services\PaginateSession;
 use App\Services\SaveFile;
 use App\Services\Data\User\CreateUser;
 use App\Services\Data\User\DeleteUserById;
@@ -13,6 +12,7 @@ use App\Services\Data\User\GetUsersByLimit;
 use App\Services\Data\User\UpdateUserById;
 use App\Services\Data\UserDetail\CreateUserDetail;
 use App\Services\Data\UserDetail\UpdateUserDetail;
+use App\User;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -35,6 +35,11 @@ class UserController extends Controller
             $request->except('limit'),
             ['id', 'email']
         );
+//        $role = Role::findOrFail(1);
+//        $user = User::findOrFail(2);
+//        dd($user->hasRole('Admin'), $user->roles);
+//        dd($role->users);
+//        $role->attachUser(2);
         return view('admin.user.index')->with('users', $users);
     }
 

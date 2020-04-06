@@ -1,74 +1,103 @@
 @extends('admin.layouts.app')
 
 @section('content')
+
+    <!-- Content Header (Page header) -->
     @include('admin.component.title_breadcrumbs', [
         'title' => 'Список замовлень',
         'breadcrumbs' => [
             'Замовлення',
         ]
         ])
-    @include('admin.component.sort', [
-    'route' => route('admin.order.index'),
-    'status' => \App\Order::listStatus(),
-    'dateAdded' => true,
-    'search' => true,
-    'limit' => true
-    ])
+    <!-- /.content-header -->
 
-    @include('admin.component.events')
+    <!-- Main content -->
+    <section class="content">
+        @include('admin.component.events')
+        @include('admin.component.sort', [
+        'route' => route('admin.order.index'),
+        'status' => \App\Order::listStatus(),
+        'dateAdded' => true,
+        'search' => true,
+        'limit' => true
+        ])
+        <div class="card card-solid">
+            <div class="card-body p-0">
+                        <table class="table table-striped projects">
+                            <thead>
+                            <tr>
+                                <th class="text-right">#</th>
+                                <th class="text-left">Замовник</th>
+                                <th class="text-left">Total</th>
+                                <th class="text-left">Date Modified</th>
+                                <th class="text-center">Status</th>
+                                <th class="text-center">Action</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            @foreach($orders as $order)
+                                <tr>
+                                    <td class="text-right">{{ $order->id }}</td>
+                                    <td class="text-left">
+                                        <a href="{{route('admin.user.show', ['user' => $order->user->id])}}">
+                                            {{ $order->user->fullName }}
+                                        </a>
+                                        <br>
+                                        <small>
+                                            Created {{ $order->created_at->format('d.M.Y h:m') }}
+                                        </small>
+                                    </td>
+                                    <td class="text-left">{{$order->sum_price}} {{ config('shop.currency_short') }}</td>
+                                    <td class="text-left">{{ $order->updated_at->format('j F Yр. h:m') }}</td>
+                                    <td class="project-state">
 
-    <table class="table table-bordered table-hover">
-        <thead>
-        <tr>
-            <td class="text-right">
-                <a href="/admin/index.php?route=sale/order&amp;user_token=&amp;sort=o.order_id&amp;order=ASC"
-                   class="desc">Order ID</a></td>
-            <td class="text-left">
-                <a href="#sort=customer&amp;order=ASC">Замовник</a>
-            </td>
-            <td class="text-left">
-                <a href="/admin/index.php?route=sale/order&amp;sort=order_status&amp;order=ASC">Status</a>
-            </td>
-            <td class="text-right">
-                <a href="https://demo.opencart.com/admin/index.php?route=sale/order&amp;sort=o.total&amp;order=ASC">Total</a>
-            </td>
-            <td class="text-left">
-                <a href="https://demo.opencart.com/admin/index.php?route=sale/order&amp;sort=o.date_added&amp;order=ASC">Date
-                    Added</a>
-            </td>
-            <td class="text-left">
-                <a href="/admin/index.php?route=sale/order&amp;sort=o.date_modified&amp;order=ASC">Date
-                    Modified</a>
-            </td>
-            <td class="text-right">Action</td>
-        </tr>
-        </thead>
-        <tbody>
-        @foreach($orders as $order)
-            <tr>
-                <td class="text-right">{{ $order->id }}</td>
-                <td class="text-left">
-                    <a href="{{route('admin.user.show', ['user' => $order->user->id])}}">
-                        {{ $order->user->detail->first_name }} {{ $order->user->detail->last_name }}
-                    </a>
-                </td>
-                <td class="text-left">{{$order->getStatus($order->detail_status)}}</td>
-                <td class="text-right">{{$order->sum_price}}</td>
-                <td class="text-left">{{ $order->created_at }}</td>
-                <td class="text-left">{{ $order->updated_at }}</td>
-                <td class="text-right">
-                    @include('admin.component.dropdown_menu', [
-                        'show' => route( 'admin.order.show', ['order' => $order->id]),
-                        'edit' => route( 'admin.order.edit', ['order' => $order->id]),
-                        'delete' => route( 'admin.order.destroy', ['order' => $order->id]),
+                                        @if ($order->detail_status == $order::STATUS_PENDING)
+                                            <span class="badge badge-warning">
+                                                {{$order->getStatus($order->detail_status)}}
+                                            </span>
+                                        @elseif ($order->detail_status == $order::STATUS_CANCELED)
+                                            <span class="badge badge-danger">
+                                                {{$order->getStatus($order->detail_status)}}
+                                            </span>
+                                        @elseif ($order->detail_status == $order::STATUS_PROCESSING)
+                                            <span class="badge badge-success">
+                                                {{$order->getStatus($order->detail_status)}}
+                                            </span>
+                                        @elseif ($order->detail_status == $order::STATUS_COMPLETED)
+                                            <span class="badge badge-success">
+                                                {{$order->getStatus($order->detail_status)}}
+                                            </span>
+                                        @endif
 
-                    ])
-                </td>
-            </tr>
-        @endforeach
+                                    </td>
+                                    <td class="project-actions text-right">
+                                        @include('admin.component.dropdown_menu', [
+                                            'show' => route( 'admin.order.show', ['order' => $order->id]),
+                                            'edit' => route( 'admin.order.edit', ['order' => $order->id]),
+                                            'delete' => route( 'admin.order.destroy', ['order' => $order->id]),
 
-        </tbody>
-    </table>
+                                        ])
+                                    </td>
+                                </tr>
+                            @endforeach
 
-    {{ $orders->withQueryString()->links() }}
+                            </tbody>
+                        </table>
+
+                <div class="row p-3">
+                    <div class="col-sm-12 col-md-5">
+                        <div class="dataTables_info" id="example2_info" role="status" aria-live="polite">Showing 1 to 10
+                            of 57 entries
+                        </div>
+                    </div>
+                    <div class="col-sm-12 col-md-7">
+                        <div class="float-right">
+                            {{ $orders->withQueryString()->links() }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </section>
 @endsection

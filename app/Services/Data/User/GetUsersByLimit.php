@@ -41,6 +41,7 @@ class GetUsersByLimit
         return User::filter($this->usersFilters, $filters)
             ->select($fields)
             ->with('detail')
+            ->with('roles')
             ->paginate($this->paginateSession->getLimit());
     }
 

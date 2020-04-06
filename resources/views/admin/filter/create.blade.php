@@ -7,9 +7,13 @@
         'Фільтри' => route('admin.filter.index'),
         'Додати',
     ]])
+    <!-- Main content -->
+    <section class="content">
     @include('admin.component.events')
 
-    <form action="{{ route('admin.filter.store') }}" method="post" class="needs-validation"  enctype="multipart/form-data" novalidate>
+    <div class="card card-solid">
+        <div class="card-body">
+            <form action="{{ route('admin.filter.store') }}" method="post" class="needs-validation"  enctype="multipart/form-data" novalidate>
         @csrf
         <div class="form-group row">
             <label class="col-sm-2 col-form-label" for="name">Name</label>
@@ -29,4 +33,7 @@
 
         <input type="submit" name="save" value="Save" class="btn btn-primary">
     </form>
+        </div>
+    </div>
+    </section>
 @endsection

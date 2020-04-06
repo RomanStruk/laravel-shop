@@ -11,7 +11,11 @@
     'actions' => [
         'delete' => route('admin.user.destroy',['user' => $user->id])
     ]])
-    @include('admin.component.events')
+    <!-- Main content -->
+    <section class="content">
+        @include('admin.component.events')
+        <div class="card card-solid">
+            <div class="card-body">
 
     <form action="{{route('admin.user.update', ['user' => $user->id])}}" method="post"
           enctype="multipart/form-data">
@@ -91,4 +95,7 @@
             </div>
         </div>
     </form>
+            </div>
+        </div>
+    </section>
 @endsection

@@ -3,6 +3,9 @@
 namespace App;
 
 use App\Services\ScopeFilters\UsersFilters;
+use App\Traits\Helpers\SerializeDate;
+use App\Traits\Helpers\UserHelper;
+use App\Traits\Relations\UserRelations;
 use App\Traits\Status;
 use DateTimeInterface;
 use Illuminate\Database\Eloquent\Builder;
@@ -48,16 +51,18 @@ use Illuminate\Notifications\Notifiable;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\User whereDeletedAt($value)
  * @method static \Illuminate\Database\Query\Builder|\App\User withTrashed()
  * @method static \Illuminate\Database\Query\Builder|\App\User withoutTrashed()
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Role[] $roles
+ * @property-read int|null $roles_count
  */
 class User extends Authenticatable
 {
     use SoftDeletes;
     use Notifiable;
+    use UserRelations;
+    use Status;
+    use UserHelper;
+    use SerializeDate;
 
-    protected function serializeDate(DateTimeInterface $date)
-    {
-        return $date->format('Y-m-d H:i:s');
-    }
 
     /**
      * The attributes that are mass assignable.
@@ -98,8 +103,10 @@ class User extends Authenticatable
         return $usersFilters->apply($query, $filter);
     }
 
-    use Status;
-
+    public function getFullNameAttribute()
+    {
+        return $this->detail->first_name . ' ' . $this->detail->last_name;
+    }
     const STATUS_ACTIVE   = 1;
     const STATUS_INACTIVE = 2;
     const STATUS_DELETED  = 3;
@@ -117,18 +124,4 @@ class User extends Authenticatable
         ];
     }
 
-    public function detail()
-    {
-        return $this->hasOne('App\UserDetail')->withDefault();
-    }
-
-    public function comments()
-    {
-        return $this->hasMany(Comment::class);
-    }
-
-    public function orders()
-    {
-        return $this->hasMany('App\Order');
-    }
 }

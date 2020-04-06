@@ -2,12 +2,6 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Actions\Order\DeleteOrderAction;
-use App\Actions\Order\EditOrderAction;
-use App\Actions\Order\GetAllOrdersAction;
-use App\Actions\Order\GetOrderByIdAction;
-use App\Actions\Order\UpdateOrderAction;
-use App\Actions\Order\UpdateOrderStatusAction;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\OrderRequest;
 use App\Http\Requests\StatusOrderRequest;
@@ -15,7 +9,9 @@ use App\Services\Data\Order\DeleteOrder;
 use App\Services\Data\Order\GetOrderById;
 use App\Services\Data\Order\GetOrdersByLimit;
 use App\Services\Data\Order\UpdateOrderStatus;
-use App\Tasks\Shipping\GetWarehousesByCityRef;
+use App\Services\Data\Shipping\GetCityByRef;
+use App\Services\Data\Shipping\GetWarehousesByCityRef;
+use App\Services\Data\UserDetail\UpdateUserDetail;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -50,35 +46,69 @@ class OrderController extends Controller
 
 
     /**
-     * @param EditOrderAction $action
      * @param GetOrderById $getOrderById
+     * @param GetWarehousesByCityRef $warehousesByCityRef
      * @param integer $id
      * @return Factory|View
      * @throws \Exception
      */
-    public function edit(EditOrderAction $action,GetOrderById $getOrderById, \App\Services\Data\Shipping\GetWarehousesByCityRef $warehousesByCityRef,  $id)
+    public function edit(GetOrderById $getOrderById,
+                         GetWarehousesByCityRef $warehousesByCityRef,
+                         $id)
     {
-//        return view('admin.order.edit', $action->run($id));
         $order = $getOrderById->handel($id);
-        $warehouses = $warehousesByCityRef->handel($order->shipping->city_ref);
         return view('admin.order.edit', [
-            'warehouses'=> $warehouses,
-            'order'=> $order
-            ]);
+            'order'=> $order,
+            'warehouses'=> $warehousesByCityRef->handel($order->shipping->city_ref),
+        ]);
     }
 
 
     /**
-     * @param UpdateOrderAction $action
+     * @param GetOrderById $getOrderById
+     * @param UpdateUserDetail $updateUserDetail
+     * @param GetWarehousesByCityRef $getWarehousesByCityRef
+     * @param GetCityByRef $getCityByRef
      * @param OrderRequest $request
      * @param int $orderId
      * @return RedirectResponse
      * @throws \Exception
      */
-    public function update(UpdateOrderAction $action, OrderRequest $request, $orderId)
+    public function update(GetOrderById $getOrderById,
+                           UpdateUserDetail $updateUserDetail,
+                           GetWarehousesByCityRef $getWarehousesByCityRef,
+                           GetCityByRef $getCityByRef,
+                           OrderRequest $request,
+                           $orderId)
     {
-        $action->run($request, $orderId);
-        return redirect()->back()->with('success', 'Замовлення успішно змінено');
+
+        $order = $getOrderById->handel($orderId);
+        $updateUserDetail->handel(
+            $order->user,
+            $request->userDetailFillData()
+        );
+        $order->syncProducts($request->input(['products']));
+
+        $order->paymentUpdate($request->paymentFillData());
+
+        $inputShipping = $request->shippingFillData();
+        if ($order->shipping->city_ref != $inputShipping['city_ref']){
+            $cityInformation = $getCityByRef->handel($inputShipping['city_ref']);
+            $inputShipping['city_ref'] = $cityInformation['Ref'];
+            $inputShipping['city'] = $cityInformation['SettlementTypeDescription'].$cityInformation['Description'];
+            $inputShipping['region'] = $cityInformation['RegionsDescription'];
+            $inputShipping['area'] = $cityInformation['AreaDescription'];
+        }elseif ($inputShipping['method'] == 'novaposhta'){
+
+            $warehouses = $getWarehousesByCityRef->handel($inputShipping['city_ref']);
+            $inputShipping['warehouse_title'] = 'Don`t choose';
+            if (key_exists('warehouse_ref', $warehouses)){
+                $inputShipping['warehouse_title'] = $warehouses[$inputShipping['warehouse_ref']]->Description;
+            }
+        }
+        $order->shippingUpdate($inputShipping);
+
+        return redirect()->back()->with('success', __('order.updated'));
     }
 
     /**

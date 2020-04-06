@@ -8,11 +8,6 @@ use Illuminate\Http\Request;
 
 class CommentController extends Controller
 {
-    public function apiGetComments($product)
-    {
-        $comments = Comment::with('user')->where('product_id', '=', $product)->get();
-        return $comments;
-    }
 
     public function create(StoreCommentPost $request, $product)
     {

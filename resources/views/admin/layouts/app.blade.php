@@ -1,8 +1,11 @@
-<!doctype html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<!DOCTYPE html>
+<html>
 <head>
     <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <!-- Tell the browser to be responsive to screen width -->
     <meta name="viewport" content="width=device-width, initial-scale=1">
+
 
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
@@ -11,25 +14,40 @@
 
     <!-- Styles -->
     <link href="{{ asset('adm/css/app.css') }}" rel="stylesheet">
-    <script src="/fontawesome/js/all.js" crossorigin="anonymous"></script>
+
 </head>
-<body>
-<div id="app">
-    @include('admin.sidebar.navbartop')
-    <div class="container-fluid">
-        <div class="row">
-            @include('admin.sidebar.navbarleft')
-            <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4">
-                <br>
-                @yield('content')
-            </main>
-        </div>
+<body class="hold-transition sidebar-mini layout-fixed">
+<div class="wrapper">
+
+    <!-- Navbar -->
+    @include('admin.layouts.nav-bar')
+    <!-- /.navbar -->
+    <!-- Main Sidebar Container -->
+    @include('admin.layouts.main-sidebar')
+
+    <!-- Content Wrapper. Contains page content -->
+    <div id="app" class="content-wrapper">
+        @yield('content')
+
     </div>
+    <!-- /.content-wrapper -->
+
+    @include('admin.layouts.footer')
+
+    <!-- Control Sidebar -->
+    <aside class="control-sidebar control-sidebar-dark">
+        <!-- Control sidebar content goes here -->
+    </aside>
+    <!-- /.control-sidebar -->
 </div>
-</body>
+<!-- ./wrapper -->
+<!-- Ionicons -->
+<link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
 <!-- Scripts -->
-<script src="{{ mix('js/manifest.js')}}"></script>
-<script src="{{ mix('js/vendor.js')}}"></script>
 <script src="{{ mix('adm/js/app.js')}}"></script>
 
+<script>
+    $.widget.bridge('uibutton', $.ui.button)
+</script>
+</body>
 </html>

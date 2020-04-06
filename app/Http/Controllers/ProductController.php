@@ -3,8 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Product;
-use App\Repositories\ProductRepository;
+use App\Services\Data\Product\GetProductByIdOrSlug;
 use App\Services\Data\Product\GetProductsByLimit;
+use App\Services\Data\Product\UpdateProductVisits;
 use DB;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Http\JsonResponse;
@@ -14,34 +15,13 @@ use Illuminate\View\View;
 class ProductController extends Controller
 {
 
-    private $productRepository;
 
-    public function __construct()
-    {
-        $this->productRepository = ProductRepository::getInstance();
-    }
 
     public function index()
     {
         return view('vue.shop');
     }
 
-    /**
-     * фунціонал для api
-     * @param Request $request
-     * @param GetProductsByLimit $getProducts
-     * @return JsonResponse
-     */
-    public function apiShowProducts(Request $request, GetProductsByLimit $getProducts)
-    {
-        $sorting = $request->except('limit');
-        $sorting['status'] = '1';
-        $products = $getProducts->handel(
-            $sorting,
-            ['*']
-        );
-        return response()->json($products);
-    }
 
     /**
      * Відображення даних по get запиту
@@ -65,13 +45,17 @@ class ProductController extends Controller
 
     /**
      * Відображення сторінки з продуктом
+     * @param UpdateProductVisits $productVisits
+     * @param GetProductByIdOrSlug $getProduct
      * @param $alias
      * @return Factory|View
      */
-    public function showSingleProduct($alias)
+    public function show(UpdateProductVisits $productVisits,
+                                      GetProductByIdOrSlug $getProduct,
+                                      $alias)
     {
-        $product = $this->productRepository->findByAlias($alias);
-        $this->productRepository->updateVisits($product->id); //оновлення кількості переглядів
+        $product = $getProduct->handel($alias);
+        $productVisits->handel($product->id); //оновлення кількості переглядів
         return view('product', ['product' => $product]);
     }
 

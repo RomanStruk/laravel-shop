@@ -13,7 +13,7 @@
         "axios": "^0.19.2",
         "bootstrap": "^4.0.0",
         "jquery": "^3.2",
-        "laravel-mix": "^5.0.1",
+        "laravel-mix": "^5.0.4",
         "lodash": "^4.17.13",
         "popper.js": "^1.12",
         "resolve-url-loader": "^2.3.1",
@@ -24,10 +24,12 @@
         "vue-template-compiler": "^2.6.10"
     },
     "dependencies": {
+        "admin-lte": "^3.0.4",
         "bootstrap-dropdown-hover": "^4.2.0",
         "bootstrap-select": "^1.13.12",
         "cross-env": "^7.0.2",
-        "fontawesome": "^5.6.3",
-        "vue-reactive-storage": "git+https://github.com/ropbla9/vue-reactive-storage.git"
+        "moment": "^2.24.0",
+        "vue-reactive-storage": "git+https://github.com/ropbla9/vue-reactive-storage.git",
+        "vuex": "^3.1.3"
     }
 }

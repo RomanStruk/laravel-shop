@@ -4,6 +4,9 @@ namespace App;
 
 
 use App\Services\ScopeFilters\OrdersFilter;
+use App\Traits\Helpers\OrderHelper;
+use App\Traits\Helpers\SerializeDate;
+use App\Traits\Relations\OrderRelations;
 use App\Traits\Status;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
@@ -52,22 +55,23 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Order whereDeletedAt($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Order withTrashed()
  * @method static \Illuminate\Database\Query\Builder|\App\Order withoutTrashed()
-
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Order filter(\App\Services\ScopeFilters\OrdersFilter $ordersFilter, $filter)
  * @method static \Illuminate\Database\Eloquent\Builder select($columns = [])
+ * @property-read mixed $detail_status
+ * @property-read mixed $sum_price
+ * @property-read float|mixed $total_price
  */
 class Order extends Model
 {
     use SoftDeletes;
+    use OrderRelations;
+    use SerializeDate;
+    use OrderHelper;
+    use Status;
 
     protected $guarded = [];
+
     protected $dates = ['deleted_at'];
-
-
-    protected function serializeDate(\DateTimeInterface $date)
-    {
-        return $date->format('Y-m-d H:i:s');
-    }
 
     /**
      * get current status of Order
@@ -110,34 +114,6 @@ class Order extends Model
     {
         return $productsFilter->apply($query, $filter);
     }
-
-    public function user()
-    {
-        return $this->belongsTo('App\User')->withTrashed();
-    }
-
-    public function products()
-    {
-        return $this->belongsToMany('App\Product');
-    }
-
-    public function shipping()
-    {
-        return $this->hasOne('App\Shipping');
-    }
-
-    public function details()
-    {
-        return $this->hasMany('App\OrderDetail');
-    }
-
-    public function payment()
-    {
-        return $this->hasOne(\App\Payment::class);
-    }
-
-
-    use Status;
 
     const STATUS_PENDING    = 1;
     const STATUS_PROCESSING = 2;

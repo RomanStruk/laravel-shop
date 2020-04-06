@@ -30,10 +30,17 @@ class UsersTableSeeder extends Seeder
                 'location' => 'Some address',
             ]
         ]);
+        DB::table('role_user')->insert([
+            [
+                'user_id' => 1,
+                'role_id' => 1,
+            ]
+        ]);
         factory(App\User::class, 50)->create()->each(function($user) {
             /** @var App\User $user */
             $detail = factory(App\UserDetail::class)->make(['user_id' => $user->id]);
             $user->detail()->save($detail);
+            $user->roles()->sync([3]);
 
             $order = factory(App\Order::class,3)->make(['user_id' => $user->id]);
             $user->orders()->insert($order->toArray());

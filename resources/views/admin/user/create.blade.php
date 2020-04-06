@@ -7,7 +7,11 @@
         'Користувачі' => route('admin.user.index'),
         'Додати',
     ]])
-    @include('admin.component.events')
+    <!-- Main content -->
+    <section class="content">
+        @include('admin.component.events')
+        <div class="card card-solid">
+            <div class="card-body">
 
     <form action="{{ route('admin.user.store') }}" method="post" class="needs-validation"  enctype="multipart/form-data" novalidate>
         @csrf
@@ -74,4 +78,7 @@
 
         <input type="submit" name="save" value="Save" class="btn btn-primary">
     </form>
+            </div>
+        </div>
+    </section>
 @endsection

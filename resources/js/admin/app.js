@@ -5,34 +5,55 @@ try {
     window.$ = window.jQuery = require('jquery');
 
     require('bootstrap');
+    require('admin-lte'); // Include AdminLTE
+    require('./scripts');
 } catch (e) {}
 
-window.axios = require('axios');
+// window.axios = require('axios');
 
+// Add the ES2015 formation
+import axios from 'axios';
+window.axios = axios;
 window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 
+
 window.Vue = require('vue');
+import Vuex from 'vuex';
+
+Vue.use(Vuex);
+const store = new Vuex.Store({
+    state: {
+        warehouses: {},
+    },
+    getters: {
+        // Here we will create a getter
+        WAREHOUSES: state => {
+            return state.warehouses;
+        },
+    },
+
+    mutations: {
+        ADD_WAREHOUSE: (state, value) => {
+            state.warehouses = value;
+        },
+        // Here we will create Jenny
+    },
+
+    actions: {
+        // Here we will create Larry
+    }
+});
+Vue.component('shipping', require('./components/order/Shipping.vue').default);
+Vue.component('warehouse', require('./components/order/Warehouse.vue').default);
 
 const app = new Vue({
     el: '#app',
+    store,
 });
-var fa = require("fontawesome");
 
-// Example starter JavaScript for disabling form submissions if there are invalid fields
-(function() {
-    'use strict';
-    window.addEventListener('load', function() {
-        // Fetch all the forms we want to apply custom Bootstrap validation styles to
-        var forms = document.getElementsByClassName('needs-validation');
-        // Loop over them and prevent submission
-        var validation = Array.prototype.filter.call(forms, function(form) {
-            form.addEventListener('submit', function(event) {
-                if (form.checkValidity() === false) {
-                    event.preventDefault();
-                    event.stopPropagation();
-                }
-                form.classList.add('was-validated');
-            }, false);
-        });
-    }, false);
-})();
+
+// <!-- AdminLTE dashboard demo (This is only for demo purposes) --> TODO
+require('./dashboard');
+// <!-- AdminLTE for demo purposes --> TODO
+require('./demo');
+

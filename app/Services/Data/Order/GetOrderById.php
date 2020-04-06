@@ -8,7 +8,7 @@ use App\Order;
 
 class GetOrderById
 {
-    public function handel($id, $fields = ['*'], $trashed = false)
+    public function handel($id, $fields = ['*'], $trashed = false): Order
     {
         $order = Order::select($fields);
 

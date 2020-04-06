@@ -47,4 +47,48 @@ class OrderRequest extends FormRequest
             'paid' => 'required|boolean',
         ];
     }
+
+    /**
+    * Return the fields and values to update Payment.
+    *
+    * @return array
+    */
+    public function paymentFillData()
+    {
+        return [
+            'method'    => $this->method_pay,
+            'paid'      => $this->paid,
+        ];
+    }
+
+    /**
+     * Return the fields and values to update UserDetail.
+     *
+     * @return array
+     */
+    public function userDetailFillData():array
+    {
+        return [
+            'first_name' => $this->first_name,
+            'last_name' => $this->last_name,
+            'phone' => $this->phone,
+        ];
+    }
+
+    /**
+     * Return the fields and values to create/update a new shipping.
+     *
+     * @return array
+     */
+    public function shippingFillData()
+    {
+        return [
+            'method'        => $this->shipping_method,
+            'street'        => $this->street,
+            'house'         => $this->house,
+            'flat'          => $this->flat,
+            'warehouse_ref' => $this->warehouse_ref,
+            'city_ref'      => $this->city_ref,
+        ];
+    }
 }

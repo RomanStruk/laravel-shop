@@ -7,12 +7,18 @@
         'Категорії' => route('admin.category.index'),
         'Додати',
     ]])
-    @include('admin.component.events')
+    <section class="content">
+        @include('admin.component.events')
 
-        <form action="{{ route('admin.category.store') }}" method="post">
-            @csrf
+        <div class="card card-solid">
+            <div class="card-body">
+                <form action="{{ route('admin.category.store') }}" method="post">
+                    @csrf
 
-            @include('admin.category._form')
-        </form>
+                    @include('admin.category._form')
+                </form>
+            </div>
+        </div>
+    </section>
 
 @endsection

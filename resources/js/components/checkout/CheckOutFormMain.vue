@@ -154,9 +154,7 @@
                 this.next_steep = true;
             },
             loadWarehouses: function () {
-                axios.post('/api/shipping/warehouses', {
-                    'warehouses': this.city_ref,
-                }).then((response) => {
+                axios.get('/api/v1/shipping/warehouses/'+ this.city_ref).then((response) => {
                     this.warehouses = response.data;
                     console.log(this.warehouses);
                 })
@@ -170,9 +168,7 @@
             },
             loadCities: async function () {
                 this.is_refresh = true;                             // заглушка під чаз завантаження
-                await axios.post('api/shipping/city', {
-                    'city': this.city,
-                }).then((response) => {
+                await axios.get('/api/v1/shipping/city/'+this.city).then((response) => {
                     this.cities = response.data;
                 }).catch(function (error) {
                     console.log(error);                             // debug error

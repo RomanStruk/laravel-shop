@@ -12,6 +12,9 @@
 */
 
 
+Route::get('/admin/lte', function () {
+    return view('admin.layouts.root');
+});
 
 Route::get('/', function () {
     return view('index');
@@ -35,8 +38,8 @@ Route::group(['prefix' => '/shop', 'middleware' => ['web']], function () {
     ]);
 });
 
-Route::get('/product/{alias}', 'ProductController@showSingleProduct')
-    ->name('product')
+Route::get('/product/{alias}', 'ProductController@show')
+    ->name('product.index')
     ->middleware('test')
     ->middleware('web');
 
@@ -47,26 +50,19 @@ Route::post('/product/{id}/comment/create', 'CommentController@create')
 Route::post('/checkout', 'OrderController@checkOut')
     ->name('checkout');
 
+Route::get('/checkout', function () {
+    return view('vue.checkout');
+});
 
 Route::get('/about', function () {
     return view('about');
 });
-Route::get('/account', function () {
-    return view('account');
-})->middleware(['web', 'auth']);;
 Route::get('/blog', function () {
     return view('blog');
 });
 Route::get('/blog-details', function () {
     return view('blog-details');
 });
-
-
-
-Route::get('/checkout', function () {
-    return view('vue.checkout');
-});
-
 
 Route::get('/compare', function () {
     return view('compare');
@@ -80,6 +76,9 @@ Route::get('/wishlist', function () {
     return view('wishlist');
 });
 
+Route::get('/account', function () {
+    return view('account');
+})->middleware(['web', 'auth']);;
 Route::get('/forgot-password', function () {
     return view('forgot-password');
 });
@@ -100,15 +99,15 @@ Auth::routes();
 Route::group([
     'prefix' => 'admin',
     'as' => 'admin.',
-    'middleware' => ['auth']
+    'middleware' => ['auth', 'role.check:Admin']
 ], function (){
+
     Route::get('/', [
         'uses' => 'Admin\HomeController@index',
         'as' => 'dashboard.index'
     ]);
 
     Route::resource('/order', 'Admin\OrderController');
-
     Route::post('/order/status/{order}/update', [
         'uses' => 'Admin\OrderController@updateStatus',
         'as' => 'order.updateStatus'
@@ -122,10 +121,8 @@ Route::group([
     Route::resource('filter', 'Admin\FilterController');
 });
 
-Route::get('/shop/json', 'ProductController@apiShowProducts');
+
 Route::get('/shop2', 'ProductController@index2')->middleware('web')->name('shop2');
-Route::get('/category/get/json', 'CategoriesController@getDataCategoriesJson');
-Route::get('/filter/get/json', 'AttributeController@getDataAttributesJson');
 
 
 Route::get('/test', 'ProductController@apiTest')->middleware('web');

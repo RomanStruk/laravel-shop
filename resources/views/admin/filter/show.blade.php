@@ -11,9 +11,16 @@
         'edit' => route('admin.filter.edit',['filter' => $filter->id]),
         'delete' => route('admin.filter.destroy',['filter' => $filter->id])
 ]])
-    @include('admin.component.events')
-    <p>{{$filter->name}}</p>
-    <br>
-    @foreach($filter->filterValues as $attribute) {{$attribute->value}},  @endforeach
-
+    <!-- Main content -->
+    <section class="content">
+        @include('admin.component.events')
+        <div class="card card-solid">
+            <div class="card-body">
+                <p>{{$filter->name}}</p>
+                <ol>
+                    @foreach($filter->filterValues as $attribute)  <li>{{$attribute->value}}</li>  @endforeach
+                </ol>
+            </div>
+        </div>
+    </section>
 @endsection

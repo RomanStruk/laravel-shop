@@ -10,12 +10,18 @@
     'actions' => [
         'delete' => route('admin.category.destroy',['category' => $category->id])
 ]])
+    <section class="content">
     @include('admin.component.events')
 
+    <div class="card card-solid">
+        <div class="card-body">
         <form action="{{ route('admin.category.update', ['category' => $category->id]) }}" method="post">
             @csrf
             @method('PATCH')
             @include('admin.category._form')
 
         </form>
+        </div>
+    </div>
+    </section>
 @endsection

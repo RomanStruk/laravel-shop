@@ -1,31 +1,25 @@
 @extends('admin.layouts.app')
 
 @section('content')
-    <h2>Редагувати медіа файл</h2>
-    <nav aria-label="breadcrumb">
-        <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="{{route('admin.media.index')}}">Домашня</a></li>
-            <li class="breadcrumb-item"><a href="{{route('admin.media.show',['medium' => $media->id])}}">Перегляд</a></li>
-            <li class="breadcrumb-item active" aria-current="page">Редагувати</li>
-        </ol>
-    </nav>
-    @if ($errors->any())
-        <div class="alert alert-danger">
-            <ul>
-                @foreach ($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                @endforeach
-            </ul>
-        </div>
-    @endif
-    @if (\Session::has('success'))
-        <div class="alert alert-success">
-            <ul>
-                <li>{!! \Session::get('success') !!}</li>
-            </ul>
-        </div>
-    @endif
-    <form action="{{route('admin.media.update', ['medium' => $media->id])}}" method="post"
+
+    @include('admin.component.title_breadcrumbs', [
+        'title' => 'Редагувати медіа файл #'.$media->id,
+        'breadcrumbs' => [
+            'Медіа' => route('admin.media.index'),
+            'Перегляд' => route('admin.media.show',['medium' => $media->id]),
+            'Редагувати'
+        ],
+        'actions' => [
+            'delete' => route('admin.media.destroy', ['medium' => $media->id])
+        ]
+    ])
+
+    <!-- Main content -->
+    <section class="content">
+        @include('admin.component.events')
+        <div class="card card-solid">
+            <div class="card-body">
+                <form action="{{route('admin.media.update', ['medium' => $media->id])}}" method="post"
           enctype="multipart/form-data">
         @csrf
         @method('PATCH')
@@ -107,4 +101,7 @@
             </div>
         </div>
     </form>
+            </div>
+        </div>
+    </section>
 @endsection

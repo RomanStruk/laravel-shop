@@ -247,7 +247,7 @@
             loadProducts: function(){
                 // console.log(checkbox);
                 this.is_refresh = true;                             // заглушка під чаз завантаження
-                axios.get('/shop/json', {
+                axios.get('/api/v1/product/index', {
                     params: {
                         filter: this.filter,
                         category: this.category_id,

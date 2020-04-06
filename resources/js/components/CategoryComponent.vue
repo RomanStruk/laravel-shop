@@ -37,7 +37,7 @@
                 this.$emit('event-choose-category', id)
             },
             categories: function(){
-                axios.get('/category/get/json').then((response) => {
+                axios.get('/api/v1/category/index').then((response) => {
                     console.log(response.data);
                     this.categoriesData = response.data; // обєднання всії завантажених даних
                 });

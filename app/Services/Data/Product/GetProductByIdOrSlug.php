@@ -12,14 +12,14 @@ class GetProductByIdOrSlug
 {
     /**
      * Get product from database
-     * @param integer|string $idOrSlug
+     * @param integer|string $idOrAlias
      * @param array $fields
      * @param bool $trashed
      * @return mixed
      */
-    public function handel($idOrSlug, $fields = ['*'], $trashed = false)
+    public function handel($idOrAlias, $fields = ['*'], $trashed = false)
     {
-        $query = is_numeric($idOrSlug) ? ['id' => $idOrSlug] : ['slug' => $idOrSlug];
+        $query = is_numeric($idOrAlias) ? ['id' => $idOrAlias] : ['alias' => $idOrAlias];
 
         $product = Product::select($fields);
 
@@ -33,7 +33,6 @@ class GetProductByIdOrSlug
             ->with('product_attributes')
             ->with('product_attributes.filter')
             ->where($query)
-            ->get()
-            ->first();
+            ->firstOrFail();
     }
 }
