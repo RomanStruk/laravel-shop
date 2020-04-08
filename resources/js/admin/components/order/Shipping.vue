@@ -1,13 +1,16 @@
 <template>
-    <div>
+    <div class="col-12">
         <autocomplete-field
             v-bind:list="autocomplete"
-            v-bind:input-name="'input'"
+            v-bind:input-name="'city'"
             v-bind:default-value="props_city"
             @enter-text="listeningResult"
             @search-text="search"
         ></autocomplete-field>
-        <input type="hidden" name="city" value="">
+        <small id="passwordHelpInline" class="text-muted">
+            {{selected_city_description}}
+        </small>
+        <input type="hidden" name="city_ref" :value="selected_city_ref">
     </div>
 </template>
 
@@ -23,7 +26,10 @@
                 warehouses:{},
                 cities: null,
                 is_refresh:false,
-                city:''
+                city:'',
+
+                selected_city_ref: '',
+                selected_city_description: ''
             }
         },
         props:[
@@ -33,6 +39,7 @@
         mounted() {
             this.seData(this.props_city_ref);
             this.city = this.props_city;
+            this.selected_city_ref = this.props_city_ref;
         },
         methods: {
             search: async function(input) {
@@ -45,8 +52,8 @@
                 for (const element of this.cities.data) {
                     this.autocomplete[element.Ref] = {
                         'name': element.Description,
-                        'description': element.Description + ', '
-                            + element.RegionsDescription  + ', '
+                        'description': element.Description + ' '
+                            + element.RegionsDescription  + ' '
                             + element.AreaDescription
                     };
                     // console.log(element);
@@ -65,6 +72,8 @@
             },
 
             listeningResult:async function(data){
+                this.selected_city_ref = data.key;
+                this.selected_city_description = this.autocomplete[data.key].description;
                 this.seData(data.key);
             },
 

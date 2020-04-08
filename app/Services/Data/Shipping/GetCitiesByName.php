@@ -28,8 +28,8 @@ class GetCitiesByName
 
         $cities = $this->shipping->findCity($cityName);
 
-        if (count($cities->errors)>=1) throw new Exception($cities->errors);;
-        if ($cities->info->totalCount == 0) throw new Exception('Error totalCount = 0');
+        if (count($cities['errors'])>=1) throw new Exception($cities->errors);;
+        if ($cities['info']['totalCount'] == 0) throw new Exception('Error totalCount = 0');
 
         return $cities->data;
     }

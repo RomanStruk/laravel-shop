@@ -27,10 +27,10 @@ class GetCityByRef
     {
 
         $result = $this->shipping->findRef($cityRef);
-        if (count($result->errors)>=1) throw new Exception($result->errors);;
-        if ($result->info->totalCount <> 1) throw new Exception('totalCount <> 1');
+        if (count($result['errors'])>=1) throw new Exception($result->errors);;
+        if ($result['info']['totalCount']  <> 1) throw new Exception('totalCount <> 1');
         $data = [];
-        foreach ($result->data[0] as $key => $value){
+        foreach ($result['data'][0] as $key => $value){
             $data[$key] = $value;
         }
         return $data;

@@ -34,7 +34,7 @@ class ShippingNovaposhta implements ShippingInterface
         if ($err) {
             return $err;
         } else {
-            return json_decode($response);
+            return json_decode($response, true);
         }
     }
 

@@ -5,12 +5,11 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\OrderRequest;
 use App\Http\Requests\StatusOrderRequest;
+use App\Product;
 use App\Services\Data\Order\DeleteOrder;
 use App\Services\Data\Order\GetOrderById;
 use App\Services\Data\Order\GetOrdersByLimit;
 use App\Services\Data\Order\UpdateOrderStatus;
-use App\Services\Data\Shipping\GetCityByRef;
-use App\Services\Data\Shipping\GetWarehousesByCityRef;
 use App\Services\Data\UserDetail\UpdateUserDetail;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Http\RedirectResponse;
@@ -47,19 +46,17 @@ class OrderController extends Controller
 
     /**
      * @param GetOrderById $getOrderById
-     * @param GetWarehousesByCityRef $warehousesByCityRef
      * @param integer $id
      * @return Factory|View
-     * @throws \Exception
      */
     public function edit(GetOrderById $getOrderById,
-                         GetWarehousesByCityRef $warehousesByCityRef,
                          $id)
     {
         $order = $getOrderById->handel($id);
         return view('admin.order.edit', [
             'order'=> $order,
-            'warehouses'=> $warehousesByCityRef->handel($order->shipping->city_ref),
+            'products' => Product::all()->diff($order->products)
+//            'warehouses'=> $warehousesByCityRef->handel($order->shipping->city_ref),
         ]);
     }
 
@@ -67,17 +64,12 @@ class OrderController extends Controller
     /**
      * @param GetOrderById $getOrderById
      * @param UpdateUserDetail $updateUserDetail
-     * @param GetWarehousesByCityRef $getWarehousesByCityRef
-     * @param GetCityByRef $getCityByRef
      * @param OrderRequest $request
      * @param int $orderId
      * @return RedirectResponse
-     * @throws \Exception
      */
     public function update(GetOrderById $getOrderById,
                            UpdateUserDetail $updateUserDetail,
-                           GetWarehousesByCityRef $getWarehousesByCityRef,
-                           GetCityByRef $getCityByRef,
                            OrderRequest $request,
                            $orderId)
     {
@@ -87,26 +79,14 @@ class OrderController extends Controller
             $order->user,
             $request->userDetailFillData()
         );
+
+        //TODO update comment of order
+
         $order->syncProducts($request->input(['products']));
 
         $order->paymentUpdate($request->paymentFillData());
 
-        $inputShipping = $request->shippingFillData();
-        if ($order->shipping->city_ref != $inputShipping['city_ref']){
-            $cityInformation = $getCityByRef->handel($inputShipping['city_ref']);
-            $inputShipping['city_ref'] = $cityInformation['Ref'];
-            $inputShipping['city'] = $cityInformation['SettlementTypeDescription'].$cityInformation['Description'];
-            $inputShipping['region'] = $cityInformation['RegionsDescription'];
-            $inputShipping['area'] = $cityInformation['AreaDescription'];
-        }elseif ($inputShipping['method'] == 'novaposhta'){
-
-            $warehouses = $getWarehousesByCityRef->handel($inputShipping['city_ref']);
-            $inputShipping['warehouse_title'] = 'Don`t choose';
-            if (key_exists('warehouse_ref', $warehouses)){
-                $inputShipping['warehouse_title'] = $warehouses[$inputShipping['warehouse_ref']]->Description;
-            }
-        }
-        $order->shippingUpdate($inputShipping);
+        $order->shippingUpdate($request->shippingFillData());
 
         return redirect()->back()->with('success', __('order.updated'));
     }

@@ -4,6 +4,7 @@
                :name="inputName"
                v-model="text"
                @focus="[isActive=true, selected=false]"
+               autocomplete="off"
         >
         <ul class="info-autocomplete"
             v-bind:style="isActive ? 'display: block' : 'display: none'"
@@ -65,7 +66,7 @@
     }
 </script>
 
-<style scoped>
+<style>
     .autocomplete{
         position: relative;
         display: block;

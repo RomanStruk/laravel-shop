@@ -28,13 +28,13 @@ class GetWarehousesByCityRef
 
         $result = $this->shipping->findWarehouses($cityRef);
 
-        if (count($result->errors)>=1) throw new Exception($result->errors);
+        if (count($result['errors'])>=1) throw new Exception($result->errors);
 
-        if ($result->info->totalCount == 0) return [];
+        if ($result['info']['totalCount'] == 0) return [];
 
         $data = [];
-        foreach ($result->data as $item) {
-            $data[$item->Ref] = $item;
+        foreach ($result['data'] as $item) {
+            $data[$item['Ref']] = $item;
         }
         return $data;
     }

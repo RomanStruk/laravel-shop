@@ -56,4 +56,5 @@ const app = new Vue({
 require('./dashboard');
 // <!-- AdminLTE for demo purposes --> TODO
 require('./demo');
+require('./select2');
 
