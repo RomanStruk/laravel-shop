@@ -2,7 +2,7 @@
 
 namespace App\Observers;
 
-use App\OrderDetail;
+use App\OrderHistory;
 use Carbon\Carbon;
 
 class OrderDetailObserver
@@ -10,10 +10,10 @@ class OrderDetailObserver
     /**
      * Handle the order detail "created" event.
      *
-     * @param  \App\OrderDetail  $orderDetail
+     * @param  \App\OrderHistory  $orderDetail
      * @return void
      */
-    public function creating(OrderDetail $orderDetail)
+    public function creating(OrderHistory $orderDetail)
     {
         if (!$orderDetail->date_added) $orderDetail->date_added = Carbon::now();
     }

@@ -3,7 +3,7 @@
 namespace App\Observers;
 
 use App\Order;
-use App\OrderDetail;
+use App\OrderHistory;
 use Carbon\Carbon;
 
 class OrderObserver
@@ -16,7 +16,7 @@ class OrderObserver
      */
     public function created(Order $order)
     {
-        $order_detail = new OrderDetail();
+        $order_detail = new OrderHistory();
         $order_detail->order_id = $order->id;
         $order_detail->comment = 'Create Order';
         $order_detail->date_added = Carbon::now();

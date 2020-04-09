@@ -10,7 +10,8 @@ $factory->define(Order::class, function (Faker $faker) {
     return [
 //        'user_id' => function () {return factory(App\User::class)->create()->id;},
         'comment' => $faker->paragraph(),
-        'created_at' => $faker->dateTime(),
+        'status' => rand(1, 7),
+        'created_at' => $faker->dateTimeBetween('-10 days', 'now'),
         'updated_at' => Carbon::now(),
     ];
 });

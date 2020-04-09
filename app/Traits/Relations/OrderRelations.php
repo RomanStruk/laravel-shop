@@ -29,9 +29,13 @@ trait OrderRelations
         return $this->hasOne('App\Shipping');
     }
 
-    public function details()
+    /**
+     * Order status history
+     * @return mixed
+     */
+    public function histories()
     {
-        return $this->hasMany('App\OrderDetail');
+        return $this->hasMany('App\OrderHistory');
     }
 
     /**

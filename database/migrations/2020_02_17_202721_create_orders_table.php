@@ -20,6 +20,7 @@ class CreateOrdersTable extends Migration
             $table->foreign('user_id')->references('id')->on('users');
 
             $table->text('comment');
+            $table->tinyInteger('status')->default('1');
 
             $table->softDeletes();
             $table->timestamps();

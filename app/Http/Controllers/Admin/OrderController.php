@@ -62,6 +62,7 @@ class OrderController extends Controller
 
 
     /**
+     * Update Order
      * @param GetOrderById $getOrderById
      * @param UpdateUserDetail $updateUserDetail
      * @param OrderRequest $request
@@ -75,17 +76,20 @@ class OrderController extends Controller
     {
 
         $order = $getOrderById->handel($orderId);
-        $updateUserDetail->handel(
-            $order->user,
-            $request->userDetailFillData()
-        );
 
-        //TODO update comment of order
+        // update user detail
+        $updateUserDetail->handel($order->user, $request->userDetailFillData());
 
+        // update comment of order
+        $order->update(['comment' => $request->comment]);
+
+        // update products of order
         $order->syncProducts($request->input(['products']));
 
+        // update payment of order
         $order->paymentUpdate($request->paymentFillData());
 
+        // update shipping of order
         $order->shippingUpdate($request->shippingFillData());
 
         return redirect()->back()->with('success', __('order.updated'));

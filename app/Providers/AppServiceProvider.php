@@ -10,7 +10,7 @@ use App\Observers\MediaObserver;
 use App\Observers\OrderDetailObserver;
 use App\Observers\OrderObserver;
 use App\Order;
-use App\OrderDetail;
+use App\OrderHistory;
 use App\Services\Shipping\ShippingInterface;
 use App\Services\Shipping\ShippingNovaposhta;
 use Blade;
@@ -37,7 +37,7 @@ class AppServiceProvider extends ServiceProvider
     public function boot()
     {
         Order::observe(OrderObserver::class);
-        OrderDetail::observe(OrderDetailObserver::class);
+        OrderHistory::observe(OrderDetailObserver::class);
         Category::observe(CategoryObserver::class);
         Media::observe(MediaObserver::class);
 

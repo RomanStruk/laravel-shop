@@ -51,21 +51,17 @@
                                     <td class="text-left">{{ $order->updated_at->format('j F Yр. h:m') }}</td>
                                     <td class="project-state">
 
-                                        @if ($order->detail_status == $order::STATUS_PENDING)
+                                        @if ($order->status == $order::STATUS_PENDING)
                                             <span class="badge badge-warning">
-                                                {{$order->getStatus($order->detail_status)}}
+                                                {{$order->getStatus($order->status)}}
                                             </span>
-                                        @elseif ($order->detail_status == $order::STATUS_CANCELED)
+                                        @elseif ($order->status == $order::STATUS_PROCESSING or $order->status == $order::STATUS_COMPLETED)
+                                            <span class="badge badge-success">
+                                                {{$order->getStatus($order->status)}}
+                                            </span>
+                                        @else
                                             <span class="badge badge-danger">
-                                                {{$order->getStatus($order->detail_status)}}
-                                            </span>
-                                        @elseif ($order->detail_status == $order::STATUS_PROCESSING)
-                                            <span class="badge badge-success">
-                                                {{$order->getStatus($order->detail_status)}}
-                                            </span>
-                                        @elseif ($order->detail_status == $order::STATUS_COMPLETED)
-                                            <span class="badge badge-success">
-                                                {{$order->getStatus($order->detail_status)}}
+                                                {{$order->getStatus($order->status)}}
                                             </span>
                                         @endif
 
@@ -86,9 +82,7 @@
 
                 <div class="row p-3">
                     <div class="col-sm-12 col-md-5">
-                        <div class="dataTables_info" id="example2_info" role="status" aria-live="polite">Showing 1 to 10
-                            of 57 entries
-                        </div>
+                        Showing {{$orders->firstItem()}} to {{$orders->lastItem()}} of {{$orders->total()}} entries
                     </div>
                     <div class="col-sm-12 col-md-7">
                         <div class="float-right">

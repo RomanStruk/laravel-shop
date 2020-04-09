@@ -5,7 +5,7 @@ namespace App\Services\Data\Order;
 
 
 use App\Order;
-use App\OrderDetail;
+use App\OrderHistory;
 
 class UpdateOrderStatus
 {
@@ -13,10 +13,12 @@ class UpdateOrderStatus
     {
 
         $order = Order::findOrFail($orderId);
-        $orderDetail = new OrderDetail([
+        $orderDetail = new OrderHistory([
             'status' => $insert['status'],
+            'user_id' => \Auth::user()->id,
             'comment' => $insert['comment']
         ]);
-        return $order->details()->save($orderDetail);
+         $order->histories()->save($orderDetail);
+        return $order->update(['status' => $insert['status']]);
     }
 }

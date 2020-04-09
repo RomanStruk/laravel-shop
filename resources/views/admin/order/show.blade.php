@@ -26,21 +26,21 @@
                                 <i class="fa fa-shopping-cart fa-fw"></i></button>
                         </div>
                         <div class="col-8">
-                            @if ($order->detail_status == $order::STATUS_PENDING)
+                            @if ($order->status == $order::STATUS_PENDING)
                                 <div class="text-dark font-weight-bold bg-warning">
-                                    {{$order->getStatus($order->detail_status)}}
+                                    {{$order->getStatus($order->status)}}
                                 </div>
-                            @elseif ($order->detail_status == $order::STATUS_CANCELED)
+                            @elseif ($order->status == $order::STATUS_CANCELED)
                                 <div class="text-light font-weight-bold bg-danger">
-                                    {{$order->getStatus($order->detail_status)}}
+                                    {{$order->getStatus($order->status)}}
                                 </div>
-                            @elseif ($order->detail_status == $order::STATUS_PROCESSING)
+                            @elseif ($order->status == $order::STATUS_PROCESSING)
                                 <div class="text-light font-weight-bold bg-success">
-                                    {{$order->getStatus($order->detail_status)}}
+                                    {{$order->getStatus($order->status)}}
                                 </div>
-                            @elseif ($order->detail_status == $order::STATUS_COMPLETED)
+                            @elseif ($order->status == $order::STATUS_COMPLETED)
                                 <div class="text-light font-weight-bold bg-success">
-                                    {{$order->getStatus($order->detail_status)}}
+                                    {{$order->getStatus($order->status)}}
                                 </div>
                             @endif
                         </div>
@@ -271,19 +271,21 @@
                                     <thead class="thead-light">
                                     <tr>
                                         <th class="text-left">Статус</th>
+                                        <th class="text-left">Користувач</th>
                                         <th class="text-left">Коментарій</th>
                                         <th class="text-left">Дата</th>
                                     </tr>
                                     </thead>
                                     <tbody>
-                                    @foreach($order->details as $detail)
+                                    @foreach($order->histories as $history)
                                         <tr @if ($loop->last)
                                             class="table-primary"
                                             @endif
                                         >
-                                            <td class="text-left">{{$order->getStatus($detail->status)}}</td>
-                                            <td class="text-left">{{$detail->comment}}</td>
-                                            <td class="text-left">{{$detail->date_added}}</td>
+                                            <td class="text-left">{{$order->getStatus($history->status)}}</td>
+                                            <td class="text-left">{{$history->user->name}}</td>
+                                            <td class="text-left">{{$history->comment}}</td>
+                                            <td class="text-left">{{$history->date_added}}</td>
                                         </tr>
                                     @endforeach
                                     </tbody>

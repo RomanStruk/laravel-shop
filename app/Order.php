@@ -43,7 +43,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Order whereUserId($value)
  * @mixin \Eloquent
  * @property string $comment
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\OrderDetail[] $details
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\OrderHistory[] $details
  * @property-read int|null $details_count
  * @property-read \App\Payment $payment
  * @property-read \App\Shipping $shipping
@@ -72,16 +72,6 @@ class Order extends Model
     protected $guarded = [];
 
     protected $dates = ['deleted_at'];
-
-    /**
-     * get current status of Order
-     * @param $value
-     * @return mixed
-     */
-    public function getDetailStatusAttribute($value)
-    {
-        return $this->details->sortByDesc('date_added')->first()->status;
-    }
 
     /**
      * Get total_price of Order

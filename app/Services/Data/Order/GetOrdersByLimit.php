@@ -45,7 +45,7 @@ class GetOrdersByLimit
             ->with('products.category')
             ->with('user')
             ->with('user.detail')
-            ->with('details')
+            ->with('histories')
             ->with('payment')
             ->with('shipping');;
         $orders = $orders->paginate($limit);
@@ -53,9 +53,6 @@ class GetOrdersByLimit
         $orders->map(function ($order) {
             $order->sum_price = $order->products->sum('price');
             return $order;
-        });
-        $orders->map(function ($order) {
-            return $order->detail_status = $order->details->sortByDesc('date_added')->first()->status;
         });
 
         return $orders;

@@ -13,11 +13,11 @@
         ]])
 
 
-    @include('admin.component.events')
 
 
     <!-- Main content -->
     <section class="content">
+        @include('admin.component.events')
         <form action="{{route('admin.order.update', ['order' => $order->id])}}" method="post">
             @csrf
             @method('PATCH')
@@ -154,7 +154,7 @@
                             </div>
                             <div class="form-group">
                                 <label for="inputComment">Коментар замовника</label>
-                                <input type="text" id="inputComment" class="form-control">
+                                <textarea class="form-control" name="comment" id="orderComment" cols="30" rows="4">{{$order->comment}}</textarea>
                             </div>
                         </div>
                         <!-- /.card-body -->

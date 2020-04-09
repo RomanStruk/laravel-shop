@@ -18,7 +18,7 @@ class GetOrderById
             ->with('products.category')
             ->with('user')
             ->with('user.detail')
-            ->with('details')
+            ->with('histories')
             ->with('payment')
             ->with('shipping');
 

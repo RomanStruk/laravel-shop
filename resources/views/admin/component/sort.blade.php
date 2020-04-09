@@ -12,7 +12,7 @@
                                 </div>
 
                                 <select class="custom-select custom-select-sm" name="limit" title="Відобразики кількість елементів на сторінку">
-                                    <option value="-1">All</option>
+                                    <option value="">All</option>
                                     <option value="5" @if(session()->get('limit') == 5) selected @endif>5</option>
                                     <option value="10" @if(session()->get('limit') == 10) selected @endif>10</option>
                                     <option value="20" @if(session()->get('limit') == 20) selected @endif>20</option>
@@ -30,7 +30,7 @@
                                     <span class="input-group-text"><i class="fas fa-list-alt"></i></span>
                                 </div>
                                 <select id="category" class="custom-select custom-select-sm" style="width: auto" name="category" title="Select order by Category">
-                                    <option value="-1"
+                                    <option value=""
                                             @if(request()->get('category') < 0 or request()->get('category') == null) selected @endif
                                     >Всі категорії</option>
                                     @foreach ($category as $cat)
@@ -52,7 +52,7 @@
                                     <span class="input-group-text"><i class="fa fa-history"></i></span>
                                 </div>
                                 <select id="status" class="custom-select custom-select-sm" style="width: auto" name="status" title="Статус">
-                                    <option value="-1"
+                                    <option value=""
                                             @if(request()->get('status') < 0 or request()->get('status') == null) selected @endif
                                     >Статус</option>
                                     @foreach ($status as $value => $title)

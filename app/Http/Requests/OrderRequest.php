@@ -35,6 +35,8 @@ class OrderRequest extends FormRequest
             'last_name' => 'required|string',
             'phone' => ['required', new PhoneNumber],
 
+            'comment' => 'required|string|min:3',
+
             'products' => 'required|array|min:1',
             'products.*' => 'numeric|exists:products,id',
 
@@ -66,13 +68,11 @@ class OrderRequest extends FormRequest
         $this->city = $cityInformation['Description'];
         $this->region = $cityInformation['RegionsDescription'];
         $this->area = $cityInformation['AreaDescription'];
-//dd($cityInformation);
         if ($this->shipping_method == 'novaposhta'){
             $getWarehousesByCityRef = new GetWarehousesByCityRef($api);
             $warehouses = $getWarehousesByCityRef->handel($this->city_ref);
             $this->warehouse_title = 'Don`t choose';
             if (key_exists($this->warehouse_ref, $warehouses)){
-//                dd($warehouses, gettype($warehouses[$this->warehouse_ref]));
                 $this->warehouse_title = $warehouses[$this->warehouse_ref]['Description'];
             }
         }

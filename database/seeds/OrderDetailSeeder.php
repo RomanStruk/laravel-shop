@@ -1,6 +1,6 @@
 <?php
 
-use App\OrderDetail;
+use App\OrderHistory;
 use Illuminate\Database\Seeder;
 
 class OrderDetailSeeder extends Seeder
@@ -14,7 +14,7 @@ class OrderDetailSeeder extends Seeder
     {
         $orders = App\Order::all();
         foreach ($orders as $order){
-            factory(OrderDetail::class)->make(['order_id' => $order->id])->save();
+            factory(OrderHistory::class)->make(['order_id' => $order->id, 'status' => $order->status])->save();
         }
     }
 }
