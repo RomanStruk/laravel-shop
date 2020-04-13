@@ -7,9 +7,9 @@ use Faker\Generator as Faker;
 
 $factory->define(Shipping::class, function (Faker $faker) {
     return [
-        'order_id' => App\Order::orderByRaw('RAND()')->first()->id,
+        'order_id' => rand(1,5000),
         'method' => $faker->randomElement(['courier', 'novaposhta']),
-        'shipping_rate' => $faker->numberBetween(5, 50),
+        'shipping_rate' => rand(5, 50),
 /*        'address' => $faker->randomElement(['Пункт приймання-видачі (до 30 кг): вул. Незалежності, 32
                     Седлище, Незалежності, 32
                     Волинська область
@@ -20,8 +20,8 @@ $factory->define(Shipping::class, function (Faker $faker) {
         'city_ref' => 'e71992df-4b33-11e4-ab6d-005056801329',
 
         'street' => $faker->streetAddress(),
-        'house' => $faker->numberBetween(1, 300),
-        'flat' => $faker->numberBetween(1, 9999),
+        'house' => rand(1, 300),
+        'flat' => rand(1, 9999),
 
         'warehouse_ref' => '0db4cb18-4b3a-11e4-ab6d-005056801329',
         'warehouse_title' => 'Пункт приймання-видачі (до 30 кг): вул. Незалежності, 32'

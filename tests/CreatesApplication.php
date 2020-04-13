@@ -6,7 +6,14 @@ use Illuminate\Contracts\Console\Kernel;
 
 trait CreatesApplication
 {
-    /**
+    protected function setUp(): void
+    {
+        parent::setUp();
+//        \Artisan::call('migrate');
+//        \Artisan::call('db:seed');
+
+    }
+        /**
      * Creates the application.
      *
      * @return \Illuminate\Foundation\Application

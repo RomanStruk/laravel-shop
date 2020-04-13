@@ -50,27 +50,8 @@ class ShippingRequest extends FormRequest
      * @return void
      * @throws \Exception
      */
-    protected function prepareForValidation(ShippingInterface $shipping)
+    protected function prepareForValidation()
     {
-        $warehouse_title = null;
 
-        $getCityByRef = new GetCityByRef($shipping);
-        $cityInformation = $getCityByRef->handel($this->city_ref);
-
-        if ($this->shipping_method == 'novaposhta'){
-            $getWarehousesByCityRef = new GetWarehousesByCityRef($shipping);
-            $warehouses = $getWarehousesByCityRef->handel($this->city_ref);
-            if (key_exists('warehouse_ref', $warehouses)){
-                $warehouse_title = $warehouses[$this->warehouse_ref]->Description;
-            }
-        }
-
-        $this->merge([
-            'city' => $cityInformation['SettlementTypeDescription'].$cityInformation['Description'],
-            'region' => $cityInformation['RegionsDescription'],
-            'area' => $cityInformation['AreaDescription'],
-
-            'warehouse_title' => $warehouse_title,
-        ]);
     }
 }

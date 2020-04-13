@@ -21,6 +21,9 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\OrderHistory whereOrderId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\OrderHistory whereStatus($value)
  * @mixin \Eloquent
+ * @property int $user_id
+ * @property-read \App\User $user
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\OrderHistory whereUserId($value)
  */
 class OrderHistory extends Model
 {

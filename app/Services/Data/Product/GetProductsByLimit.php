@@ -42,6 +42,7 @@ class GetProductsByLimit
 
         return Product::filter($this->productsFilter, $filters)
             ->select($fields)
+            ->avgRating()
             ->with('category')
             ->with('media:media.id,media.url')
             ->paginate($limit);

@@ -16210,6 +16210,178 @@ module.exports = {
 
 /***/ }),
 
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/admin/components/dashboard/SalesCard.vue?vue&type=script&lang=js&":
+/*!************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/admin/components/dashboard/SalesCard.vue?vue&type=script&lang=js& ***!
+  \************************************************************************************************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @babel/runtime/regenerator */ "./node_modules/@babel/runtime/regenerator/index.js");
+/* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _ChartJs_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./ChartJs.js */ "./resources/js/admin/components/dashboard/ChartJs.js");
+
+
+function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
+
+function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
+
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+  components: {
+    ChartJs: _ChartJs_js__WEBPACK_IMPORTED_MODULE_1__["default"]
+  },
+  data: function data() {
+    return {
+      is_refresh: false,
+      options: null,
+      dataCollection: null,
+      sinceLastMonth: 0,
+      salesOverTime: 0
+    };
+  },
+  props: ['currency_short'],
+  mounted: function mounted() {
+    var mode = 'index';
+    var intersect = true;
+    var ticksStyle = {
+      fontColor: '#495057',
+      fontStyle: 'bold'
+    };
+    var currency_short = this.currency_short; // валюта
+
+    this.options = {
+      maintainAspectRatio: false,
+      tooltips: {
+        mode: mode,
+        intersect: intersect
+      },
+      hover: {
+        mode: mode,
+        intersect: intersect
+      },
+      legend: {
+        display: false
+      },
+      scales: {
+        yAxes: [{
+          // display: false,
+          gridLines: {
+            display: true,
+            lineWidth: '4px',
+            color: 'rgba(0, 0, 0, .2)',
+            zeroLineColor: 'transparent'
+          },
+          ticks: $.extend({
+            beginAtZero: true,
+            // Include a dollar sign in the ticks
+            callback: function callback(value, index, values) {
+              if (value >= 1000) {
+                value /= 1000;
+                value += 'k';
+              }
+
+              return currency_short + value;
+            }
+          }, ticksStyle)
+        }],
+        xAxes: [{
+          display: true,
+          gridLines: {
+            display: false
+          },
+          ticks: ticksStyle
+        }]
+      }
+    };
+    this.loadData();
+  },
+  methods: {
+    loadData: function () {
+      var _loadData = _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee() {
+        var _this = this;
+
+        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee$(_context) {
+          while (1) {
+            switch (_context.prev = _context.next) {
+              case 0:
+                this.is_refresh = true; // заглушка під чаз завантаження
+
+                _context.next = 3;
+                return axios.get('/api/v1/dashboard/sales').then(function (response) {
+                  _this.dataCollection = response.data.graph;
+                  _this.sinceLastMonth = response.data.sinceLastMonth;
+                  _this.salesOverTime = response.data.salesOverTime;
+                })["catch"](function (error) {
+                  console.log(error); // debug error
+                });
+
+              case 3:
+                this.is_refresh = false; // кінець заглушки під чаз завантаження
+
+              case 4:
+              case "end":
+                return _context.stop();
+            }
+          }
+        }, _callee, this);
+      }));
+
+      function loadData() {
+        return _loadData.apply(this, arguments);
+      }
+
+      return loadData;
+    }()
+  }
+});
+
+/***/ }),
+
 /***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/admin/components/order/Shipping.vue?vue&type=script&lang=js&":
 /*!*******************************************************************************************************************************************************************************!*\
   !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/admin/components/order/Shipping.vue?vue&type=script&lang=js& ***!
@@ -92164,6 +92336,393 @@ exports.clearImmediate = (typeof self !== "undefined" && self.clearImmediate) ||
 
 /***/ }),
 
+/***/ "./node_modules/vue-chartjs/es/BaseCharts.js":
+/*!***************************************************!*\
+  !*** ./node_modules/vue-chartjs/es/BaseCharts.js ***!
+  \***************************************************/
+/*! exports provided: generateChart, Bar, HorizontalBar, Doughnut, Line, Pie, PolarArea, Radar, Bubble, Scatter, default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "generateChart", function() { return generateChart; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "Bar", function() { return Bar; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "HorizontalBar", function() { return HorizontalBar; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "Doughnut", function() { return Doughnut; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "Line", function() { return Line; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "Pie", function() { return Pie; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "PolarArea", function() { return PolarArea; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "Radar", function() { return Radar; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "Bubble", function() { return Bubble; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "Scatter", function() { return Scatter; });
+/* harmony import */ var chart_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! chart.js */ "./node_modules/chart.js/dist/Chart.js");
+/* harmony import */ var chart_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(chart_js__WEBPACK_IMPORTED_MODULE_0__);
+
+function generateChart(chartId, chartType) {
+  return {
+    render: function render(createElement) {
+      return createElement('div', {
+        style: this.styles,
+        class: this.cssClasses
+      }, [createElement('canvas', {
+        attrs: {
+          id: this.chartId,
+          width: this.width,
+          height: this.height
+        },
+        ref: 'canvas'
+      })]);
+    },
+    props: {
+      chartId: {
+        default: chartId,
+        type: String
+      },
+      width: {
+        default: 400,
+        type: Number
+      },
+      height: {
+        default: 400,
+        type: Number
+      },
+      cssClasses: {
+        type: String,
+        default: ''
+      },
+      styles: {
+        type: Object
+      },
+      plugins: {
+        type: Array,
+        default: function _default() {
+          return [];
+        }
+      }
+    },
+    data: function data() {
+      return {
+        _chart: null,
+        _plugins: this.plugins
+      };
+    },
+    methods: {
+      addPlugin: function addPlugin(plugin) {
+        this.$data._plugins.push(plugin);
+      },
+      generateLegend: function generateLegend() {
+        if (this.$data._chart) {
+          return this.$data._chart.generateLegend();
+        }
+      },
+      renderChart: function renderChart(data, options) {
+        if (this.$data._chart) this.$data._chart.destroy();
+        this.$data._chart = new chart_js__WEBPACK_IMPORTED_MODULE_0___default.a(this.$refs.canvas.getContext('2d'), {
+          type: chartType,
+          data: data,
+          options: options,
+          plugins: this.$data._plugins
+        });
+      }
+    },
+    beforeDestroy: function beforeDestroy() {
+      if (this.$data._chart) {
+        this.$data._chart.destroy();
+      }
+    }
+  };
+}
+var Bar = generateChart('bar-chart', 'bar');
+var HorizontalBar = generateChart('horizontalbar-chart', 'horizontalBar');
+var Doughnut = generateChart('doughnut-chart', 'doughnut');
+var Line = generateChart('line-chart', 'line');
+var Pie = generateChart('pie-chart', 'pie');
+var PolarArea = generateChart('polar-chart', 'polarArea');
+var Radar = generateChart('radar-chart', 'radar');
+var Bubble = generateChart('bubble-chart', 'bubble');
+var Scatter = generateChart('scatter-chart', 'scatter');
+/* harmony default export */ __webpack_exports__["default"] = ({
+  Bar: Bar,
+  HorizontalBar: HorizontalBar,
+  Doughnut: Doughnut,
+  Line: Line,
+  Pie: Pie,
+  PolarArea: PolarArea,
+  Radar: Radar,
+  Bubble: Bubble,
+  Scatter: Scatter
+});
+
+/***/ }),
+
+/***/ "./node_modules/vue-chartjs/es/index.js":
+/*!**********************************************!*\
+  !*** ./node_modules/vue-chartjs/es/index.js ***!
+  \**********************************************/
+/*! exports provided: default, VueCharts, Bar, HorizontalBar, Doughnut, Line, Pie, PolarArea, Radar, Bubble, Scatter, mixins, generateChart */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "VueCharts", function() { return VueCharts; });
+/* harmony import */ var _mixins_index_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./mixins/index.js */ "./node_modules/vue-chartjs/es/mixins/index.js");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "mixins", function() { return _mixins_index_js__WEBPACK_IMPORTED_MODULE_0__["default"]; });
+
+/* harmony import */ var _BaseCharts__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./BaseCharts */ "./node_modules/vue-chartjs/es/BaseCharts.js");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "Bar", function() { return _BaseCharts__WEBPACK_IMPORTED_MODULE_1__["Bar"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "HorizontalBar", function() { return _BaseCharts__WEBPACK_IMPORTED_MODULE_1__["HorizontalBar"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "Doughnut", function() { return _BaseCharts__WEBPACK_IMPORTED_MODULE_1__["Doughnut"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "Line", function() { return _BaseCharts__WEBPACK_IMPORTED_MODULE_1__["Line"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "Pie", function() { return _BaseCharts__WEBPACK_IMPORTED_MODULE_1__["Pie"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "PolarArea", function() { return _BaseCharts__WEBPACK_IMPORTED_MODULE_1__["PolarArea"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "Radar", function() { return _BaseCharts__WEBPACK_IMPORTED_MODULE_1__["Radar"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "Bubble", function() { return _BaseCharts__WEBPACK_IMPORTED_MODULE_1__["Bubble"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "Scatter", function() { return _BaseCharts__WEBPACK_IMPORTED_MODULE_1__["Scatter"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "generateChart", function() { return _BaseCharts__WEBPACK_IMPORTED_MODULE_1__["generateChart"]; });
+
+
+
+var VueCharts = {
+  Bar: _BaseCharts__WEBPACK_IMPORTED_MODULE_1__["Bar"],
+  HorizontalBar: _BaseCharts__WEBPACK_IMPORTED_MODULE_1__["HorizontalBar"],
+  Doughnut: _BaseCharts__WEBPACK_IMPORTED_MODULE_1__["Doughnut"],
+  Line: _BaseCharts__WEBPACK_IMPORTED_MODULE_1__["Line"],
+  Pie: _BaseCharts__WEBPACK_IMPORTED_MODULE_1__["Pie"],
+  PolarArea: _BaseCharts__WEBPACK_IMPORTED_MODULE_1__["PolarArea"],
+  Radar: _BaseCharts__WEBPACK_IMPORTED_MODULE_1__["Radar"],
+  Bubble: _BaseCharts__WEBPACK_IMPORTED_MODULE_1__["Bubble"],
+  Scatter: _BaseCharts__WEBPACK_IMPORTED_MODULE_1__["Scatter"],
+  mixins: _mixins_index_js__WEBPACK_IMPORTED_MODULE_0__["default"],
+  generateChart: _BaseCharts__WEBPACK_IMPORTED_MODULE_1__["generateChart"],
+  render: function render() {
+    return console.error('[vue-chartjs]: This is not a vue component. It is the whole object containing all vue components. Please import the named export or access the components over the dot notation. For more info visit https://vue-chartjs.org/#/home?id=quick-start');
+  }
+};
+/* harmony default export */ __webpack_exports__["default"] = (VueCharts);
+
+
+/***/ }),
+
+/***/ "./node_modules/vue-chartjs/es/mixins/index.js":
+/*!*****************************************************!*\
+  !*** ./node_modules/vue-chartjs/es/mixins/index.js ***!
+  \*****************************************************/
+/*! exports provided: reactiveData, reactiveProp, default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "reactiveData", function() { return reactiveData; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "reactiveProp", function() { return reactiveProp; });
+function dataHandler(newData, oldData) {
+  if (oldData) {
+    var chart = this.$data._chart;
+    var newDatasetLabels = newData.datasets.map(function (dataset) {
+      return dataset.label;
+    });
+    var oldDatasetLabels = oldData.datasets.map(function (dataset) {
+      return dataset.label;
+    });
+    var oldLabels = JSON.stringify(oldDatasetLabels);
+    var newLabels = JSON.stringify(newDatasetLabels);
+
+    if (newLabels === oldLabels && oldData.datasets.length === newData.datasets.length) {
+      newData.datasets.forEach(function (dataset, i) {
+        var oldDatasetKeys = Object.keys(oldData.datasets[i]);
+        var newDatasetKeys = Object.keys(dataset);
+        var deletionKeys = oldDatasetKeys.filter(function (key) {
+          return key !== '_meta' && newDatasetKeys.indexOf(key) === -1;
+        });
+        deletionKeys.forEach(function (deletionKey) {
+          delete chart.data.datasets[i][deletionKey];
+        });
+
+        for (var attribute in dataset) {
+          if (dataset.hasOwnProperty(attribute)) {
+            chart.data.datasets[i][attribute] = dataset[attribute];
+          }
+        }
+      });
+
+      if (newData.hasOwnProperty('labels')) {
+        chart.data.labels = newData.labels;
+        this.$emit('labels:update');
+      }
+
+      if (newData.hasOwnProperty('xLabels')) {
+        chart.data.xLabels = newData.xLabels;
+        this.$emit('xlabels:update');
+      }
+
+      if (newData.hasOwnProperty('yLabels')) {
+        chart.data.yLabels = newData.yLabels;
+        this.$emit('ylabels:update');
+      }
+
+      chart.update();
+      this.$emit('chart:update');
+    } else {
+      if (chart) {
+        chart.destroy();
+        this.$emit('chart:destroy');
+      }
+
+      this.renderChart(this.chartData, this.options);
+      this.$emit('chart:render');
+    }
+  } else {
+    if (this.$data._chart) {
+      this.$data._chart.destroy();
+
+      this.$emit('chart:destroy');
+    }
+
+    this.renderChart(this.chartData, this.options);
+    this.$emit('chart:render');
+  }
+}
+
+var reactiveData = {
+  data: function data() {
+    return {
+      chartData: null
+    };
+  },
+  watch: {
+    'chartData': dataHandler
+  }
+};
+var reactiveProp = {
+  props: {
+    chartData: {
+      type: Object,
+      required: true,
+      default: function _default() {}
+    }
+  },
+  watch: {
+    'chartData': dataHandler
+  }
+};
+/* harmony default export */ __webpack_exports__["default"] = ({
+  reactiveData: reactiveData,
+  reactiveProp: reactiveProp
+});
+
+/***/ }),
+
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/admin/components/dashboard/SalesCard.vue?vue&type=template&id=7ce7f826&":
+/*!****************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/admin/components/dashboard/SalesCard.vue?vue&type=template&id=7ce7f826& ***!
+  \****************************************************************************************************************************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c("div", { staticClass: "card" }, [
+    _vm._m(0),
+    _vm._v(" "),
+    _c("div", { staticClass: "card-body" }, [
+      _c("div", { staticClass: "d-flex" }, [
+        _c("p", { staticClass: "d-flex flex-column" }, [
+          _c("span", { staticClass: "text-bold text-lg" }, [
+            _vm._v(_vm._s(_vm.currency_short) + _vm._s(_vm.salesOverTime))
+          ]),
+          _vm._v(" "),
+          _c("span", [_vm._v("Продажі за весь час")])
+        ]),
+        _vm._v(" "),
+        _c("p", { staticClass: "ml-auto d-flex flex-column text-right" }, [
+          _c(
+            "span",
+            { class: _vm.sinceLastMonth > 0 ? "text-success" : "text-danger" },
+            [
+              _c("i", {
+                class:
+                  _vm.sinceLastMonth > 0
+                    ? "fas fa-arrow-up"
+                    : "fas fa-arrow-down"
+              }),
+              _vm._v(" " + _vm._s(_vm.sinceLastMonth) + "%\n                ")
+            ]
+          ),
+          _vm._v(" "),
+          _c("span", { staticClass: "text-muted" }, [
+            _vm._v("З минулого місяця")
+          ])
+        ])
+      ]),
+      _vm._v(" "),
+      _c(
+        "div",
+        { staticClass: "position-relative mb-4" },
+        [
+          _c("chart-js", {
+            staticStyle: { height: "200px" },
+            attrs: { "chart-data": _vm.dataCollection, options: _vm.options }
+          })
+        ],
+        1
+      ),
+      _vm._v(" "),
+      _vm._m(1)
+    ])
+  ])
+}
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "card-header border-0" }, [
+      _c("div", { staticClass: "d-flex justify-content-between" }, [
+        _c("h3", { staticClass: "card-title" }, [_vm._v("Продажі")]),
+        _vm._v(" "),
+        _c("a", { attrs: { href: "javascript:void(0);" } }, [
+          _vm._v("View Report")
+        ])
+      ])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "d-flex flex-row justify-content-end" }, [
+      _c("span", { staticClass: "mr-2" }, [
+        _c("i", { staticClass: "fas fa-square text-primary" }),
+        _vm._v(" Цей місяць\n              ")
+      ]),
+      _vm._v(" "),
+      _c("span", [
+        _c("i", { staticClass: "fas fa-square text-gray" }),
+        _vm._v(" Минулий місяць\n              ")
+      ])
+    ])
+  }
+]
+render._withStripped = true
+
+
+
+/***/ }),
+
 /***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/admin/components/order/Shipping.vue?vue&type=template&id=e23b4e8c&":
 /*!***********************************************************************************************************************************************************************************************************************!*\
   !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/admin/components/order/Shipping.vue?vue&type=template&id=e23b4e8c& ***!
@@ -105616,6 +106175,7 @@ var store = new vuex__WEBPACK_IMPORTED_MODULE_1__["default"].Store({
 });
 Vue.component('shipping', __webpack_require__(/*! ./components/order/Shipping.vue */ "./resources/js/admin/components/order/Shipping.vue")["default"]);
 Vue.component('warehouse', __webpack_require__(/*! ./components/order/Warehouse.vue */ "./resources/js/admin/components/order/Warehouse.vue")["default"]);
+Vue.component('SalesCard', __webpack_require__(/*! ./components/dashboard/SalesCard.vue */ "./resources/js/admin/components/dashboard/SalesCard.vue")["default"]);
 var app = new Vue({
   el: '#app',
   store: store
@@ -105627,6 +106187,100 @@ __webpack_require__(/*! ./dashboard */ "./resources/js/admin/dashboard.js"); // 
 __webpack_require__(/*! ./demo */ "./resources/js/admin/demo.js");
 
 __webpack_require__(/*! ./select2 */ "./resources/js/admin/select2.js");
+
+/***/ }),
+
+/***/ "./resources/js/admin/components/dashboard/ChartJs.js":
+/*!************************************************************!*\
+  !*** ./resources/js/admin/components/dashboard/ChartJs.js ***!
+  \************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var vue_chartjs__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vue-chartjs */ "./node_modules/vue-chartjs/es/index.js");
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+  "extends": vue_chartjs__WEBPACK_IMPORTED_MODULE_0__["Bar"],
+  mixins: [vue_chartjs__WEBPACK_IMPORTED_MODULE_0__["mixins"].reactiveProp],
+  props: ['chartData', 'options'],
+  data: function data() {
+    return {};
+  },
+  mounted: function mounted() {
+    this.renderChart(this.chartdata, this.options);
+  }
+});
+
+/***/ }),
+
+/***/ "./resources/js/admin/components/dashboard/SalesCard.vue":
+/*!***************************************************************!*\
+  !*** ./resources/js/admin/components/dashboard/SalesCard.vue ***!
+  \***************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _SalesCard_vue_vue_type_template_id_7ce7f826___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./SalesCard.vue?vue&type=template&id=7ce7f826& */ "./resources/js/admin/components/dashboard/SalesCard.vue?vue&type=template&id=7ce7f826&");
+/* harmony import */ var _SalesCard_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./SalesCard.vue?vue&type=script&lang=js& */ "./resources/js/admin/components/dashboard/SalesCard.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+/* normalize component */
+
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
+  _SalesCard_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _SalesCard_vue_vue_type_template_id_7ce7f826___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _SalesCard_vue_vue_type_template_id_7ce7f826___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  false,
+  null,
+  null,
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/admin/components/dashboard/SalesCard.vue"
+/* harmony default export */ __webpack_exports__["default"] = (component.exports);
+
+/***/ }),
+
+/***/ "./resources/js/admin/components/dashboard/SalesCard.vue?vue&type=script&lang=js&":
+/*!****************************************************************************************!*\
+  !*** ./resources/js/admin/components/dashboard/SalesCard.vue?vue&type=script&lang=js& ***!
+  \****************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_SalesCard_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../../node_modules/babel-loader/lib??ref--4-0!../../../../../node_modules/vue-loader/lib??vue-loader-options!./SalesCard.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/admin/components/dashboard/SalesCard.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_SalesCard_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./resources/js/admin/components/dashboard/SalesCard.vue?vue&type=template&id=7ce7f826&":
+/*!**********************************************************************************************!*\
+  !*** ./resources/js/admin/components/dashboard/SalesCard.vue?vue&type=template&id=7ce7f826& ***!
+  \**********************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_SalesCard_vue_vue_type_template_id_7ce7f826___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../../../node_modules/vue-loader/lib??vue-loader-options!./SalesCard.vue?vue&type=template&id=7ce7f826& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/admin/components/dashboard/SalesCard.vue?vue&type=template&id=7ce7f826&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_SalesCard_vue_vue_type_template_id_7ce7f826___WEBPACK_IMPORTED_MODULE_0__["render"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_SalesCard_vue_vue_type_template_id_7ce7f826___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+
+
 
 /***/ }),
 
@@ -105784,66 +106438,6 @@ $(function () {
   };
   var mode = 'index';
   var intersect = true;
-  var $salesChart = $('#sales-chart');
-  var salesChart = new Chart($salesChart, {
-    type: 'bar',
-    data: {
-      labels: ['JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'],
-      datasets: [{
-        backgroundColor: '#007bff',
-        borderColor: '#007bff',
-        data: [1000, 2000, 3000, 2500, 2700, 2500, 3000]
-      }, {
-        backgroundColor: '#ced4da',
-        borderColor: '#ced4da',
-        data: [700, 1700, 2700, 2000, 1800, 1500, 2000]
-      }]
-    },
-    options: {
-      maintainAspectRatio: false,
-      tooltips: {
-        mode: mode,
-        intersect: intersect
-      },
-      hover: {
-        mode: mode,
-        intersect: intersect
-      },
-      legend: {
-        display: false
-      },
-      scales: {
-        yAxes: [{
-          // display: false,
-          gridLines: {
-            display: true,
-            lineWidth: '4px',
-            color: 'rgba(0, 0, 0, .2)',
-            zeroLineColor: 'transparent'
-          },
-          ticks: $.extend({
-            beginAtZero: true,
-            // Include a dollar sign in the ticks
-            callback: function callback(value, index, values) {
-              if (value >= 1000) {
-                value /= 1000;
-                value += 'k';
-              }
-
-              return '$' + value;
-            }
-          }, ticksStyle)
-        }],
-        xAxes: [{
-          display: true,
-          gridLines: {
-            display: false
-          },
-          ticks: ticksStyle
-        }]
-      }
-    }
-  });
   var $visitorsChart = $('#visitors-chart');
   var visitorsChart = new Chart($visitorsChart, {
     data: {

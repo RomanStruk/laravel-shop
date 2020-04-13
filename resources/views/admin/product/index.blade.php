@@ -14,7 +14,7 @@
         @include('admin.component.events')
         @include('admin.component.sort', [
         'route' => route('admin.product.index'),
-        'status' => [1 => 'Активні', 0 => 'Скриті'],
+        'status' => \App\Product::listStatus(),
         'category' => $categories,
         'dateAdded' => true,
         'search' => true,

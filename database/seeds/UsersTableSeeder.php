@@ -42,7 +42,7 @@ class UsersTableSeeder extends Seeder
             $user->detail()->save($detail);
             $user->roles()->sync([3]);
 
-            $order = factory(App\Order::class,3)->make(['user_id' => $user->id]);
+            $order = factory(App\Order::class,100)->make(['user_id' => $user->id]);
             $user->orders()->insert($order->toArray());
         });
     }

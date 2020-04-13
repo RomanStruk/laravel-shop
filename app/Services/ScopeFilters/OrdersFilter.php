@@ -9,6 +9,11 @@ use Illuminate\Database\Eloquent\Builder;
 
 class OrdersFilter extends BaseFilter
 {
+    public function dateDescFilter($value)
+    {
+        $this->builder->orderByDesc('created_at');
+    }
+
     public function statusFilter($value)
     {
         if (! is_numeric($value)) return ;
@@ -40,9 +45,18 @@ class OrdersFilter extends BaseFilter
 
     public function searchFilter($value)
     {
-        $this->builder->whereHas('products', function ($builder) use($value){
+        $this->builder->orWhereHas('products', function ($builder) use($value){
             /** @var Builder $builder */
             $builder->where('title', 'like', "%$value%");
+        })->orWhereHas('user', function ($builder) use($value){
+            /** @var Builder $builder */
+            $builder->where('email', 'like', "%$value%")
+                ->orWhereHas('detail', function ($builder) use($value){
+                    foreach (explode(' ', $value) as $key){
+                        $builder->where('first_name', 'like', "%$key%")
+                            ->orWhere('last_name', 'like', "%$key%");
+                    }
+                });
         });
     }
 }

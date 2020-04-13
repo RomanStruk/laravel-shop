@@ -3,6 +3,10 @@
 namespace App;
 
 use App\Services\ScopeFilters\ProductsFilter;
+use App\Traits\Helpers\ProductHelper;
+use App\Traits\Helpers\SerializeDate;
+use App\Traits\Relations\ProductRelations;
+use App\Traits\Status;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -63,16 +67,19 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @method static bool|null restore()
  * @method static \Illuminate\Database\Query\Builder|\App\Product withTrashed()
  * @method static \Illuminate\Database\Query\Builder|\App\Product withoutTrashed()
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Order[] $orders
+ * @property-read int|null $orders_count
  */
 class Product extends Model
 {
     use SoftDeletes;
-//    protected $dates = ['deleted_at'];
-    protected function serializeDate(\DateTimeInterface $date)
-    {
-        return $date->format('Y-m-d H:i:s');
-    }
-    public $fillable = ['title',
+    use ProductRelations;
+    use SerializeDate;
+    use ProductHelper;
+    use Status;
+
+    public $fillable = [
+        'title',
         'alias',
         'category_id',
         'keywords',
@@ -80,45 +87,27 @@ class Product extends Model
         'content',
         'price',
         'in_stock',
-        'status',];
+        'status',
+        ];
 
-    protected static function boot()
+    const STATUS_HIDE       = 0;
+    const STATUS_ACTIVE     = 1;
+
+    /**
+     * Return list of status codes and labels
+     * @return array
+     */
+    public static function listStatus()
     {
-        parent::boot();
-
-        static::addGlobalScope('rating', function (Builder $builder) {
-            $builder->withCount(['comments as average_rating' => function($query) {
-                $query->select(\DB::raw('coalesce(avg(rating),0)'));
-            }]);
-        });
-        static::addGlobalScope('count_comments', function (Builder $builder) {
-            $builder->withCount('comments');
-        });
-    }
-
-    //
-    public function product_attributes(){
-        return $this->belongsToMany('App\Attribute');
-    }
-
-    public function category()
-    {
-        return $this->belongsTo('App\Category')->withDefault(['name'=> 'Deleted']);
-    }
-
-    public function comments()
-    {
-        return $this->hasMany('App\Comment');
+        return [
+            self::STATUS_ACTIVE     => 'Активний',
+            self::STATUS_HIDE       => 'Скритий',
+        ];
     }
 
     public function scopeFilter(Builder $query, ProductsFilter $productsFilter, $filter)
     {
         return $productsFilter->apply($query, $filter);
-    }
-
-    public function media()
-    {
-        return $this->belongsToMany(Media::class);
     }
 
     public function getPriceAttribute($value)

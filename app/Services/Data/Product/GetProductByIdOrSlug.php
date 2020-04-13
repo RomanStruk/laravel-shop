@@ -26,6 +26,8 @@ class GetProductByIdOrSlug
         if ($trashed) $product->withTrashed();
 
         return $product
+            ->avgRating()
+            ->countComments()
             ->with('category')
             ->with('comments')
             ->with('comments.user')

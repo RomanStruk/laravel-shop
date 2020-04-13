@@ -47,7 +47,7 @@ class GetOrdersByLimit
             ->with('user.detail')
             ->with('histories')
             ->with('payment')
-            ->with('shipping');;
+            ->with('shipping');
         $orders = $orders->paginate($limit);
 
         $orders->map(function ($order) {

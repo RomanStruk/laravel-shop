@@ -15,12 +15,11 @@ class OrderProductTableSeeder extends Seeder
     {
         $productIds = Product::pluck('id')->toArray();
         $orderIds = Order::pluck('id')->toArray();
-
         $taggables = [];
-        for ($i = 0; $i < (count($orderIds)*4); $i++) {
-            $taggable['product_id'] = $productIds[array_rand($productIds)];
-            $taggable['order_id'] = $orderIds[array_rand($orderIds)];
-            $taggables[] = $taggable;
+        foreach ($orderIds as $id){
+            for ($i = 0; $i < (rand(2,8)); $i++) {
+                $taggables[] = ['order_id'=>$id, 'product_id'=>$productIds[array_rand($productIds)]];
+            }
         }
 
         DB::table('order_product')->insert($taggables);

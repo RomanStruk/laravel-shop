@@ -26,7 +26,9 @@ class OrderController extends Controller
      */
     public function index(GetOrdersByLimit $getOrdersByLimit, Request $request)
     {
-        $orders = $getOrdersByLimit->handel($request->except('limit'));
+        $filter = $request->except('limit');
+        $filter['date-desc'] = 'true';
+        $orders = $getOrdersByLimit->handel($filter);
         return view('admin.order.index')
             ->with('orders', $orders);
     }

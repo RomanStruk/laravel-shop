@@ -53,6 +53,7 @@ use Illuminate\Notifications\Notifiable;
  * @method static \Illuminate\Database\Query\Builder|\App\User withoutTrashed()
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Role[] $roles
  * @property-read int|null $roles_count
+ * @property-read mixed $full_name
  */
 class User extends Authenticatable
 {

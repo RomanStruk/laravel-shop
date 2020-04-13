@@ -25,4 +25,8 @@ Route::group(['prefix' => 'v1'], function (){
 
     Route::get('/shipping/warehouses/{cityRef}', 'Api\v1\ShippingController@showWarehouse');
     Route::get('/shipping/city/{city}', 'Api\v1\ShippingController@showCity');
+
+    //TODO токени авторизації
+//    Route::get('/dashboard/sales', 'Api\v1\DashboardController@sales')->middleware(['auth:api']);
+    Route::get('/dashboard/sales', 'Api\v1\DashboardController@sales');
 });

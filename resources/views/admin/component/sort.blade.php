@@ -2,7 +2,7 @@
     <div class="card-body pt-2 pb-2">
         <form action="{{$route}}" method="get" id="sort">
             <div class="row justify-content-between align-items-center">
-                <div class="col">
+                <div class="col-auto">
                     @isset($limit)
                         <div class="float-left form-inline">
 

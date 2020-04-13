@@ -14,7 +14,7 @@ class ProductsTableSeeder extends Seeder
         $data = [
             [
                 'id' => '1',
-                'category_id' => '3',
+                'category_id' => rand(1,6),
                 'brand_id' => '1',
                 'title' => 'Casio MRP-700-1 AVEFKXF - Касио МРП 700',
                 'alias' => 'casio-mrp-700-1avef',
@@ -29,7 +29,7 @@ class ProductsTableSeeder extends Seeder
             ],
             [
                 'id' => '2',
-                'category_id' => '3',
+                'category_id' => rand(1,6),
                 'brand_id' => '1',
                 'title' => 'Casio MQ-24-7 BUL KXF - Касио МК',
                 'alias' => 'casio-mq-24-7bul',
@@ -44,7 +44,7 @@ class ProductsTableSeeder extends Seeder
             ],
             [
                 'id' => '3',
-                'category_id' => '3',
+                'category_id' => rand(1,6),
                 'brand_id' => '1',
                 'title' => 'Casio GA-1000-1 AER KXF - Касио ДЖА АЕ К',
                 'alias' => 'casio-ga-1000-1aer',
@@ -59,7 +59,7 @@ class ProductsTableSeeder extends Seeder
             ],
             [
                 'id' => '4',
-                'category_id' => '3',
+                'category_id' => rand(1,6),
                 'brand_id' => '2',
                 'title' => 'Citizen JP1010-00E KXF - Ситизен Дж П К ИКС Ф',
                 'alias' => 'citizen-jp1010-00e',
@@ -76,7 +76,7 @@ class ProductsTableSeeder extends Seeder
 
             [
                 'id' => '5',
-                'category_id' => '3',
+                'category_id' => rand(1,6),
                 'brand_id' => '2',
                 'title' => 'Citizen BJ2111-08E KXF - Ситизен БДж211 ФБ',
                 'alias' => 'citizen-bj2111-08e',
@@ -91,7 +91,7 @@ class ProductsTableSeeder extends Seeder
             ],
             [
                 'id' => '6',
-                'category_id' => '5',
+                'category_id' => rand(1,6),
                 'brand_id' => '2',
                 'title' => 'Citizen AT0696-59E KX - Ситизен АТС ФВ',
                 'alias' => 'citizen-at0696-59e',
@@ -108,7 +108,7 @@ class ProductsTableSeeder extends Seeder
 
             [
                 'id' => '7',
-                'category_id' => \App\Category::orderByRaw('RAND()')->first()->id,
+                'category_id' => rand(1,6),
                 'brand_id' => '3',
                 'title' => 'Q&Q Water Resistance VFQ - Кью Кью Вотер Резинтент ФВ',
                 'alias' => 'q-and-q-q956j302y',
@@ -123,7 +123,7 @@ class ProductsTableSeeder extends Seeder
             ],
             [
                 'id' => '8',
-                'category_id' => '3',
+                'category_id' => rand(1,6),
                 'brand_id' => '4',
                 'title' => 'Royal London 41040-01VQ - Ройял Лондон Часы 410 ВКью',
                 'alias' => 'royal-london-41040-01',
@@ -138,7 +138,7 @@ class ProductsTableSeeder extends Seeder
             ],
             [
                 'id' => '9',
-                'category_id' => '3',
+                'category_id' => rand(1,6),
                 'brand_id' => '4',
                 'title' => 'Royal London 20034-02 VQ - Ройял Лондон Часы 900',
                 'alias' => 'royal-london-20034-02',
@@ -153,7 +153,7 @@ class ProductsTableSeeder extends Seeder
             ],
             [
                 'id' => '10',
-                'category_id' => '3',
+                'category_id' => rand(1,6),
                 'brand_id' => '4',
                 'title' => 'Royal London 41156-02 KVQ - - Ройял Лондон Часы ФВ 8',
                 'alias' => 'royal-london-41156-02',
@@ -170,7 +170,7 @@ class ProductsTableSeeder extends Seeder
 
             [
                 'id' => '11',
-                'category_id' => '3',
+                'category_id' => rand(1,6),
                 'brand_id' => '2',
                 'title' => 'Swimming Watch VQ-01 - Часы для плавание в бассейне',
                 'alias' => 'chasy-1',
@@ -185,7 +185,7 @@ class ProductsTableSeeder extends Seeder
             ],
             [
                 'id' => '12',
-                'category_id' => '2',
+                'category_id' => rand(1,6),
                 'brand_id' => '2',
                 'title' => 'Running Watch VQ-9 - Беговые часы на андроиде',
                 'alias' => 'chasy-2',
@@ -201,7 +201,7 @@ class ProductsTableSeeder extends Seeder
 
             [
                 'id' => '13',
-                'category_id' => \App\Category::orderByRaw('RAND()')->first()->id,
+                'category_id' => rand(1,6),
                 'brand_id' => '2',
                 'title' => 'Android Watch BQ-1 - Андроид часы БКЬю',
                 'alias' => 'chasy-3',
@@ -217,7 +217,7 @@ class ProductsTableSeeder extends Seeder
 
             [
                 'id' => '14',
-                'category_id' => \App\Category::orderByRaw('RAND()')->first()->id,
+                'category_id' => rand(1,6),
                 'brand_id' => '2',
                 'title' => 'Sport Watch BQ-009 - Часы спортивные Ультра',
                 'alias' => 'chasy-4',
@@ -233,7 +233,7 @@ class ProductsTableSeeder extends Seeder
 
             [
                 'id' => '15',
-                'category_id' => \App\Category::orderByRaw('RAND()')->first()->id,
+                'category_id' => rand(1,6),
                 'brand_id' => '2',
                 'title' => 'Apple Watch B Sport - Эпл Часы 4',
                 'alias' => 'chasy-5',
@@ -249,7 +249,7 @@ class ProductsTableSeeder extends Seeder
 
             [
                 'id' => '16',
-                'category_id' => '3',
+                'category_id' => rand(1,6),
                 'brand_id' => '2',
                 'title' => 'Rolex Gold B For Water - Ролекс Голд Б для Плавания',
                 'alias' => 'chasy-6',
@@ -265,7 +265,7 @@ class ProductsTableSeeder extends Seeder
 
             [
                 'id' => '17',
-                'category_id' => \App\Category::orderByRaw('RAND()')->first()->id,
+                'category_id' => rand(1,6),
                 'brand_id' => '2',
                 'title' => 'Sumsung Gear Pro F-sport - Самсунг Геар Про Ф Спорт',
                 'alias' => 'chasy-7',
@@ -282,7 +282,7 @@ class ProductsTableSeeder extends Seeder
 
             [
                 'id' => '18',
-                'category_id' => \App\Category::orderByRaw('RAND()')->first()->id,
+                'category_id' => rand(1,6),
                 'brand_id' => '2',
                 'title' => 'Очко Вані',
                 'alias' => 'chasy-8',

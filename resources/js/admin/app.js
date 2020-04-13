@@ -45,6 +45,7 @@ const store = new Vuex.Store({
 });
 Vue.component('shipping', require('./components/order/Shipping.vue').default);
 Vue.component('warehouse', require('./components/order/Warehouse.vue').default);
+Vue.component('SalesCard', require('./components/dashboard/SalesCard.vue').default);
 
 const app = new Vue({
     el: '#app',

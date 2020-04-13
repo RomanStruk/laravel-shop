@@ -60,6 +60,10 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property-read mixed $detail_status
  * @property-read mixed $sum_price
  * @property-read float|mixed $total_price
+ * @property int $status
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\OrderHistory[] $histories
+ * @property-read int|null $histories_count
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Order whereStatus($value)
  */
 class Order extends Model
 {
