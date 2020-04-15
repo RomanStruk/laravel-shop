@@ -19,6 +19,7 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 
 Route::group(['prefix' => 'v1'], function (){
     Route::get('/product/index', 'Api\v1\ProductController@index');
+    Route::get('/product/search', 'Api\v1\ProductController@search');
     Route::get('/category/index', 'Api\v1\CategoryController@index');
     Route::get('/filter/index', 'Api\v1\FilterController@index');
     Route::get('/comment/index/product/{id}', 'Api\v1\CommentController@index');

@@ -6,6 +6,7 @@ namespace App\Traits\Relations;
 
 use App\Media;
 use App\Order;
+use App\Product;
 
 trait ProductRelations
 {
@@ -32,5 +33,10 @@ trait ProductRelations
     public function media()
     {
         return $this->belongsToMany(Media::class);
+    }
+
+    public function related()
+    {
+        return $this->belongsToMany(Product::class, 'related_products', 'product_id', 'related_id', 'id', 'id');
     }
 }

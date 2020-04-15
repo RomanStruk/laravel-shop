@@ -27,4 +27,10 @@ class ProductController extends Controller
         );
         return response()->json($products);
     }
+
+    public function search(Request $request, GetProductsByLimit $getProducts)
+    {
+        $products = $getProducts->handel(['search' => $request->q], ['id', 'title as text'], false);
+        return response()->json($products);
+    }
 }

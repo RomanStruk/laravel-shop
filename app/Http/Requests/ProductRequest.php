@@ -43,6 +43,7 @@ class ProductRequest extends FormRequest
             'status' => ['required', 'in:1,0'],
             'in_stock' => ['required', 'integer', 'min:1'],
             'attributes' => ['array', 'distinct', 'exists:attributes,id'],
+            'related' => ['array', 'distinct', 'exists:products,id'],
             'media.*' => request()->method() == 'POST'?
                 ['mimes:png,jpeg,jpg']:
                 ['nullable', 'mimes:png,jpeg,jpg'],

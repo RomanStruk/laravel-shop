@@ -13,75 +13,68 @@
     <!-- Main content -->
     <section class="content">
         @include('admin.component.events')
-        <div class="card">
-            <div class="card-header">
-                <h3 class="card-title"></h3>
+        <form action="{{ route('admin.product.store') }}" method="post" class="needs-validation"  enctype="multipart/form-data" novalidate>
 
-                <div class="card-tools">
-                    <button type="button" class="btn btn-tool" data-card-widget="collapse" data-toggle="tooltip"
-                            title="Collapse">
-                        <i class="fas fa-minus"></i></button>
-                    <button type="button" class="btn btn-tool" data-card-widget="remove" data-toggle="tooltip"
-                            title="Remove">
-                        <i class="fas fa-times"></i></button>
-                </div>
-            </div>
-            <div class="card-body">
-                <form action="{{ route('admin.product.store') }}" method="post" class="needs-validation"  enctype="multipart/form-data" novalidate>
-                    @csrf
+            @csrf
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Загальне</h3>
+                        </div>
+                        <div class="card-body">
+                                <div class="form-group">
+                                    <label for="product-name">Назва товару</label>
+                                        <input name="title" id="product-name" value="{{old('title')}}" class="form-control">
+                                </div>
+
+                                <div class="form-group ">
+                                    <label for="product-alias">Alias</label>
+                                    <input name="alias" id="product-alias" value="{{old('alias')}}" class="form-control">
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="product-category">Категорія</label>
+                                        <select name="category_id" id="product-category"  class="form-control">
+                                        @foreach($categories as $category)
+                                            <option value="{{ $category->id }}"
+                                                @if($category->id == old('category_id')) selected @endif
+                                            >{{ $category->name }}</option>
+                                        @endforeach
+                                        </select>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="product-keywords">Ключові Слова</label>
+                                    <input name="keywords" id="product-keywords" value="{{old('keywords')}}" class="form-control">
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="product-description">Короткий опис</label>
+                                    <input name="description" id="product-description" value="{{old('description')}}" class="form-control" type="text" max="255">
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="product-content">Детальний опис</label>
+                                        <textarea name="content" id="product-content" class="form-control" type="text">{{old('content')}}</textarea>
+                                </div>
 
 
-                    <div class="form-group row">
-                        <label class="col-sm-2 col-form-label" for="product-name">Назва товару</label>
-                        <div class="col-sm-10">
-                            <input name="title" id="product-name" value="{{old('title')}}" class="form-control">
+                                <div class="form-group">
+                                        <div class="custom-control custom-switch">
+                                            <input name="status" type="checkbox" class="custom-control-input" id="customSwitch1" value="1" checked>
+                                            <label class="custom-control-label" for="customSwitch1">Опублікувати</label>
+                                        </div>
+                                </div>
+
+
                         </div>
                     </div>
-
-                    <div class="form-group row">
-                        <label class="col-sm-2 col-form-label" for="product-alias">Alias</label>
-                        <div class="col-sm-10">
-                            <input name="alias" id="product-alias" value="{{old('alias')}}" class="form-control">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Ціни</h3>
                         </div>
-                    </div>
-
-                    <div class="form-group row">
-                        <label class="col-sm-2 col-form-label" for="product-category">Категорія</label>
-                        <div class="col-sm-10">
-                            <select name="category_id" id="product-category"  class="form-control">
-                            @foreach($categories as $category)
-                                <option value="{{ $category->id }}"
-                                    @if($category->id == old('category_id')) selected @endif
-                                >{{ $category->name }}</option>
-                            @endforeach
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="form-group row">
-                        <label class="col-sm-2 col-form-label" for="product-keywords">Ключові Слова</label>
-                        <div class="col-sm-10">
-                            <input name="keywords" id="product-keywords" value="{{old('keywords')}}" class="form-control">
-                        </div>
-                    </div>
-
-                    <div class="form-group row">
-                        <label class="col-sm-2 col-form-label" for="product-description">Короткий опис</label>
-                        <div class="col-sm-10">
-                            <input name="description" id="product-description" value="{{old('description')}}" class="form-control" type="text" max="255">
-                        </div>
-                    </div>
-
-                    <div class="form-group row">
-                        <label class="col-sm-2 col-form-label" for="product-content">Детальний опис</label>
-                        <div class="col-sm-10">
-                            <textarea name="content" id="product-content" class="form-control" type="text">{{old('content')}}</textarea>
-                        </div>
-                    </div>
-
-                    <div class="form-group row">
-                        <label class="col-sm-2 col-form-label" ></label>
-                        <div class="col-sm-10">
+                        <div class="card-body">
                             <div class="form-row">
                                 <div class="col-md-4 mb-3">
                                     <label for="product-price">Ціна товару</label>
@@ -105,45 +98,73 @@
                             </div>
                         </div>
                     </div>
-                    <div class="form-group row">
-                        <label class="col-sm-2 col-form-label">Опублікувати</label>
-                        <div class="col-sm-10">
-                            <div class="custom-control custom-switch">
-                                <input name="status" type="checkbox" class="custom-control-input" id="customSwitch1" value="1" checked>
-                                <label class="custom-control-label" for="customSwitch1">Натісніть для зміни</label>
+                </div>
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Related products</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="form-group">
+                                <label for="input-related">Товари</label>
+                                <select name="related[]" class="form-control select2" data-dropdown-css-class="select2"
+                                        style="width: 100%;" id="input-related" multiple>
+                                </select>
                             </div>
                         </div>
                     </div>
-                    <div class="form-group row">
-                        @foreach($filters as $filter)
-                            <label class="col-sm-2 col-form-label" for="input-category">
-                                {{$filter->name}}:
-                            </label>
-                            <div class="col-sm-10">
-                                @foreach($filter->allAttributes as $attribute)
-                                    <div class="form-check form-check-inline">
-                                        <input class="form-check-input" type="radio" name="attributes[{{$filter->id}}]"
-                                               id="inlineCheckbox{{$attribute->id}}" value="{{$attribute->id}}">
-                                        <label class="form-check-label"
-                                               for="inlineCheckbox{{$attribute->id}}">{{$attribute->value}}</label>
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Зображення(4)</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="form-group">
+
+                                <div class="custom-file">
+                                    <input type="file" name="media[]" class="custom-file-input" id="inputGroupFile01" multiple>
+                                    <label class="custom-file-label" for="inputGroupFile01">Choose file</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Filters</h3>
+                        </div>
+                        <div class="card-body">
+                            <div id="accordion">
+                                <!-- we are adding the .class so bootstrap.js collapse plugin detects it -->
+
+                                @foreach($filters as $filter)
+                                    <div class="card card-primary">
+                                        <div class="card-header">
+                                            <h4 class="card-title">
+                                                <a data-toggle="collapse" data-parent="#accordion" href="#collapse{{$filter->id}}" class="collapsed" aria-expanded="false">
+                                                    {{$filter->name}}
+                                                </a>
+                                            </h4>
+                                        </div>
+                                        <div id="collapse{{$filter->id}}" class="panel-collapse in collapse" style="">
+                                            <div class="card-body">
+                                                @foreach($filter->allAttributes as $attribute)
+                                                    <div class="form-check form-check-inline">
+                                                        <input class="form-check-input" type="radio" name="attributes[{{$filter->id}}]"
+                                                               id="inlineCheckbox{{$attribute->id}}" value="{{$attribute->id}}">
+                                                        <label class="form-check-label"
+                                                               for="inlineCheckbox{{$attribute->id}}">{{$attribute->value}}</label>
+                                                    </div>
+                                                @endforeach
+                                            </div>
+                                        </div>
                                     </div>
                                 @endforeach
                             </div>
-                        @endforeach
-                    </div>
-                    <div class="form-group row">
-                        <label class="col-sm-2 col-form-label">Зображення(4)</label>
-                        <div class="col-sm-10">
-                            <div class="custom-file">
-                                <input type="file" name="media[]" class="custom-file-input" id="inputGroupFile01" multiple>
-                                <label class="custom-file-label" for="inputGroupFile01">Choose file</label>
-                            </div>
                         </div>
                     </div>
-
-                <input type="submit" name="save" value="Save" class="btn btn-primary">
-                </form>
+                </div>
             </div>
-        </div>
+
+        <input type="submit" name="save" value="Save" class="btn btn-primary">
+        </form>
     </section>
 @endsection

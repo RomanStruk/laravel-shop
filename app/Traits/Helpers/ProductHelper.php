@@ -19,4 +19,9 @@ trait ProductHelper
     {
         return $builder->withCount('comments');
     }
+
+    public function syncRelatedProducts($products)
+    {
+        return $this->related()->sync($products);
+    }
 }

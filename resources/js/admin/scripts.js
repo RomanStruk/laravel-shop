@@ -26,10 +26,16 @@ import 'moment-timezone';
 require('tempusdominus-bootstrap-4');
 
 
+
 // <!-- Summernote -->
 require('admin-lte/plugins/summernote/summernote-bs4.min');
 
 // <!-- overlayScrollbars -->
 require('admin-lte/plugins/overlayScrollbars/js/jquery.overlayScrollbars.min');
 
+
+import bsCustomFileInput from 'admin-lte/plugins/bs-custom-file-input/bs-custom-file-input'
+$(document).ready(function () {
+    bsCustomFileInput.init();
+});
 

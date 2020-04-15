@@ -52,7 +52,7 @@ class ProductController extends Controller
      * @param GetFilters $getFilters
      * @return Factory|View
      */
-    public function create(GetCategories $getCategories, GetFilters $getFilters)
+    public function create(GetCategories $getCategories, GetFilters $getFilters, GetProductsByLimit $getProducts)
     {
         $categories = $getCategories->handel(false);
         $filters = $getFilters->handel();

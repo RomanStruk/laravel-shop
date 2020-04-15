@@ -34,17 +34,20 @@ class GetProductsByLimit
     /**
      * @param $filters
      * @param array $fields
+     * @param bool $options
      * @return LengthAwarePaginator
      */
-    public function handel($filters, $fields = ['*'])
+    public function handel($filters, $fields = ['*'], $options = true)
     {
         $limit = $this->paginateSession->getLimit();
 
-        return Product::filter($this->productsFilter, $filters)
-            ->select($fields)
-            ->avgRating()
-            ->with('category')
-            ->with('media:media.id,media.url')
-            ->paginate($limit);
+        $product = Product::filter($this->productsFilter, $filters)->select($fields);
+
+        if ($options){
+            $product = $product->avgRating()
+                ->with('category')
+                ->with('media:media.id,media.url');
+        }
+        return $product->paginate($limit);
     }
 }

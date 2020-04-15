@@ -21,6 +21,7 @@ class CreateProductService
         $product->in_stock = $input['in_stock'];
         $product->status = $input['status'];
         $product->save();
+        $product->syncRelatedProducts($input['related']);
         return $product->id;
     }
 }
