@@ -15,7 +15,7 @@
 </template>
 
 <script>
-    import AutocompleteField from "../../../components/AutocompleteField";
+    import AutocompleteField from "../../components/AutocompleteField";
     export default {
         components: {
             AutocompleteField

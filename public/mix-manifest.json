@@ -1,6 +1,9 @@
 {
-    "/adm/js/app.js": "/adm/js/app.js",
+    "/adm/js/basic.js": "/adm/js/basic.js",
     "/css/app.css": "/css/app.css",
     "/adm/css/app.css": "/adm/css/app.css",
+    "/adm/js/dashboard.js": "/adm/js/dashboard.js",
+    "/adm/js/order-edit.js": "/adm/js/order-edit.js",
+    "/adm/js/product.js": "/adm/js/product.js",
     "/js/app.js": "/js/app.js"
 }

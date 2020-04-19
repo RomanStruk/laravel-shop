@@ -11,6 +11,7 @@ class DeleteMediaFileFromDb
     public function handel($id)
     {
         $media = Media::findOrFail($id);
+        if ($media->products()->count() > 0) return false;
         $path = $media->path;
         $disc = $media->disc;
         $media->delete();

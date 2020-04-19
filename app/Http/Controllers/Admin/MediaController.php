@@ -135,7 +135,9 @@ class MediaController extends Controller
      */
     public function destroy(DeleteMediaFileFromDb $deleteMediaFileFromDb, $mediaId)
     {
-        $deleteMediaFileFromDb->handel($mediaId);
-        return redirect()->back()->with('success', __('media.delete'));
+        if($deleteMediaFileFromDb->handel($mediaId))
+            return  redirect()->route('admin.media.index')->with('success', __('media.delete'));
+        else
+            return redirect()->back()->withErrors([__('media.cant_delete')]);
     }
 }

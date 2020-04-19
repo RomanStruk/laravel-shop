@@ -417,10 +417,5 @@
         return $block
     }
 
-    $('.product-image-thumb').on('click', function() {
-        const image_element = $(this).find('img');
-        $('.product-image').prop('src', $(image_element).attr('src'))
-        $('.product-image-thumb.active').removeClass('active');
-        $(this).addClass('active');
-    });
+
 })(jQuery)

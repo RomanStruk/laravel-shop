@@ -22,6 +22,7 @@ class UpdateMediaFile
         $media->description = $fields['description'];
         $media->disc = $fields['disc'];
         $media->visibility = $fields['visibility'];
+        $media->products()->detach();
         if ($products){
             $media->products()->sync($products);
         }

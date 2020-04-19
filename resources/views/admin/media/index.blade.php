@@ -61,7 +61,17 @@
 
                     </tbody>
                 </table>
-                {{ $medias->links() }}
+                <div class="row p-3">
+                    <div class="col-sm-12 col-md-5">
+                        Showing {{$medias->firstItem()}} to {{$medias->lastItem()}} of {{$medias->total()}} entries
+                    </div>
+                    <div class="col-sm-12 col-md-7">
+                        <div class="float-right">
+                            {{ $medias->withQueryString()->links() }}
+                        </div>
+                    </div>
+                </div>
+
             </div>
         </div>
     </section>

@@ -50,12 +50,14 @@ class ProductController extends Controller
      *
      * @param GetCategories $getCategories
      * @param GetFilters $getFilters
+     * @param GetProductsByLimit $getProducts
      * @return Factory|View
      */
     public function create(GetCategories $getCategories, GetFilters $getFilters, GetProductsByLimit $getProducts)
     {
         $categories = $getCategories->handel(false);
         $filters = $getFilters->handel();
+//        dd(count($filters->first()->filterValues->pluck('id')->intersect([1]))?:false);
         return view('admin.product.create')
             ->with('categories', $categories)
             ->with('filters', $filters);
@@ -66,27 +68,16 @@ class ProductController extends Controller
      *
      * @param ProductRequest $request
      * @param CreateProductService $createProductService
-     * @param UpdateProductById $updateProductById
-     * @param SaveFile $saveMediaFile
-     * @param SaveToDbMediaFile $dbMediaFileService
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function store(ProductRequest $request,
-                          CreateProductService $createProductService,
-                          UpdateProductById $updateProductById,
-                          SaveFile $saveMediaFile,
-                          SaveToDbMediaFile $dbMediaFileService)
+    public function store(ProductRequest $request, CreateProductService $createProductService)
     {
-        $insertData = $request->validated();
-        $productId = $createProductService->handel($insertData);
-        $files=[];
-        foreach($request->file('media') as $file){
-                $fileData = $saveMediaFile->handel($file, 'shop/'.$productId);
-                $files[] = $dbMediaFileService->handel($fileData, $insertData['title'], $insertData['keywords'], $insertData['description']);
-        }
-        $updateProductById->handel($productId, false, $insertData['attributes'], $files);
+        $product = $createProductService->handel($request->productFillData());
+        $product->syncAttributesOfFilters($request->attributesFillData());
+        $product->syncMediaFiles($request->mediaFillData());
+        $product->syncRelatedProducts($request->relatedFillData());
 
-        return redirect()->route('admin.product.show', ['product' => $productId])
+        return redirect()->route('admin.product.show', ['product' => $product->id])
             ->with('success', __('product.save'));
     }
 
@@ -177,6 +168,6 @@ class ProductController extends Controller
     public function destroy(DeleteProductById $deleteProductById, $product)
     {
         $deleteProductById->handel($product, false);
-        return redirect()->back()->with('success', __('product.delete'));
+        return redirect()->route('admin.product.index')->with('success', __('product.delete'));
     }
 }

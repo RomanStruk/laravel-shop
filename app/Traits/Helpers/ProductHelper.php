@@ -24,4 +24,14 @@ trait ProductHelper
     {
         return $this->related()->sync($products);
     }
+
+    public function syncAttributesOfFilters(array $attributes)
+    {
+        return $this->product_attributes()->sync($attributes);
+    }
+
+    public function syncMediaFiles(array $media)
+    {
+        return $this->media()->sync($media);
+    }
 }

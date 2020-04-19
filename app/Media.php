@@ -42,6 +42,7 @@ use Illuminate\Database\Eloquent\Model;
 class Media extends Model
 {
     public $guarded = [];
+
     protected function serializeDate(\DateTimeInterface $date)
     {
         return $date->format('Y-m-d H:i:s');

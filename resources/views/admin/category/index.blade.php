@@ -24,9 +24,10 @@
                         <thead>
                         <tr>
                             <td class="text-right col-1"><a class="desc">#</a></td>
-                            <td class="text-left col-5"><a href="">Заголовок</a></td>
-                            <td class="text-left col-3">Батьківський елемент</td>
-                            <td class="text-center col-3">Дія</td>
+                            <td class="text-left col-3"><a href="">Заголовок</a></td>
+                            <td class="text-left col-4">Опис</td>
+                            <td class="text-left col-2">Батьківський елемент</td>
+                            <td class="text-center col-2">Дія</td>
                         </tr>
                         </thead>
                         <tbody>
@@ -34,6 +35,7 @@
                             <tr>
                                 <td class="text-right">{{ $category->id }}</td>
                                 <td class="text-left">{{ $category->name }}</td>
+                                <td class="text-left">{{ $category->description }}</td>
                                 <td class="text-left">{{ $category->parent->name ?? 'root' }}</td>
                                 <td class="project-actions text-right">
                                     @include('admin.component.dropdown_menu', [
@@ -47,6 +49,16 @@
 
                         </tbody>
                     </table>
+                <div class="row p-3">
+                    <div class="col-sm-12 col-md-5">
+                        Showing {{$categories->firstItem()}} to {{$categories->lastItem()}} of {{$categories->total()}} entries
+                    </div>
+                    <div class="col-sm-12 col-md-7">
+                        <div class="float-right">
+                            {{ $categories->withQueryString()->links() }}
+                        </div>
+                    </div>
+                </div>
 
             </div>
         </div>

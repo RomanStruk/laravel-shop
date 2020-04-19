@@ -1,5 +1,6 @@
 @extends('admin.layouts.app')
 
+
 @section('content')
     @include('admin.component.title_breadcrumbs', [
         'title' => 'Редагування замовлення',
@@ -278,4 +279,8 @@
         </form>
     </section>
 
+@endsection
+
+@section('script')
+    <script src="{{ mix('adm/js/order-edit.js')}}"></script>
 @endsection

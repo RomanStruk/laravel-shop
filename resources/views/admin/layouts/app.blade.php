@@ -44,10 +44,9 @@
 <!-- Ionicons -->
 <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
 <!-- Scripts -->
-<script src="{{ mix('adm/js/app.js')}}"></script>
-
-<script>
-    $.widget.bridge('uibutton', $.ui.button)
-</script>
+@section('script')
+<script src="{{ mix('adm/js/basic.js')}}"></script>
+@endsection
+@yield('script')
 </body>
 </html>

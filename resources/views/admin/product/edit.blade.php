@@ -1,5 +1,9 @@
 @extends('admin.layouts.app')
 
+@section('script')
+    <script src="{{ mix('adm/js/product.js')}}"></script>
+@endsection
+
 @section('content')
 
     @include('admin.component.title_breadcrumbs', [

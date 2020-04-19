@@ -53,7 +53,16 @@
                     @endforelse
                     </tbody>
                 </table>
-                {{ $filters->withQueryString()->links() }}
+                <div class="row p-3">
+                    <div class="col-sm-12 col-md-5">
+                        Showing {{$filters->firstItem()}} to {{$filters->lastItem()}} of {{$filters->total()}} entries
+                    </div>
+                    <div class="col-sm-12 col-md-7">
+                        <div class="float-right">
+                            {{ $filters->withQueryString()->links() }}
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </section>

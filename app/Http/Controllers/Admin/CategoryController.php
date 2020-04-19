@@ -23,6 +23,7 @@ class CategoryController extends Controller
      */
     public function index(GetCategories $getCategories)
     {
+
         return view('admin.category.index')
             ->with('categories', $getCategories->handel(false));
     }

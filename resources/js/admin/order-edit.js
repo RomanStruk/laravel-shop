@@ -1,8 +1,45 @@
+require('./basic');
+require('./require/import-axios');
+
+window.Vue = require('vue');
+
+import Vuex from 'vuex';
+Vue.use(Vuex);
+const store = new Vuex.Store({
+    state: {
+        warehouses: {},
+    },
+    getters: {
+        // Here we will create a getter
+        WAREHOUSES: state => {
+            return state.warehouses;
+        },
+    },
+    mutations: {
+        ADD_WAREHOUSE: (state, value) => {
+            state.warehouses = value;
+        },
+        // Here we will create Jenny
+    },
+    actions: {
+        // Here we will create Larry
+    }
+});
+
+Vue.component('shipping', require('./components/Shipping.vue').default);
+Vue.component('warehouse', require('./components/Warehouse.vue').default);
+
+const app = new Vue({
+    el: '#app',
+    store,
+});
+//
 require('admin-lte/plugins/select2/js/select2.full');
 $(function () {
+    'use strict';
     //Initialize Select2 Elements
-    $('#input-product').select2();
-    $("#input-related").select2({
+    // $('#input-product').select2();
+    $("#input-product").select2({
         ajax: {
             url: "/api/v1/product/search",
             dataType: 'json',

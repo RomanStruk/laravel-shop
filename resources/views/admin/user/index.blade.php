@@ -63,7 +63,17 @@
 
                     </tbody>
                 </table>
-                {{ $users->links() }}
+                <div class="row p-3">
+                    <div class="col-sm-12 col-md-5">
+                        Showing {{$users->firstItem()}} to {{$users->lastItem()}} of {{$users->total()}} entries
+                    </div>
+                    <div class="col-sm-12 col-md-7">
+                        <div class="float-right">
+                            {{ $users->withQueryString()->links() }}
+                        </div>
+                    </div>
+                </div>
+
             </div>
         </div>
     </section>

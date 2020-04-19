@@ -41,7 +41,7 @@
 </template>
 
 <script>
-    import ChartJs from './ChartJs.js'
+    import ChartJs from './ChartJsBar.js'
     export default {
         components: {
             ChartJs

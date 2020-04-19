@@ -186,3 +186,7 @@
     </div>
     <!-- /.content -->
 @endsection
+
+@section('script')
+    <script src="{{ mix('adm/js/dashboard.js')}}"></script>
+@endsection

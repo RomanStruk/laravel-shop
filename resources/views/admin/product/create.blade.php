@@ -1,5 +1,7 @@
 @extends('admin.layouts.app')
-
+@section('script')
+    <script src="{{ mix('adm/js/product.js')}}"></script>
+@endsection
 @section('content')
     <!-- Content Header (Page header) -->
     @include('admin.component.title_breadcrumbs', [
@@ -18,7 +20,7 @@
             @csrf
             <div class="row">
                 <div class="col-md-6">
-                    <div class="card">
+                    <div class="card card-primary">
                         <div class="card-header">
                             <h3 class="card-title">Загальне</h3>
                         </div>
@@ -70,7 +72,7 @@
 
                         </div>
                     </div>
-                    <div class="card">
+                    <div class="card card-primary">
                         <div class="card-header">
                             <h3 class="card-title">Ціни</h3>
                         </div>
@@ -100,9 +102,9 @@
                     </div>
                 </div>
                 <div class="col-md-6">
-                    <div class="card">
+                    <div class="card card-secondary">
                         <div class="card-header">
-                            <h3 class="card-title">Related products</h3>
+                            <h3 class="card-title">Пов'язані товари</h3>
                         </div>
                         <div class="card-body">
                             <div class="form-group">
@@ -113,50 +115,52 @@
                             </div>
                         </div>
                     </div>
-                    <div class="card">
+                    <div class="card card-primary">
                         <div class="card-header">
-                            <h3 class="card-title">Зображення(4)</h3>
+                            <h3 class="card-title">Зображення</h3>
                         </div>
                         <div class="card-body">
-                            <div class="form-group">
-
-                                <div class="custom-file">
-                                    <input type="file" name="media[]" class="custom-file-input" id="inputGroupFile01" multiple>
-                                    <label class="custom-file-label" for="inputGroupFile01">Choose file</label>
-                                </div>
-                            </div>
+                            <script type="application/javascript">
+                                var old_media = {!! json_encode(old('media', [])) !!};
+                            </script>
+                            <upload-images></upload-images>
                         </div>
                     </div>
-                    <div class="card">
+                    <div class="card card-info">
                         <div class="card-header">
-                            <h3 class="card-title">Filters</h3>
+                            <h3 class="card-title">Фільтри</h3>
                         </div>
                         <div class="card-body">
-                            <div id="accordion">
-                                <!-- we are adding the .class so bootstrap.js collapse plugin detects it -->
+                            <div class="row">
 
                                 @foreach($filters as $filter)
-                                    <div class="card card-primary">
-                                        <div class="card-header">
-                                            <h4 class="card-title">
-                                                <a data-toggle="collapse" data-parent="#accordion" href="#collapse{{$filter->id}}" class="collapsed" aria-expanded="false">
-                                                    {{$filter->name}}
-                                                </a>
-                                            </h4>
-                                        </div>
-                                        <div id="collapse{{$filter->id}}" class="panel-collapse in collapse" style="">
-                                            <div class="card-body">
-                                                @foreach($filter->allAttributes as $attribute)
-                                                    <div class="form-check form-check-inline">
-                                                        <input class="form-check-input" type="radio" name="attributes[{{$filter->id}}]"
-                                                               id="inlineCheckbox{{$attribute->id}}" value="{{$attribute->id}}">
-                                                        <label class="form-check-label"
-                                                               for="inlineCheckbox{{$attribute->id}}">{{$attribute->value}}</label>
-                                                    </div>
-                                                @endforeach
+                                <div class="col-auto p-1">
+                                    <div class="dropdown">
+                                        <a class="btn dropdown-toggle
+                                            @if(count($filter->filterValues->pluck('id')->intersect(old('attributes', []))))
+                                                btn-primary
+                                            @else
+                                                btn-secondary
+                                            @endif"
+                                           href="#" role="button" id="dropdownMenu{{$filter->id}}" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            {{$filter->name}}
+                                        </a>
+                                        <div class="dropdown-menu">
+                                            @foreach($filter->allAttributes as $attribute)
+                                            <div class="dropdown-item" >
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input" type="radio" name="attributes[{{$filter->id}}]"
+                                                           id="inlineCheckbox{{$attribute->id}}" value="{{$attribute->id}}"
+                                                           @if(in_array($attribute->id, old('attributes', []))) checked @endif
+                                                    >
+                                                    <label class="form-check-label"
+                                                           for="inlineCheckbox{{$attribute->id}}">{{$attribute->value}}</label>
+                                                </div>
                                             </div>
+                                            @endforeach
                                         </div>
                                     </div>
+                                </div>
                                 @endforeach
                             </div>
                         </div>

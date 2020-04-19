@@ -1,13 +1,27 @@
+require('./basic');
+// <!-- moment -->
+global.moment = require('moment');
+require('moment/locale/ru');
+moment.locale('ru');
+
+require('./require/import-axios');
+
+window.Vue = require('vue');
+Vue.component('SalesCard', require('./components/SalesCard.vue').default);
+const app = new Vue({
+    el: '#app'
+});
+// dashboard
 $(function () {
-    'use strict'
+    'use strict';
 
     var ticksStyle = {
         fontColor: '#495057',
         fontStyle: 'bold'
-    }
+    };
 
-    var mode      = 'index'
-    var intersect = true
+    var mode      = 'index';
+    var intersect = true;
 
 
     var $visitorsChart = $('#visitors-chart')
@@ -75,3 +89,6 @@ $(function () {
         }
     })
 })
+
+//панель з налаштуваннями дизайну адмінки
+require('./demo');

@@ -26,7 +26,7 @@ Route::get('/index-3', function () {
     return view('index-3');
 });
 
-Route::group(['prefix' => '/shop', 'middleware' => ['web']], function () {
+Route::group(['prefix' => '/shop'], function () {
 
     Route::get('/category/{cat}', [
         'uses' => 'ProductController@index',
@@ -40,12 +40,10 @@ Route::group(['prefix' => '/shop', 'middleware' => ['web']], function () {
 
 Route::get('/product/{alias}', 'ProductController@show')
     ->name('product.index')
-    ->middleware('test')
-    ->middleware('web');
+    ->middleware('test');
 
 Route::post('/product/{id}/comment/create', 'CommentController@create')
-    ->name('comment.create')
-    ->middleware('web');
+    ->name('comment.create');
 
 Route::post('/checkout', 'OrderController@checkOut')
     ->name('checkout');
@@ -78,7 +76,7 @@ Route::get('/wishlist', function () {
 
 Route::get('/account', function () {
     return view('account');
-})->middleware(['web', 'auth']);;
+})->middleware(['auth']);;
 Route::get('/forgot-password', function () {
     return view('forgot-password');
 });
