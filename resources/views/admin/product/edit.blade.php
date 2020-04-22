@@ -24,7 +24,6 @@
               enctype="multipart/form-data">
             @csrf
             @method('PATCH')
-            <input type="hidden" name="q" value="1">
             <div class="row">
                 <div class="col-md-6">
                     <div class="card">
@@ -127,43 +126,38 @@
                             <h3 class="card-title">Filters</h3>
                         </div>
                         <div class="card-body">
-                            <div id="accordion">
-                                <!-- we are adding the .class so bootstrap.js collapse plugin detects it -->
+                            <div class="row">
 
-                                @foreach($groups as $attributes)
-                                    <div class="card card-primary">
-                                        <div class="card-header">
-                                            <h4 class="card-title">
-                                                <a data-toggle="collapse" data-parent="#accordion"
-                                                   href="#collapse{{$attributes->id}}" class="collapsed"
-                                                   aria-expanded="false">
-                                                    {{$attributes->name}}
-                                                </a>
-                                            </h4>
-                                        </div>
-                                        <div id="collapse{{$attributes->id}}" class="panel-collapse in collapse
-                                        @if($product->product_attributes->firstWhere('filter_id', '=', $attributes->id))
-                                            show
-@endif" style="">
-                                            <div class="card-body">
-                                                @foreach($attributes->allAttributes as $attribute)
-                                                    <div class="form-check form-check-inline">
-                                                        <input class="form-check-input" type="radio"
-                                                               name="attributes[{{$attributes->id}}]"
-                                                               id="inlineCheckbox{{$attribute->id}}"
-                                                               value="{{$attribute->id}}"
-                                                               @if($product->product_attributes->firstWhere('id', '=', $attribute->id))
-                                                               checked
-                                                            @endif
-                                                        >
-                                                        <label class="form-check-label"
-                                                               for="inlineCheckbox{{$attribute->id}}">{{$attribute->value}}</label>
+                                @foreach($groups as $filter)
+                                    <div class="col-auto p-1">
+                                        <div class="dropdown">
+                                            <a class="btn dropdown-toggle
+                                            @if(count($filter->filterValues->pluck('id')->intersect($product->product_attributes->pluck('id'))))
+                                                    btn-primary @else
+                                                    btn-secondary @endif"
+                                               href="#" role="button" id="dropdownMenu{{$filter->id}}" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                {{$filter->name}}
+                                            </a>
+                                            <div class="dropdown-menu">
+                                                @foreach($filter->allAttributes as $attribute)
+                                                    <div class="dropdown-item" >
+                                                        <div class="form-check row">
+                                                            <input class="form-check-input" type="radio" name="attributes[{{$filter->id}}]"
+                                                                   id="inlineCheckbox{{$attribute->id}}" value="{{$attribute->id}}"
+                                                                   @if(in_array($attribute->id, $product->product_attributes->pluck('id')->toArray())) checked @endif
+                                                            >
+                                                            <label class="form-check-label col-12"
+                                                                   for="inlineCheckbox{{$attribute->id}}">{{$attribute->value}}</label>
+                                                        </div>
                                                     </div>
                                                 @endforeach
                                             </div>
                                         </div>
                                     </div>
                                 @endforeach
+                                <div class="col-auto p-1">
+                                    <button class="btn btn-danger" title="Reset Filters" type="reset" id="reset_filters"><i class="fa fa-recycle"></i></button>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -172,47 +166,10 @@
                             <h3 class="card-title">Файли</h3>
                         </div>
                         <div class="card-body">
-                            <div class="form-group">
-                                <label for="input-in-stock">Завантажити</label>
-                                    <div class="custom-file">
-                                        <input type="file" name="media[]" class="custom-file-input"
-                                               id="inputGroupFile01" multiple>
-                                        <label class="custom-file-label" for="inputGroupFile01">Choose file</label>
-                                    </div>
-                            </div>
-                            <table class="table table-bordered table-hover">
-                                <thead>
-                                <tr>
-                                    <td class="text-right col-1">
-                                        <input type="checkbox"
-                                               onclick="$('input[name*=\'files\']').prop('checked', this.checked);">
-                                    </td>
-                                    <td class="text-left col-3">Зображення</td>
-                                    <td class="text-left col-5">Назва</td>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                @foreach($product->media as $file)
-                                    <tr>
-                                        <td class="text-right">
-                                            <input type="checkbox" name="files[]" value="{{ $file->id }}">
-                                        </td>
-                                        <td class="text-left">
-                                            <img src="{{$file->url}}" alt="{{$file->name}}" class="card-img-top" style="height: 60px; width: auto">
-                                        </td>
-                                        <td class="text-left">{{ $file->name }}</td>
-                                    </tr>
-                                @endforeach
-
-                                </tbody>
-                            </table>
-                            <div class="form-group">
-                                <label for="action-media">З вибраними</label>
-                                    <select name="action" class="form-control" id="action-media">
-                                        <option value="0">Нічого не робити</option>
-                                        <option value="1">Видалити</option>
-                                    </select>
-                            </div>
+                            <script type="application/javascript">
+                                var old_media = {!! json_encode($product->media->pluck('id')) !!};
+                            </script>
+                            <upload-images></upload-images>
                         </div>
                     </div>
 

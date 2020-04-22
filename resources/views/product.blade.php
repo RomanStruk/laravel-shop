@@ -113,7 +113,7 @@
                     <!-- Product Thumbnail Tab Content Start -->
                     <div class="tab-content thumb-content border-default">
                         <div id="dtail" class="tab-pane in active">
-                            {{$product->content}}
+                            {!! $product->content !!}
                         </div>
                         <div id="review" class="tab-pane">
 

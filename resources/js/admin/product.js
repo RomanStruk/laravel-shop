@@ -14,11 +14,14 @@ const app = new Vue({
 global.toastr = require('admin-lte/plugins/toastr/toastr.min');
 //select2
 require('admin-lte/plugins/select2/js/select2.full.min');
-
+//sumertone
+require('admin-lte/plugins/summernote/summernote-bs4');
 //jQuery ready
 $(document).ready(function () {
 
     'use strict';
+
+    $('#input-content').summernote();
 
     $('.product-image-thumb').on('click', function() {
         const image_element = $(this).find('img');
@@ -27,13 +30,16 @@ $(document).ready(function () {
         $(this).addClass('active');
     });
 
-    $(document).ready(function() {
-        $('.form-check-input[type=radio]').click(function (e) {
-            console.log($(this).parents('.dropdown').siblings('a'));
+    $('.form-check-input[type=radio]').click(function (e) {
+            // console.log($(this).parents('.dropdown').siblings('a'));
             $(this).parents('.dropdown').children('a').removeClass('btn-secondary');
             $(this).parents('.dropdown').children('a').addClass('btn-primary');
-        })
     });
+    $('#reset_filters').click(function(e){
+        $("a.btn.dropdown-toggle").removeClass('btn-primary').addClass('btn-secondary');
+        $('.form-check-input[type=radio]').attr('checked',false);
+    });
+
     // bsCustomFileInput.init();
     $(".custom-file-input").on("change", function() {
         var fileName = $(this).val().split("\\").pop();

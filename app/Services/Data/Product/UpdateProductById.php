@@ -8,7 +8,7 @@ use App\Product;
 
 class UpdateProductById
 {
-    public function handel($id, $updateFields, $attributes = null, $media = null, $comments = null)
+    public function handel($id, $updateFields)
     {
         $product = Product::findOrFail($id);
         if($updateFields){
@@ -26,12 +26,7 @@ class UpdateProductById
             $product->in_stock = $updateFields['in_stock'];
             $product->save();
         }
-
-        if ($attributes)
-            $product->product_attributes()->sync($attributes);
-        if ($media)
-            $product->media()->sync($media);
-//            $product->media()->associate($media);
+        return $product;
 
     }
 

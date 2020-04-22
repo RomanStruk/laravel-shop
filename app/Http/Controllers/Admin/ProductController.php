@@ -115,6 +115,8 @@ class ProductController extends Controller
         $product = $getProduct->handel($id, ['*'], true);
         $categories = $getCategories->handel(false);
         $groups = $getAttributes->handel();
+//        dd(in_array('4', $product->product_attributes->pluck('id')->toArray()));
+//        dd($product->product_attributes->pluck('id')->toArray());
 //        dd($product, $groups);
         return view('admin.product.edit')
             ->with('product', $product)
@@ -127,34 +129,19 @@ class ProductController extends Controller
      *
      * @param ProductRequest $request
      * @param UpdateProductById $updateProductById
-     * @param SaveFile $saveMediaFile
-     * @param SaveToDbMediaFile $dbMediaFileService
-     * @param GetProductByIdOrSlug $getProductByIdOrSlug
      * @param $productId
      * @return \Illuminate\Http\RedirectResponse
      */
     public function update(ProductRequest $request,
                            UpdateProductById $updateProductById,
-                           SaveFile $saveMediaFile,
-                           SaveToDbMediaFile $dbMediaFileService,
-                           GetProductByIdOrSlug $getProductByIdOrSlug,
                            $productId)
     {
-        $update = $request->only(['title', 'alias', 'category_id', 'keywords', 'description', 'content', 'price', 'status', 'in_stock']);
-        $attributes = $request->input('attributes');
+//        dd($request->productFillData());
+        $product = $updateProductById->handel($productId, $request->productFillData());
+        $product->syncRelatedProducts($request->relatedFillData());
+        $product->syncMediaFiles($request->mediaFillData());
+        $product->syncAttributesOfFilters($request->attributesFillData());
 
-        $files=[];
-        if ($request->has('files') and $request->input('action') == '1'){
-            (new UpdateRelationships())->handel((int)$productId, $request->input('files'), 'detach');
-            $files = $getProductByIdOrSlug->handel($productId)->media->pluck('id')->toArray();
-        }
-        if ($request->has('media')){
-            foreach($request->file('media') as $file){
-                $fileData = $saveMediaFile->handel($file, 'shop/'.$productId);
-                $files[] = $dbMediaFileService->handel($fileData, $update['title'], $update['keywords'], $update['description']);
-            }
-        }
-        $updateProductById->handel($productId, $update, $attributes, $files);
         return redirect()->back()->with('success', __('product.update'));
     }
 

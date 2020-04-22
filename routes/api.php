@@ -31,7 +31,8 @@ Route::group(['prefix' => 'v1'], function (){
     Route::get('/dashboard/sales', 'Api\v1\DashboardController@sales')->middleware(['auth:api']);
 //    Route::get('/dashboard/sales', 'Api\v1\DashboardController@sales');
     Route::post('/media/store', 'Api\v1\MediaController@store')->middleware(['auth:api']);
-    Route::get('/media/detail/{media}', 'Api\v1\MediaController@detail')->middleware(['auth:api']);
+    Route::get('/media/detail/{media}', 'Api\v1\MediaController@show')->middleware(['auth:api']);
+    Route::delete('/media/destroy/{media}', 'Api\v1\MediaController@destroy')->middleware(['auth:api']);
 
 
 //    Route::post('/user/login', 'Api\v1\UserController@login');

@@ -32,6 +32,7 @@ trait ProductHelper
 
     public function syncMediaFiles(array $media)
     {
-        return $this->media()->sync($media);
+        $this->media()->detach();
+        return $this->media()->attach($media);
     }
 }

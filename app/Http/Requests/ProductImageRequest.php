@@ -24,7 +24,7 @@ class ProductImageRequest extends FormRequest
     public function rules()
     {
         return [
-            'media_file' => ['required', 'mimes:png,jpeg,jpg']
+            'media_file' => ['required', 'image', 'max:4000']
         ];
     }
 }

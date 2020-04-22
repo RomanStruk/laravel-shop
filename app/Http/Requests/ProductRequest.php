@@ -26,7 +26,6 @@ class ProductRequest extends FormRequest
      */
     public function rules()
     {
-//        dd(request()->method());
         return [
             'title' => ['required', 'filled', 'between:4,255'],
             'alias' => request()->method() == 'PATCH' ? [
@@ -45,43 +44,37 @@ class ProductRequest extends FormRequest
             'in_stock' => ['required', 'integer', 'min:1'],
             'attributes' => ['required', 'array', 'distinct', 'exists:attributes,id'],
             'related' => ['array', 'distinct', 'exists:products,id'],
-            'media' => ['required', 'array', 'exists:media,id'],
-            'action' => request()->method() == 'POST' ?
-                ['nullable'] :
-                ['required', 'in:0,1'],
-            'files' => request()->method() == 'POST' ?
-                ['nullable'] :
-                ['required_if:action,1', 'exists:media,id'],
+            'media' => ['required', 'array', 'exists:media,id']
         ];
     }
 
-    public function attributesFillData()
+    public function attributesFillData():array
     {
         return $this->get('attributes') ?: [];
     }
 
-    public function mediaFillData()
+    public function mediaFillData():array
     {
         return $this->get('media');
     }
 
-    public function relatedFillData()
+    public function relatedFillData():array
     {
         return $this->get('related') ?: [];
     }
 
-    public function productFillData()
+    public function productFillData():array
     {
         return [
-            'title' => $this->get('title'),
-            'alias' => $this->get('alias'),
-            'category_id' => $this->get('category_id'),
-            'keywords' => $this->get('keywords'),
-            'description' => $this->get('description'),
-            'content' => $this->get('content'),
-            'price' => $this->get('price'),
-            'in_stock' => $this->get('in_stock'),
-            'status' => $this->get('status'),
+            'title'         => $this->get('title'),
+            'alias'         => $this->get('alias'),
+            'category_id'   => $this->get('category_id'),
+            'keywords'      => $this->get('keywords'),
+            'description'   => $this->get('description'),
+            'content'       => $this->get('content'),
+            'price'         => $this->get('price'),
+            'in_stock'      => $this->get('in_stock'),
+            'status'        => $this->get('status'),
         ];
     }
 

@@ -30,12 +30,13 @@
                             <input type="checkbox"
                                    onclick="$('input[name*=\'files\']').prop('checked', this.checked);">
                         </td>
-                        <td class="text-left col-3">Зображення</td>
-                        <td class="text-left col-5">Назва</td>
+                        <td class="text-left col-4">Зображення</td>
+                        <td class="text-left col-6">URL</td>
+                        <td class="text-left col-1">Дія</td>
                     </tr>
                     </thead>
                     <tbody>
-                    <tr v-for="file in filesFinish">
+                    <tr v-for="(file, index) in filesFinish">
                         <td class="text-right">
                             <input type="checkbox" name="media[]" :value="file.id" checked>
                         </td>
@@ -43,6 +44,10 @@
                             <img :src="file.url" :alt="file.name" class="card-img-top" style="height: 60px; width: auto">
                         </td>
                         <td class="text-left text-break">{{ file.url }}</td>
+                        <td class="text-right">
+                            <button class="btn btn-danger btn-sm" v-on:click.prevent="deleteFile(file.id)" title="Delete"><i class="fa fa-trash"></i></button>
+                            <button class="btn btn-info btn-sm" v-on:click.prevent="moveUp(filesFinish, index, index-1)" title="Move Up"><i class="fa fa-arrow-up"></i></button>
+                        </td>
                     </tr>
                     </tbody>
                 </table>
@@ -66,15 +71,55 @@
             this.loadOldImages();
         },
         methods:{
-            loadOldImages(){
+            moveUp(arr, old_index, new_index){
+                if (new_index >= arr.length) {
+                    var k = new_index - arr.length + 1;
+                    while (k--) {
+                        arr.push(undefined);
+                    }
+                }
+                arr.splice(new_index, 0, arr.splice(old_index, 1)[0]);
+                return arr; // for testing
+            },
+            deleteFile(file){
+                if(confirm("Do you really want to delete?")) {
+                    axios.delete('/api/v1/media/destroy/' + file)
+                        .then(response => {
+                            let files = this.filesFinish;
+                            let newFinish = [];
+                            for (let item of files) {
+                                if (item.id != file) {
+                                    newFinish.push(item);
+                                }
+                            }
+                            this.filesFinish = newFinish;
+                            // this.filesFinish.splice(file, 1);
+                            console.log(this.filesFinish);
+                            toastr.success(response.data.message);
+                        })
+                        .catch(error => {
+                            if (error.response) {
+                                toastr.error(error.response.data.message);
+                            } else{
+                                console.log('Error', error.message);
+                                toastr.error(error);
+                            }
+                        });
+                }
+            },
+            async loadOldImages(){
                 for (let file of old_media){
-                    axios.get('/api/v1/media/detail/'+ file)
+                    await axios.get('/api/v1/media/detail/'+ file)
                         .then(response => {
                             this.filesFinish.push(response.data);
                         })
                         .catch(error => {
-                            console.log(error);
-                            toastr.error(error);
+                            if (error.response) {
+                                toastr.error('Помилка завантаження <br>'+error.response.data.message);
+                            } else{
+                                console.log('Error', error.message);
+                                toastr.error('Помилка завантаження <br>'+error);
+                            }
                         });
                 }
             },
@@ -104,9 +149,13 @@
                     toastr.success('Файл успішно завантажений<br>'+item.name)
                 })
                 .catch(error => {
-                    toastr.error('Помилка завантаження <br>'+item.name+'<br>'+error);
+                    if (error.response) {
+                        toastr.error('Помилка завантаження <br>'+item.name+'<br>'+error.response.data.message);
+                    } else{
+                        console.log('Error', error.message);
+                        toastr.error('Помилка завантаження <br>'+item.name+'<br>'+error);
+                    }
                     this.filesOrder.splice(item, 1);
-                    console.log(error);
                 })
             }
         }

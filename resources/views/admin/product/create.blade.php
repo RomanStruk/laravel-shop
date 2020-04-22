@@ -148,12 +148,12 @@
                                         <div class="dropdown-menu">
                                             @foreach($filter->allAttributes as $attribute)
                                             <div class="dropdown-item" >
-                                                <div class="form-check form-check-inline">
+                                                <div class="form-check row">
                                                     <input class="form-check-input" type="radio" name="attributes[{{$filter->id}}]"
                                                            id="inlineCheckbox{{$attribute->id}}" value="{{$attribute->id}}"
                                                            @if(in_array($attribute->id, old('attributes', []))) checked @endif
                                                     >
-                                                    <label class="form-check-label"
+                                                    <label class="form-check-label col-12"
                                                            for="inlineCheckbox{{$attribute->id}}">{{$attribute->value}}</label>
                                                 </div>
                                             </div>
@@ -162,13 +162,21 @@
                                     </div>
                                 </div>
                                 @endforeach
+                                <div class="col-auto p-1">
+                                    <button class="btn btn-danger" title="Reset Filters" type="reset" id="reset_filters"><i class="fa fa-recycle"></i></button>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-
-        <input type="submit" name="save" value="Save" class="btn btn-primary">
+            <div class="form-group row">
+                <div class="col-sm-12">
+                    <div class="text-right">
+                        <button type="submit" name="save" class="btn btn-primary">Save</button>
+                    </div>
+                </div>
+            </div>
         </form>
     </section>
 @endsection
