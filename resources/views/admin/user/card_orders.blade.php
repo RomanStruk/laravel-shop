@@ -2,7 +2,7 @@
     <div class="card-header">
         <h3 class="card-title">
             <i class="fas fa-credit-card"></i>
-            Замовлення
+            Замовлення (останні 5)
         </h3>
     </div>
     <div class="card-body">
@@ -16,7 +16,7 @@
             </tr>
             </thead>
             <tbody>
-            @forelse($user->orders as $order)
+            @forelse($orders = $user->orders()->orderBy('created_at')->paginate(5) as $order)
             <tr>
                 <th scope="row">
                     <a href="{{route('admin.order.show', ['order' =>$order->id])}}">{{$order->id}}</a>
@@ -32,5 +32,11 @@
             @endforelse
             </tbody>
         </table>
+        <div class="row justify-content-center pt-2">
+            <div class="col-auto">
+                {{$orders->links()}}
+            </div>
+        </div>
+
     </div>
 </div>

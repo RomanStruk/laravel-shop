@@ -10,6 +10,11 @@ class UsersFilters extends BaseFilter
 {
     protected $filtersProtected = ['trashed'];
 
+    public function dateDescFilter($value)
+    {
+        $this->builder->orderByDesc('created_at');
+    }
+
     public function statusFilter($value)
     {
         if (! is_numeric($value)) return ;
@@ -30,6 +35,6 @@ class UsersFilters extends BaseFilter
 
     public function searchFilter($value)
     {
-        $this->builder->where('email', $value);
+        $this->builder->where('email', 'LIKE', '%'.$value.'%');
     }
 }

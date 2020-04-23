@@ -36,9 +36,9 @@ class GetOrdersByLimit
      * @param array $fields
      * @return LengthAwarePaginator
      */
-    public function handel($filters, $fields = ['*'])
+    public function handel($filters, $fields = ['*'], $limit = null)
     {
-        $limit = $this->paginateSession->getLimit();
+        $limit = $limit ? :$this->paginateSession->getLimit();
 
         $orders = Order::filter($this->ordersFilter, $filters)
             ->with('products')

@@ -47,6 +47,7 @@
                         <td class="text-right">
                             <button class="btn btn-danger btn-sm" v-on:click.prevent="deleteFile(file.id)" title="Delete"><i class="fa fa-trash"></i></button>
                             <button class="btn btn-info btn-sm" v-on:click.prevent="moveUp(filesFinish, index, index-1)" title="Move Up"><i class="fa fa-arrow-up"></i></button>
+                            <a class="btn btn-info btn-sm" :href="'/admin/media/'+file.id"  title="Show"><i class="fa fa-folder"></i></a>
                         </td>
                     </tr>
                     </tbody>

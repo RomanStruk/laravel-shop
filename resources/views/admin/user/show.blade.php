@@ -26,7 +26,7 @@
                     <h6 class="text-black-50">{{$user->email}}</h6>
                     <div class="row mt-5">
                         <div class="col-6">
-                            <div class="text-white font-weight-bold">$ 126,325.25</div>
+                            <div class="text-white font-weight-bold">$ {{$user->orders->sum('sum_price')}}</div>
                             <div class="text-black-50">Всього замовив</div>
                         </div>
                         <div class="col-6">
@@ -66,6 +66,9 @@
                             </p>
                             <p class="card-text">
                                 <span class="text-black-50 font-weight-bold">Birthday</span> : {{ $user->detail->birthday }}
+                            </p>
+                            <p class="card-text">
+                                <span class="text-black-50 font-weight-bold">Реєстрація</span> : {{ $user->created_at }}
                             </p>
                         </div>
                     </div>

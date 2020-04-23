@@ -126,55 +126,65 @@
                     <sales-card currency_short="{{config('shop.currency_short')}}"></sales-card>
                     <!-- /.card -->
 
+
                     <div class="card">
                         <div class="card-header border-0">
-                            <h3 class="card-title">Online Store Overview</h3>
+                            <h3 class="card-title">Останні замовлення</h3>
                             <div class="card-tools">
-                                <a href="#" class="btn btn-sm btn-tool">
+                                <a href="#" class="btn btn-tool btn-sm">
                                     <i class="fas fa-download"></i>
                                 </a>
-                                <a href="#" class="btn btn-sm btn-tool">
+                                <a href="#" class="btn btn-tool btn-sm">
                                     <i class="fas fa-bars"></i>
                                 </a>
                             </div>
                         </div>
-                        <div class="card-body">
-                            <div class="d-flex justify-content-between align-items-center border-bottom mb-3">
-                                <p class="text-success text-xl">
-                                    <i class="ion ion-ios-refresh-empty"></i>
-                                </p>
-                                <p class="d-flex flex-column text-right">
-                    <span class="font-weight-bold">
-                      <i class="ion ion-android-arrow-up text-success"></i> 12%
-                    </span>
-                                    <span class="text-muted">CONVERSION RATE</span>
-                                </p>
-                            </div>
-                            <!-- /.d-flex -->
-                            <div class="d-flex justify-content-between align-items-center border-bottom mb-3">
-                                <p class="text-warning text-xl">
-                                    <i class="ion ion-ios-cart-outline"></i>
-                                </p>
-                                <p class="d-flex flex-column text-right">
-                    <span class="font-weight-bold">
-                      <i class="ion ion-android-arrow-up text-warning"></i> 0.8%
-                    </span>
-                                    <span class="text-muted">SALES RATE</span>
-                                </p>
-                            </div>
-                            <!-- /.d-flex -->
-                            <div class="d-flex justify-content-between align-items-center mb-0">
-                                <p class="text-danger text-xl">
-                                    <i class="ion ion-ios-people-outline"></i>
-                                </p>
-                                <p class="d-flex flex-column text-right">
-                    <span class="font-weight-bold">
-                      <i class="ion ion-android-arrow-down text-danger"></i> 1%
-                    </span>
-                                    <span class="text-muted">REGISTRATION RATE</span>
-                                </p>
-                            </div>
-                            <!-- /.d-flex -->
+                        <div class="card-body table-responsive p-0">
+                            <table class="table table-striped table-valign-middle">
+                                <thead>
+                                <tr>
+                                    <th class="col-1">#</th>
+                                    <th class="col-4">Користувач</th>
+                                    <th class="col-2">Сума</th>
+                                    <th class="col-4">Статус</th>
+                                    <th class="col-1">Дія</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                @foreach($orders as $order)
+                                    <tr>
+                                        <td>
+                                            {{ $order->id }}
+                                        </td>
+                                        <td>
+                                            <a href="{{route('admin.user.show', ['user' => $order->user->id])}}">
+                                                {{ $order->user->fullName }}
+                                            </a>
+                                        </td>
+                                        <td>{{$order->sum_price}} {{ config('shop.currency_short') }}</td>
+                                        <td>
+
+                                            @if ($order->status == $order::STATUS_PENDING)
+                                                <span class="badge badge-warning">
+                                                {{$order->getStatus($order->status)}}
+                                            </span>
+                                            @elseif ($order->status == $order::STATUS_PROCESSING or $order->status == $order::STATUS_COMPLETED)
+                                                <span class="badge badge-success">
+                                                {{$order->getStatus($order->status)}}
+                                            </span>
+                                            @else
+                                                <span class="badge badge-danger">
+                                                {{$order->getStatus($order->status)}}
+                                            </span>
+                                            @endif
+                                        </td>
+                                        <td>
+                                            <a href="{{route('admin.order.show', $order->id)}}"><i class="fas fa-folder"></i></a>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                 </div>

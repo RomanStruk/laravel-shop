@@ -12,7 +12,6 @@ use App\Services\Data\User\GetUsersByLimit;
 use App\Services\Data\User\UpdateUserById;
 use App\Services\Data\UserDetail\CreateUserDetail;
 use App\Services\Data\UserDetail\UpdateUserDetail;
-use App\User;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -23,23 +22,15 @@ class UserController extends Controller
 
     /**
      * Display a listing of the resource.
-     *
      * @param Request $request
      * @param GetUsersByLimit $getUsersByLimit
      * @return Factory|View
      */
-    public function index(Request $request,
-                          GetUsersByLimit $getUsersByLimit)
+    public function index(Request $request, GetUsersByLimit $getUsersByLimit)
     {
-        $users = $getUsersByLimit->handel(
-            $request->except('limit'),
-            ['id', 'email']
-        );
-//        $role = Role::findOrFail(1);
-//        $user = User::findOrFail(2);
-//        dd($user->hasRole('Admin'), $user->roles);
-//        dd($role->users);
-//        $role->attachUser(2);
+        $filters = $request->except('limit');
+        $filters['dateDesc'] = 'true';
+        $users = $getUsersByLimit->handel($filters, ['id', 'email']);
         return view('admin.user.index')->with('users', $users);
     }
 

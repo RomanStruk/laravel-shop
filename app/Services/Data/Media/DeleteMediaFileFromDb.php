@@ -12,6 +12,10 @@ class DeleteMediaFileFromDb
     {
         $media = Media::findOrFail($id);
         if ($media->products()->count() > 1) return false;
+        foreach ($media->products as $product){
+
+            if ($product->media()->count() == 1) return false;
+        }
         $path = $media->path;
         $disc = $media->disc;
         $media->delete(); //observer видаляє зображення з диска
