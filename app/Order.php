@@ -11,6 +11,7 @@ use App\Traits\Status;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Notifications\Notifiable;
 
 /**
  * App\Order
@@ -72,6 +73,7 @@ class Order extends Model
     use SerializeDate;
     use OrderHelper;
     use Status;
+    use Notifiable;
 
     protected $guarded = [];
 
@@ -93,7 +95,7 @@ class Order extends Model
      */
     public function getSumPriceAttribute()
     {
-        return $this->products->sum('price');;
+        return $this->products->sum('price');
     }
 
 

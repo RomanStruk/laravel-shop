@@ -7,7 +7,7 @@ use App\Traits\Helpers\SerializeDate;
 use App\Traits\Helpers\UserHelper;
 use App\Traits\Relations\UserRelations;
 use App\Traits\Status;
-use DateTimeInterface;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -56,7 +56,7 @@ use Laravel\Passport\HasApiTokens;
  * @property-read int|null $roles_count
  * @property-read mixed $full_name
  */
-class User extends Authenticatable
+class User extends Authenticatable implements MustVerifyEmail
 {
     use SoftDeletes;
     use HasApiTokens, Notifiable;

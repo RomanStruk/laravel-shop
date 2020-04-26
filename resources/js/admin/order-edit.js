@@ -34,12 +34,12 @@ const app = new Vue({
     store,
 });
 //
-require('admin-lte/plugins/select2/js/select2.full');
+require('admin-lte/plugins/select2/js/select2');
 $(function () {
     'use strict';
     //Initialize Select2 Elements
     // $('#input-product').select2();
-    $("#input-product").select2({
+    $(".select2").select2({
         ajax: {
             url: "/api/v1/product/search",
             dataType: 'json',
@@ -67,6 +67,7 @@ $(function () {
             cache: true
         },
         placeholder: 'Search for a product',
-        minimumInputLength: 1
+        minimumInputLength: 1,
+        allowClear: true
     });
 });

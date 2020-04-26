@@ -19,6 +19,7 @@ class GetOrderById
             ->with('user')
             ->with('user.detail')
             ->with('histories')
+            ->with('histories.user')
             ->with('payment')
             ->with('shipping');
 

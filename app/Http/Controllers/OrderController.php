@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\CreateOrderEvent;
 use App\Order;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -9,6 +10,16 @@ use Validator;
 
 class OrderController extends Controller
 {
+    public function store(Request $request)
+    {
+        $order = Order::with('user')->findOrFail(1);
+//        dd($order);
+        event(new CreateOrderEvent($order));
+
+        return view('vue.checkout');
+    }
+
+
     public function checkOut(Request $request)
     {
         $validator = Validator::make($request->all(), [

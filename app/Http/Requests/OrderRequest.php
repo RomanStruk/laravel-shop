@@ -37,8 +37,11 @@ class OrderRequest extends FormRequest
 
             'comment' => 'required|string|min:3',
 
-            'products' => 'required|array|min:1',
+            'products' => 'required|array|distinct|min:1',
             'products.*' => 'numeric|exists:products,id',
+
+            'count.*' => 'numeric|min:1|max:999',
+            'count' => 'required|array|min:1',
 
             'method_pay' => ['required', Rule::in(['receipt', 'google-pay', 'card'])],
             'paid' => 'required|boolean',
@@ -89,6 +92,19 @@ class OrderRequest extends FormRequest
         return [
             'method'    => $this->method_pay,
             'paid'      => $this->paid,
+        ];
+    }
+
+    /**
+    * Return the fields and values to update Payment.
+    *
+    * @return array
+    */
+    public function productsFillData()
+    {
+        return [
+            'products'=>$this->products,
+            'count' => $this->count,
         ];
     }
 

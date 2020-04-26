@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Events\ChangeOrderStatusEvent;
+use App\Events\CreateOrderEvent;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\OrderRequest;
 use App\Http\Requests\StatusOrderRequest;
@@ -41,7 +43,11 @@ class OrderController extends Controller
     public function show(GetOrderById $getOrderById, $id)
     {
         $order = $getOrderById->handel($id);
-
+//        $order->addProduct(1);
+//        $order->subProduct(1);
+        /*foreach ($order->notifications as $notification) {
+            dump($notification) ;
+        }*/
         return view('admin.order.show')->with('order', $order);
     }
 
@@ -51,15 +57,13 @@ class OrderController extends Controller
      * @param integer $id
      * @return Factory|View
      */
-    public function edit(GetOrderById $getOrderById,
-                         $id)
+    public function edit(GetOrderById $getOrderById, $id)
     {
+        // get order
         $order = $getOrderById->handel($id);
-        return view('admin.order.edit', [
-            'order'=> $order,
-            'products' => Product::all()->diff($order->products)
-//            'warehouses'=> $warehousesByCityRef->handel($order->shipping->city_ref),
-        ]);
+
+        // show edit view
+        return view('admin.order.edit', ['order'=> $order]);
     }
 
 
@@ -76,9 +80,9 @@ class OrderController extends Controller
                            OrderRequest $request,
                            $orderId)
     {
-
+        // get order
         $order = $getOrderById->handel($orderId);
-
+//dd($request->productsFillData());
         // update user detail
         $updateUserDetail->handel($order->user, $request->userDetailFillData());
 
@@ -86,7 +90,7 @@ class OrderController extends Controller
         $order->update(['comment' => $request->comment]);
 
         // update products of order
-        $order->syncProducts($request->input(['products']));
+        $order->syncProducts($request->productsFillData());
 
         // update payment of order
         $order->paymentUpdate($request->paymentFillData());
@@ -108,7 +112,13 @@ class OrderController extends Controller
                                  StatusOrderRequest $request,
                                  $orderId)
     {
-        $updateOrderStatus->handel($orderId, $request->validated());
+        // update order status
+        $order = $updateOrderStatus->handel($orderId, $request->validated());
+
+        // create event for change status
+        if ($request->get('notification')) event(new ChangeOrderStatusEvent($order));
+
+        // redirect back
         return redirect()->back()->with('success', __('order.status_updated'));
     }
 
@@ -123,5 +133,10 @@ class OrderController extends Controller
         $deleteOrder->handel($id);
         return redirect()->route('admin.order.index')
             ->with('success', __('order.deleted'));
+    }
+
+    public function printOrder(GetOrderById $getOrderById, $orderId)
+    {
+        return view('admin.order.print_order')->with('order', $getOrderById->handel($orderId));
     }
 }

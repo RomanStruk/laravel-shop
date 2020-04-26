@@ -19,6 +19,7 @@ class UpdateOrderStatus
             'comment' => $insert['comment']
         ]);
          $order->histories()->save($orderDetail);
-        return $order->update(['status' => $insert['status']]);
+         $order->update(['status' => $insert['status']]);
+        return $order;
     }
 }

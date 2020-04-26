@@ -6,7 +6,12 @@
     'breadcrumbs' => [
         'Замовлення' => route('admin.order.index'),
         'Перегляд',
-    ]
+    ],
+    'actions' => [
+        'print' => route('admin.order.printOrder', $order->id),
+        'edit' => route('admin.order.edit', $order->id),
+        'delete' => route('admin.order.destroy', $order->id),
+        ]
     ])
     <!-- Main content -->
     <section class="content">
@@ -26,20 +31,25 @@
                                 <i class="fa fa-shopping-cart fa-fw"></i></button>
                         </div>
                         <div class="col-8">
+                            Статус:
                             @if ($order->status == $order::STATUS_PENDING)
-                                <div class="text-dark font-weight-bold bg-warning">
+                                <div class="badge badge-warning">
                                     {{$order->getStatus($order->status)}}
                                 </div>
                             @elseif ($order->status == $order::STATUS_CANCELED)
-                                <div class="text-light font-weight-bold bg-danger">
+                                <div class="badge badge-danger">
                                     {{$order->getStatus($order->status)}}
                                 </div>
                             @elseif ($order->status == $order::STATUS_PROCESSING)
-                                <div class="text-light font-weight-bold bg-success">
+                                <div class="badge badge-success">
                                     {{$order->getStatus($order->status)}}
                                 </div>
                             @elseif ($order->status == $order::STATUS_COMPLETED)
-                                <div class="text-light font-weight-bold bg-success">
+                                <div class="badge badge-success">
+                                    {{$order->getStatus($order->status)}}
+                                </div>
+                            @else
+                                <div class="badge badge-danger">
                                     {{$order->getStatus($order->status)}}
                                 </div>
                             @endif
@@ -60,21 +70,21 @@
                                     data-original-title="Payment Method"><i class="fa fa-credit-card fa-fw"></i></button>
                         </div>
                         <div class="col-8">
-                            @if ($order->payment->method == 'receipt')
+                            @if ($order->payment->method == \App\Payment::METHOD_RECEIPT)
                                 Готівкою при доставці
-                            @elseif ($order->payment->method == 'google-pay')
+                            @elseif ($order->payment->method == \App\Payment::METHOD_GOOGLE_PAY)
                                 Google Pay
                                 @if ($order->payment->paid == '0')
-                                    <div class="bg-success">(Оплачено)</div>
+                                    <div class="badge badge-success">(Оплачено)</div>
                                 @elseif ($order->payment->paid == '1')
-                                    <div class="bg-danger">(Не оплачено)</div>
+                                    <div class="badge badge-danger">(Не оплачено)</div>
                                 @endif
-                            @elseif ($order->payment->method == 'card')
+                            @elseif ($order->payment->method == \App\Payment::METHOD_CARD)
                                 Оплатита карткою Visa/Mastercard
                                 @if ($order->payment->paid == '0')
-                                    <div class="bg-success">(Оплачено)</div>
+                                    <div class="badge badge-success">(Оплачено)</div>
                                 @elseif ($order->payment->paid == '1')
-                                    <div class="bg-danger">(Не оплачено)</div>
+                                    <div class="badge badge-danger">(Не оплачено)</div>
                                 @endif
                             @endif
                         </div>
@@ -138,47 +148,7 @@
                     </div>
                 </div>
             </div>
-            <div class="card">
-                <div class="card-header">
-                <h3 class="card-title"><i class="fa fa-cog"></i> Options</h3>
-                </div>
-                <div class="card-body">
-                    <div class="row pb-1 pt-1 border-bottom">
-                        <div class="col-6">
-                            <a href="{{route('admin.order.edit', ['order' => $order->id])}}">Редагувати</a>
-                        </div>
-                        <div class="col-3"></div>
-                        <div class="col-2">
-                            <button id="button-invoice" data-loading-text="Loading..." data-toggle="tooltip" title=""
-                                    class="btn btn-success btn-xs" data-original-title="Generate"><i class="fa fa-cog"></i>
-                            </button>
-                        </div>
-                    </div>
-                    <div class="row pb-1 pt-1 border-bottom">
-                        <div class="col-6">
-                            <form method="POST" action="{{route('admin.order.destroy', ['order' => $order->id])}}">
-                                @csrf
-                                @method('DELETE')
-                                <button class="btn btn-sm btn-danger" value="submit" type="submit">Delete</button>
-                            </form>
-                        </div>
-                        <div class="col-3">300</div>
-                        <div class="col-2">
-                            <button id="button-reward-add" data-loading-text="Loading..." data-toggle="tooltip" title=""
-                                    class="btn btn-success btn-xs" data-original-title="Add Reward Points"><i
-                                    class="fa fa-plus-circle"></i></button>
-                        </div>
-                    </div>
-                    <div class="row pb-1 pt-1 border-bottom">
-                        <div class="col-6">Affiliate</div>
-                        <div class="col-3">$0.00</div>
-                        <div class="col-2">
-                            <button disabled="disabled" class="btn btn-success btn-xs"><i class="fa fa-plus-circle"></i>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
+
         </div>
 
         <div class="card mt-3">
@@ -231,9 +201,9 @@
 
                             </td>
                             <td class="text-left">{{$product->category->name}}</td>
-                            <td class="text-right">1</td>
+                            <td class="text-right">{{$product->pivot->count}}</td>
                             <td class="text-right">{{ $product->price }} {{config('shop.currency_short')}}</td>
-                            <td class="text-right">{{ $product->price }} {{config('shop.currency_short')}}</td>
+                            <td class="text-right">{{ $product->price * $product->pivot->count }} {{config('shop.currency_short')}}</td>
                         </tr>
                     @endforeach
                     <tr>
@@ -282,8 +252,32 @@
                                             class="table-primary"
                                             @endif
                                         >
-                                            <td class="text-left">{{$order->getStatus($history->status)}}</td>
-                                            <td class="text-left">{{$history->user->name}}</td>
+                                            <td class="text-left">
+                                                @if ($history->status == $order::STATUS_PENDING)
+                                                    <div class="badge badge-warning">
+                                                        {{$order->getStatus($history->status)}}
+                                                    </div>
+                                                @elseif ($history->status == $order::STATUS_CANCELED)
+                                                    <div class="badge badge-danger">
+                                                        {{$order->getStatus($history->status)}}
+                                                    </div>
+                                                @elseif ($history->status == $order::STATUS_PROCESSING)
+                                                    <div class="badge badge-success">
+                                                        {{$order->getStatus($history->status)}}
+                                                    </div>
+                                                @elseif ($history->status == $order::STATUS_COMPLETED)
+                                                    <div class="badge badge-success">
+                                                        {{$order->getStatus($history->status)}}
+                                                    </div>
+                                                @else
+                                                    <div class="badge badge-danger">
+                                                        {{$order->getStatus($history->status)}}
+                                                    </div>
+                                                @endif
+                                            </td>
+                                            <td class="text-left">
+                                                <a href="{{route('admin.user.show', $history->user->id)}}">{{$history->user->fullName}}</a>
+                                            </td>
                                             <td class="text-left">{{$history->comment}}</td>
                                             <td class="text-left">{{$history->date_added}}</td>
                                         </tr>
@@ -310,13 +304,10 @@
                             </div>
                             <div class="form-group row">
                                 <div class="col-sm-2">
-                                    <label class="form-check-label" for="gridCheck2">Повідомити Замовника</label>
+                                    <label class="form-check-label" for="notification">Повідомити Замовника</label>
                                 </div>
                                 <div class="col-sm-2">
-                                    <select name="send_mail" id="gridCheck2" class="form-control">
-                                        <option value="0" selected>Ні</option>
-                                        <option value="1">Так</option>
-                                    </select>
+                                    <input type="checkbox" name="notification" id="notification" value="1">
                                 </div>
                                 <div class="col-sm-8"></div>
                             </div>

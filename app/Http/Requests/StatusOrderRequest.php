@@ -24,10 +24,15 @@ class StatusOrderRequest extends FormRequest
     public function rules()
     {
         return [
-            'send_mail' => 'required|numeric|between:0,1',
+            'notification' => 'required|boolean',
 //            'status' => 'required|numeric|between:1,5',
             'status' => 'required',
             'comment' => 'required',
         ];
+    }
+
+    protected function prepareForValidation()
+    {
+        $this->merge(['notification' => $this->has('status') ? true : false]);
     }
 }

@@ -138,20 +138,25 @@
                             </div>
                         </div>
                         <div class="card-body">
-                            <div class="form-group">
-                                <label for="input-product">Товари</label>
-                                <select name="products[]" class="form-control select2" data-dropdown-css-class="select2"
-                                        style="width: 100%;" multiple id="input-product">
-                                    @foreach($order->products as $product)
-                                        <option value="{{$product->id}}"
-                                                selected="selected">{{$product->title}}</option>
-
-                                    @endforeach
-                                    @foreach($products as $product)
-                                        <option value="{{$product->id}}">{{$product->title}}</option>
-
-                                    @endforeach
-                                </select>
+                            @foreach($order->products as $product)
+                            <div class="form-group row">
+                                <div class="col-10">
+                                    <select name="products[]" class="form-control select2" style="width: 100%;">
+                                        <option value="{{$product->id}}" selected="selected">{{$product->title}}</option>
+                                    </select>
+                                </div>
+                                <div class="col-2">
+                                    <input type="number" name="count[]" class="form-control" value="{{$product->pivot->count}}">
+                                </div>
+                            </div>
+                            @endforeach
+                            <div class="form-group row">
+                                <div class="col-10">
+                                    <select name="products[]" class="form-control select2" style="width: 100%;"></select>
+                                </div>
+                                <div class="col-2">
+                                    <input type="number" name="count[]" class="form-control" value="1">
+                                </div>
                             </div>
                             <div class="form-group">
                                 <label for="inputComment">Коментар замовника</label>

@@ -47,6 +47,9 @@ Route::post('/product/{id}/comment/create', 'CommentController@create')
 
 Route::post('/checkout', 'OrderController@checkOut')
     ->name('checkout');
+Route::get('/order/store', 'OrderController@store') //TODO creating order
+    ->name('order.store');
+
 
 Route::get('/checkout', function () {
     return view('vue.checkout');
@@ -76,7 +79,7 @@ Route::get('/wishlist', function () {
 
 Route::get('/account', function () {
     return view('account');
-})->middleware(['auth']);;
+})->middleware(['auth']);
 Route::get('/forgot-password', function () {
     return view('forgot-password');
 });
@@ -91,13 +94,13 @@ Route::get('/404', function () {
     return view('404');
 });
 
-Auth::routes();
+Auth::routes(['verify' => true]);
 
 
 Route::group([
     'prefix' => 'admin',
     'as' => 'admin.',
-    'middleware' => ['auth', 'role.check:Admin']
+    'middleware' => ['auth', 'verified', 'role.check:Admin']
 ], function (){
 
     Route::get('/', [
@@ -110,6 +113,7 @@ Route::group([
         'uses' => 'Admin\OrderController@updateStatus',
         'as' => 'order.updateStatus'
     ]);
+    Route::get('/order/print/{order}', 'Admin\OrderController@printOrder')->name('order.printOrder');
 
 
     Route::resource('category', 'Admin\CategoryController')->except(['show']);
@@ -128,3 +132,5 @@ Route::get('/test', 'ProductController@apiTest')->middleware('web');
 Route::get('/php', function (){
    phpinfo();
 });
+
+Route::get('/home', 'HomeController@index')->name('home');
