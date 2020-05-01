@@ -20,6 +20,8 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\SoldProduct whereProductId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\SoldProduct whereUpdatedAt($value)
  * @mixin \Eloquent
+ * @property int $sale_price
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\SoldProduct whereSalePrice($value)
  */
 class SoldProduct extends Model
 {

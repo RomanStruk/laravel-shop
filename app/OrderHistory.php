@@ -2,6 +2,11 @@
 
 namespace App;
 
+use App\Events\OrderHistoryCreatedEvent;
+use App\Events\OrderHistoryCreatingEvent;
+use App\Listeners\OrderHistoryCreatedListener;
+use App\Listeners\OrderHistoryCreatingListener;
+use App\Traits\Helpers\SerializeDate;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -27,6 +32,8 @@ use Illuminate\Database\Eloquent\Model;
  */
 class OrderHistory extends Model
 {
+    use SerializeDate;
+
     public $timestamps = false;
 
     protected $guarded = [];
@@ -35,10 +42,6 @@ class OrderHistory extends Model
         'date_added' => 'datetime',
     ];
 
-    protected function serializeDate(\DateTimeInterface $date)
-    {
-        return $date->format('Y-m-d H:i:s');
-    }
 
     public function user()
     {

@@ -97,14 +97,14 @@
 
             </td>
             <td class="text-left">{{$product->category->name}}</td>
-            <td class="text-right">1</td>
+            <td class="text-right">{{$product->pivot->count}}</td>
             <td class="text-right">{{ $product->price }} {{config('shop.currency_short')}}</td>
-            <td class="text-right">{{ $product->price }} {{config('shop.currency_short')}}</td>
+            <td class="text-right">{{ $order->getTotalPriceForProduct($product->id) }} {{config('shop.currency_short')}}</td>
         </tr>
     @endforeach
     <tr>
         <td colspan="5" class="text-right">Sub-Total</td>
-        <td class="text-right">{{$order->sum_price}} {{config('shop.currency_short')}}</td>
+        <td class="text-right">{{$order->getSubTotalPrice()}} {{config('shop.currency_short')}}</td>
     </tr>
     <tr>
         <td colspan="5" class="text-right">Єдиний тариф доставки</td>
@@ -112,7 +112,7 @@
     </tr>
     <tr>
         <td colspan="5" class="text-right">Total</td>
-        <td class="text-right">{{$order->total_price}} {{config('shop.currency_short')}}</td>
+        <td class="text-right">{{$order->getTotalPrice()}} {{config('shop.currency_short')}}</td>
     </tr>
     </tbody>
 </table>

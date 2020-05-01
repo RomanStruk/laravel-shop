@@ -13,8 +13,10 @@ class PaymentSeeder extends Seeder
     public function run()
     {
         $orders = App\Order::all();
+        $array = [];
         foreach ($orders as $order){
-            factory(Payment::class)->make(['order_id' => $order->id])->save();
+            $array[] = factory(Payment::class)->make(['order_id' => $order->id])->getAttributes();
         }
+        Payment::insert($array);
     }
 }

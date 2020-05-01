@@ -1,47 +1,13 @@
 require('./basic');
-require('./require/import-axios');
-
-window.Vue = require('vue');
-
-import Vuex from 'vuex';
-Vue.use(Vuex);
-const store = new Vuex.Store({
-    state: {
-        warehouses: {},
-    },
-    getters: {
-        // Here we will create a getter
-        WAREHOUSES: state => {
-            return state.warehouses;
-        },
-    },
-    mutations: {
-        ADD_WAREHOUSE: (state, value) => {
-            state.warehouses = value;
-        },
-        // Here we will create Jenny
-    },
-    actions: {
-        // Here we will create Larry
-    }
-});
-
-Vue.component('shipping', require('./components/Shipping.vue').default);
-Vue.component('warehouse', require('./components/Warehouse.vue').default);
-
-const app = new Vue({
-    el: '#app',
-    store,
-});
 //
 require('admin-lte/plugins/select2/js/select2');
 $(function () {
     'use strict';
     //Initialize Select2 Elements
     // $('#input-product').select2();
-    $(".select2").select2({
+    let select2ProductsOptions = {
         ajax: {
-            url: "/api/v1/product/search",
+            url: "/api/v1/search/products",
             dataType: 'json',
             delay: 250,
             data: function (params) {
@@ -51,14 +17,13 @@ $(function () {
                 };
             },
             processResults: function (data, params) {
-                // parse the results into the format expected by Select2
-                // since we are using custom formatting functions we do not need to
-                // alter the remote JSON data, except to indicate that infinite
-                // scrolling can be used
                 params.page = params.page || 1;
-
+                let res = $.map(data.data, function (obj) {
+                    obj.text = obj.title; // replace name with the property used for the text
+                    return obj;
+                });
                 return {
-                    results: data.data,
+                    results: res,
                     pagination: {
                         more: (params.page * 30) < data.total
                     }
@@ -69,5 +34,113 @@ $(function () {
         placeholder: 'Search for a product',
         minimumInputLength: 1,
         allowClear: true
+    };
+    let select2UserOptions = {
+        ajax: {
+            url: "/api/v1/search/users",
+            dataType: 'json',
+            delay: 250,
+            data: function (params) {
+                return {
+                    q: params.term, // search term
+                    page: params.page
+                };
+            },
+            processResults: function (data, params) {
+                // scrolling can be used
+                params.page = params.page || 1;
+                let res = $.map(data.data, function (obj) {
+                    obj.text = obj.text || obj.fullName; // replace name with the property used for the text
+                    return obj;
+                });
+                return {
+                    results: res,
+                    pagination: {
+                        more: (params.page * 30) < data.total
+                    }
+                };
+            },
+            cache: true
+        },
+        placeholder: 'Enter user`s email or name',
+        minimumInputLength: 1,
+        allowClear: true
+    };
+    let select2ShippingOptions = {
+        ajax: {
+            url: "/api/v1/shipping/city",
+            dataType: 'json',
+            delay: 1000,
+            data: function (params) {
+                return {
+                    title: params.term, // search term
+                    shipping_method: 'novaposhta',
+                    page: params.page
+                };
+            },
+            processResults: function (data, params) {
+                params.page = params.page || 1;
+                let res = $.map(data, function (obj) {
+                    obj.text = obj.description; // replace name with the property used for the text
+                    obj.id = obj.code; // replace name with the property used for the text
+                    return obj;
+                });
+                return {results: res};
+            },
+            cache: true
+        },
+        placeholder: 'Введіть назву населеного пункту',
+        minimumInputLength: 1,
+        allowClear: false
+    };
+    let select2AddressOptions = {
+        ajax: {
+            url: "/api/v1/shipping/address",
+            dataType: 'json',
+            delay: 250,
+            data: function (params) {
+                return {
+                    code: $("#shipping-select2").val(), // search term
+                    search: params.term, // search term
+                    shipping_method: 'novaposhta',
+                    page: params.page
+                };
+            },
+            processResults: function (data, params) {
+                params.page = params.page || 1;
+                let res = $.map(data, function (obj) {
+                    obj.text = obj.text || obj.title; // replace name with the property used for the text
+                    obj.id = obj.code; // replace name with the property used for the text
+                    return obj;
+                });
+                return {results: res};
+            },
+            cache: true
+        },
+        placeholder: 'Виберіть відділення',
+    };
+    $(".product-select2").select2(select2ProductsOptions);
+    $("#user-select2").select2(select2UserOptions);
+    $("#shipping-select2").select2(select2ShippingOptions);
+    $("#address-select2").select2(select2AddressOptions);
+
+    $('input[name="shipping_method"]').click(function () {
+        $(this).tab('show');
+        $(this).removeClass('active');
     });
+    $('#add-new-field').click(function () {
+        // $("#ele-for-clone").clone().appendTo("#card-for-clone");
+        $('#card-for-append').append(
+            '<div class="form-group row">\n' +
+            '            <div class="col-10">\n' +
+            '                <select name="products[]" class="form-control product-select2"></select>\n' +
+            '            </div>\n' +
+            '            <div class="col-2">\n' +
+            '                <input type="number" name="count[]" class="form-control" value="1">\n' +
+            '            </div>\n' +
+            '</div>');
+        $(".product-select2").select2(select2ProductsOptions);
+        return false;
+    });
+
 });

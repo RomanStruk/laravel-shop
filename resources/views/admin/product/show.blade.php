@@ -26,13 +26,13 @@
 
                     <div class="info-box-content">
                         <span class="info-box-text">Загальний обсяг продажів</span>
-                        <span class="info-box-number">41,410</span>
+                        <span class="info-box-number">{{$soldProductsOverTime}}</span>
 
                         <div class="progress">
-                            <div class="progress-bar" style="width: 70%"></div>
+                            <div class="progress-bar" style="width: {{$progress}}%"></div>
                         </div>
                         <span class="progress-description">
-                      70% Increase in 30 Days
+                      {{$progress}}% за місяць
                     </span>
                     </div>
                     <!-- /.info-box-content -->
@@ -88,7 +88,8 @@
                         </div>
                         <div class="col-12 product-image-thumbs">
                             @foreach($product->media as $media)
-                                <div class="product-image-thumb @if ($loop->first) active @endif"><img src="{{$media->url}}" alt="Product Image"></div>
+                                <div class="product-image-thumb @if ($loop->first) active @endif"><img
+                                            src="{{$media->url}}" alt="Product Image"></div>
                             @endforeach
                         </div>
                     </div>
@@ -124,10 +125,10 @@
                         <hr>
                         <div class="bg-gray py-2 px-3 mt-4">
                             <h2 class="mb-0">
-                                ${{$product->price}}
+                                Ціна {{$product->price}} {{config('shop.currency_short')}}
                             </h2>
                             <h4 class="mt-0">
-                                <small>Ex Tax: ${{$product->old_price}} </small>
+                                <small>Стара ціна {{$product->old_price}} {{config('shop.currency_short')}}</small>
                             </h4>
                         </div>
                     </div>
@@ -135,15 +136,24 @@
                 <div class="row mt-4">
                     <nav class="w-100">
                         <div class="nav nav-tabs" id="product-tab" role="tablist">
-                            <a class="nav-item nav-link active" id="product-desc-tab" data-toggle="tab" href="#product-desc" role="tab" aria-controls="product-desc" aria-selected="true">Опис</a>
-                            <a class="nav-item nav-link" id="product-comments-tab" data-toggle="tab" href="#product-comments" role="tab" aria-controls="product-comments" aria-selected="false">Відгуки</a>
-                            <a class="nav-item nav-link" id="product-rating-tab" data-toggle="tab" href="#product-rating" role="tab" aria-controls="product-rating" aria-selected="false">Фільтри</a>
+                            <a class="nav-item nav-link active" id="product-desc-tab" data-toggle="tab"
+                               href="#product-desc" role="tab" aria-controls="product-desc"
+                               aria-selected="true">Опис</a>
+                            <a class="nav-item nav-link" id="product-comments-tab" data-toggle="tab"
+                               href="#product-comments" role="tab" aria-controls="product-comments"
+                               aria-selected="false">Відгуки</a>
+                            <a class="nav-item nav-link" id="product-rating-tab" data-toggle="tab"
+                               href="#product-rating" role="tab" aria-controls="product-rating" aria-selected="false">Фільтри</a>
+                            <a class="nav-item nav-link" id="product-related-tab" data-toggle="tab"
+                               href="#product-related" role="tab" aria-controls="product-rating" aria-selected="false">Пов'язані товари</a>
                         </div>
                     </nav>
                     <div class="tab-content p-3" id="nav-tabContent">
-                        <div class="tab-pane fade show active" id="product-desc" role="tabpanel" aria-labelledby="product-desc-tab">{{$product->content}}</div>
-                        <div class="tab-pane fade" id="product-comments" role="tabpanel" aria-labelledby="product-comments-tab">
-                            @foreach($product->comments as $comment)
+                        <div class="tab-pane fade show active" id="product-desc" role="tabpanel"
+                             aria-labelledby="product-desc-tab">{!! $product->content !!}</div>
+                        <div class="tab-pane fade" id="product-comments" role="tabpanel"
+                             aria-labelledby="product-comments-tab">
+                            @forelse($product->comments as $comment)
                                 <div class="col-sm-12">
                                     <div class="card">
                                         <div class="card-body">
@@ -153,17 +163,22 @@
                                                 </h5>
 
                                                 <div class="dropdown col-1">
-                                                    <button class="btn btn-light dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                    <button class="btn btn-light dropdown-toggle" type="button"
+                                                            id="dropdownMenu2" data-toggle="dropdown"
+                                                            aria-haspopup="true" aria-expanded="false">
                                                         <b>...</b>
                                                     </button>
                                                     <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
                                                         <button class="dropdown-item" type="button">Action</button>
-                                                        <button class="dropdown-item" type="button">Another action</button>
-                                                        <button class="dropdown-item" type="button">Something else here</button>
+                                                        <button class="dropdown-item" type="button">Another action
+                                                        </button>
+                                                        <button class="dropdown-item" type="button">Something else
+                                                            here
+                                                        </button>
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div  class="">Оцінка:
+                                            <div class="">Оцінка:
                                                 @for($i = 1; $i <= 5; $i++)
                                                     @if($i <= $comment->rating)
                                                         <i class="fa fa-star"></i>
@@ -172,32 +187,45 @@
                                                     @endif
                                                 @endfor
                                             </div>
-                                            <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
+                                            <p class="card-text">With supporting text below as a natural lead-in to
+                                                additional content.</p>
                                         </div>
                                     </div>
                                 </div>
-                            @endforeach
-
-
+                            @empty
+                                <p>Нема даних</p>
+                            @endforelse
                         </div>
-                        <div class="tab-pane fade" id="product-rating" role="tabpanel" aria-labelledby="product-rating-tab">
-
-                                    @foreach($product->product_attributes as $product_attribute)
-                                        <div class="row">
-                                            <div class="col-3">{{$product_attribute->filter->name}}</div>
-                                            <div class="col-9">
-                                                @if($attributes->firstWhere('id', '=', $product_attribute->filter->id))
-                                                    @foreach($attributes->firstWhere('id', '=', $product_attribute->filter->id)->allAttributes as $attr)
-                                                        @if($attr->id == $product_attribute->id)
-                                                            <span class="badge badge-primary">{{$product_attribute->value}}</span>
-                                                        @else
-                                                            <span class="badge badge-secondary">{{$attr->value}}</span>
-                                                        @endif
-                                                    @endforeach
+                        <div class="tab-pane fade" id="product-rating" role="tabpanel"
+                             aria-labelledby="product-rating-tab">
+                            @foreach($product->product_attributes as $product_attribute)
+                                <div class="row">
+                                    <div class="col-3">{{$product_attribute->filter->name}}</div>
+                                    <div class="col-9">
+                                        @if($attributes->firstWhere('id', '=', $product_attribute->filter->id))
+                                            @foreach($attributes->firstWhere('id', '=', $product_attribute->filter->id)->allAttributes as $attr)
+                                                @if($attr->id == $product_attribute->id)
+                                                    <span class="badge badge-primary">{{$product_attribute->value}}</span>
+                                                @else
+                                                    <span class="badge badge-secondary">{{$attr->value}}</span>
                                                 @endif
-                                            </div>
-                                        </div>
-                                    @endforeach
+                                            @endforeach
+                                        @endif
+                                    </div>
+                                </div>
+                            @endforeach
+                        </div>
+                        <div class="tab-pane fade" id="product-related" role="tabpanel"
+                             aria-labelledby="product-related-tab">
+                            <div class="row">
+                                <div class="col-12">
+                                    @forelse($product->related as $product_related)
+                                        <a class="btn btn-secondary btn-sm" href="{{route('admin.product.show', $product_related->id)}}">{{$product_related->title}}</a>
+                                    @empty
+                                        <p>Нема даних</p>
+                                    @endforelse
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>

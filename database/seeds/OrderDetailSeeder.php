@@ -13,8 +13,10 @@ class OrderDetailSeeder extends Seeder
     public function run()
     {
         $orders = App\Order::all();
+        $array = [];
         foreach ($orders as $order){
-            factory(OrderHistory::class)->make(['order_id' => $order->id, 'status' => $order->status])->save();
+            $array[] = factory(OrderHistory::class)->make(['order_id' => $order->id, 'status' => $order->status])->getAttributes();
         }
+        OrderHistory::insert($array);
     }
 }

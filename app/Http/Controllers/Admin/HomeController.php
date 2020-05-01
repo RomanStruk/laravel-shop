@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Order;
 use App\Services\Analytics\Analytics;
-use App\Services\Data\Order\GetOrdersByLimit;
 use App\Services\Data\SoldProduct\GetCountProductGroupByWeek;
 use App\Services\Data\SoldProduct\GetTopProductsByLimit;
 
@@ -13,8 +13,7 @@ class HomeController extends Controller
     public function index(
         Analytics $analytics,
         GetTopProductsByLimit $topProducts,
-        GetCountProductGroupByWeek $productGroupByWeek,
-GetOrdersByLimit $ordersByLimit)
+        GetCountProductGroupByWeek $productGroupByWeek)
     {
 
         $products = $topProducts->handel(5);
@@ -31,8 +30,10 @@ GetOrdersByLimit $ordersByLimit)
 
 //        dump($topList);
 
+        $orders = Order::filter(['dateDesc' => true])->allRelations()->paginate(5);
+
         return view('admin.home', ['topList' => $topList])
-            ->with('orders', $ordersByLimit->handel(['dateDesc' => true], ['*'], 5));
+            ->with('orders', $orders);
 
     }
 }

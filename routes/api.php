@@ -24,8 +24,8 @@ Route::group(['prefix' => 'v1'], function (){
     Route::get('/filter/index', 'Api\v1\FilterController@index');
     Route::get('/comment/index/product/{id}', 'Api\v1\CommentController@index');
 
-    Route::get('/shipping/warehouses/{cityRef}', 'Api\v1\ShippingController@showWarehouse');
-    Route::get('/shipping/city/{city}', 'Api\v1\ShippingController@showCity');
+    Route::get('/shipping/address', 'Api\v1\ShippingController@listOfAddresses');
+    Route::get('/shipping/city', 'Api\v1\ShippingController@listOfCities');
 
     //TODO токени авторизації
     Route::get('/dashboard/sales', 'Api\v1\DashboardController@sales')->middleware(['auth:api']);
@@ -34,6 +34,7 @@ Route::group(['prefix' => 'v1'], function (){
     Route::get('/media/detail/{media}', 'Api\v1\MediaController@show')->middleware(['auth:api']);
     Route::delete('/media/destroy/{media}', 'Api\v1\MediaController@destroy')->middleware(['auth:api']);
 
-
+    Route::get('/search/users', 'Api\v1\SearchController@users')->middleware(['auth:api']);
+    Route::get('/search/products', 'Api\v1\SearchController@products')->middleware(['auth:api']);
 //    Route::post('/user/login', 'Api\v1\UserController@login');
 });

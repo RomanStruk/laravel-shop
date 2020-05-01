@@ -1,10 +1,10 @@
 <?php
 
 
-namespace App\Services\Shipping;
+namespace App\Services\Shipping\ShippingDriver;
 
 
-class ShippingNovaposhta implements ShippingInterface
+class NovaPoshtaDriver implements ShippingDriverInterface
 {
     const KEY = 'f2595f7fe8718f38f17195c10127fcb2';
     const URL = 'https://api.novaposhta.ua/v2.0/json/';
@@ -44,7 +44,7 @@ class ShippingNovaposhta implements ShippingInterface
      * @param string $cityName Также в методе доступен поиск по строке, для него нужно указать параметр FindByString
      * @return mixed|string
      */
-    public function findCity($cityName)
+    public function findCityByName($cityName)
     {
         $model = 'AddressGeneral';
         $method = 'getSettlements';
@@ -58,7 +58,7 @@ class ShippingNovaposhta implements ShippingInterface
      * @param string $ref Идентификатор адреса
      * @return mixed|string
      */
-    public function findRef($ref)
+    public function findCityByCode($ref)
     {
         $model = 'AddressGeneral';
         $method = 'getSettlements';
@@ -72,7 +72,7 @@ class ShippingNovaposhta implements ShippingInterface
      * @param string $cityRef РЕФ города из справочника населенных пунктов Украины
      * @return mixed|string
      */
-    public function findWarehouses($cityRef)
+    public function findAddressByCityCode($cityRef)
     {
         $model = 'AddressGeneral';
         $method = 'getWarehouses';

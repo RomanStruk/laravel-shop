@@ -6,7 +6,7 @@
 </div>
 @if (! empty($show))
     <a class="btn btn-primary btn-sm" href="{{ $show }}" title="View">
-        <i class="fas fa-folder"></i>
+        <i class="fas fa-eye"></i>
     </a>
 @endif
 @if (! empty($edit))

@@ -3,9 +3,11 @@
 namespace App\Providers;
 
 use App\Events\ChangeOrderStatusEvent;
-use App\Events\CreateOrderEvent;
-use App\Listeners\CreateOrderListener;
+use App\Events\OrderCreatedEvent;
+use App\Listeners\CreateFirstEntryToOrderHistory;
+use App\Listeners\NotificationForAdminAboutNewOrder;
 use App\Listeners\OrderChangeStatusListener;
+use App\Listeners\SendEmailForUserAboutNewOrder;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
@@ -22,8 +24,15 @@ class EventServiceProvider extends ServiceProvider
         Registered::class => [
             SendEmailVerificationNotification::class,
         ],
-        CreateOrderEvent::class => [CreateOrderListener::class,],
-        ChangeOrderStatusEvent::class => [OrderChangeStatusListener::class]
+        ChangeOrderStatusEvent::class => [
+            OrderChangeStatusListener::class
+        ],
+
+        OrderCreatedEvent::class => [
+            CreateFirstEntryToOrderHistory::class, // перший запис в бд про історію замовлення
+            SendEmailForUserAboutNewOrder::class, // Відправити лист з інформацією про замовлення користувачу
+            NotificationForAdminAboutNewOrder::class // Сповіщення для адміна про нове замовлення
+        ]
     ];
 
     /**

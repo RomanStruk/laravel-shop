@@ -5,8 +5,11 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ProductRequest;
 use App\Product;
+use App\Services\Analytics\Analytics;
+use App\Services\Analytics\DateGeneration;
 use App\Services\Data\Filter\GetFilters;
 use App\Services\Data\Category\GetCategories;
+use App\Services\Data\SoldProduct\GetSoldProductBetweenDate;
 use App\Services\SaveFile;
 use App\Services\Data\Media\SaveToDbMediaFile;
 use App\Services\Data\Media\UpdateRelationships;
@@ -15,6 +18,7 @@ use App\Services\Data\Product\DeleteProductById;
 use App\Services\Data\Product\GetProductByIdOrSlug;
 use App\Services\Data\Product\GetProductsByLimit;
 use App\Services\Data\Product\UpdateProductById;
+use App\SoldProduct;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -86,16 +90,28 @@ class ProductController extends Controller
      *
      * @param GetProductByIdOrSlug $getProduct
      * @param GetFilters $getAttributes
+     * @param GetSoldProductBetweenDate $soldProductBetweenDate
      * @param int $id
      * @return Factory|View
      */
-    public function show(GetProductByIdOrSlug $getProduct, GetFilters $getAttributes, $id)
+    public function show(GetProductByIdOrSlug $getProduct, GetFilters $getAttributes, GetSoldProductBetweenDate $soldProductBetweenDate, $id)
     {
         $product = $getProduct->handel($id, ['*'], true);
         $attributes = $getAttributes->handel();
+        // statistics card
+        $range = (new DateGeneration())->generateStartEndMonth(now());
+        $rangeLastMonth = (new DateGeneration())->generateStartEndMonth(now()->subMonth());
+        $soldProductCount = $soldProductBetweenDate->handel($id, $range, true);
+        $soldProductCountLastMonth = $soldProductBetweenDate->handel($id, $rangeLastMonth, true);
+        $soldProductsOverTime = SoldProduct::where('product_id', $id)->count();
+        $progress = (new Analytics())->growthRates($soldProductCount, $soldProductCountLastMonth);
+        // end
         return view('admin.product.show')
             ->with('product', $product)
-            ->with('attributes', $attributes);
+            ->with('attributes', $attributes)
+            ->with('soldProductCount', $soldProductCount)
+            ->with('soldProductsOverTime', $soldProductsOverTime)
+            ->with('progress', $progress);
     }
 
     /**

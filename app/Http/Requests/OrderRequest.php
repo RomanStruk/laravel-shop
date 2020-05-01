@@ -2,11 +2,7 @@
 
 namespace App\Http\Requests;
 
-use App\Rules\PhoneNumber;
 use App\Rules\ShippingCityRule;
-use App\Services\Data\Shipping\GetCityByRef;
-use App\Services\Data\Shipping\GetWarehousesByCityRef;
-use App\Services\Shipping\ShippingInterface;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -31,9 +27,7 @@ class OrderRequest extends FormRequest
     public function rules()
     {
         return [
-            'first_name' => 'required|string',
-            'last_name' => 'required|string',
-            'phone' => ['required', new PhoneNumber],
+            'user' => ['required', 'numeric', 'exists:users,id'],
 
             'comment' => 'required|string|min:3',
 
@@ -47,39 +41,29 @@ class OrderRequest extends FormRequest
             'paid' => 'required|boolean',
 
             'shipping_method' => ['required', 'in:courier,novaposhta'],
+            'shipping_rate' => ['required', 'numeric', 'min:0'],
 
-            'city_ref'  => ['required', 'string', new ShippingCityRule],
-            'city'      => ['required', 'string'],
-            'region'    => ['nullable'],
-            'area'      => ['nullable'],
+            'city_code'  => ['required', 'string', new ShippingCityRule],
 
-            'street'    => 'required_if:shipping_method,courier|string',
-            'house'     => 'required_if:shipping_method,courier|numeric',
-            'flat'      => 'required_if:shipping_method,courier|numeric',
+            'street'    => 'required_if:shipping_method,courier|nullable|string',
+            'house'     => 'required_if:shipping_method,courier|nullable|numeric',
+            'flat'      => 'required_if:shipping_method,courier|nullable|numeric',
 
-            'warehouse_ref' => ['required_if:shipping_method,novaposhta', 'string'],
-            'warehouse_title'=> ['nullable'],
+            'warehouse_code' => ['required_if:shipping_method,novaposhta', 'nullable', 'string'],
         ];
     }
 
-    public function passedValidation(){
-        $api = resolve(ShippingInterface::class);;
-
-        $getCityByRef = new GetCityByRef($api);
-
-        $cityInformation = $getCityByRef->handel($this->city_ref);
-        $this->city = $cityInformation['Description'];
-        $this->region = $cityInformation['RegionsDescription'];
-        $this->area = $cityInformation['AreaDescription'];
-        if ($this->shipping_method == 'novaposhta'){
-            $getWarehousesByCityRef = new GetWarehousesByCityRef($api);
-            $warehouses = $getWarehousesByCityRef->handel($this->city_ref);
-            $this->warehouse_title = 'Don`t choose';
-            if (key_exists($this->warehouse_ref, $warehouses)){
-                $this->warehouse_title = $warehouses[$this->warehouse_ref]['Description'];
-            }
-        }
-        return;
+    /**
+     * Return the fields and values to update Order.
+     *
+     * @return array
+     */
+    public function orderFillData()
+    {
+        return [
+            'user_id'    => $this->user,
+            'comment'    => $this->comment,
+        ];
     }
 
     /**
@@ -108,19 +92,6 @@ class OrderRequest extends FormRequest
         ];
     }
 
-    /**
-     * Return the fields and values to update UserDetail.
-     *
-     * @return array
-     */
-    public function userDetailFillData():array
-    {
-        return [
-            'first_name' => $this->first_name,
-            'last_name' => $this->last_name,
-            'phone' => $this->phone,
-        ];
-    }
 
     /**
      * Return the fields and values to create/update a new shipping.
@@ -131,16 +102,12 @@ class OrderRequest extends FormRequest
     {
         return [
             'method'        => $this->shipping_method,
+            'shipping_rate' => $this->shipping_rate,
 
-            'city_ref'      => $this->city_ref,
-            'city'          => $this->city,
-
-            'street'        => $this->street,
-            'house'         => $this->house,
-            'flat'          => $this->flat,
-
-            'warehouse_ref' => $this->warehouse_ref,
-            'warehouse_title' => $this->warehouse_title,
+            'city'     => $this->city_code,
+            'address' => $this->shipping_method == 'novaposhta'?
+                $this->warehouse_code :
+                ($this->street .', '. $this->house . ', ' . $this->flat),
         ];
     }
 }

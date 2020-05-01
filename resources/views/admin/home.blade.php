@@ -65,7 +65,7 @@
 
                     <div class="card">
                         <div class="card-header border-0">
-                            <h3 class="card-title">Products</h3>
+                            <h3 class="card-title">Популярні товари </h3>
                             <div class="card-tools">
                                 <a href="#" class="btn btn-tool btn-sm">
                                     <i class="fas fa-download"></i>
@@ -86,33 +86,33 @@
                                 </thead>
                                 <tbody>
                                 @foreach($topList as $info)
-                                <tr>
-                                    <td>
-                                        <a href="{{route('admin.product.show', ['product' => $info['product']->id])}}">{{$info['product']->title}}</a>
-                                    </td>
-                                    <td>{{config('shop.currency_short')}}{{$info['product']->price}}</td>
-                                    <td>
-                                        {{$info['sales']}}
-                                        @if($info['analytic'] < 5 and $info['analytic'] > -5)
-                                            <small class="text-warning mr-1">
-                                            <i class="fas fa-arrow-down"></i>
-                                            {{$info['analytic']}}%
-                                        </small>
-                                        @endif
-                                        @if($info['analytic'] > 5)
-                                            <small class="text-success mr-1">
-                                            <i class="fas fa-arrow-up"></i>
-                                            {{$info['analytic']}}%
-                                        </small>
-                                        @endif
+                                    <tr>
+                                        <td>
+                                            <a href="{{route('admin.product.show', ['product' => $info['product']->id])}}">{{$info['product']->title}}</a>
+                                        </td>
+                                        <td>{{config('shop.currency_short')}}{{$info['product']->price}}</td>
+                                        <td>
+                                            {{$info['sales']}}
+                                            @if($info['analytic'] < 5 and $info['analytic'] > -5)
+                                                <small class="text-warning mr-1">
+                                                    <i class="fas fa-arrow-down"></i>
+                                                    {{$info['analytic']}}%
+                                                </small>
+                                            @endif
+                                            @if($info['analytic'] > 5)
+                                                <small class="text-success mr-1">
+                                                    <i class="fas fa-arrow-up"></i>
+                                                    {{$info['analytic']}}%
+                                                </small>
+                                            @endif
                                             @if($info['analytic'] < -5)
                                                 <small class="text-danger mr-1">
-                                            <i class="fas fa-arrow-down"></i>
-                                            {{$info['analytic']}}%
-                                        </small>
+                                                    <i class="fas fa-arrow-down"></i>
+                                                    {{$info['analytic']}}%
+                                                </small>
                                             @endif
-                                    </td>
-                                </tr>
+                                        </td>
+                                    </tr>
                                 @endforeach
                                 </tbody>
                             </table>
@@ -179,7 +179,8 @@
                                             @endif
                                         </td>
                                         <td>
-                                            <a href="{{route('admin.order.show', $order->id)}}"><i class="fas fa-folder"></i></a>
+                                            <a href="{{route('admin.order.show', $order->id)}}"><i
+                                                        class="fas fa-eye"></i></a>
                                         </td>
                                     </tr>
                                 @endforeach

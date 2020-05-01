@@ -13,13 +13,15 @@ class SoldProductSeeder extends Seeder
     {
         $orders = \App\Order::where('status', '=', \App\Order::STATUS_COMPLETED)->with('products')->get();
         foreach ($orders as $order){
+            $insert = [];
             foreach ($order->products as $product){
-                factory(\App\SoldProduct::class)->make([
+                $insert[] = factory(\App\SoldProduct::class)->make([
                     'product_id' => $product->id,
                     'sale_price' => $product->price,
                     'created_at' => $order->created_at
-                ])->save();
+                ])->getAttributes();
             }
+            \App\SoldProduct::insert($insert);
         }
     }
 }

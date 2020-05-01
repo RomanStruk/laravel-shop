@@ -40,4 +40,10 @@ class Payment extends Model
     const METHOD_CARD = 'card';
     const METHOD_RECEIPT = 'receipt';
     const METHOD_GOOGLE_PAY = 'google-pay';
+
+
+    public function isPaid()
+    {
+        return $this->paid == '1';
+    }
 }

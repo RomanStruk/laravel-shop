@@ -7,7 +7,10 @@
         'title' => 'Список замовлень',
         'breadcrumbs' => [
             'Замовлення',
-        ]
+        ],
+        'actions' => [
+            'create' => route('admin.order.create')
+            ]
         ])
     <!-- /.content-header -->
 

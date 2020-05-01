@@ -2,9 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Events\CreateOrderEvent;
+use App\Events\OrderCreatedEvent;
 use App\Order;
-use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Validator;
 
@@ -14,7 +13,7 @@ class OrderController extends Controller
     {
         $order = Order::with('user')->findOrFail(1);
 //        dd($order);
-        event(new CreateOrderEvent($order));
+        event(new OrderCreatedEvent($order));   // event
 
         return view('vue.checkout');
     }

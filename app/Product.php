@@ -69,6 +69,10 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @method static \Illuminate\Database\Query\Builder|\App\Product withoutTrashed()
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Order[] $orders
  * @property-read int|null $orders_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Product[] $related
+ * @property-read int|null $related_count
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Product avgRating()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Product countComments()
  */
 class Product extends Model
 {

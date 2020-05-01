@@ -1,10 +1,10 @@
 <template>
     <div>
-        <select name="warehouse_ref" id="warehouse" class="form-control">
-            <option>--Не вибрано відділення--</option>
+        <select name="warehouse_code" id="warehouse" class="form-control">
+            <option value="">--Не вибрано відділення--</option>
             <option v-for="(value, key) in $store.getters.WAREHOUSES"
                     :value="key"
-                    :selected="key == warehouse_ref"
+                    :selected="key === warehouse_code"
             >
                 {{value}}
             </option>
@@ -20,14 +20,14 @@
             }
         },
         props:[
-            'warehouse_ref'        // selected
+            'warehouse_code'        // selected
         ],
         mounted() {
-            console.log(this.$store.getters.WAREHOUSES);
+            // console.log(this.$store.getters.WAREHOUSES);
             if (this.warehouses){
                 this.$store.commit('ADD_WAREHOUSE', this.warehouses);
             }
-            console.log('Component mounted.');
+            // console.log('Component mounted.');
             // console.log(this.$root.warehouses);
         },
         methods: {

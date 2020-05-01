@@ -5,6 +5,7 @@ namespace App\Traits\Relations;
 
 
 use App\Payment;
+use App\Shipping;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
@@ -24,6 +25,9 @@ trait OrderRelations
         return $this->belongsToMany('App\Product')->withPivot('count');
     }
 
+    /**
+     * @return mixed
+     */
     public function shipping()
     {
         return $this->hasOne('App\Shipping');

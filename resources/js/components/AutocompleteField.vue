@@ -39,6 +39,9 @@
             this.text = this.defaultValue;
         },
         watch: {
+            defaultValue: function() {
+                this.text = this.defaultValue;
+            },
             // якщо не вибраний елемент то відправляти строку для пошуку
             text: function () {
                 if (!this.selected){

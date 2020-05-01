@@ -2,22 +2,12 @@
 
 namespace App\Rules;
 
-use App\Services\Shipping\ShippingInterface;
+use App\Services\Shipping\ShippingBase;
+use App\Shipping;
 use Illuminate\Contracts\Validation\Rule;
 
 class ShippingCityRule implements Rule
 {
-    private $shipping;
-    /**
-     * Create a new rule instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        //
-        $this->shipping = $api = resolve(ShippingInterface::class);;
-    }
 
     /**
      * Determine if the validation rule passes.
@@ -28,11 +18,8 @@ class ShippingCityRule implements Rule
      */
     public function passes($attribute, $value)
     {
-        $result = $this->shipping->findRef($value);
-        if (count($result['errors'])>=1) return false;
-        if ($result['info']['totalCount'] <> 1) return false;
-//        dd($result);
-        return $result['data'][0]['Ref'] == $value;
+        $shippingBase = new ShippingBase(Shipping::$shipping_methods, 'novaposhta');
+        return $shippingBase->existCity($value);
     }
 
     /**

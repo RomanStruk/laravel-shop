@@ -3,16 +3,12 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Events\ChangeOrderStatusEvent;
-use App\Events\CreateOrderEvent;
+use App\Events\OrderCreatedEvent;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\OrderRequest;
 use App\Http\Requests\StatusOrderRequest;
-use App\Product;
-use App\Services\Data\Order\DeleteOrder;
-use App\Services\Data\Order\GetOrderById;
-use App\Services\Data\Order\GetOrdersByLimit;
-use App\Services\Data\Order\UpdateOrderStatus;
-use App\Services\Data\UserDetail\UpdateUserDetail;
+use App\Order;
+use App\Services\PaginateSession;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -22,46 +18,57 @@ class OrderController extends Controller
 {
 
     /**
-     * @param GetOrdersByLimit $getOrdersByLimit
      * @param Request $request
+     * @param PaginateSession $paginateSession
      * @return Factory|View
      */
-    public function index(GetOrdersByLimit $getOrdersByLimit, Request $request)
+    public function index(Request $request, PaginateSession $paginateSession)
     {
         $filter = $request->except('limit');
         $filter['date-desc'] = 'true';
-        $orders = $getOrdersByLimit->handel($filter);
-        return view('admin.order.index')
-            ->with('orders', $orders);
+        $orders = Order::filter($filter)->allRelations()->paginate($paginateSession->getLimit());
+        return view('admin.order.index')->with('orders', $orders);
     }
 
     /**
-     * @param GetOrderById $getOrderById
      * @param integer $id
      * @return Factory|View
      */
-    public function show(GetOrderById $getOrderById, $id)
+    public function show($id)
     {
-        $order = $getOrderById->handel($id);
-//        $order->addProduct(1);
-//        $order->subProduct(1);
+        $order = Order::allRelations()->withTrashed()->findOrFail($id);
         /*foreach ($order->notifications as $notification) {
             dump($notification) ;
         }*/
         return view('admin.order.show')->with('order', $order);
     }
 
+    public function create()
+    {
+        return view('admin.order.create');
+    }
+
+
+    public function store(OrderRequest $request)
+    {
+        $order = new Order($request->orderFillData());
+        // TODO check count available products
+        $order->save();
+        $order->syncProducts($request->productsFillData());
+        $order->paymentCreate($request->paymentFillData());
+        $order->shippingCreate($request->shippingFillData());
+        event(new OrderCreatedEvent($order));   // event
+        return redirect()->route('admin.order.show', $order)->with('success', __('order.save'));
+    }
 
     /**
-     * @param GetOrderById $getOrderById
-     * @param integer $id
+     * @param $orderId
      * @return Factory|View
      */
-    public function edit(GetOrderById $getOrderById, $id)
+    public function edit($orderId)
     {
         // get order
-        $order = $getOrderById->handel($id);
-
+        $order = Order::allRelations()->withTrashed()->findOrFail($orderId);
         // show edit view
         return view('admin.order.edit', ['order'=> $order]);
     }
@@ -69,25 +76,17 @@ class OrderController extends Controller
 
     /**
      * Update Order
-     * @param GetOrderById $getOrderById
-     * @param UpdateUserDetail $updateUserDetail
      * @param OrderRequest $request
      * @param int $orderId
      * @return RedirectResponse
      */
-    public function update(GetOrderById $getOrderById,
-                           UpdateUserDetail $updateUserDetail,
-                           OrderRequest $request,
-                           $orderId)
+    public function update(OrderRequest $request, $orderId)
     {
         // get order
-        $order = $getOrderById->handel($orderId);
-//dd($request->productsFillData());
-        // update user detail
-        $updateUserDetail->handel($order->user, $request->userDetailFillData());
+        $order = Order::allRelations()->withTrashed()->findOrFail($orderId);
 
         // update comment of order
-        $order->update(['comment' => $request->comment]);
+        $order->update($request->orderFillData());
 
         // update products of order
         $order->syncProducts($request->productsFillData());
@@ -102,18 +101,27 @@ class OrderController extends Controller
     }
 
     /**
+     * @param integer $id
+     * @return RedirectResponse
+     */
+    public function destroy($id)
+    {
+        return Order::destroy($id) ?
+            redirect()->route('admin.order.index')->with('success', __('order.deleted')):
+            redirect()->route('admin.order.index')->withErrors(__('order.error_delete'));
+    }
+
+    /**
      * Зміна статусу замовлення
-     * @param UpdateOrderStatus $updateOrderStatus
      * @param StatusOrderRequest $request
      * @param integer $orderId
      * @return RedirectResponse
      */
-    public function updateStatus(UpdateOrderStatus $updateOrderStatus,
-                                 StatusOrderRequest $request,
-                                 $orderId)
+    public function updateStatus(StatusOrderRequest $request, $orderId)
     {
         // update order status
-        $order = $updateOrderStatus->handel($orderId, $request->validated());
+        $order = Order::findOrFail($orderId);
+        $order->statusUpdate($request->statusFillData());
 
         // create event for change status
         if ($request->get('notification')) event(new ChangeOrderStatusEvent($order));
@@ -124,19 +132,12 @@ class OrderController extends Controller
 
 
     /**
-     * @param DeleteOrder $deleteOrder
-     * @param integer $id
-     * @return RedirectResponse
+     * @param $orderId
+     * @return Factory|View
      */
-    public function destroy(DeleteOrder $deleteOrder, $id)
+    public function printOrder($orderId)
     {
-        $deleteOrder->handel($id);
-        return redirect()->route('admin.order.index')
-            ->with('success', __('order.deleted'));
-    }
-
-    public function printOrder(GetOrderById $getOrderById, $orderId)
-    {
-        return view('admin.order.print_order')->with('order', $getOrderById->handel($orderId));
+        $order = Order::allRelations()->findOrFail($orderId);
+        return view('admin.order.print_order')->with('order', $order);
     }
 }

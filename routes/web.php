@@ -103,17 +103,12 @@ Route::group([
     'middleware' => ['auth', 'verified', 'role.check:Admin']
 ], function (){
 
-    Route::get('/', [
-        'uses' => 'Admin\HomeController@index',
-        'as' => 'dashboard.index'
-    ]);
+    Route::get('/', 'Admin\HomeController@index')->name('dashboard.index');
 
     Route::resource('/order', 'Admin\OrderController');
-    Route::post('/order/status/{order}/update', [
-        'uses' => 'Admin\OrderController@updateStatus',
-        'as' => 'order.updateStatus'
-    ]);
+    Route::post('/order/status/{order}/update', 'Admin\OrderController@updateStatus')->name('order.updateStatus');
     Route::get('/order/print/{order}', 'Admin\OrderController@printOrder')->name('order.printOrder');
+    Route::get('/search/index', 'Admin\SearchController@index')->name('search.index');
 
 
     Route::resource('category', 'Admin\CategoryController')->except(['show']);

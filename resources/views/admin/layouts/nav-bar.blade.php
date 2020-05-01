@@ -13,16 +13,21 @@
     </ul>
 
     <!-- SEARCH FORM -->
-    <form class="form-inline ml-3">
-        <div class="input-group input-group-sm">
-            <input class="form-control form-control-navbar" type="search" placeholder="Search" aria-label="Search">
-            <div class="input-group-append">
-                <button class="btn btn-navbar" type="submit">
-                    <i class="fas fa-search"></i>
-                </button>
+    <form class="form-inline ml-3" method="get" action="{{route('admin.search.index')}}">
+        <div class="typeahead__container">
+            <div class="typeahead__field">
+                <div class="typeahead__query">
+                    <input class="js-typeahead" name="q" autocomplete="off" value="{{request('q')}}">
+                </div>
+                <div class="typeahead__button">
+                    <button type="submit">
+                        <span class="typeahead__search-icon"></span>
+                    </button>
+                </div>
             </div>
         </div>
     </form>
+
 
     <!-- Right navbar links -->
     <ul class="navbar-nav ml-auto">

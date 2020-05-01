@@ -111,7 +111,7 @@
                         <button type="button" class="btn btn-dark btn-sm" onclick="$(':input').val('');">
                             <i aria-hidden="true" class="fa fa-recycle"></i>
                         </button>
-                        <button type="submit" class="btn btn-primary btn-sm">Go</button>
+                        <button type="submit" class="btn btn-primary btn-sm"><i class="fa fa-filter" aria-hidden="true"></i></button>
                     </div>
                 </div>
             </div>

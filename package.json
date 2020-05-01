@@ -29,6 +29,7 @@
         "bootstrap-select": "^1.13.12",
         "chart.js": "^2.9.3",
         "cross-env": "^7.0.2",
+        "jquery-typeahead": "^2.11.0",
         "moment": "^2.24.0",
         "select2": "^4.0.13",
         "vue-chartjs": "^3.5.0",

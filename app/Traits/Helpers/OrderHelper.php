@@ -4,49 +4,73 @@
 namespace App\Traits\Helpers;
 
 
+use App\Notifications\OrderCreatedMailNotificationForUser;
 use App\Notifications\OrderCreatedNotification;
 use App\Notifications\OrderStatusChangeNotification;
+use App\OrderHistory;
+use App\Services\Shipping\ShippingBase;
+use App\Shipping;
 use Illuminate\Notifications\Notification;
-use Str;
 
 /**
  * @property-read \App\Payment $payment
  */
 trait OrderHelper
 {
-    public function addProduct($id)
+
+    public function getSumPriceAttribute()
     {
-        if ($this->products->contains($id)){
-            $pivot = $this->products()->where('product_id', $id)->first()->pivot;
-            $pivot->count ++;
-            $pivot->update();
-        }else{
-            $this->products()->attach($id);
-        }
+        return $this->getSubTotalPrice();
+    }
+    /**
+     *
+     * Calculated sum price for one product
+     *
+     * @param $productId
+     * @return float|int
+     */
+    public function getTotalPriceForProduct($productId)
+    {
+        $product = $this->products->find($productId);
+        return $product->price * $product->pivot->count;
     }
 
-    public function subProduct($id)
+    /**
+     *
+     * Calculated sum price for products
+     *
+     * @return mixed
+     */
+    public function getSubTotalPrice()
     {
-        if ($this->products->contains($id)){
-            $pivot = $this->products()->where('product_id', $id)->first()->pivot;
-            if($pivot->count() > 1){
-                $pivot->count --;
-                $pivot->update();
-            }else{
-                $this->products()->detach($id);
-            }
-        }
+        return $this->products->sum(function ($product) {
+            return $product->price*$product->pivot->count;
+        });
     }
+
+    /**
+     *
+     * Calculated sum price for order
+     *
+     * @return mixed
+     */
+    public function getTotalPrice()
+    {
+        $sum = $this->products->sum(function ($product) {
+            return $product->price*$product->pivot->count;
+        });
+        return $sum + $this->shipping->shipping_rate;
+    }
+
     /**
      * Updating products
      *
      * @param array $fields
-     * @return mixed
      */
     public function syncProducts(array $fields)
     {
-
         $this->products()->sync($fields['products']);
+        $this->load('products');
         foreach ($fields['products'] as $key => $product) {
             if ($this->products->contains($product)){
                 $pivot = $this->products()->where('product_id', $product)->first()->pivot;
@@ -54,8 +78,37 @@ trait OrderHelper
                 $pivot->update();
             }
         }
+    }
 
-        return ;
+    /**
+     * Creating payment fields
+     *
+     * @param array $fields
+     * @return mixed
+     */
+    public function paymentCreate(array $fields)
+    {
+        return $this->payment()->create($fields);
+    }
+
+    /**
+     *
+     * Creating shipping fields
+     *
+     * @param array $fields
+     * @return mixed
+     */
+    public function shippingCreate(array $fields)
+    {
+        $shipping = new Shipping();
+        $shipping->method   = $fields['method'];
+        $shipping->shipping_rate   = $fields['shipping_rate'];
+
+        $shipping->city     =  $fields['city'];
+        $shipping->address  = $fields['address'];
+
+        return $this->shipping()->save($shipping);
+
     }
 
     /**
@@ -79,7 +132,39 @@ trait OrderHelper
      */
     public function shippingUpdate(array $fields)
     {
-        return $this->shipping()->update($fields);
+
+        $this->shipping->method   = $fields['method'];
+        $this->shipping->shipping_rate   = $fields['shipping_rate'];
+
+        $this->shipping->city     = $fields['city'];
+        $this->shipping->address  = $fields['address'];
+
+        return $this->shipping->save();
+    }
+
+    public function statusUpdate(array $fields)
+    {
+        $orderHistory = new OrderHistory([
+            'status' => $fields['status'],
+            'user_id' => \Auth::user()->id,
+            'comment' => $fields['comment']
+        ]);
+        $this->histories()->save($orderHistory);
+        return $this->update(['status' => $fields['status']]);
+    }
+
+    /**
+     * Send notification.
+     *
+     * @return void
+     */
+    public function SendEmailForUserAboutNewOrderNotification()
+    {
+        $this->notify(
+            (new OrderCreatedMailNotificationForUser(
+                $this->id, $this->user, $this->products, $this->payment, $this->shipping)
+            )->onQueue('default')
+        );
     }
 
     /**
@@ -87,7 +172,7 @@ trait OrderHelper
      *
      * @return void
      */
-    public function orderCreatedNotification()
+    public function orderCreatedNotificationForAdmin()
     {
         $this->notify(new OrderCreatedNotification($this->id));
     }

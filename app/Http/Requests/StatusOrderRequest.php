@@ -26,7 +26,7 @@ class StatusOrderRequest extends FormRequest
         return [
             'notification' => 'required|boolean',
 //            'status' => 'required|numeric|between:1,5',
-            'status' => 'required',
+            'status' => ['required', 'numeric'],
             'comment' => 'required',
         ];
     }
@@ -34,5 +34,18 @@ class StatusOrderRequest extends FormRequest
     protected function prepareForValidation()
     {
         $this->merge(['notification' => $this->has('status') ? true : false]);
+    }
+
+    /**
+     * Return the fields and values to update Order.
+     *
+     * @return array
+     */
+    public function statusFillData()
+    {
+        return [
+            'status'    => $this->status,
+            'comment'    => $this->comment,
+        ];
     }
 }

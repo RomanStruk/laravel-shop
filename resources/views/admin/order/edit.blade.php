@@ -37,24 +37,14 @@
                         </div>
                         <div class="card-body">
                             <div class="form-group">
-                                <label for="first-name">Ім'я</label>
-                                <input name="first_name" id="first-name" value="{{$order->user->detail->first_name}}"
-                                       class="form-control">
+                                <label for="user-select2">Користувач</label>
+                                <select name="user" id="user-select2" class="form-control">
+                                    <option value="{{$order->user->id}}">{{$order->user->fullName}}</option>
+                                </select>
                             </div>
                             <div class="form-group">
-                                <label for="last-name">Прізвище</label>
-                                <input name="last_name" id="last-name" value="{{$order->user->detail->last_name}}"
-                                       class="form-control">
-                            </div>
-                            <div class="form-group">
-                                <label for="input-telephone">Телефон</label>
-                                <input name="phone" id="input-telephone" value="{{$order->user->detail->phone}}"
-                                       class="form-control">
-                            </div>
-                            <div class="form-group">
-                                <label for="inputClientCompany">Email</label>
-                                <input name="email" id="input-email" value="{{$order->user->email}}"
-                                       class="form-control" disabled>
+                                <label for="orderComment">Коментар замовника</label>
+                                <textarea class="form-control" name="comment" id="orderComment" cols="30" rows="4">{{$order->comment}}</textarea>
                             </div>
                         </div>
                         <!-- /.card-body -->
@@ -137,11 +127,11 @@
                                     <i class="fas fa-minus"></i></button>
                             </div>
                         </div>
-                        <div class="card-body">
+                        <div class="card-body" id="card-for-append">
                             @foreach($order->products as $product)
                             <div class="form-group row">
                                 <div class="col-10">
-                                    <select name="products[]" class="form-control select2" style="width: 100%;">
+                                    <select name="products[]" class="form-control select2 product-select2" style="width: 100%;">
                                         <option value="{{$product->id}}" selected="selected">{{$product->title}}</option>
                                     </select>
                                 </div>
@@ -152,18 +142,17 @@
                             @endforeach
                             <div class="form-group row">
                                 <div class="col-10">
-                                    <select name="products[]" class="form-control select2" style="width: 100%;"></select>
+                                    <select name="products[]" class="form-control select2 product-select2" style="width: 100%;"></select>
                                 </div>
                                 <div class="col-2">
                                     <input type="number" name="count[]" class="form-control" value="1">
                                 </div>
                             </div>
-                            <div class="form-group">
-                                <label for="inputComment">Коментар замовника</label>
-                                <textarea class="form-control" name="comment" id="orderComment" cols="30" rows="4">{{$order->comment}}</textarea>
-                            </div>
                         </div>
                         <!-- /.card-body -->
+                        <div class="card-footer">
+                            <button class="btn btn-info btn-sm float-right" title="Add a new field" id="add-new-field"><i class="fa fa-plus"></i></button>
+                        </div>
                     </div>
                     <!-- /.card -->
                     <div class="card card-info">
@@ -177,46 +166,33 @@
                             </div>
                         </div>
                         <div class="card-body">
-                            <div class="form-group row">
-                                <div class="col-sm-3">
-                                    Спосіб доставки
-                                </div>
-                                <div class="col-sm-6">
-                                    <div class="btn-group" data-toggle="buttons">
-                                        <label class="">
-                                            <a href="#address_currier" data-toggle="tab"
-                                               @if ($order->shipping->method == 'courier') class="btn active focus"
-                                               @else class="btn" @endif
-                                            >
-                                                <input type="radio" name="shipping_method" autocomplete="off"
-                                                       value="courier"
-                                                       @if ($order->shipping->method == 'courier')checked @endif
-                                                >Курєр
-                                            </a>
-                                        </label>
-                                        <label class="">
-                                            <a href="#address_novaposhta" data-toggle="tab"
-                                               @if ($order->shipping->method == 'novaposhta') class="btn active focus"
-                                               @else class="btn" @endif
-                                            >
-                                                <input type="radio" name="shipping_method" autocomplete="off"
-                                                       value="novaposhta"
-                                                       @if ($order->shipping->method == 'novaposhta')checked @endif
-                                                >Нова Пошта
-                                            </a>
-                                        </label>
-                                    </div>
-                                </div>
+                            <div class="form-group">
+                                <label for="shipping-select2">Місто/Село</label>
+                                <select name="city_code" id="shipping-select2" class="form-control" style="width: 100%">
+                                    <option value="{{$order->shipping->getCity()->code}}" selected>{{$order->shipping->getCity()->description}}</option>
+                                </select>
                             </div>
-                            <div class="form-group row">
-                                    <label class="col-form-label" for="city">Місто/Село</label>
-                                    <shipping
-                                        v-bind:props_city_ref="'{{$order->shipping->city_ref}}'"
-                                        v-bind:props_city="'{{$order->shipping->city}}'"
-                                    ></shipping>
+
+                            <div class="nav nav-tabs border-0 mb-3" role="tablist">
+                                <p class=" m-1">Спосіб доставки:</p>
+                                <div class="custom-control custom-radio m-1">
+                                    <input type="radio" id="radio_courier" name="shipping_method" value="courier"
+                                           data-target="#courier" class="custom-control-input"
+                                           @if ($order->shipping->method == 'courier')checked @endif
+                                    >
+                                    <label for="radio_courier" class="custom-control-label">Курєр </label>
+                                </div>
+                                <div class="custom-control custom-radio m-1">
+                                    <input type="radio" id="radio_novaposhta" name="shipping_method" value="novaposhta"
+                                           data-target="#novaposhta" class="custom-control-input"
+                                           @if ($order->shipping->method == 'novaposhta')checked @endif
+                                    >
+                                    <label for="radio_novaposhta" class="custom-control-label">Нова Пошта </label>
+                                </div>
+
                             </div>
                             <div class="tab-content">
-                                <div id="address_currier"
+                                <div id="courier"
                                      @if ($order->shipping->method == 'courier') class="tab-pane active"
                                      @else class="tab-pane" @endif
                                 >
@@ -228,46 +204,44 @@
                                                     <div class="input-group-text">вул.</div>
                                                 </div>
                                                 <input name="street" type="text" class="form-control"
-                                                       id="address_street" value="{{$order->shipping->street}}">
+                                                       id="address_street" value="@if ($order->shipping->method == 'courier'){{explode(', ',$order->shipping->getAddress()->title)[0]}}@endif">
                                             </div>
                                             <div class="input-group col-3">
                                                 <div class="input-group-prepend">
                                                     <div class="input-group-text">буд.</div>
                                                 </div>
                                                 <input name="house" id="address_house"
-                                                       value="{{$order->shipping->house}}"
+                                                       value="@if ($order->shipping->method == 'courier'){{explode(', ',$order->shipping->getAddress()->title)[1]}}@endif"
                                                        type="text" class="form-control">
                                             </div>
                                             <div class="input-group col-3">
                                                 <div class="input-group-prepend">
                                                     <div class="input-group-text">кв.</div>
                                                 </div>
-                                                <input name="flat" id="address_flat" value="{{$order->shipping->flat}}"
+                                                <input name="flat" id="address_flat" value="@if ($order->shipping->method == 'courier'){{explode(', ',$order->shipping->getAddress()->title)[2]}}@endif"
                                                        type="text" class="form-control">
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                                <div id="address_novaposhta"
+                                <div id="novaposhta"
                                      @if ($order->shipping->method == 'novaposhta') class="tab-pane active"
                                      @else class="tab-pane" @endif
                                 >
-                                    <div class="form-group row ">
-                                        <div class="col-sm-3">
-                                            <label class="col-form-label" for="warehouse">Відділення</label>
-                                        </div>
-                                        <div class="col-sm-9">
-                                            <warehouse
-                                                v-bind:warehouse_ref="'{{$order->shipping->warehouse_ref}}'"
-                                            ></warehouse>
-                                        </div>
+                                    <div class="form-group">
+                                        <label for="address-select2">Відділення</label>
+                                        <select name="warehouse_code" id="address-select2" class="form-control" style="width: 100%">
+                                            @if ($order->shipping->method == 'novaposhta')
+                                                <option value="{{$order->shipping->getAddress()->code}}">{{$order->shipping->getAddress()->title}}</option>
+                                            @endif
+                                        </select>
                                     </div>
                                 </div>
 
-                                <div class="row">
-                                    <div class="col-5">
-                                    </div>
-                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="shipping-rate">Вартість доставки </label>
+                                <input type="number" name="shipping_rate" id="shipping-rate" value="{{$order->shipping->shipping_rate}}" class="form-control">
                             </div>
                         </div>
                         <!-- /.card-body -->
@@ -275,10 +249,15 @@
                     <!-- /.card -->
                 </div>
             </div>
+
             <div class="row">
                 <div class="col-12">
-                    <a href="" class="btn btn-secondary">Cancel</a>
-                    <input type="submit" value="Save Changes" class="btn btn-success float-right">
+                    <div class="card">
+                        <div class="card-body">
+                            <a href="" class="btn btn-secondary">Cancel</a>
+                            <input type="submit" value="Save" class="btn btn-success float-right">
+                        </div>
+                    </div>
                 </div>
             </div>
         </form>

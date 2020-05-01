@@ -35,6 +35,12 @@ class UsersFilters extends BaseFilter
 
     public function searchFilter($value)
     {
-        $this->builder->where('email', 'LIKE', '%'.$value.'%');
+        $this->builder->where('email', 'like', "%$value%")
+            ->orWhereHas('detail', function ($builder) use($value){
+                foreach (explode(' ', $value) as $key){
+                    $builder->where('first_name', 'like', "%$key%")
+                        ->orWhere('last_name', 'like', "%$key%");
+                }
+            });
     }
 }
