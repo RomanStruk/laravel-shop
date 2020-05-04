@@ -21,9 +21,9 @@
                             <div class="list-group">
                             <span href="#"
                                   class="list-group-item list-group-item-action list-group-item-warning custom-cursor"
-                                  v-for="ct in cities.data"
-                                  @click="choose(ct.Description, ct.Ref)"
-                            >{{ct.Description}}, {{ct.RegionsDescription}}, {{ct.AreaDescription}}</span>
+                                  v-for="ct in cities"
+                                  @click="choose(ct.title, ct.code)"
+                            >{{ct.description}}</span>
                             </div>
                         </div>
                     </div>
@@ -79,8 +79,8 @@
                         >
                             <label for="exampleFormControlSelect1">Виберіть відповідне відділення:</label>
                             <select name="warehouse" class="form-control form-control-sm" id="exampleFormControlSelect1">
-                                <option v-for="house in warehouses.data" :value="house.Ref">
-                                    {{house.Description}}
+                                <option v-for="house in warehouses" :value="house.code">
+                                    {{house.title}}
                                 </option>
                             </select>
                         </div>
@@ -154,9 +154,7 @@
                 this.next_steep = true;
             },
             loadWarehouses: function () {
-                axios.post('/api/shipping/warehouses', {
-                    'warehouses': this.city_ref,
-                }).then((response) => {
+                axios.get('/api/v1/shipping/address?shipping_method=novaposhta&code='+ this.city_ref).then((response) => {
                     this.warehouses = response.data;
                     console.log(this.warehouses);
                 })
@@ -166,14 +164,13 @@
                 this.city = city;
                 this.city_ref = ref;
                 this.cities = {};
-                console.log(this.city_ref);                       // debug
+                // console.log(this.city_ref);                       // debug
             },
             loadCities: async function () {
                 this.is_refresh = true;                             // заглушка під чаз завантаження
-                await axios.post('api/shipping/city', {
-                    'city': this.city,
-                }).then((response) => {
+                await axios.get('/api/v1/shipping/city?shipping_method=novaposhta&title='+this.city).then((response) => {
                     this.cities = response.data;
+                    // console.log(this.cities);
                 }).catch(function (error) {
                     console.log(error);                             // debug error
                 });

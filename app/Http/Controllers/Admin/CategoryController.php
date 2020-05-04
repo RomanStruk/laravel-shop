@@ -2,21 +2,15 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Actions\Category\AdminFormCreateCategoryAction;
-use App\Actions\Category\DeleteCategoryAction;
-use App\Actions\Category\FormEditCategoryAction;
-use App\Actions\Category\GetCategoryAction;
-use App\Actions\Category\GetCategoryOrderByAction;
-use App\Actions\Category\SaveCategoryAction;
-use App\Actions\Category\UpdateCategoryAction;
-use App\Category;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CategoryRequest;
-use App\Services\CategoryService;
+use App\Services\Data\Category\DeleteCategory;
+use App\Services\Data\Category\GetCategories;
+use App\Services\Data\Category\GetCategoryByIdOrSlug;
+use App\Services\Data\Category\InsertCategory;
+use App\Services\Data\Category\UpdateCategory;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 use Illuminate\View\View;
 
 class CategoryController extends Controller
@@ -24,65 +18,74 @@ class CategoryController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @param GetCategoryOrderByAction $action
+     * @param GetCategories $getCategories
      * @return Factory|View
      */
-    public function index(GetCategoryOrderByAction $action)
+    public function index(GetCategories $getCategories)
     {
-//        dd($action->run(1));
+
         return view('admin.category.index')
-            ->with('categories', $action->run());
+            ->with('categories', $getCategories->handel(false));
     }
 
     /**
      * Show the form for creating a new resource.
      *
-     * @param AdminFormCreateCategoryAction $action
+     * @param GetCategories $getCategories
      * @return Factory|View
      */
-    public function create(AdminFormCreateCategoryAction $action)
+    public function create(GetCategories $getCategories)
     {
-        return view('admin.category.create', $action->run());
+        return view('admin.category.create', [
+            'category' => [],
+            'categories' => $getCategories->handel(),
+            'delimiter' => ''
+        ]);
     }
 
     /**
      * Store a newly created resource in storage.
      *
      * @param CategoryRequest $request
-     * @param SaveCategoryAction $action
+     * @param InsertCategory $insertCategory
      * @return RedirectResponse
      */
-    public function store(CategoryRequest $request, SaveCategoryAction $action)
+    public function store(CategoryRequest $request, InsertCategory $insertCategory)
     {
-        $id = $action->run($request);
+        $category = $insertCategory->handel($request->validated());
         return redirect()
-            ->route('category.edit', ['category' => $id])
+            ->route('admin.category.edit', ['category' => $category->id])
             ->with('success', __('category.save'));
     }
 
     /**
      * Show the form for editing the specified resource.
      *
-     * @param FormEditCategoryAction $action
+     * @param GetCategories $getCategories
+     * @param GetCategoryByIdOrSlug $getCategory
      * @param int $category
      * @return Factory|View
      */
-    public function edit(FormEditCategoryAction $action, int $category)
+    public function edit(GetCategories $getCategories, GetCategoryByIdOrSlug $getCategory, int $category)
     {
-        return view('admin.category.edit', $action->run($category));
+        return view('admin.category.edit', [
+            'category' => $getCategory->handel($category),
+            'categories' => $getCategories->handel(),
+            'delimiter' => ''
+        ]);
     }
 
     /**
      * Update the specified resource in storage.
      *
      * @param CategoryRequest $request
-     * @param UpdateCategoryAction $action
+     * @param UpdateCategory $updateCategory
      * @param integer $category
      * @return RedirectResponse
      */
-    public function update(CategoryRequest $request, UpdateCategoryAction $action, $category)
+    public function update(CategoryRequest $request, UpdateCategory $updateCategory, $category)
     {
-        $action->run($request, $category);
+        $updateCategory->handel($category, $request->validated());
         return redirect()
             ->back()
             ->with('success', __('category.update'));
@@ -91,13 +94,13 @@ class CategoryController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param DeleteCategoryAction $action
+     * @param DeleteCategory $deleteCategory
      * @param integer $category
      * @return RedirectResponse
      */
-    public function destroy(DeleteCategoryAction $action, $category)
+    public function destroy(DeleteCategory $deleteCategory, $category)
     {
-        $action->run($category);
+        $deleteCategory->handel($category);
         return redirect()->back()->with('success', __('category.delete'));
     }
 }

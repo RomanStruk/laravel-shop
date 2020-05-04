@@ -11,7 +11,7 @@
             >
                 <div class="custom-control custom-checkbox">
                     <input type="checkbox" class="custom-control-input"
-                           :name="'attribute['+attributes.id+'][]'"
+                           :name="'group_attribute['+attributes.id+'][]'"
                            :id="'check'+attribute.id "
                            v-model="checkbox"
                            :value="attribute"
@@ -61,7 +61,7 @@
         methods: {
             attributeGroup: function(){
                 this.is_refresh = true;                     // заглушка під чаз завантаження
-                axios.get('/filter/get/json',{
+                axios.get('/api/v1/filter/index', {
                     params: {
                         category: this.categoty_id
                     }

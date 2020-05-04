@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Traits\Helpers\SerializeDate;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -26,11 +27,23 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Payment extends Model
 {
-    public $fillable = ['paid', 'method'];
-
+    use SerializeDate;
     /**
      * @param array $fillable
      * @return Payment
      */
+    public $fillable = ['paid', 'method'];
 
+    const NO_PAID = 0;
+    const PAID = 1;
+
+    const METHOD_CARD = 'card';
+    const METHOD_RECEIPT = 'receipt';
+    const METHOD_GOOGLE_PAY = 'google-pay';
+
+
+    public function isPaid()
+    {
+        return $this->paid == '1';
+    }
 }

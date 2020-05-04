@@ -2,6 +2,7 @@
 
 namespace App;
 
+use DateTimeInterface;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -10,7 +11,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property int $id
  * @property string $value
  * @property int $group_attribute_id
- * @property-read \App\GroupAttribute $group
+ * @property-read \App\Filter $group
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Product[] $products
  * @property-read int|null $products_count
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Attribute newModelQuery()
@@ -20,18 +21,27 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Attribute whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Attribute whereValue($value)
  * @mixin \Eloquent
+ * @property int $filter_id
+ * @property-read \App\Filter $filter
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Attribute whereFilterId($value)
  */
 class Attribute extends Model
 {
     public $timestamps = false;
+    public $fillable = ['value'];
+
+    protected function serializeDate(DateTimeInterface $date)
+    {
+        return $date->format('Y-m-d H:i:s');
+    }
 
     public function products(){
         return $this->belongsToMany('App\Product');
     }
 
-    public function group()
+    public function filter()
     {
-        return $this->belongsTo('App\GroupAttribute', 'group_attribute_id', 'id');
+        return $this->belongsTo('App\Filter');
     }
 
 

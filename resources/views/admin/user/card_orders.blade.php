@@ -1,6 +1,11 @@
 <div class="card">
+    <div class="card-header">
+        <h3 class="card-title">
+            <i class="fas fa-credit-card"></i>
+            Замовлення (останні 5)
+        </h3>
+    </div>
     <div class="card-body">
-        <h5 class="card-title">Замовлення</h5>
         <table class="table table-hover">
             <thead>
             <tr>
@@ -11,10 +16,10 @@
             </tr>
             </thead>
             <tbody>
-            @forelse($user->orders as $order)
+            @forelse($orders = $user->orders()->orderBy('created_at')->paginate(5) as $order)
             <tr>
                 <th scope="row">
-                    <a href="{{route('admin.order.revision', ['id' =>$order->id])}}">{{$order->id}}</a>
+                    <a href="{{route('admin.order.show', ['order' =>$order->id])}}">{{$order->id}}</a>
                 </th>
                 <td>{{$order->comment}}</td>
                 <td>{{$order->sum_price}} $</td>
@@ -27,5 +32,11 @@
             @endforelse
             </tbody>
         </table>
+        <div class="row justify-content-center pt-2">
+            <div class="col-auto">
+                {{$orders->links()}}
+            </div>
+        </div>
+
     </div>
 </div>

@@ -1,6 +1,11 @@
 <div class="card mt-4">
+    <div class="card-header">
+        <h3 class="card-title">
+            <i class="fas fa-comment"></i>
+            Коментарі
+        </h3>
+    </div>
     <div class="card-body">
-        <h5 class="card-title">Коментарі</h5>
         <table class="table table-hover">
             <thead>
             <tr>

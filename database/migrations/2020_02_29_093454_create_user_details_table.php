@@ -22,10 +22,11 @@ class CreateUserDetailsTable extends Migration
             $table->string('first_name', 255);
             $table->string('last_name', 255);
             $table->string('phone', 255);
-            $table->string('avatar', 255);
-            $table->string('country', 255);
-            $table->date('birthday');
-            $table->string('location', 255);
+            $table->string('avatar', 255)->default(NULL)->nullable();
+            $table->string('country', 255)->default(NULL)->nullable();
+            $table->date('birthday')->default(NULL)->nullable();
+            $table->string('location', 255)->default(NULL)->nullable();
+            $table->tinyInteger('status')->default(1);
 
         });
     }

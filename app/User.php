@@ -2,11 +2,17 @@
 
 namespace App;
 
-use App\Repositories\Filters\UsersFilters;
+use App\Services\ScopeFilters\UsersFilters;
+use App\Traits\Helpers\SerializeDate;
+use App\Traits\Helpers\UserHelper;
+use App\Traits\Relations\UserRelations;
+use App\Traits\Status;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Laravel\Passport\HasApiTokens;
 
 /**
  * App\User
@@ -36,10 +42,33 @@ use Illuminate\Notifications\Notifiable;
  * @property-read \App\UserDetail $detail
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Order[] $orders
  * @property-read int|null $orders_count
+ * @property \Illuminate\Support\Carbon|null $deleted_at
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Comment[] $comments
+ * @property-read int|null $comments_count
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\User filter(\App\Services\ScopeFilters\UsersFilters $usersFilters, $filter)
+ * @method static bool|null forceDelete()
+ * @method static \Illuminate\Database\Query\Builder|\App\User onlyTrashed()
+ * @method static bool|null restore()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\User whereDeletedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\User withTrashed()
+ * @method static \Illuminate\Database\Query\Builder|\App\User withoutTrashed()
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Role[] $roles
+ * @property-read int|null $roles_count
+ * @property-read mixed $full_name
+ * @property-read \Illuminate\Database\Eloquent\Collection|\Laravel\Passport\Client[] $clients
+ * @property-read int|null $clients_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|\Laravel\Passport\Token[] $tokens
+ * @property-read int|null $tokens_count
  */
-class User extends Authenticatable
+class User extends Authenticatable implements MustVerifyEmail
 {
-    use Notifiable;
+    use SoftDeletes;
+    use HasApiTokens, Notifiable;
+    use UserRelations;
+    use Status;
+    use UserHelper;
+    use SerializeDate;
+
 
     /**
      * The attributes that are mass assignable.
@@ -80,18 +109,25 @@ class User extends Authenticatable
         return $usersFilters->apply($query, $filter);
     }
 
-    public function detail()
+    public function getFullNameAttribute()
     {
-        return $this->hasOne('App\UserDetail')->withDefault();
+        return $this->detail->first_name . ' ' . $this->detail->last_name;
+    }
+    const STATUS_ACTIVE   = 1;
+    const STATUS_INACTIVE = 2;
+    const STATUS_DELETED  = 3;
+
+    /**
+     * Return list of status codes and labels
+     * @return array
+     */
+    public static function listStatus()
+    {
+        return [
+            self::STATUS_ACTIVE    => 'Активний',
+            self::STATUS_INACTIVE => 'Не активний',
+            self::STATUS_DELETED  => 'Видалений'
+        ];
     }
 
-    public function comments()
-    {
-        return $this->hasMany(Comment::class);
-    }
-
-    public function orders()
-    {
-        return $this->hasMany('App\Order');
-    }
 }

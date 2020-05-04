@@ -1,79 +1,78 @@
 @extends('admin.layouts.app')
 
 @section('content')
-    <h2>
-        <i class="fa fa-list"></i> Список медіа файлів
-        <a href="{{route('admin.media.create')}}" title="Додати">
-            <i class="fa fa-plus-circle" aria-hidden="true"></i>
-        </a>
-    </h2>
-    @if ($errors->any())
-        <div class="alert alert-danger">
-            <ul>
-                @foreach ($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                @endforeach
-            </ul>
-        </div>
-    @endif
-    @if (\Session::has('success'))
-        <div class="alert alert-success">
-            <ul>
-                <li>{!! \Session::get('success') !!}</li>
-            </ul>
-        </div>
-    @endif
-    <table class="table table-bordered table-hover">
-        <thead>
-        <tr>
-            <td class="text-right col-1">ID</td>
-            <td class="text-left col-2">Зображення</td>
-            <td class="text-left col-3">Ім'я</td>
-            <td class="text-left col-1">Розмір</td>
-            <td class="text-left col-1">Розширення</td>
-            <td class="text-left col-1">Диск</td>
-            <td class="text-center col-1">Дія</td>
-        </tr>
-        </thead>
-        <tbody>
-        @foreach($medias as $media)
-            <tr>
-                <td class="text-right">{{ $media->id }}</td>
-                <td class="text-left">
-                    <picture>
-                        <source srcset="{{ $media->url }}" type="image/svg+xml">
-                        <img src="{{ $media->url }}" class="img-fluid img-thumbnail" alt="..." style="height: 64px; width: auto">
-                    </picture>
-                </td>
-                <td class="text-left">{{ $media->name }}</td>
-                <td class="text-left">{{ $media->size }}</td>
-                <td class="text-left">{{ $media->extension }}</td>
-                <td class="text-left">{{ $media->disc }}</td>
-                <td class="text-right">
-                    <div class="btn-group">
-                        <a
-                            href="{{ route( 'admin.media.show', ['medium' => $media->id]) }}"
-                            data-toggle="tooltip" title="" class="btn btn-primary"
-                            data-original-title="View">
-                            <i class="fa fa-eye"></i>
-                        </a>
-                        <button type="button" class="btn btn-primary dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            <span class="sr-only">Toggle Dropdown</span>
-                        </button>
-                        <div class="dropdown-menu">
-                            <a class="dropdown-item" href="{{route('admin.media.edit', ['medium' => $media->id])}}"><i class="fa fa-pencil"></i> Edit</a>
-                            <form method="POST" action="{{route('admin.media.destroy', ['medium' => $media->id])}}" >
-                                @csrf
-                                @method('DELETE')
-                                <button class="dropdown-item" value="submit" type="submit"><i class="fa fa-trash-o"></i> Delete</button>
-                            </form>
+    @include('admin.component.title_breadcrumbs', [
+        'title' => 'Список медіа файлів',
+        'breadcrumbs' => [
+            'Медіа',
+        ],
+        'actions' => [
+            'create' => route('admin.media.create')
+        ]
+    ])
+
+    <!-- Main content -->
+    <section class="content">
+        @include('admin.component.events')
+        @include('admin.component.sort', [
+            'route' => route('admin.media.index'),
+            'search' => true,
+            'limit' => true
+        ])
+        <div class="card card-solid">
+            <div class="card-body p-0">
+                <table class="table table-striped projects">
+                    <thead>
+                    <tr>
+                        <th class="text-right col-1">#</th>
+                        <th class="text-left col-2">Зображення</th>
+                        <th class="text-left col-4">Ім'я</th>
+                        <th class="text-left col-1">Розмір</th>
+                        <th class="text-left col-1">Розширення</th>
+                        <th class="text-left col-1">Диск</th>
+                        <th class="text-center col-2">Дія</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    @foreach($medias as $media)
+                        <tr>
+                            <td class="text-right">{{ $media->id }}</td>
+                            <td class="text-left">
+                                <picture>
+                                    <source srcset="{{ $media->url }}" type="image/svg+xml">
+                                    <img src="{{ $media->url }}" class="img-fluid img-thumbnail" alt="..." style="height: 64px; width: auto">
+                                </picture>
+                            </td>
+                            <td class="text-left">{{ $media->name }}</td>
+                            <td class="text-left">{{ $media->size }}</td>
+                            <td class="text-left">{{ $media->extension }}</td>
+                            <td class="text-left">{{ $media->disc }}</td>
+                            <td class="text-right">
+                                @include('admin.component.dropdown_menu', [
+                                    'show' => route( 'admin.media.show', ['medium' => $media->id]),
+                                    'edit' => route( 'admin.media.edit', ['medium' => $media->id]),
+                                    'delete' => route( 'admin.media.destroy', ['medium' => $media->id]),
+
+                                ])
+
+                            </td>
+                        </tr>
+                    @endforeach
+
+                    </tbody>
+                </table>
+                <div class="row p-3">
+                    <div class="col-sm-12 col-md-5">
+                        Showing {{$medias->firstItem()}} to {{$medias->lastItem()}} of {{$medias->total()}} entries
+                    </div>
+                    <div class="col-sm-12 col-md-7">
+                        <div class="float-right">
+                            {{ $medias->withQueryString()->links() }}
                         </div>
                     </div>
-                </td>
-            </tr>
-        @endforeach
+                </div>
 
-        </tbody>
-    </table>
-    {{ $medias->links() }}
+            </div>
+        </div>
+    </section>
 @endsection

@@ -1,6 +1,6 @@
 <?php
 
-use App\OrderDetail;
+use App\OrderHistory;
 use Illuminate\Database\Seeder;
 
 class OrderDetailSeeder extends Seeder
@@ -13,8 +13,10 @@ class OrderDetailSeeder extends Seeder
     public function run()
     {
         $orders = App\Order::all();
+        $array = [];
         foreach ($orders as $order){
-            factory(OrderDetail::class)->make(['order_id' => $order->id])->save();
+            $array[] = factory(OrderHistory::class)->make(['order_id' => $order->id, 'status' => $order->status])->getAttributes();
         }
+        OrderHistory::insert($array);
     }
 }

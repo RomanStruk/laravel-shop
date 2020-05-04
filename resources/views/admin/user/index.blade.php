@@ -1,70 +1,80 @@
 @extends('admin.layouts.app')
 
 @section('content')
-    <h2>
-        <i class="fa fa-list"></i> Список користувачів
-        <a href="{{route('admin.user.create')}}" title="Додати">
-            <i class="fa fa-plus-circle" aria-hidden="true"></i>
-        </a>
-    </h2>
-    @if ($errors->any())
-        <div class="alert alert-danger">
-            <ul>
-                @foreach ($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                @endforeach
-            </ul>
-        </div>
-    @endif
-    @if (\Session::has('success'))
-        <div class="alert alert-success">
-            <ul>
-                <li>{!! \Session::get('success') !!}</li>
-            </ul>
-        </div>
-    @endif
-    <table class="table table-bordered table-hover">
-        <thead>
-        <tr>
-            <td class="text-right col-1">ID</td>
-            <td class="text-left col-4">Email</td>
-            <td class="text-left col-4">Ім'я</td>
-            <td class="text-left col-2">Телефон</td>
-            <td class="text-center col-1">Дія</td>
-        </tr>
-        </thead>
-        <tbody>
-        @foreach($users as $user)
-            <tr>
-                <td class="text-right">{{ $user->id }}</td>
-                <td class="text-left">{{ $user->email }}</td>
-                <td class="text-left">{{ $user->detail->first_name}} {{$user->detail->last_name }}</td>
-                <td class="text-left">{{ $user->detail->phone }}</td>
-                <td class="text-right">
-                    <div class="btn-group">
-                        <a
-                            href="{{ route( 'admin.user.show', ['user' => $user->id]) }}"
-                            data-toggle="tooltip" title="" class="btn btn-primary"
-                            data-original-title="View">
-                            <i class="fa fa-eye"></i>
-                        </a>
-                        <button type="button" class="btn btn-primary dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            <span class="sr-only">Toggle Dropdown</span>
-                        </button>
-                        <div class="dropdown-menu">
-                            <a class="dropdown-item" href="{{route('admin.user.edit', ['user' => $user->id])}}"><i class="fa fa-pencil"></i> Edit</a>
-                            <form method="POST" action="{{route('admin.user.destroy', ['user' => $user->id])}}" >
-                                @csrf
-                                @method('DELETE')
-                                <button class="dropdown-item" value="submit" type="submit"><i class="fa fa-trash-o"></i> Delete</button>
-                            </form>
+    @include('admin.component.title_breadcrumbs', [
+    'title' => 'Список користувачів',
+    'breadcrumbs' => [
+        'Користувачі',
+    ],
+    'actions' => [
+        'create' => route('admin.user.create')
+]])
+
+    <!-- Main content -->
+    <section class="content">
+        @include('admin.component.events')
+
+        @include('admin.component.sort', [
+        'route' => route('admin.user.index'),
+        'status' => \App\User::listStatus(),
+        'dateAdded' => true,
+        'search' => true,
+        'limit' => true
+        ])
+
+        <div class="card card-solid">
+            <div class="card-body p-0">
+                <table class="table table-striped projects">
+                    <thead>
+                    <tr>
+                        <td class="text-right col-1">#</td>
+                        <td class="text-left col-3">Email</td>
+                        <td class="col-1">Status</td>
+                        <td class="text-left col-2">Ім'я</td>
+                        <td class="text-left col-2">Телефон</td>
+                        <td class="text-left col-1">Роль</td>
+                        <td class="text-center col-2">Дія</td>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    @foreach($users as $user)
+                        <tr>
+                            <td class="text-right">{{ $user->id }}</td>
+                            <td class="text-left">{{ $user->email }}</td>
+                            <td class="project-state">
+                                <span class="badge badge-success">{{ $user->getStatus($user->detail->status) }}</span>
+                            </td>
+                            <td class="text-left">{{ $user->detail->first_name}} {{$user->detail->last_name }}</td>
+                            <td class="text-left">{{ $user->detail->phone }}</td>
+                            <td class="text-left">
+                                @foreach($user->roles as $role)
+                                    {{$role->name}}
+                                @endforeach
+                            </td>
+                            <td class="text-right">
+                                @include('admin.component.dropdown_menu', [
+                                    'show' => route( 'admin.user.show', ['user' => $user->id]),
+                                    'edit' => route( 'admin.user.edit', ['user' => $user->id]),
+                                    'delete' => route( 'admin.user.destroy', ['user' => $user->id]),
+                                ])
+                            </td>
+                        </tr>
+                    @endforeach
+
+                    </tbody>
+                </table>
+                <div class="row p-3">
+                    <div class="col-sm-12 col-md-5">
+                        Showing {{$users->firstItem()}} to {{$users->lastItem()}} of {{$users->total()}} entries
+                    </div>
+                    <div class="col-sm-12 col-md-7">
+                        <div class="float-right">
+                            {{ $users->withQueryString()->links() }}
                         </div>
                     </div>
-                </td>
-            </tr>
-        @endforeach
+                </div>
 
-        </tbody>
-    </table>
-    {{ $users->links() }}
+            </div>
+        </div>
+    </section>
 @endsection

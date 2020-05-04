@@ -19,20 +19,11 @@ class CreateShippingsTable extends Migration
             $table->bigInteger('order_id')->unsigned();
             $table->foreign('order_id')->references('id')->on('orders');
 
-            $table->enum('method', ['courier', 'novaposhta']);
             $table->integer('shipping_rate')->default(0);
 
-            $table->string('city');
-            $table->string('region');
-            $table->string('area');
-            $table->string('city_ref');
-
-            $table->text('street')->nullable();
-            $table->integer('house')->nullable();
-            $table->integer('flat')->nullable();
-
-            $table->string('warehouse_ref')->nullable();
-            $table->string('warehouse_title')->nullable();
+            $table->string('method');
+            $table->text('city');
+            $table->text('address');
         });
     }
 

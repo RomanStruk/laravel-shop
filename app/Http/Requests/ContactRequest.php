@@ -35,7 +35,7 @@ class ContactRequest extends FormRequest
     public function messages()
     {
         return [
-           'email.required' => 'Поле :attribute обовязкове до заповнення.'
+           'email.required' => 'Поле :filter обовязкове до заповнення.'
         ];
     }
 

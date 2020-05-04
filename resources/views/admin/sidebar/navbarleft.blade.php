@@ -2,7 +2,8 @@
     <div class="sidebar-sticky">
         <ul class="nav flex-column">
             <li class="nav-item">
-                <a class="nav-link active" href="{{ route('admin.dashboard.index') }}">
+                <a class="nav-link
+                @if(Route::currentRouteName() == 'admin.dashboard.index') active @endif" href="{{ route('admin.dashboard.index') }}">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
                          stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                          class="feather feather-home">
@@ -13,26 +14,29 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="{{ route('admin.order.index') }}">
+                <a class="nav-link
+                @if(Route::currentRouteName() == 'admin.order.index') active @endif" href="{{ route('admin.order.index') }}">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
                          stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                          class="feather feather-file">
                         <path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"></path>
                         <polyline points="13 2 13 9 20 9"></polyline>
                     </svg>
-                    Orders
+                    Замовлення
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="{{route('admin.category.index')}}">
+                <a class="nav-link
+                @if(Route::currentRouteName() == 'admin.category.index') active @endif" href="{{route('admin.category.index')}}">
                     <svg class="feather" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
                         <path fill-rule="evenodd" d="M8 3H3v3h5V3zM3 2a1 1 0 00-1 1v3a1 1 0 001 1h5a1 1 0 001-1V3a1 1 0 00-1-1H3zm14 12h-5v3h5v-3zm-5-1a1 1 0 00-1 1v3a1 1 0 001 1h5a1 1 0 001-1v-3a1 1 0 00-1-1h-5zm-4-3H3v7h5v-7zM3 9a1 1 0 00-1 1v7a1 1 0 001 1h5a1 1 0 001-1v-7a1 1 0 00-1-1H3zm14-6h-5v7h5V3zm-5-1a1 1 0 00-1 1v7a1 1 0 001 1h5a1 1 0 001-1V3a1 1 0 00-1-1h-5z" clip-rule="evenodd"></path>
                     </svg>
-                    Categories
+                    Категорії
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="{{route('admin.product.index')}}">
+                <a class="nav-link
+                @if(Route::currentRouteName() == 'admin.product.index') active @endif" href="{{route('admin.product.index')}}">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
                          stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                          class="feather feather-shopping-cart">
@@ -40,11 +44,12 @@
                         <circle cx="20" cy="21" r="1"></circle>
                         <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
                     </svg>
-                    Products
+                    Товари
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="{{route('admin.user.index')}}">
+                <a class="nav-link
+                @if(Route::currentRouteName() == 'admin.user.index') active @endif" href="{{route('admin.user.index')}}">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
                          stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                          class="feather feather-users">
@@ -53,11 +58,12 @@
                         <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
                         <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
                     </svg>
-                    Customers
+                    Користувачі
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="{{route('admin.media.index')}}">
+                <a class="nav-link
+                @if(Route::currentRouteName() == 'admin.media.index') active @endif" href="{{route('admin.media.index')}}">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
                          stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                          class="feather feather-layers">
@@ -69,7 +75,8 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="#">
+                <a class="nav-link
+                @if(Route::currentRouteName() == 'admin.filter.index') active @endif" href="{{route('admin.filter.index')}}">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
                          stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                          class="feather feather-bar-chart-2">
@@ -77,7 +84,7 @@
                         <line x1="12" y1="20" x2="12" y2="4"></line>
                         <line x1="6" y1="20" x2="6" y2="14"></line>
                     </svg>
-                    Reports
+                    Фільтри
                 </a>
             </li>
         </ul>

@@ -247,7 +247,7 @@
             loadProducts: function(){
                 // console.log(checkbox);
                 this.is_refresh = true;                             // заглушка під чаз завантаження
-                axios.get('/shop/json', {
+                axios.get('/api/v1/product/index', {
                     params: {
                         filter: this.filter,
                         category: this.category_id,
@@ -257,7 +257,9 @@
                     },
                     paramsSerializer: function(params) {
                         let tmp = [];
-                        params.filter.forEach(item => {tmp.push(`attribute[${item.group_attribute_id}][]=${item.id}`)});
+                        params.filter.forEach(item => {
+                            tmp.push(`attribute[${item.filter_id}][]=${item.id}`)
+                        });
                         if (params.category) {
                             tmp.push(`category=${params.category}`);
                         }

@@ -2,208 +2,99 @@
 
 @section('content')
 
-    @if ($errors->any())
-        <div class="alert alert-danger">
-            <ul>
-                @foreach ($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                @endforeach
-            </ul>
-        </div>
-    @endif
-    @if (\Session::has('success'))
-        <div class="alert alert-success">
-            <ul>
-                <li>{!! \Session::get('success') !!}</li>
-            </ul>
-        </div>
-    @endif
-    <div class="row">
-        <div class="col-md-9 col-md-pull-3 col-sm-12">
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h3 class="panel-title"><i class="fa fa-list"></i> Список замовлень</h3>
-                </div>
-                <div class="panel-body">
-                        <table class="table table-bordered table-hover">
+    <!-- Content Header (Page header) -->
+    @include('admin.component.title_breadcrumbs', [
+        'title' => 'Список замовлень',
+        'breadcrumbs' => [
+            'Замовлення',
+        ],
+        'actions' => [
+            'create' => route('admin.order.create')
+            ]
+        ])
+    <!-- /.content-header -->
+
+    <!-- Main content -->
+    <section class="content">
+        @include('admin.component.events')
+        @include('admin.component.sort', [
+        'route' => route('admin.order.index'),
+        'status' => \App\Order::listStatus(),
+        'dateAdded' => true,
+        'search' => true,
+        'limit' => true
+        ])
+        <div class="card card-solid">
+            <div class="card-body p-0">
+                        <table class="table table-striped projects">
                             <thead>
                             <tr>
-                                <td style="width: 1px;" class="text-center"><input type="checkbox"
-                                                                                   onclick="$('input[name*=\'selected\']').prop('checked', this.checked);">
-                                </td>
-                                <td class="text-right"><a
-                                        href="https://demo.opencart.com/admin/index.php?route=sale/order&amp;user_token=Bajgcy6cPAOTrKM99s2ql0t4NpOP3k2c&amp;sort=o.order_id&amp;order=ASC"
-                                        class="desc">Order ID</a></td>
-                                <td class="text-left"><a
-                                        href="#sort=customer&amp;order=ASC">Замовник</a>
-                                </td>
-                                <td class="text-left"><a
-                                        href="https://demo.opencart.com/admin/index.php?route=sale/order&amp;user_token=Bajgcy6cPAOTrKM99s2ql0t4NpOP3k2c&amp;sort=order_status&amp;order=ASC">Status</a>
-                                </td>
-                                <td class="text-right"><a
-                                        href="https://demo.opencart.com/admin/index.php?route=sale/order&amp;user_token=Bajgcy6cPAOTrKM99s2ql0t4NpOP3k2c&amp;sort=o.total&amp;order=ASC">Total</a>
-                                </td>
-                                <td class="text-left"><a
-                                        href="https://demo.opencart.com/admin/index.php?route=sale/order&amp;user_token=Bajgcy6cPAOTrKM99s2ql0t4NpOP3k2c&amp;sort=o.date_added&amp;order=ASC">Date
-                                        Added</a></td>
-                                <td class="text-left"><a
-                                        href="https://demo.opencart.com/admin/index.php?route=sale/order&amp;user_token=Bajgcy6cPAOTrKM99s2ql0t4NpOP3k2c&amp;sort=o.date_modified&amp;order=ASC">Date
-                                        Modified</a></td>
-                                <td class="text-right">Action</td>
+                                <th class="text-right">#</th>
+                                <th class="text-left">Замовник</th>
+                                <th class="text-left">Total</th>
+                                <th class="text-left">Date Modified</th>
+                                <th class="text-center">Status</th>
+                                <th class="text-center">Action</th>
                             </tr>
                             </thead>
                             <tbody>
                             @foreach($orders as $order)
-                            <tr>
-                                <td class="text-center">
-                                    <input type="checkbox" name="selected[]" value="{{ $order->id }}">
-                                    <input type="hidden" name="shipping_code[]" value="flat.flat">
-                                </td>
-                                <td class="text-right">{{ $order->id }}</td>
-                                <td class="text-left">
-                                    <a href="{{route('admin.user.show', ['user' => $order->user->id])}}">
-                                    {{ $order->user->detail->first_name }} {{ $order->user->detail->last_name }}
-                                    </a>
-                                </td>
-                                <td class="text-left">{{$order->getStatus($order->detail_status)}}</td>
-                                <td class="text-right">{{$order->sum_price}}</td>
-                                <td class="text-left">{{ $order->created_at }}</td>
-                                <td class="text-left">{{ $order->updated_at }}</td>
-                                <td class="text-right">
-                                    <div class="btn-group">
-                                        <a
-                                            href="{{ route( 'admin.order.revision', ['id' => $order->id]) }}"
-                                            data-toggle="tooltip" title="" class="btn btn-primary"
-                                            data-original-title="View">
-                                            <i class="fa fa-eye"></i>
+                                <tr>
+                                    <td class="text-right">{{ $order->id }}</td>
+                                    <td class="text-left">
+                                        <a href="{{route('admin.user.show', ['user' => $order->user->id])}}">
+                                            {{ $order->user->fullName }}
                                         </a>
-                                        <button type="button" class="btn btn-primary dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                            <span class="sr-only">Toggle Dropdown</span>
-                                        </button>
-                                        <div class="dropdown-menu">
-                                            <a class="dropdown-item" href="{{route('admin.order.edit', ['id' => $order->id])}}"><i class="fa fa-pencil"></i> Edit</a>
-                                            <form method="POST" action="{{route('admin.order.destroy', ['order' => $order->id])}}" >
-                                                @csrf
-                                                @method('DELETE')
-                                                <button class="dropdown-item" value="submit" type="submit"><i class="fa fa-trash-o"></i> Delete</button>
-                                            </form>
-                                        </div>
-                                    </div>
-                                </td>
-                            </tr>
+                                        <br>
+                                        <small>
+                                            Created {{ $order->created_at->format('d.M.Y h:m') }}
+                                        </small>
+                                    </td>
+                                    <td class="text-left">{{$order->sum_price}} {{ config('shop.currency_short') }}</td>
+                                    <td class="text-left">{{ $order->updated_at->format('j F Yр. h:m') }}</td>
+                                    <td class="project-state">
+
+                                        @if ($order->status == $order::STATUS_PENDING)
+                                            <span class="badge badge-warning">
+                                                {{$order->getStatus($order->status)}}
+                                            </span>
+                                        @elseif ($order->status == $order::STATUS_PROCESSING or $order->status == $order::STATUS_COMPLETED)
+                                            <span class="badge badge-success">
+                                                {{$order->getStatus($order->status)}}
+                                            </span>
+                                        @else
+                                            <span class="badge badge-danger">
+                                                {{$order->getStatus($order->status)}}
+                                            </span>
+                                        @endif
+
+                                    </td>
+                                    <td class="project-actions text-right">
+                                        @include('admin.component.dropdown_menu', [
+                                            'show' => route( 'admin.order.show', ['order' => $order->id]),
+                                            'edit' => route( 'admin.order.edit', ['order' => $order->id]),
+                                            'delete' => route( 'admin.order.destroy', ['order' => $order->id]),
+
+                                        ])
+                                    </td>
+                                </tr>
                             @endforeach
 
                             </tbody>
                         </table>
-                    <div class="row">
-                        <div class="col-sm-6 text-left">
-                            <ul class="pagination">
-                                <li class="active"><span>1</span></li>
-                                <li>
-                                    <a href="https://demo.opencart.com/admin/index.php?route=sale/order&amp;user_token=Bajgcy6cPAOTrKM99s2ql0t4NpOP3k2c&amp;page=2">2</a>
-                                </li>
-                                <li>
-                                    <a href="https://demo.opencart.com/admin/index.php?route=sale/order&amp;user_token=Bajgcy6cPAOTrKM99s2ql0t4NpOP3k2c&amp;page=3">3</a>
-                                </li>
-                                <li>
-                                    <a href="https://demo.opencart.com/admin/index.php?route=sale/order&amp;user_token=Bajgcy6cPAOTrKM99s2ql0t4NpOP3k2c&amp;page=4">4</a>
-                                </li>
-                                <li>
-                                    <a href="https://demo.opencart.com/admin/index.php?route=sale/order&amp;user_token=Bajgcy6cPAOTrKM99s2ql0t4NpOP3k2c&amp;page=5">5</a>
-                                </li>
-                                <li>
-                                    <a href="https://demo.opencart.com/admin/index.php?route=sale/order&amp;user_token=Bajgcy6cPAOTrKM99s2ql0t4NpOP3k2c&amp;page=6">6</a>
-                                </li>
-                                <li>
-                                    <a href="https://demo.opencart.com/admin/index.php?route=sale/order&amp;user_token=Bajgcy6cPAOTrKM99s2ql0t4NpOP3k2c&amp;page=7">7</a>
-                                </li>
-                                <li>
-                                    <a href="https://demo.opencart.com/admin/index.php?route=sale/order&amp;user_token=Bajgcy6cPAOTrKM99s2ql0t4NpOP3k2c&amp;page=8">8</a>
-                                </li>
-                                <li>
-                                    <a href="https://demo.opencart.com/admin/index.php?route=sale/order&amp;user_token=Bajgcy6cPAOTrKM99s2ql0t4NpOP3k2c&amp;page=9">9</a>
-                                </li>
-                                <li>
-                                    <a href="https://demo.opencart.com/admin/index.php?route=sale/order&amp;user_token=Bajgcy6cPAOTrKM99s2ql0t4NpOP3k2c&amp;page=2">&gt;</a>
-                                </li>
-                                <li>
-                                    <a href="https://demo.opencart.com/admin/index.php?route=sale/order&amp;user_token=Bajgcy6cPAOTrKM99s2ql0t4NpOP3k2c&amp;page=325">&gt;|</a>
-                                </li>
-                            </ul>
+
+                <div class="row p-3">
+                    <div class="col-sm-12 col-md-5">
+                        Showing {{$orders->firstItem()}} to {{$orders->lastItem()}} of {{$orders->total()}} entries
+                    </div>
+                    <div class="col-sm-12 col-md-7">
+                        <div class="float-right">
+                            {{ $orders->withQueryString()->links() }}
                         </div>
-                        <div class="col-sm-6 text-right">Showing 1 to 20 of 6495 (325 Pages)</div>
                     </div>
                 </div>
             </div>
         </div>
-        <div id="filter-order" class="col-md-3 col-md-push-9 col-sm-12 hidden-sm hidden-xs">
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h3 class="panel-title"><i class="fa fa-filter"></i> Filter</h3>
-                </div>
-                <div class="panel-body">
-                    <div class="form-group">
-                        <label class="control-label" for="input-order-id">Order ID</label>
-                        <input type="text" name="filter_order_id" value="" placeholder="Order ID" id="input-order-id"
-                               class="form-control">
-                    </div>
-                    <div class="form-group">
-                        <label class="control-label" for="input-customer">Customer</label>
-                        <input type="text" name="filter_customer" value="" placeholder="Customer" id="input-customer"
-                               class="form-control" autocomplete="off">
-                        <ul class="dropdown-menu"></ul>
-                    </div>
-                    <div class="form-group">
-                        <label class="control-label" for="input-order-status">Order Status</label>
-                        <select name="filter_order_status_id" id="input-order-status" class="form-control">
-                            <option value=""></option>
-                            <option value="0">Missing Orders</option>
-                            <option value="7">Canceled</option>
-                            <option value="9">Canceled Reversal</option>
-                            <option value="13">Chargeback</option>
-                            <option value="5">Complete</option>
-                            <option value="8">Denied</option>
-                            <option value="14">Expired</option>
-                            <option value="10">Failed</option>
-                            <option value="1">Pending</option>
-                            <option value="15">Processed</option>
-                            <option value="2">Processing</option>
-                            <option value="11">Refunded</option>
-                            <option value="12">Reversed</option>
-                            <option value="3">Shipped</option>
-                            <option value="16">Voided</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label class="control-label" for="input-total">Total</label>
-                        <input type="text" name="filter_total" value="" placeholder="Total" id="input-total"
-                               class="form-control">
-                    </div>
-                    <div class="form-group">
-                        <label class="control-label" for="input-date-added">Date Added</label>
-                        <div class="input-group date">
-                            <input type="date" name="filter_date_added" value="" placeholder="Date Added"
-                                   data-date-format="YYYY-MM-DD" id="input-date-added" class="form-control">
-                            <span class="input-group-btn">
-<button type="button" class="btn btn-default"><i class="fa fa-calendar"></i></button>
-</span></div>
-                    </div>
-                    <div class="form-group">
-                        <label class="control-label" for="input-date-modified">Date Modified</label>
-                        <div class="input-group date">
-                            <input type="date" name="filter_date_modified" value="" placeholder="Date Modified"
-                                   data-date-format="YYYY-MM-DD" id="input-date-modified" class="form-control">
-                            <span class="input-group-btn">
-<button type="button" class="btn btn-default"><i class="fa fa-calendar"></i></button>
-</span></div>
-                    </div>
-                    <div class="form-group text-right">
-                        <button type="button" id="button-filter" class="btn btn-default"><i class="fa fa-filter"></i>
-                            Filter
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+
+    </section>
 @endsection

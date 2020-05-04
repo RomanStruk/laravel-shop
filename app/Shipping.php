@@ -2,6 +2,10 @@
 
 namespace App;
 
+use App\Services\Shipping\ShippingBase;
+use App\Services\Shipping\ShippingMethods\CourierMethod;
+use App\Services\Shipping\ShippingMethods\NovaPoshtaMethod;
+use App\Traits\Helpers\SerializeDate;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -11,14 +15,8 @@ use Illuminate\Database\Eloquent\Model;
  * @property int $order_id
  * @property string $method
  * @property float $shipping_rate
- * @property string $city
- * @property string $region
- * @property string $area
- * @property string $city_ref
- * @property string|null $street
- * @property int|null $house
- * @property int|null $flat
- * @property string|null $warehouse_ref
+ * @property array $city
+ * @property array|null $address
  * @property-read \App\Order $order
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Shipping newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Shipping newQuery()
@@ -38,22 +36,35 @@ use Illuminate\Database\Eloquent\Model;
  * @mixin \Eloquent
  * @property string|null $warehouse_title
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Shipping whereWarehouseTitle($value)
+ * @property string $city_code
+ * @property string|null $warehouse_code
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Shipping whereCityCode($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Shipping whereWarehouseCode($value)
  */
 class Shipping extends Model
 {
+    use SerializeDate;
+
     public $timestamps = false;
     public $fillable = [
         'method',
         'shipping_rate',
-        'city',
-        'region',
-        'area',
-        'city_ref',
+        'city_code',
         'street',
         'house',
         'flat',
-        'warehouse_ref',
-        'warehouse_title',
+        'warehouse_code',
+    ];
+
+
+    protected $casts = [
+        'city' => 'array',
+        'address' => 'array'
+    ];
+
+    public static $shipping_methods = [
+        'novaposhta' => NovaPoshtaMethod::class,
+        'courier' => CourierMethod::class,
     ];
 
     public function order()
@@ -63,10 +74,66 @@ class Shipping extends Model
 
     public function getShippingRateAttribute($value)
     {
-        return round(($value/100), 2);
+        return round(($value / 100), 2);
     }
+
     public function setShippingRateAttribute($value)
     {
-        $this->attributes['shipping_rate'] = (int)((float)$value*100);
+        $this->attributes['shipping_rate'] = (int)((float)$value * 100);
+    }
+
+    ////////////////////////////////
+    ///
+    /// ///////////////////////////
+
+
+
+    public function getCityTitle()
+    {
+        $city = ShippingBase::castCity($this->city);
+        return $city->description;
+
+    }
+
+    public function getAddressTitle()
+    {
+        $address = ShippingBase::castAddress($this->address);
+        return $address->title;
+    }
+
+    public function getCity()
+    {
+        return ShippingBase::castCity($this->city);
+    }
+
+    public function getAddress()
+    {
+        return ShippingBase::castAddress($this->address);
+    }
+
+    /**
+     *
+     * Перетаорення даних для збереження в ДБ
+     *
+     * @param $value
+     */
+    public function setCityAttribute($value)
+    {
+        $shippingBase = new ShippingBase(self::$shipping_methods, $this->method);
+        $city = $shippingBase->setCity($value)->cityFillDataForSave();
+        $this->attributes['city'] = json_encode($city);
+    }
+
+    /**
+     *
+     * Перетаорення даних для збереження в ДБ
+     *
+     * @param $value
+     */
+    public function setAddressAttribute($value)
+    {
+        $shippingBase = new ShippingBase(self::$shipping_methods, $this->method);
+        $address = $shippingBase->setCity($this->city['code'])->setAddress($value)->addressFillDataForSave();
+        $this->attributes['address'] = json_encode($address);
     }
 }

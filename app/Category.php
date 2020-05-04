@@ -29,7 +29,10 @@ class Category extends Model
 {
     public $fillable = ['name', 'slug', 'parent_id', 'description'];
     public $timestamps = false;
-
+    protected function serializeDate(\DateTimeInterface $date)
+    {
+        return $date->format('Y-m-d H:i:s');
+    }
     public function countProducts()
     {
         return $this->hasMany('App\Product')->count();

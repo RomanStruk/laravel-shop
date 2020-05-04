@@ -5,16 +5,20 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ProductRequest;
 use App\Product;
-use App\Services\Attribute\GetAttributes;
-use App\Services\Category\GetCategories;
+use App\Services\Analytics\Analytics;
+use App\Services\Analytics\DateGeneration;
+use App\Services\Data\Filter\GetFilters;
+use App\Services\Data\Category\GetCategories;
+use App\Services\Data\SoldProduct\GetSoldProductBetweenDate;
 use App\Services\SaveFile;
-use App\Services\Media\SaveToDbMediaFile;
-use App\Services\Media\UpdateRelationships;
-use App\Services\Product\CreateProductService;
-use App\Services\Product\DeleteProductById;
-use App\Services\Product\GetProductByIdOrSlug;
-use App\Services\Product\GetProductsByLimit;
-use App\Services\Product\UpdateProductById;
+use App\Services\Data\Media\SaveToDbMediaFile;
+use App\Services\Data\Media\UpdateRelationships;
+use App\Services\Data\Product\CreateProductService;
+use App\Services\Data\Product\DeleteProductById;
+use App\Services\Data\Product\GetProductByIdOrSlug;
+use App\Services\Data\Product\GetProductsByLimit;
+use App\Services\Data\Product\UpdateProductById;
+use App\SoldProduct;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -29,15 +33,15 @@ class ProductController extends Controller
      * @param GetCategories $categories
      * @return Factory|View
      */
-    public function index(Request $request, GetProductsByLimit $getProducts, GetCategories $categories)
+    public function index(Request $request,
+                          GetProductsByLimit $getProducts,
+                          GetCategories $categories)
     {
-//        dd($request->except('limit'));
         $filters = $request->except('limit');
         $filters['date'] = 'desc';
         $products = $getProducts->handel(
             $filters,
-            ['*'],
-            $request->get('limit')
+            ['*']
         );
 //        dd($products);
         return view('admin.product.index')
@@ -49,16 +53,18 @@ class ProductController extends Controller
      * Show the form for creating a new resource.
      *
      * @param GetCategories $getCategories
-     * @param GetAttributes $getAttributes
+     * @param GetFilters $getFilters
+     * @param GetProductsByLimit $getProducts
      * @return Factory|View
      */
-    public function create(GetCategories $getCategories, GetAttributes $getAttributes)
+    public function create(GetCategories $getCategories, GetFilters $getFilters, GetProductsByLimit $getProducts)
     {
         $categories = $getCategories->handel(false);
-        $groups = $getAttributes->handel();
+        $filters = $getFilters->handel();
+//        dd(count($filters->first()->filterValues->pluck('id')->intersect([1]))?:false);
         return view('admin.product.create')
             ->with('categories', $categories)
-            ->with('groups', $groups);
+            ->with('filters', $filters);
     }
 
     /**
@@ -66,27 +72,16 @@ class ProductController extends Controller
      *
      * @param ProductRequest $request
      * @param CreateProductService $createProductService
-     * @param UpdateProductById $updateProductById
-     * @param SaveFile $saveMediaFile
-     * @param SaveToDbMediaFile $dbMediaFileService
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function store(ProductRequest $request,
-                          CreateProductService $createProductService,
-                          UpdateProductById $updateProductById,
-                          SaveFile $saveMediaFile,
-                          SaveToDbMediaFile $dbMediaFileService)
+    public function store(ProductRequest $request, CreateProductService $createProductService)
     {
-        $insertData = $request->validated();
-        $productId = $createProductService->handel($insertData);
-        $files=[];
-        foreach($request->file('media') as $file){
-                $fileData = $saveMediaFile->handel($file, 'shop/'.$productId);
-                $files[] = $dbMediaFileService->handel($fileData, $insertData['title'], $insertData['keywords'], $insertData['description']);
-        }
-        $updateProductById->handel($productId, false, $insertData['attributes'], $files);
+        $product = $createProductService->handel($request->productFillData());
+        $product->syncAttributesOfFilters($request->attributesFillData());
+        $product->syncMediaFiles($request->mediaFillData());
+        $product->syncRelatedProducts($request->relatedFillData());
 
-        return redirect()->route('admin.product.show', ['product' => $productId])
+        return redirect()->route('admin.product.show', ['product' => $product->id])
             ->with('success', __('product.save'));
     }
 
@@ -94,17 +89,29 @@ class ProductController extends Controller
      * Display the specified resource.
      *
      * @param GetProductByIdOrSlug $getProduct
-     * @param GetAttributes $getAttributes
+     * @param GetFilters $getAttributes
+     * @param GetSoldProductBetweenDate $soldProductBetweenDate
      * @param int $id
      * @return Factory|View
      */
-    public function show(GetProductByIdOrSlug $getProduct, GetAttributes $getAttributes, $id)
+    public function show(GetProductByIdOrSlug $getProduct, GetFilters $getAttributes, GetSoldProductBetweenDate $soldProductBetweenDate, $id)
     {
         $product = $getProduct->handel($id, ['*'], true);
         $attributes = $getAttributes->handel();
+        // statistics card
+        $range = (new DateGeneration())->generateStartEndMonth(now());
+        $rangeLastMonth = (new DateGeneration())->generateStartEndMonth(now()->subMonth());
+        $soldProductCount = $soldProductBetweenDate->handel($id, $range, true);
+        $soldProductCountLastMonth = $soldProductBetweenDate->handel($id, $rangeLastMonth, true);
+        $soldProductsOverTime = SoldProduct::where('product_id', $id)->count();
+        $progress = (new Analytics())->growthRates($soldProductCount, $soldProductCountLastMonth);
+        // end
         return view('admin.product.show')
             ->with('product', $product)
-            ->with('attributes', $attributes);
+            ->with('attributes', $attributes)
+            ->with('soldProductCount', $soldProductCount)
+            ->with('soldProductsOverTime', $soldProductsOverTime)
+            ->with('progress', $progress);
     }
 
     /**
@@ -112,18 +119,20 @@ class ProductController extends Controller
      *
      * @param GetProductByIdOrSlug $getProduct
      * @param GetCategories $getCategories
-     * @param GetAttributes $getAttributes
+     * @param GetFilters $getAttributes
      * @param $id
      * @return Factory|View
      */
     public function edit(GetProductByIdOrSlug $getProduct,
                          GetCategories $getCategories,
-                         GetAttributes $getAttributes,
+                         GetFilters $getAttributes,
                          $id)
     {
         $product = $getProduct->handel($id, ['*'], true);
         $categories = $getCategories->handel(false);
         $groups = $getAttributes->handel();
+//        dd(in_array('4', $product->product_attributes->pluck('id')->toArray()));
+//        dd($product->product_attributes->pluck('id')->toArray());
 //        dd($product, $groups);
         return view('admin.product.edit')
             ->with('product', $product)
@@ -136,34 +145,19 @@ class ProductController extends Controller
      *
      * @param ProductRequest $request
      * @param UpdateProductById $updateProductById
-     * @param SaveFile $saveMediaFile
-     * @param SaveToDbMediaFile $dbMediaFileService
-     * @param GetProductByIdOrSlug $getProductByIdOrSlug
      * @param $productId
      * @return \Illuminate\Http\RedirectResponse
      */
     public function update(ProductRequest $request,
                            UpdateProductById $updateProductById,
-                           SaveFile $saveMediaFile,
-                           SaveToDbMediaFile $dbMediaFileService,
-                           GetProductByIdOrSlug $getProductByIdOrSlug,
                            $productId)
     {
-        $update = $request->only(['title', 'alias', 'category_id', 'keywords', 'description', 'content', 'price', 'status', 'in_stock']);
-        $attributes = $request->input('attributes');
+//        dd($request->productFillData());
+        $product = $updateProductById->handel($productId, $request->productFillData());
+        $product->syncRelatedProducts($request->relatedFillData());
+        $product->syncMediaFiles($request->mediaFillData());
+        $product->syncAttributesOfFilters($request->attributesFillData());
 
-        $files=[];
-        if ($request->has('files') and $request->input('action') == '1'){
-            (new UpdateRelationships())->handel((int)$productId, $request->input('files'), 'detach');
-            $files = $getProductByIdOrSlug->handel($productId)->media->pluck('id')->toArray();
-        }
-        if ($request->has('media')){
-            foreach($request->file('media') as $file){
-                $fileData = $saveMediaFile->handel($file, 'shop/'.$productId);
-                $files[] = $dbMediaFileService->handel($fileData, $update['title'], $update['keywords'], $update['description']);
-            }
-        }
-        $updateProductById->handel($productId, $update, $attributes, $files);
         return redirect()->back()->with('success', __('product.update'));
     }
 
@@ -177,6 +171,6 @@ class ProductController extends Controller
     public function destroy(DeleteProductById $deleteProductById, $product)
     {
         $deleteProductById->handel($product, false);
-        return redirect()->back()->with('success', __('product.delete'));
+        return redirect()->route('admin.product.index')->with('success', __('product.delete'));
     }
 }

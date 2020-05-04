@@ -3,10 +3,10 @@
 namespace Tests\Feature\Media;
 
 use App\Media;
-use App\Services\Media\DeleteMediaFile;
-use App\Services\Media\DeleteMediaFileFromDb;
+use App\Services\Data\Media\DeleteMediaFile;
+use App\Services\Data\Media\DeleteMediaFileFromDb;
 use App\Services\SaveFile;
-use App\Services\Media\SaveToDbMediaFile;
+use App\Services\Data\Media\SaveToDbMediaFile;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Http\UploadedFile;

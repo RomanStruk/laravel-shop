@@ -4,13 +4,15 @@ namespace Tests\Feature;
 
 use App\Attribute;
 use App\Category;
-use App\GroupAttribute;
+use App\Filter;
 use App\Product;
-use App\Repositories\Filters\ProductsFilter;
-use App\Services\Product\GetProductsByLimit;
+use App\Services\PaginateSession;
+use App\Services\ScopeFilters\ProductsFilter;
+use App\Services\Data\Product\GetProductsByLimit;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
+use Illuminate\Http\Request;
 use Tests\TestCase;
 
 class ProductFilterTest extends TestCase
@@ -28,7 +30,12 @@ class ProductFilterTest extends TestCase
         $filters = [
             'category' => 2
         ];
-        $products = (new GetProductsByLimit(new ProductsFilter()))->handel($filters);
+        $products = (
+            new GetProductsByLimit(
+                new ProductsFilter(),
+                new PaginateSession(Request::capture())
+            )
+        )->handel($filters);
         $this->assertTrue($products->total() == 1);
     }
 
@@ -41,7 +48,12 @@ class ProductFilterTest extends TestCase
         $filters = [
             'category' => 'for-test'
         ];
-        $products = (new GetProductsByLimit(new ProductsFilter()))->handel($filters);
+        $products = (
+        new GetProductsByLimit(
+            new ProductsFilter(),
+            new PaginateSession(Request::capture())
+        )
+        )->handel($filters);
         $this->assertTrue($products->total() == 1);
     }
 
@@ -52,7 +64,12 @@ class ProductFilterTest extends TestCase
         $filters = [
             'title' => 'for-test'
         ];
-        $products = (new GetProductsByLimit(new ProductsFilter()))->handel($filters);
+        $products = (
+        new GetProductsByLimit(
+            new ProductsFilter(),
+            new PaginateSession(Request::capture())
+        )
+        )->handel($filters);
         $this->assertTrue($products->total() == 50);
     }
 
@@ -63,7 +80,12 @@ class ProductFilterTest extends TestCase
         $filters = [
             'status' => '1'
         ];
-        $products = (new GetProductsByLimit(new ProductsFilter()))->handel($filters);
+        $products = (
+        new GetProductsByLimit(
+            new ProductsFilter(),
+            new PaginateSession(Request::capture())
+        )
+        )->handel($filters);
         $this->assertTrue($products->total() == 5);
     }
 
@@ -73,7 +95,7 @@ class ProductFilterTest extends TestCase
         /*start prepare*/
         factory(Category::class)->create(); // category
         $productsDb = factory(Product::class,5)->create(); // 5 products
-        factory(GroupAttribute::class)->create(); // 1 group attribute
+        factory(Filter::class)->create(); // 1 group filter
         factory(Attribute::class)->create(['id' => 1]); // один атрібут id = 1
         foreach ($productsDb as $product){
             $product->product_attributes()->sync([1]);// один атрібут id = 1 для 5 продуктів
@@ -84,7 +106,12 @@ class ProductFilterTest extends TestCase
             'attribute' => '1'
         ];
 //        dd($d);
-        $products = (new GetProductsByLimit(new ProductsFilter()))->handel($filters);
+        $products = (
+        new GetProductsByLimit(
+            new ProductsFilter(),
+            new PaginateSession(Request::capture())
+        )
+        )->handel($filters);
         $this->assertTrue($products->total() == 5);
     }
     public function test_filter_by_attributes_for_products_with_filter_class()
@@ -92,12 +119,12 @@ class ProductFilterTest extends TestCase
         /*start prepare*/
         factory(Category::class)->create(); // category
         $productsDb = factory(Product::class,5)->create(); // 5 products
-        factory(GroupAttribute::class)->create(); // 1 group attribute
-        factory(GroupAttribute::class)->create(); // 2 group attribute
+        factory(Filter::class)->create(); // 1 group filter
+        factory(Filter::class)->create(); // 2 group filter
         factory(Attribute::class)->create(
-            ['id' => 1, 'group_attribute_id'=>1]); // атрібут id = 1 group 1
+            ['id' => 1, 'filter_id'=>1]); // атрібут id = 1 group 1
         factory(Attribute::class)->create(
-            ['id' => 2, 'group_attribute_id'=>2]); // атрібут id = 2 group 2
+            ['id' => 2, 'filter_id'=>2]); // атрібут id = 2 group 2
         foreach ($productsDb as $product){
             $product->product_attributes()->sync([1,2]);// атрібут id = 1, 2 для 5 продуктів
         }
@@ -110,21 +137,26 @@ class ProductFilterTest extends TestCase
                 2 => [2],
             ]
         ];
-        $products = (new GetProductsByLimit(new ProductsFilter()))->handel($filters);
+        $products = (
+        new GetProductsByLimit(
+            new ProductsFilter(),
+            new PaginateSession(Request::capture())
+        )
+        )->handel($filters);
         $this->assertTrue($products->total() == 5);
     }
     public function test_filter_by_attributes_mach_variables_for_products_with_filter_class()
     {
         /*start prepare*/
         factory(Category::class)->create(); // category
-        factory(GroupAttribute::class)->create(); // 1 group attribute
-        factory(GroupAttribute::class)->create(); // 2 group attribute
+        factory(Filter::class)->create(); // 1 group filter
+        factory(Filter::class)->create(); // 2 group filter
         factory(Attribute::class)->create(
-            ['id' => 1, 'group_attribute_id'=>1]); // атрібут id = 1 group 1
+            ['id' => 1, 'filter_id'=>1]); // атрібут id = 1 group 1
         factory(Attribute::class)->create(
-            ['id' => 2, 'group_attribute_id'=>2]); // атрібут id = 2 group 2
+            ['id' => 2, 'filter_id'=>2]); // атрібут id = 2 group 2
         factory(Attribute::class)->create(
-            ['id' => 3, 'group_attribute_id'=>2]); // атрібут id = 3 group 2
+            ['id' => 3, 'filter_id'=>2]); // атрібут id = 3 group 2
 
         $productDb1 = factory(Product::class)->create(); // 1 product
         $productDb1->product_attributes()->sync([1,2]);// атрібут 1, 2 для 1 продукта
@@ -141,15 +173,26 @@ class ProductFilterTest extends TestCase
                 2 => [2],
             ]
         ];
-        $products = (new GetProductsByLimit(new ProductsFilter()))->handel($filters);
+        $products = (
+        new GetProductsByLimit(
+            new ProductsFilter(),
+            new PaginateSession(Request::capture())
+        )
+        )->handel($filters);
+//        dump($products);
         $this->assertTrue($products->total() == 1);
 
         $filters2 = [
-            'attribute' => [
+            'filter' => [
                 2 => [2,3],
             ]
         ];
-        $products2 = (new GetProductsByLimit(new ProductsFilter()))->handel($filters2);
+        $products2 = (
+        new GetProductsByLimit(
+            new ProductsFilter(),
+            new PaginateSession(Request::capture())
+        )
+        )->handel($filters2);
         $this->assertTrue($products2->total() == 2);
     }
     public function test_filter_by_price_desc_for_products_with_filter_class()
@@ -163,7 +206,12 @@ class ProductFilterTest extends TestCase
         /*end prepare*/
 
         $filters = ['price' => 'desc'];
-        $products = (new GetProductsByLimit(new ProductsFilter()))->handel($filters);
+        $products = (
+        new GetProductsByLimit(
+            new ProductsFilter(),
+            new PaginateSession(Request::capture())
+        )
+        )->handel($filters);
         foreach ($products as $product){
             $this->assertTrue($product->price == $price);
             $this->assertTrue($product->id == 3);
@@ -182,7 +230,12 @@ class ProductFilterTest extends TestCase
         /*end prepare*/
 
         $filters = ['price' => 'asc'];
-        $products = (new GetProductsByLimit(new ProductsFilter()))->handel($filters);
+        $products = (
+        new GetProductsByLimit(
+            new ProductsFilter(),
+            new PaginateSession(Request::capture())
+        )
+        )->handel($filters);
         foreach ($products as $product){
             $this->assertTrue($product->price == $price);
             $this->assertTrue($product->id == 3);
@@ -201,7 +254,12 @@ class ProductFilterTest extends TestCase
         /*end prepare*/
 
         $filters = ['novelty' => 'desc'];
-        $products = (new GetProductsByLimit(new ProductsFilter()))->handel($filters);
+        $products = (
+        new GetProductsByLimit(
+            new ProductsFilter(),
+            new PaginateSession(Request::capture())
+        )
+        )->handel($filters);
         foreach ($products as $product){
             $this->assertTrue($now->eq($product->created_at));
             $this->assertTrue($product->id == 3);
@@ -220,7 +278,12 @@ class ProductFilterTest extends TestCase
         /*end prepare*/
 
         $filters = ['popular' => 'desc'];
-        $products = (new GetProductsByLimit(new ProductsFilter()))->handel($filters);
+        $products = (
+        new GetProductsByLimit(
+            new ProductsFilter(),
+            new PaginateSession(Request::capture())
+        )
+        )->handel($filters);
         foreach ($products as $product){
             $this->assertTrue($product->visits == $visits);
             $this->assertTrue($product->id == 3);

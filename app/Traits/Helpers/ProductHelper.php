@@ -1,0 +1,38 @@
+<?php
+
+
+namespace App\Traits\Helpers;
+
+
+use Illuminate\Database\Eloquent\Builder;
+
+trait ProductHelper
+{
+    public function scopeAvgRating(Builder $builder)
+    {
+        return $builder->withCount(['comments as average_rating' => function($query) {
+            $query->select(\DB::raw('coalesce(avg(rating),0)'));
+        }]);
+    }
+
+    public function scopeCountComments(Builder $builder)
+    {
+        return $builder->withCount('comments');
+    }
+
+    public function syncRelatedProducts($products)
+    {
+        return $this->related()->sync($products);
+    }
+
+    public function syncAttributesOfFilters(array $attributes)
+    {
+        return $this->product_attributes()->sync($attributes);
+    }
+
+    public function syncMediaFiles(array $media)
+    {
+        $this->media()->detach();
+        return $this->media()->attach($media);
+    }
+}

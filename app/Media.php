@@ -36,11 +36,17 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Media whereUrl($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Media whereVisibility($value)
  * @mixin \Eloquent
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Product[] $products
+ * @property-read int|null $products_count
  */
 class Media extends Model
 {
     public $guarded = [];
 
+    protected function serializeDate(\DateTimeInterface $date)
+    {
+        return $date->format('Y-m-d H:i:s');
+    }
     public function products()
     {
         return $this->belongsToMany(Product::class);
