@@ -2,15 +2,15 @@
 
 namespace App\Http\Controllers\Api\v1;
 
+use App\Category;
 use App\Http\Controllers\Controller;
-use App\Services\Data\Category\GetCategories;
 use Illuminate\Http\Request;
 
 class CategoryController extends Controller
 {
-    public function index(GetCategories $getCategories)
+    public function index()
     {
-        $categories = $getCategories->handel(true);
+        $categories = Category::allRelations(true)->paginate();
         $result = $categories->map(function($items){
             $items['count_products'] = $items->countProducts();
             $items['children'] = $items->children

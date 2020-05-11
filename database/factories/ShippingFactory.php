@@ -9,7 +9,7 @@ $factory->define(Shipping::class, function (Faker $faker) {
     $method = $faker->randomElement(['courier', 'novaposhta']);
     if ($method == 'courier'){
         $address = [
-            'title' => $faker->streetAddress() .', буд. '.rand(1, 300). ' кв. '.rand(1, 9999),
+            'title' => $faker->streetAddress() .', '.rand(1, 300). ', '.rand(1, 9999),
             'code' => ''
         ];
     }else{

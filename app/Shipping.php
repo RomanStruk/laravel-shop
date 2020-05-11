@@ -113,15 +113,15 @@ class Shipping extends Model
 
     /**
      *
-     * Перетаорення даних для збереження в ДБ
+     * Переторення даних для збереження в ДБ
      *
      * @param $value
      */
     public function setCityAttribute($value)
     {
-        $shippingBase = new ShippingBase(self::$shipping_methods, $this->method);
-        $city = $shippingBase->setCity($value)->cityFillDataForSave();
-        $this->attributes['city'] = json_encode($city);
+//        $shippingBase = new ShippingBase(self::$shipping_methods, $this->method);
+//        $city = $shippingBase->setCity($value)->cityFillDataForSave();
+        $this->attributes['city'] = json_encode($value);
     }
 
     /**
@@ -132,8 +132,8 @@ class Shipping extends Model
      */
     public function setAddressAttribute($value)
     {
-        $shippingBase = new ShippingBase(self::$shipping_methods, $this->method);
-        $address = $shippingBase->setCity($this->city['code'])->setAddress($value)->addressFillDataForSave();
-        $this->attributes['address'] = json_encode($address);
+//        $shippingBase = new ShippingBase(self::$shipping_methods, $this->method);
+//        $address = $shippingBase->setCity($this->city['code'])->setAddress($value)->addressFillDataForSave();
+        $this->attributes['address'] = json_encode($value);
     }
 }

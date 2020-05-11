@@ -9,6 +9,8 @@ use App\Http\Requests\OrderRequest;
 use App\Http\Requests\StatusOrderRequest;
 use App\Order;
 use App\Services\PaginateSession;
+use App\Services\Shipping\ShippingBase;
+use App\Shipping;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -56,7 +58,12 @@ class OrderController extends Controller
         $order->save();
         $order->syncProducts($request->productsFillData());
         $order->paymentCreate($request->paymentFillData());
-        $order->shippingCreate($request->shippingFillData());
+
+        $shipping = $request->shippingFillData();
+        $shippingBase = new ShippingBase(Shipping::$shipping_methods, $shipping['method']);
+        $shipping['city'] = $shippingBase->setCity($shipping['city'])->cityFillDataForSave();
+        $shipping['address'] = $shippingBase->setAddress($shipping['address'])->addressFillDataForSave();
+        $order->shippingCreate($shipping);
         event(new OrderCreatedEvent($order));   // event
         return redirect()->route('admin.order.show', $order)->with('success', __('order.save'));
     }
@@ -69,6 +76,8 @@ class OrderController extends Controller
     {
         // get order
         $order = Order::allRelations()->withTrashed()->findOrFail($orderId);
+//        dd($order->shipping->getAddress());
+//        dd(explode(', ',$order->shipping->getAddress()));
         // show edit view
         return view('admin.order.edit', ['order'=> $order]);
     }
@@ -95,7 +104,11 @@ class OrderController extends Controller
         $order->paymentUpdate($request->paymentFillData());
 
         // update shipping of order
-        $order->shippingUpdate($request->shippingFillData());
+        $shipping = $request->shippingFillData();
+        $shippingBase = new ShippingBase(Shipping::$shipping_methods, $shipping['method']);
+        $shipping['city'] = $shippingBase->setCity($shipping['city'])->cityFillDataForSave();
+        $shipping['address'] = $shippingBase->setAddress($shipping['address'])->addressFillDataForSave();
+        $order->shippingUpdate($shipping);
 
         return redirect()->back()->with('success', __('order.updated'));
     }

@@ -15,11 +15,11 @@ class ShippingSeeder extends Seeder
         $orders = App\Order::all();
         $shippings = [];
         foreach ($orders as $order){
-//            factory(Shipping::class)->make(['order_id' => $order->id])->save();
-            $shippings[] = factory(Shipping::class)->make(['order_id' => $order->id])->getAttributes();
+            factory(Shipping::class)->make(['order_id' => $order->id])->save();
+//            $shippings[] = factory(Shipping::class)->make(['order_id' => $order->id])->getAttributes();
         }
 //        $shippings[] = factory(Shipping::class)->make(['order_id' => $order->id])->save();
-        Shipping::insert($shippings);
+//        Shipping::insert($shippings);
 //        factory(Shipping::class, 100)->create();
     }
 }

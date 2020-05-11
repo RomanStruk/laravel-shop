@@ -2,17 +2,14 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Category;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ProductRequest;
 use App\Product;
 use App\Services\Analytics\Analytics;
 use App\Services\Analytics\DateGeneration;
 use App\Services\Data\Filter\GetFilters;
-use App\Services\Data\Category\GetCategories;
 use App\Services\Data\SoldProduct\GetSoldProductBetweenDate;
-use App\Services\SaveFile;
-use App\Services\Data\Media\SaveToDbMediaFile;
-use App\Services\Data\Media\UpdateRelationships;
 use App\Services\Data\Product\CreateProductService;
 use App\Services\Data\Product\DeleteProductById;
 use App\Services\Data\Product\GetProductByIdOrSlug;
@@ -30,12 +27,10 @@ class ProductController extends Controller
      *
      * @param Request $request
      * @param GetProductsByLimit $getProducts
-     * @param GetCategories $categories
      * @return Factory|View
      */
     public function index(Request $request,
-                          GetProductsByLimit $getProducts,
-                          GetCategories $categories)
+                          GetProductsByLimit $getProducts)
     {
         $filters = $request->except('limit');
         $filters['date'] = 'desc';
@@ -45,21 +40,20 @@ class ProductController extends Controller
         );
 //        dd($products);
         return view('admin.product.index')
-            ->with('categories', $categories->handel(false))
+            ->with('categories', Category::allRelations(false)->get())
             ->with('products', $products);
     }
 
     /**
      * Show the form for creating a new resource.
      *
-     * @param GetCategories $getCategories
      * @param GetFilters $getFilters
      * @param GetProductsByLimit $getProducts
      * @return Factory|View
      */
-    public function create(GetCategories $getCategories, GetFilters $getFilters, GetProductsByLimit $getProducts)
+    public function create(GetFilters $getFilters, GetProductsByLimit $getProducts)
     {
-        $categories = $getCategories->handel(false);
+        $categories = Category::allRelations(false)->get();
         $filters = $getFilters->handel();
 //        dd(count($filters->first()->filterValues->pluck('id')->intersect([1]))?:false);
         return view('admin.product.create')
@@ -118,18 +112,16 @@ class ProductController extends Controller
      * Show the form for editing the specified resource.
      *
      * @param GetProductByIdOrSlug $getProduct
-     * @param GetCategories $getCategories
      * @param GetFilters $getAttributes
      * @param $id
      * @return Factory|View
      */
     public function edit(GetProductByIdOrSlug $getProduct,
-                         GetCategories $getCategories,
                          GetFilters $getAttributes,
                          $id)
     {
         $product = $getProduct->handel($id, ['*'], true);
-        $categories = $getCategories->handel(false);
+        $categories = Category::allRelations(false)->get();
         $groups = $getAttributes->handel();
 //        dd(in_array('4', $product->product_attributes->pluck('id')->toArray()));
 //        dd($product->product_attributes->pluck('id')->toArray());

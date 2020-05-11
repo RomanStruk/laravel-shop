@@ -2,6 +2,7 @@
 
 namespace App;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -44,5 +45,37 @@ class Category extends Model
 
     public function parent(){
         return $this->hasOne(self::class, 'id','parent_id');
+    }
+
+
+    /**
+     * Scope a query to get all relations
+     *
+     * @param Builder $query
+     * @param bool $onlyRoot
+     * @return Builder
+     */
+    public function scopeAllRelations($query, $onlyRoot = true)
+    {
+        if ($onlyRoot){
+            return $query->with('children')
+                ->with('parent')
+                ->where('parent_id', '=', 0);
+        }
+        return $query->with('parent');
+    }
+
+    /**
+     * Scope a query to get all relations
+     *
+     * @param Builder $query
+     * @param $idOrSlug
+     * @return Builder
+     */
+    public function scopeGetCategoryByIdOrSlug($query, $idOrSlug)
+    {
+        $q = is_numeric($idOrSlug) ? ['id' => $idOrSlug] : ['slug' => $idOrSlug];
+
+        return  $query->with('parent')->where($q);
     }
 }
