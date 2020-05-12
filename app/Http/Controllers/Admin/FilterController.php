@@ -2,14 +2,11 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Attribute;
 use App\Filter;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\FilterRequest;
-use App\Services\Data\Filter\DeleteFilter;
-use App\Services\Data\Filter\GetFilterById;
-use App\Services\Data\Filter\GetFilters;
-use App\Services\Data\Filter\InsertFilter;
-use App\Services\Data\Filter\UpdateFilter;
+use App\Services\PaginateSession;
 use Illuminate\Contracts\View\Factory;
 use View;
 
@@ -19,12 +16,12 @@ class FilterController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @param GetFilters $filtersPagination
+     * @param PaginateSession $paginateSession
      * @return Factory|View
      */
-    public function index(GetFilters $filtersPagination)
+    public function index(PaginateSession $paginateSession)
     {
-        $filters = $filtersPagination->handel(true);
+        $filters = Filter::allRelations()->paginate($paginateSession->getLimit());
         return view('admin.filter.index')->with('filters', $filters);
     }
 
@@ -42,39 +39,45 @@ class FilterController extends Controller
      * Store a newly created resource in storage.
      *
      * @param FilterRequest $request
-     * @param InsertFilter $insertGroupAttribute
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function store(FilterRequest $request, InsertFilter $insertGroupAttribute)
+    public function store(FilterRequest $request)
     {
-        $insert = $insertGroupAttribute->handel($request->validated());
-        return redirect()->route('admin.filter.show', ['filter' => $insert->id])
+        $filter = new Filter();
+        $filter->name = $request->get('name');
+        $filter->save();
+        $attributes = [];
+        foreach ($request->get('value') as $item){
+            if (! empty($item))
+                $attributes[] = new Attribute(['value' => $item]);
+        }
+        $filter->allAttributes()->saveMany($attributes);
+
+        return redirect()->route('admin.filter.show', ['filter' => $filter->id])
             ->with('success', __('filter.save'));
     }
 
     /**
      * Display the specified resource.
      *
-     * @param GetFilterById $getFilterById
      * @param int $id
      * @return Factory|\Illuminate\View\View
      */
-    public function show(GetFilterById $getFilterById, $id)
+    public function show($id)
     {
-        $filter = $getFilterById->handel($id);
+        $filter = Filter::findOrFail($id);
         return view('admin.filter.show')->with('filter', $filter);
     }
 
     /**
      * Show the form for editing the specified resource.
      *
-     * @param GetFilterById $getFilterById
      * @param int $id
      * @return Factory|\Illuminate\View\View
      */
-    public function edit(GetFilterById $getFilterById, $id)
+    public function edit($id)
     {
-        $filter = $getFilterById->handel($id);
+        $filter = Filter::findOrFail($id);
         return view('admin.filter.edit')->with('filter', $filter);
     }
 
@@ -82,14 +85,25 @@ class FilterController extends Controller
      * Update the specified resource in storage.
      *
      * @param FilterRequest $request
-     * @param UpdateFilter $updateFilter
      * @param int $id
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function update(FilterRequest $request, UpdateFilter $updateFilter, $id)
+    public function update(FilterRequest $request, $id)
     {
         $update = $request->validated();
-        $updateFilter->handel($id, $update );
+        $filterModel = Filter::allRelations()->findOrFail($id);
+        $filterModel->update(
+            ['name' => $update['name']]
+        );
+        $filterModel->filterValues()->delete();
+
+        $result = [];
+        foreach ($update['value'] as $item){
+            if (! empty($item))
+                $result[] = new Attribute(['value' => $item]);
+        }
+        $filterModel->filterValues()->saveMany($result);
+
         return redirect()->back()->with('success', __('filter.update'));
     }
 
@@ -97,12 +111,11 @@ class FilterController extends Controller
      * Remove the specified resource from storage.
      *
      * @param int $id
-     * @param DeleteFilter $deleteFilter
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function destroy($id, DeleteFilter $deleteFilter)
+    public function destroy($id)
     {
-        $deleteFilter->handel($id);
+        Filter::destroy($id);
         return redirect()->route('admin.filter.index')->with('success', __('filter.deleted'));
     }
 }

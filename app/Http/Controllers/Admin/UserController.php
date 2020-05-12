@@ -4,14 +4,10 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\UserMultipleRequest;
+use App\Services\PaginateSession;
 use App\Services\SaveFile;
-use App\Services\Data\User\CreateUser;
-use App\Services\Data\User\DeleteUserById;
-use App\Services\Data\User\GetUserByIdOrEmail;
-use App\Services\Data\User\GetUsersByLimit;
-use App\Services\Data\User\UpdateUserById;
-use App\Services\Data\UserDetail\CreateUserDetail;
-use App\Services\Data\UserDetail\UpdateUserDetail;
+use App\User;
+use Hash;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -23,14 +19,15 @@ class UserController extends Controller
     /**
      * Display a listing of the resource.
      * @param Request $request
-     * @param GetUsersByLimit $getUsersByLimit
+     * @param PaginateSession $paginateSession
      * @return Factory|View
      */
-    public function index(Request $request, GetUsersByLimit $getUsersByLimit)
+    public function index(Request $request, PaginateSession $paginateSession)
     {
         $filters = $request->except('limit');
         $filters['dateDesc'] = 'true';
-        $users = $getUsersByLimit->handel($filters, ['id', 'email']);
+        $users = User::filter($filters)->allRelations()->paginate($paginateSession->getLimit(), ['id', 'email']);
+
         return view('admin.user.index')->with('users', $users);
     }
 
@@ -48,23 +45,22 @@ class UserController extends Controller
      * Store a newly created resource in storage.
      *
      * @param UserMultipleRequest $request
-     * @param CreateUser $createUser
-     * @param CreateUserDetail $createUserDetail
      * @return RedirectResponse
      */
-    public function store(UserMultipleRequest $request,
-                          CreateUser $createUser,
-                          CreateUserDetail $createUserDetail)
+    public function store(UserMultipleRequest $request)
     {
-        $user = $createUser->handel($request->all());
+        $user = new User();
+        $user->name = $request->get('name');
+        $user->email =$request->get('email');
+        $user->password = Hash::make($request->get('password'));
+        $user->save();
 
-
-        $insertForUserDetail = $request->all();
+        $insertForUserDetail = $request->userDetailFillData();
         $insertForUserDetail['avatar'] = '/storage/avatars/avatar-2.jpg';
         if ($request->hasFile('avatar')){
             $insertForUserDetail['avatar'] = (new SaveFile())->handel($request->file('avatar'), 'avatars')['url'];
         }
-        $user = $createUserDetail->handel($user, $insertForUserDetail);
+        $user->createDetails($insertForUserDetail);
 
         return redirect()->route('admin.user.show', ['user' => $user->id])->with('success', __('user.save'));
     }
@@ -72,26 +68,24 @@ class UserController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param GetUserByIdOrEmail $getUserByIdOrEmail
      * @param $userId
      * @return Factory|View
      */
-    public function show(GetUserByIdOrEmail $getUserByIdOrEmail, $userId)
+    public function show($userId)
     {
-        $user = $getUserByIdOrEmail->handel($userId, ['*'], true);
+        $user = User::allRelations()->withTrashed()->findOrFail($userId);
         return view('admin.user.show')->with('user', $user);
     }
 
     /**
      * Show the form for editing the specified resource.
      *
-     * @param GetUserByIdOrEmail $getUserByIdOrEmail
      * @param $userId
      * @return Factory|View
      */
-    public function edit(GetUserByIdOrEmail $getUserByIdOrEmail, $userId)
+    public function edit($userId)
     {
-        $user = $getUserByIdOrEmail->handel($userId);
+        $user = User::allRelations()->withTrashed()->findOrFail($userId);
         return view('admin.user.edit')->with('user', $user);
     }
 
@@ -99,27 +93,23 @@ class UserController extends Controller
      * Update the specified resource in storage.
      *
      * @param UserMultipleRequest $request
-     * @param GetUserByIdOrEmail $getUserByIdOrEmail
-     * @param UpdateUserById $updateUserById
-     * @param UpdateUserDetail $updateUserDetail
      * @param $userId
      * @return RedirectResponse
      */
-    public function update(UserMultipleRequest $request,
-                           GetUserByIdOrEmail $getUserByIdOrEmail,
-                           UpdateUserById $updateUserById,
-                           UpdateUserDetail $updateUserDetail,
-                           $userId)
+    public function update(UserMultipleRequest $request, $userId)
     {
-        $user = $getUserByIdOrEmail->handel($userId);
+        $user = User::allRelations()->withTrashed()->findOrFail($userId);
 
-        $updateUserById->handel($user, $request->input('email'), $request->input('password'));
+        $user->email = $request->input('email');
+        if (! empty($request->input('password'))) $user->password = Hash::make($request->input('password'));
+        $user->save();
 
-        $detailFields = $request->only(['first_name','last_name','phone','country','birthday','location']);
+
+        $detailFields = $request->userDetailFillData();
         if ($request->hasFile('avatar')){
             $detailFields['avatar'] = (new SaveFile())->handel($request->file('avatar'), 'avatars')['url'];
         }
-        $updateUserDetail->handel($user, $detailFields);
+        $user->updateDetails($detailFields);
 
         return redirect()->back()->with('success', __('user.update'));
     }
@@ -127,17 +117,12 @@ class UserController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param GetUserByIdOrEmail $getUserByIdOrEmail
-     * @param DeleteUserById $deleteUserById
      * @param $userId
      * @return RedirectResponse
      */
-    public function destroy(GetUserByIdOrEmail $getUserByIdOrEmail,
-                            DeleteUserById $deleteUserById,
-                            $userId)
+    public function destroy($userId)
     {
-        $user = $getUserByIdOrEmail->handel($userId);
-        $deleteUserById->handel($user);
+        User::destroy($userId);
         return redirect()->route('admin.user.index')->with('success', __('user.delete'));
     }
 }

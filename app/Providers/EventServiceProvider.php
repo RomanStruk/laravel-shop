@@ -3,10 +3,12 @@
 namespace App\Providers;
 
 use App\Events\ChangeOrderStatusEvent;
+use App\Events\CompletedOrderStatusEvent;
 use App\Events\OrderCreatedEvent;
 use App\Listeners\CreateFirstEntryToOrderHistory;
 use App\Listeners\NotificationForAdminAboutNewOrder;
 use App\Listeners\OrderChangeStatusListener;
+use App\Listeners\OrderStatusCompleted;
 use App\Listeners\SendEmailForUserAboutNewOrder;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
@@ -32,6 +34,10 @@ class EventServiceProvider extends ServiceProvider
             CreateFirstEntryToOrderHistory::class, // перший запис в бд про історію замовлення
             SendEmailForUserAboutNewOrder::class, // Відправити лист з інформацією про замовлення користувачу
             NotificationForAdminAboutNewOrder::class // Сповіщення для адміна про нове замовлення
+        ],
+
+        CompletedOrderStatusEvent::class => [
+            OrderStatusCompleted::class
         ]
     ];
 

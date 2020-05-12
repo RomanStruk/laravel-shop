@@ -135,7 +135,6 @@ trait OrderHelper
 
         $this->shipping->method   = $fields['method'];
         $this->shipping->shipping_rate   = $fields['shipping_rate'];
-
         $this->shipping->city     = $fields['city'];
         $this->shipping->address  = $fields['address'];
 

@@ -25,6 +25,8 @@ use Illuminate\Database\Eloquent\Model;
  * @property string|null $description
  * @property-read \App\Category $parent
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Category whereDescription($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Category allRelations($onlyRoot = true)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Category getCategoryByIdOrSlug($idOrSlug)
  */
 class Category extends Model
 {

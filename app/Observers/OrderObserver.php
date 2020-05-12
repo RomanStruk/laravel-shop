@@ -9,6 +9,16 @@ use Carbon\Carbon;
 class OrderObserver
 {
     /**
+     * Handle the order "creating" event.
+     *
+     * @param  Order  $order
+     * @return void
+     */
+    public function creating(Order $order)
+    {
+
+    }
+    /**
      * Handle the order "created" event.
      *
      * @param  Order  $order

@@ -3,7 +3,7 @@
 namespace App\Observers;
 
 use App\Media;
-use App\Services\Data\Media\DeleteMediaFile;
+use Storage;
 
 class MediaObserver
 {
@@ -37,8 +37,8 @@ class MediaObserver
      */
     public function deleted(Media $media)
     {
-        $deleteMediaFile = new DeleteMediaFile();
-        $deleteMediaFile->handel($media->path, $media->disc);
+        if (Storage::disk($media->disc)->exists($media->path))
+            Storage::disk($media->disc)->delete($media->path);
     }
 
     /**

@@ -27,12 +27,28 @@ class MediaRequest extends FormRequest
             'name' => ['required', 'filled', 'between:4,255'],
             'keywords' => ['required', 'string', 'filled', 'between:4,255'],
             'description' => ['required', 'string', 'filled', 'between:4,255'],
-            'products' => ['nullable', 'exists:products,id'],
+            'products' => ['nullable', 'array'],
+            'products.*' => ['nullable', 'exists:products,id'],
             'media.*' => request()->method() == 'POST'?
                 ['mimes:png,jpeg,jpg']:
                 ['nullable'],
             'disc' => ['required', 'in:public,local'],
             'visibility' => ['required', 'in:public,private'],
         ];
+    }
+
+    public function mediaFillData():array
+    {
+        return [
+            'name'          => $this->name,
+            'keywords'      => $this->keywords,
+            'description'   => $this->description,
+            'disc'          => $this->disc,
+            'visibility'    => $this->visibility,
+        ];
+    }
+    public function productsFillData():array
+    {
+        return $this->products ?? [];
     }
 }

@@ -59,7 +59,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Product whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Product whereVisits($value)
  * @mixin \Eloquent
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Product filter(\App\Services\ScopeFilters\ProductsFilter $productsFilter, $filter)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Product filter($filter)
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Media[] $media
  * @property-read int|null $media_count
  * @method static bool|null forceDelete()
@@ -73,6 +73,9 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property-read int|null $related_count
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Product avgRating()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Product countComments()
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\SoldProduct[] $sold
+ * @property-read int|null $sold_count
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Product allRelations()
  */
 class Product extends Model
 {
@@ -109,9 +112,9 @@ class Product extends Model
         ];
     }
 
-    public function scopeFilter(Builder $query, ProductsFilter $productsFilter, $filter)
+    public function scopeFilter(Builder $query, $filter)
     {
-        return $productsFilter->apply($query, $filter);
+        return (new ProductsFilter())->apply($query, $filter);
     }
 
     public function getPriceAttribute($value)
@@ -129,5 +132,27 @@ class Product extends Model
     public function setOldPriceAttribute($value)
     {
         $this->attributes['old_price'] = (int)((float)$value*100);
+    }
+
+
+    /**
+     * Scope a query to get all relations
+     *
+     * @param Builder $query
+     * @return Builder
+     */
+    public function scopeAllRelations($query)
+    {
+        return $query->with(['category', 'media:media.id,media.url'])
+            ->with('comments')
+            ->with('comments.user')
+            ->with('comments.user.detail')
+            ->with('product_attributes')
+            ->with('product_attributes.filter');
+    }
+
+    public function attachMediaFiles($ids)
+    {
+        return $this->media()->attach($ids);
     }
 }

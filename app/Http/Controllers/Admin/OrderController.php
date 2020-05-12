@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Events\ChangeOrderStatusEvent;
+use App\Events\CompletedOrderStatusEvent;
 use App\Events\OrderCreatedEvent;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\OrderRequest;
@@ -53,18 +54,28 @@ class OrderController extends Controller
 
     public function store(OrderRequest $request)
     {
+        // create new Order
         $order = new Order($request->orderFillData());
         // TODO check count available products
+        // try to save order
         $order->save();
+
+        // sync products
         $order->syncProducts($request->productsFillData());
+
+        //create payment information
         $order->paymentCreate($request->paymentFillData());
 
+        // create shipping information
         $shipping = $request->shippingFillData();
         $shippingBase = new ShippingBase(Shipping::$shipping_methods, $shipping['method']);
         $shipping['city'] = $shippingBase->setCity($shipping['city'])->cityFillDataForSave();
         $shipping['address'] = $shippingBase->setAddress($shipping['address'])->addressFillDataForSave();
         $order->shippingCreate($shipping);
-        event(new OrderCreatedEvent($order));   // event
+
+        // event
+        event(new OrderCreatedEvent($order));
+
         return redirect()->route('admin.order.show', $order)->with('success', __('order.save'));
     }
 
@@ -76,9 +87,7 @@ class OrderController extends Controller
     {
         // get order
         $order = Order::allRelations()->withTrashed()->findOrFail($orderId);
-//        dd($order->shipping->getAddress());
-//        dd(explode(', ',$order->shipping->getAddress()));
-        // show edit view
+
         return view('admin.order.edit', ['order'=> $order]);
     }
 
@@ -135,6 +144,9 @@ class OrderController extends Controller
         // update order status
         $order = Order::findOrFail($orderId);
         $order->statusUpdate($request->statusFillData());
+
+        // create event for completed status
+        if ($request->status == Order::STATUS_COMPLETED) event(new CompletedOrderStatusEvent($order));
 
         // create event for change status
         if ($request->get('notification')) event(new ChangeOrderStatusEvent($order));

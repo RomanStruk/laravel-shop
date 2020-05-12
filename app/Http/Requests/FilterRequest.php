@@ -24,7 +24,7 @@ class FilterRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => ['required', 'string', 'min:4'],
+            'name' => ['required', 'string', 'min:3'],
             'value' => ['array', 'min:1'],
             'value.0' => ['required', 'string', 'min:1'],
             'value.*' => ['nullable', 'string', 'min:1']

@@ -40,6 +40,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property string|null $warehouse_code
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Shipping whereCityCode($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Shipping whereWarehouseCode($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Shipping whereAddress($value)
  */
 class Shipping extends Model
 {

@@ -21,6 +21,7 @@ use Illuminate\Database\Eloquent\Model;
  * @mixin \Eloquent
  * @property-read Collection|Attribute[] $filterValues
  * @property-read int|null $filter_values_count
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Filter allRelations()
  */
 class Filter extends Model
 {
@@ -40,5 +41,16 @@ class Filter extends Model
     public function filterValues()
     {
         return $this->hasMany('\App\Attribute');
+    }
+
+    /**
+     * Scope a query to get all relations
+     *
+     * @param Builder $query
+     * @return Builder
+     */
+    public function scopeAllRelations($query)
+    {
+        return $query->with(['filterValues', 'allAttributes']);
     }
 }

@@ -7,21 +7,23 @@ namespace App\Http\Controllers\Api\v1;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\ProductResource;
 use App\Http\Resources\UserResource;
-use App\Services\Data\Product\GetProductsByLimit;
-use App\Services\Data\User\GetUsersByLimit;
+use App\Product;
+use App\Services\PaginateSession;
+use App\User;
 use Illuminate\Http\Request;
 
 class SearchController extends Controller
 {
-    public function users(Request $request, GetUsersByLimit $getUsersByLimit)
+    public function users(Request $request, PaginateSession $paginateSession)
     {
-        $users = $getUsersByLimit->handel(['search' => $request->q], ['id', 'email', 'created_at']);
+        $users = User::filter(['search' => $request->q])->paginate($paginateSession->getLimit(), ['id', 'email', 'created_at']);
+
         return UserResource::collection($users);
     }
 
-    public function products(Request $request, GetProductsByLimit $getProductsByLimit)
+    public function products(Request $request, PaginateSession $paginateSession)
     {
-        $products = $getProductsByLimit->handel(['search' => $request->q]);
+        $products = Product::filter(['search' => $request->q])->paginate($paginateSession->getLimit());
         return ProductResource::collection($products);
     }
 }

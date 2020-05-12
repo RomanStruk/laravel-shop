@@ -5,30 +5,24 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Order;
 use App\Services\Analytics\Analytics;
-use App\Services\Data\SoldProduct\GetCountProductGroupByWeek;
-use App\Services\Data\SoldProduct\GetTopProductsByLimit;
+use App\SoldProduct;
 
 class HomeController extends Controller
 {
-    public function index(
-        Analytics $analytics,
-        GetTopProductsByLimit $topProducts,
-        GetCountProductGroupByWeek $productGroupByWeek)
+    public function index(Analytics $analytics)
     {
 
-        $products = $topProducts->handel(5);
+        $soldProducts = SoldProduct::top(5)->get();
         $topList = [];
-        foreach ($products as $product) {
-            $volumePeriods = $productGroupByWeek->handel($product->product->id);
+        foreach ($soldProducts as $soldProduct) {
+            $c = $soldProduct->product->sold()->countProductGroupByWeek()->get()->pluck('c')->toArray();
             $topList[] = [
-                'analytic'=>$analytics->averageGrowthRate($volumePeriods),
-                'sales' => $product->c,
-                'product' => $product->product,
+                'analytic'=>$analytics->averageGrowthRate($c),
+                'sales' => $soldProduct->c,
+                'product' => $soldProduct->product,
             ];
 
         }
-
-//        dump($topList);
 
         $orders = Order::filter(['dateDesc' => true])->allRelations()->paginate(5);
 

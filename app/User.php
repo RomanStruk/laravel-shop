@@ -45,7 +45,7 @@ use Laravel\Passport\HasApiTokens;
  * @property \Illuminate\Support\Carbon|null $deleted_at
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Comment[] $comments
  * @property-read int|null $comments_count
- * @method static \Illuminate\Database\Eloquent\Builder|\App\User filter(\App\Services\ScopeFilters\UsersFilters $usersFilters, $filter)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\User filter($filter)
  * @method static bool|null forceDelete()
  * @method static \Illuminate\Database\Query\Builder|\App\User onlyTrashed()
  * @method static bool|null restore()
@@ -59,6 +59,7 @@ use Laravel\Passport\HasApiTokens;
  * @property-read int|null $clients_count
  * @property-read \Illuminate\Database\Eloquent\Collection|\Laravel\Passport\Token[] $tokens
  * @property-read int|null $tokens_count
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\User allRelations()
  */
 class User extends Authenticatable implements MustVerifyEmail
 {
@@ -100,13 +101,13 @@ class User extends Authenticatable implements MustVerifyEmail
     /**
      * Фільтри
      * @param Builder $query
-     * @param UsersFilters $usersFilters
      * @param $filter
      * @return Builder
      */
-    public function scopeFilter(Builder $query, UsersFilters $usersFilters, $filter)
+
+    public function scopeFilter(Builder $query, $filter)
     {
-        return $usersFilters->apply($query, $filter);
+        return (new UsersFilters())->apply($query, $filter);
     }
 
     public function getFullNameAttribute()
@@ -130,4 +131,26 @@ class User extends Authenticatable implements MustVerifyEmail
         ];
     }
 
+    /**
+     * Scope a query to get all relations
+     *
+     * @param Builder $query
+     * @return Builder
+     */
+    public function scopeAllRelations($query)
+    {
+        return $query
+            ->with('detail')
+            ->with('roles');
+    }
+
+    public function updateDetails($fields)
+    {
+        return $this->detail()->update($fields);
+    }
+
+    public function createDetails($fields)
+    {
+        return $this->detail()->save(new UserDetail($fields));
+    }
 }

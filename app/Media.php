@@ -60,4 +60,26 @@ class Media extends Model
 
     }
 
+    public function syncProducts(array $ids)
+    {
+        $this->products()->detach();
+        return $this->products()->sync($ids);
+    }
+
+    public function tryDelete()
+    {
+        if ($this->products()->count() > 1) return false;
+        foreach ($this->products as $product){
+            if ($product->media()->count() == 1) return false; // якшо тільки одна фотка в продукта
+        }
+        $path = $this->path;
+        $disc = $this->disc;
+        $this->delete(); //observer видаляє зображення з диска
+        return [
+            'path' => $path,
+            'disc' => $disc
+        ];
+    }
+
+
 }

@@ -7,6 +7,7 @@ namespace App\Traits\Relations;
 use App\Media;
 use App\Order;
 use App\Product;
+use App\SoldProduct;
 
 trait ProductRelations
 {
@@ -38,5 +39,10 @@ trait ProductRelations
     public function related()
     {
         return $this->belongsToMany(Product::class, 'related_products', 'product_id', 'related_id', 'id', 'id');
+    }
+
+    public function sold()
+    {
+        return $this->hasMany(SoldProduct::class);
     }
 }
