@@ -20,25 +20,40 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property string $title
  * @property string $alias
  * @property string|null $content
- * @property float $price
- * @property float|null $old_price
- * @property string $status
+ * @property int $price
+ * @property int|null $old_price
+ * @property int $status
  * @property string|null $keywords
  * @property string|null $description
- * @property string|null $img
  * @property string $hit
  * @property int $in_stock
  * @property int $visits
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property string|null $deleted_at
+ * @property \Illuminate\Support\Carbon|null $deleted_at
  * @property-read \App\Category $category
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Comment[] $comments
  * @property-read int|null $comments_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Media[] $media
+ * @property-read int|null $media_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Order[] $orders
+ * @property-read int|null $orders_count
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Attribute[] $product_attributes
  * @property-read int|null $product_attributes_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Product[] $related
+ * @property-read int|null $related_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\SoldProduct[] $sold
+ * @property-read int|null $sold_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Syllable[] $syllable
+ * @property-read int|null $syllable_count
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Product allRelations()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Product avgRating()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Product countComments()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Product filter($filter)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Product isQuality()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Product newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Product newQuery()
+ * @method static \Illuminate\Database\Query\Builder|\App\Product onlyTrashed()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Product query()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Product whereAlias($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Product whereBrandId($value)
@@ -49,7 +64,6 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Product whereDescription($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Product whereHit($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Product whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Product whereImg($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Product whereInStock($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Product whereKeywords($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Product whereOldPrice($value)
@@ -58,24 +72,9 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Product whereTitle($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Product whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Product whereVisits($value)
- * @mixin \Eloquent
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Product filter($filter)
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Media[] $media
- * @property-read int|null $media_count
- * @method static bool|null forceDelete()
- * @method static \Illuminate\Database\Query\Builder|\App\Product onlyTrashed()
- * @method static bool|null restore()
  * @method static \Illuminate\Database\Query\Builder|\App\Product withTrashed()
  * @method static \Illuminate\Database\Query\Builder|\App\Product withoutTrashed()
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Order[] $orders
- * @property-read int|null $orders_count
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Product[] $related
- * @property-read int|null $related_count
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Product avgRating()
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Product countComments()
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\SoldProduct[] $sold
- * @property-read int|null $sold_count
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Product allRelations()
+ * @mixin \Eloquent
  */
 class Product extends Model
 {

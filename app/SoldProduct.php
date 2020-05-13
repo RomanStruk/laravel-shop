@@ -10,22 +10,22 @@ use Illuminate\Database\Eloquent\Model;
  *
  * @property int $id
  * @property int $product_id
+ * @property int $sale_price
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \App\Product $product
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\SoldProduct countProductGroupByWeek()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\SoldProduct newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\SoldProduct newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\SoldProduct query()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\SoldProduct salesOverTime()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\SoldProduct top($limit)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\SoldProduct whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\SoldProduct whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\SoldProduct whereProductId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\SoldProduct whereSalePrice($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\SoldProduct whereUpdatedAt($value)
  * @mixin \Eloquent
- * @property int $sale_price
- * @method static \Illuminate\Database\Eloquent\Builder|\App\SoldProduct whereSalePrice($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\SoldProduct countProductGroupByWeek()
- * @method static \Illuminate\Database\Eloquent\Builder|\App\SoldProduct salesOverTime()
- * @method static \Illuminate\Database\Eloquent\Builder|\App\SoldProduct top($limit)
  */
 class SoldProduct extends Model
 {

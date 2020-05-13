@@ -11,14 +11,14 @@ use Illuminate\Database\Eloquent\Model;
  *
  * @property int $id
  * @property string $name
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\User[] $users
+ * @property-read int|null $users_count
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Role newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Role newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Role query()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Role whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Role whereName($value)
  * @mixin \Eloquent
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\User[] $users
- * @property-read int|null $users_count
  */
 class Role extends Model
 {

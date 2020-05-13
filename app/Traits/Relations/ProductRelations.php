@@ -8,17 +8,24 @@ use App\Media;
 use App\Order;
 use App\Product;
 use App\SoldProduct;
+use App\Syllable;
 
 trait ProductRelations
 {
+    public function syllable()
+    {
+        return $this->hasMany(Syllable::class);
+    }
+
     //
-    public function product_attributes(){
+    public function product_attributes()
+    {
         return $this->belongsToMany('App\Attribute');
     }
 
     public function category()
     {
-        return $this->belongsTo('App\Category')->withDefault(['name'=> 'Deleted']);
+        return $this->belongsTo('App\Category')->withDefault(['name' => 'Deleted']);
     }
 
     public function comments()

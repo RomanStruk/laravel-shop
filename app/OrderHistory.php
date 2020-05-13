@@ -14,9 +14,11 @@ use Illuminate\Database\Eloquent\Model;
  *
  * @property int $id
  * @property int $order_id
+ * @property int $user_id
  * @property \Illuminate\Support\Carbon $date_added
  * @property string $comment
- * @property string $status
+ * @property int $status
+ * @property-read \App\User $user
  * @method static \Illuminate\Database\Eloquent\Builder|\App\OrderHistory newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\OrderHistory newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\OrderHistory query()
@@ -25,10 +27,8 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\OrderHistory whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\OrderHistory whereOrderId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\OrderHistory whereStatus($value)
- * @mixin \Eloquent
- * @property int $user_id
- * @property-read \App\User $user
  * @method static \Illuminate\Database\Eloquent\Builder|\App\OrderHistory whereUserId($value)
+ * @mixin \Eloquent
  */
 class OrderHistory extends Model
 {

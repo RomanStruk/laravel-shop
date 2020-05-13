@@ -4,10 +4,29 @@
 namespace App\Traits\Helpers;
 
 
+use App\Syllable;
 use Illuminate\Database\Eloquent\Builder;
 
 trait ProductHelper
 {
+    public function scopeIsQuality(Builder $builder)
+    {
+
+    }
+
+    public function quality()
+    {
+        return $this->syllable->sum('remains') - $this->syllable->sum('processed');
+    }
+
+    public function createSyllable($syllable)
+    {
+        if ($syllable){
+            return $this->syllable()->create($syllable);
+        }
+        return null;
+    }
+
     public function scopeAvgRating(Builder $builder)
     {
         return $builder->withCount(['comments as average_rating' => function($query) {

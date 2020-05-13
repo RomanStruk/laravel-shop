@@ -23,55 +23,37 @@ use Illuminate\Support\Carbon;
  *
  * @property int $id
  * @property int $user_id
- * @property string $name
- * @property string $phone
- * @property string $email
- * @property string $type_delivery
- * @property string $pay_method
- * @property Carbon|null $created_at
- * @property Carbon|null $updated_at
- * @property-read Collection|Product[] $products
- * @property-read int|null $products_count
- * @property-read User $user
- * @method static Builder|Order newModelQuery()
- * @method static Builder|Order newQuery()
- * @method static Builder|Order query()
- * @method static Builder|Order whereCityCode($value)
- * @method static Builder|Order whereCreatedAt($value)
- * @method static Builder|Order whereEmail($value)
- * @method static Builder|Order whereId($value)
- * @method static Builder|Order whereName($value)
- * @method static Builder|Order wherePayMethod($value)
- * @method static Builder|Order wherePhone($value)
- * @method static Builder|Order whereTypeDelivery($value)
- * @method static Builder|Order whereUpdatedAt($value)
- * @method static Builder|Order whereUserId($value)
- * @mixin \Eloquent
  * @property string $comment
- * @property-read Collection|OrderHistory[] $details
- * @property-read int|null $details_count
- * @property-read Payment $payment
- * @property-read Shipping $shipping
- * @method static Builder|Order whereComment($value)
- * @property Carbon|null $deleted_at
- * @method static bool|null forceDelete()
- * @method static \Illuminate\Database\Query\Builder|Order onlyTrashed()
- * @method static bool|null restore()
- * @method static Builder|Order whereDeletedAt($value)
- * @method static \Illuminate\Database\Query\Builder|Order withTrashed()
- * @method static \Illuminate\Database\Query\Builder|Order withoutTrashed()
- * @method static Builder|Order filter($filter)
- * @method static Builder select($columns = [])
- * @property-read mixed $detail_status
- * @property-read mixed $sum_price
- * @property-read float|mixed $total_price
  * @property int $status
- * @property-read Collection|OrderHistory[] $histories
+ * @property \Illuminate\Support\Carbon|null $deleted_at
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read mixed $sum_price
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\OrderHistory[] $histories
  * @property-read int|null $histories_count
- * @method static Builder|Order whereStatus($value)
- * @property-read DatabaseNotificationCollection|DatabaseNotification[] $notifications
+ * @property-read \Illuminate\Notifications\DatabaseNotificationCollection|\Illuminate\Notifications\DatabaseNotification[] $notifications
  * @property-read int|null $notifications_count
+ * @property-read \App\Payment|null $payment
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Product[] $products
+ * @property-read int|null $products_count
+ * @property-read \App\Shipping|null $shipping
+ * @property-read \App\User $user
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Order allRelations()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Order filter($filter)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Order newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Order newQuery()
+ * @method static \Illuminate\Database\Query\Builder|\App\Order onlyTrashed()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Order query()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Order whereComment($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Order whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Order whereDeletedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Order whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Order whereStatus($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Order whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Order whereUserId($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Order withTrashed()
+ * @method static \Illuminate\Database\Query\Builder|\App\Order withoutTrashed()
+ * @mixin \Eloquent
  */
 class Order extends Model
 {

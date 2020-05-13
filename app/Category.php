@@ -9,24 +9,24 @@ use Illuminate\Database\Eloquent\Model;
  * App\CategoryService
  *
  * @property int $id
- * @property int|null $parent_id
+ * @property int $parent_id
  * @property string $name
  * @property string $slug
+ * @property string|null $description
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Category[] $children
  * @property-read int|null $children_count
+ * @property-read \App\Category|null $parent
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Category allRelations($onlyRoot = true)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Category getCategoryByIdOrSlug($idOrSlug)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Category newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Category newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Category query()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Category whereDescription($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Category whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Category whereName($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Category whereParentId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Category whereSlug($value)
  * @mixin \Eloquent
- * @property string|null $description
- * @property-read \App\Category $parent
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Category whereDescription($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Category allRelations($onlyRoot = true)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Category getCategoryByIdOrSlug($idOrSlug)
  */
 class Category extends Model
 {

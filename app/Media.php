@@ -19,7 +19,8 @@ use Illuminate\Database\Eloquent\Model;
  * @property string|null $description
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \App\Product $product
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Product[] $products
+ * @property-read int|null $products_count
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Media newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Media newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Media query()
@@ -36,8 +37,6 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Media whereUrl($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Media whereVisibility($value)
  * @mixin \Eloquent
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Product[] $products
- * @property-read int|null $products_count
  */
 class Media extends Model
 {

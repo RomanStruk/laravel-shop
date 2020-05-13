@@ -26,6 +26,18 @@ class FilterController extends Controller
     }
 
     /**
+     * Display the specified resource.
+     *
+     * @param int $id
+     * @return Factory|\Illuminate\View\View
+     */
+    public function show($id)
+    {
+        $filter = Filter::findOrFail($id);
+        return view('admin.filter.show')->with('filter', $filter);
+    }
+
+    /**
      * Show the form for creating a new resource.
      *
      * @return Factory|\Illuminate\View\View
@@ -57,17 +69,6 @@ class FilterController extends Controller
             ->with('success', __('filter.save'));
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param int $id
-     * @return Factory|\Illuminate\View\View
-     */
-    public function show($id)
-    {
-        $filter = Filter::findOrFail($id);
-        return view('admin.filter.show')->with('filter', $filter);
-    }
 
     /**
      * Show the form for editing the specified resource.

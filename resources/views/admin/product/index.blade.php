@@ -41,7 +41,7 @@
                             <td class="text-left">{{ $product->title }}</td>
                             <td class="text-left">{{ $product->category->name }}</td>
                             <td class="text-left">{{ $product->price }} {{ config('shop.currency_short') }}</td>
-                            <td class="text-left">{{ $product->in_stock }}</td>
+                            <td class="text-left">{{ $product->quality() }}</td>
                             <td class="project-actions text-right">
                                 @include('admin.component.dropdown_menu', [
                                     'show' => route( 'admin.product.show', ['product' => $product->id]),

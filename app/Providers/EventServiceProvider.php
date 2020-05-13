@@ -37,7 +37,7 @@ class EventServiceProvider extends ServiceProvider
         ],
 
         CompletedOrderStatusEvent::class => [
-            OrderStatusCompleted::class
+            OrderStatusCompleted::class //
         ]
     ];
 

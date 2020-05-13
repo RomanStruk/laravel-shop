@@ -114,7 +114,7 @@
                         <div class=" mb-15">
                             <p>
                                 <span class="in-stock">в наявності </span>
-                                <span class="badge badge-success">{{$product->in_stock}}</span>
+                                <span class="badge badge-success">{{$product->quality()}}</span>
                             </p>
                         </div>
                         <div class="row">
@@ -146,6 +146,8 @@
                                href="#product-rating" role="tab" aria-controls="product-rating" aria-selected="false">Фільтри</a>
                             <a class="nav-item nav-link" id="product-related-tab" data-toggle="tab"
                                href="#product-related" role="tab" aria-controls="product-rating" aria-selected="false">Пов'язані товари</a>
+                            <a class="nav-item nav-link" id="product-related-tab" data-toggle="tab"
+                               href="#product-syllable" role="tab" aria-controls="product-syllable" aria-selected="false">Склад</a>
                         </div>
                     </nav>
                     <div class="tab-content p-3" id="nav-tabContent">
@@ -224,6 +226,32 @@
                                     @empty
                                         <p>Нема даних</p>
                                     @endforelse
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tab-pane fade" id="product-syllable" role="tabpanel"
+                             aria-labelledby="product-related-tab">
+                            <div class="row">
+                                <div class="col-12">
+                                    <ul>
+
+                                    @forelse($product->syllable as $syllable)
+                                            <li>
+                                                <a class="" href="{{route('admin.supplier.show', $syllable->supplier)}}">
+                                                    {{$syllable->supplier->name}}
+                                                </a>
+                                                <span class="badge badge-primary">{{$syllable->imported}}</span>
+                                                <span class="badge badge-success">{{$syllable->remains}}</span>
+                                                <span class="badge badge-info">{{$syllable->processed}}</span>
+
+                                            </li>
+                                    @empty
+                                        <li>Нема даних</li>
+                                    @endforelse
+                                    </ul>
+                                    <span class="badge badge-primary">Доставлено</span>
+                                    <span class="badge badge-success">Залишається</span>
+                                    <span class="badge badge-info">Обробляється</span>
                                 </div>
                             </div>
                         </div>

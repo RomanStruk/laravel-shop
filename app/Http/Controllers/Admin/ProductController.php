@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Supplier;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -45,10 +46,12 @@ class ProductController extends Controller
     {
         $categories = Category::allRelations(false)->get();
         $filters = Filter::allRelations()->get();
+        $suppliers = Supplier::all();
 //        dd(count($filters->first()->filterValues->pluck('id')->intersect([1]))?:false);
         return view('admin.product.create')
             ->with('categories', $categories)
-            ->with('filters', $filters);
+            ->with('filters', $filters)
+            ->with('suppliers', $suppliers);
     }
 
     /**
@@ -64,6 +67,7 @@ class ProductController extends Controller
         $product->syncAttributesOfFilters($request->attributesFillData());
         $product->syncMediaFiles($request->mediaFillData());
         $product->syncRelatedProducts($request->relatedFillData());
+        $product->createSyllable($request->syllableFillData());
 
         return redirect()->route('admin.product.show', ['product' => $product->id])
             ->with('success', __('product.save'));
@@ -78,7 +82,6 @@ class ProductController extends Controller
     public function show($id)
     {
         $product = Product::allRelations()->withTrashed()->avgRating()->countComments()->findOrFail($id);;
-
         $attributes = Filter::allRelations()->get();
         // statistics card
         $range = (new DateGeneration())->generateStartEndMonth(now());
@@ -108,13 +111,15 @@ class ProductController extends Controller
         $product = Product::allRelations()->withTrashed()->findOrFail($id);;
         $categories = Category::allRelations(false)->get();
         $groups = Filter::allRelations()->get();
+        $suppliers = Supplier::all();
 //        dd(in_array('4', $product->product_attributes->pluck('id')->toArray()));
 //        dd($product->product_attributes->pluck('id')->toArray());
 //        dd($product, $groups);
         return view('admin.product.edit')
             ->with('product', $product)
             ->with('categories', $categories)
-            ->with('groups', $groups);
+            ->with('groups', $groups)
+            ->with('suppliers', $suppliers);
     }
 
     /**
@@ -128,9 +133,14 @@ class ProductController extends Controller
     {
         $product = Product::findOrFail($productId);
         $product->update($request->productFillData());
+
         $product->syncRelatedProducts($request->relatedFillData());
+
         $product->syncMediaFiles($request->mediaFillData());
+
         $product->syncAttributesOfFilters($request->attributesFillData());
+
+        $product->createSyllable($request->syllableFillData());
 
         return redirect()->back()->with('success', __('product.update'));
     }

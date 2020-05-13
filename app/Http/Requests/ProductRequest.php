@@ -26,6 +26,7 @@ class ProductRequest extends FormRequest
      */
     public function rules()
     {
+//        dd(request()->method());
         return [
             'title' => ['required', 'filled', 'between:4,255'],
             'alias' => request()->method() == 'PATCH' ? [
@@ -41,11 +42,24 @@ class ProductRequest extends FormRequest
             'content' => ['required', 'string', 'filled'],
             'price' => ['required', 'numeric', 'min:1'],
             'status' => ['required', 'in:1,0'],
-            'in_stock' => ['required', 'integer', 'min:1'],
             'attributes' => ['required', 'array', 'distinct', 'exists:attributes,id'],
             'related' => ['array', 'distinct', 'exists:products,id'],
-            'media' => ['required', 'array', 'exists:media,id']
+            'media' => ['required', 'array', 'exists:media,id'],
+
+            'supplier' => [request()->method() == 'POST' ? 'required' : 'nullable', 'integer', 'exists:suppliers,id'],
+            'imported' => ['required_with:supplier', 'integer', 'min:1'],
         ];
+    }
+
+    public function syllableFillData():array
+    {
+        return $this->get('supplier') ?
+            [
+                'supplier_id' => $this->get('supplier'),
+                'imported' => $this->get('imported'),
+                'remains' => $this->get('imported'),
+                'processed' => 0,
+            ]: [];
     }
 
     public function attributesFillData():array
@@ -73,7 +87,6 @@ class ProductRequest extends FormRequest
             'description'   => $this->get('description'),
             'content'       => $this->get('content'),
             'price'         => $this->get('price'),
-            'in_stock'      => $this->get('in_stock'),
             'status'        => $this->get('status'),
         ];
     }

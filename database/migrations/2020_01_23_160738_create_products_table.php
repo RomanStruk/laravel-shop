@@ -27,7 +27,6 @@ class CreateProductsTable extends Migration
             $table->string('keywords',255)->default(NULL)->nullable();
             $table->string('description',255)->default(NULL)->nullable();
             $table->enum('hit',['0','1'])->default(0)->index();
-            $table->integer('in_stock')->default(1);
             $table->bigInteger('visits')->default(0);
 
             $table->timestamps();

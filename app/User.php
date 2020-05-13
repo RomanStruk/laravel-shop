@@ -25,12 +25,29 @@ use Laravel\Passport\HasApiTokens;
  * @property string|null $remember_token
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property \Illuminate\Support\Carbon|null $deleted_at
+ * @property-read \Illuminate\Database\Eloquent\Collection|\Laravel\Passport\Client[] $clients
+ * @property-read int|null $clients_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Comment[] $comments
+ * @property-read int|null $comments_count
+ * @property-read \App\UserDetail $detail
+ * @property-read mixed $full_name
  * @property-read \Illuminate\Notifications\DatabaseNotificationCollection|\Illuminate\Notifications\DatabaseNotification[] $notifications
  * @property-read int|null $notifications_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Order[] $orders
+ * @property-read int|null $orders_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Role[] $roles
+ * @property-read int|null $roles_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|\Laravel\Passport\Token[] $tokens
+ * @property-read int|null $tokens_count
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\User allRelations()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\User filter($filter)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\User newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\User newQuery()
+ * @method static \Illuminate\Database\Query\Builder|\App\User onlyTrashed()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\User query()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\User whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\User whereDeletedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\User whereEmail($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\User whereEmailVerifiedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\User whereId($value)
@@ -38,28 +55,9 @@ use Laravel\Passport\HasApiTokens;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\User wherePassword($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\User whereRememberToken($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\User whereUpdatedAt($value)
- * @mixin \Eloquent
- * @property-read \App\UserDetail $detail
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Order[] $orders
- * @property-read int|null $orders_count
- * @property \Illuminate\Support\Carbon|null $deleted_at
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Comment[] $comments
- * @property-read int|null $comments_count
- * @method static \Illuminate\Database\Eloquent\Builder|\App\User filter($filter)
- * @method static bool|null forceDelete()
- * @method static \Illuminate\Database\Query\Builder|\App\User onlyTrashed()
- * @method static bool|null restore()
- * @method static \Illuminate\Database\Eloquent\Builder|\App\User whereDeletedAt($value)
  * @method static \Illuminate\Database\Query\Builder|\App\User withTrashed()
  * @method static \Illuminate\Database\Query\Builder|\App\User withoutTrashed()
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Role[] $roles
- * @property-read int|null $roles_count
- * @property-read mixed $full_name
- * @property-read \Illuminate\Database\Eloquent\Collection|\Laravel\Passport\Client[] $clients
- * @property-read int|null $clients_count
- * @property-read \Illuminate\Database\Eloquent\Collection|\Laravel\Passport\Token[] $tokens
- * @property-read int|null $tokens_count
- * @method static \Illuminate\Database\Eloquent\Builder|\App\User allRelations()
+ * @mixin \Eloquent
  */
 class User extends Authenticatable implements MustVerifyEmail
 {

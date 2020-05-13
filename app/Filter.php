@@ -11,17 +11,17 @@ use Illuminate\Database\Eloquent\Model;
  *
  * @property int $id
  * @property string $name
- * @property-read Collection|Attribute[] $allAttributes
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Attribute[] $allAttributes
  * @property-read int|null $all_attributes_count
- * @method static Builder|Filter newModelQuery()
- * @method static Builder|Filter newQuery()
- * @method static Builder|Filter query()
- * @method static Builder|Filter whereId($value)
- * @method static Builder|Filter whereName($value)
- * @mixin \Eloquent
- * @property-read Collection|Attribute[] $filterValues
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Attribute[] $filterValues
  * @property-read int|null $filter_values_count
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Filter allRelations()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Filter newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Filter newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Filter query()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Filter whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Filter whereName($value)
+ * @mixin \Eloquent
  */
 class Filter extends Model
 {

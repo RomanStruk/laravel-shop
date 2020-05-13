@@ -18,6 +18,8 @@ class Analytics
      */
     public function growthRates($current, $base)
     {
+        if ($current == 0 && $base == 0) return 0;
+
         $base =  $base == 0 ? $current: $base;
         return round(($current - $base) / $base * 100, 2);
     }
