@@ -45,18 +45,20 @@ class OrdersFilter extends BaseFilter
 
     public function searchFilter($value)
     {
-        $this->builder->orWhereHas('products', function ($builder) use($value){
-            /** @var Builder $builder */
-            $builder->where('title', 'like', "%$value%");
-        })->orWhereHas('user', function ($builder) use($value){
-            /** @var Builder $builder */
-            $builder->where('email', 'like', "%$value%")
-                ->orWhereHas('detail', function ($builder) use($value){
-                    foreach (explode(' ', $value) as $key){
-                        $builder->where('first_name', 'like', "%$key%")
-                            ->orWhere('last_name', 'like', "%$key%");
-                    }
-                });
+        $this->builder->where(function (Builder $builder) use($value) {
+            return $builder->orWhereHas('orderProducts.product', function ($builder) use($value){
+                /** @var Builder $builder */
+                $builder->where('title', 'like', "%$value%");
+            })->orWhereHas('user', function ($builder) use($value){
+                /** @var Builder $builder */
+                $builder->where('email', 'like', "%$value%")
+                    ->orWhereHas('detail', function ($builder) use($value){
+                        foreach (explode(' ', $value) as $key){
+                            $builder->where('first_name', 'like', "%$key%")
+                                ->orWhere('last_name', 'like', "%$key%");
+                        }
+                    });
+            });
         });
     }
 }

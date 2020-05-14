@@ -22,18 +22,7 @@ trait OrderHelper
     {
         return $this->getSubTotalPrice();
     }
-    /**
-     *
-     * Calculated sum price for one product
-     *
-     * @param $productId
-     * @return float|int
-     */
-    public function getTotalPriceForProduct($productId)
-    {
-        $product = $this->products->find($productId);
-        return $product->price * $product->pivot->count;
-    }
+
 
     /**
      *
@@ -43,8 +32,8 @@ trait OrderHelper
      */
     public function getSubTotalPrice()
     {
-        return $this->products->sum(function ($product) {
-            return $product->price*$product->pivot->count;
+        return $this->orderProducts->sum(function ($orderProduct) {
+            return $orderProduct->product->price * $orderProduct->count;
         });
     }
 
@@ -56,8 +45,8 @@ trait OrderHelper
      */
     public function getTotalPrice()
     {
-        $sum = $this->products->sum(function ($product) {
-            return $product->price*$product->pivot->count;
+        $sum = $this->orderProducts->sum(function ($orderProduct) {
+            return $orderProduct->product->price * $orderProduct->count;
         });
         return $sum + $this->shipping->shipping_rate;
     }

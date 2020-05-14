@@ -38,11 +38,11 @@ class Syllable extends Model
 
     public function supplier()
     {
-        return $this->belongsTo(Supplier::class);
+        return $this->belongsTo(Supplier::class)->withDefault(['id'=>0,'name'=>'Deleted']);
     }
 
     public function product()
     {
-        return $this->belongsTo(Product::class);
+        return $this->belongsTo(Product::class)->withDefault(['id'=>0,'title'=>'Deleted']);
     }
 }

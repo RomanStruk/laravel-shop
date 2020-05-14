@@ -6,9 +6,10 @@ namespace App\Traits\Relations;
 
 use App\Media;
 use App\Order;
+use App\OrderProduct;
 use App\Product;
-use App\SoldProduct;
 use App\Syllable;
+use Illuminate\Database\Eloquent\Builder;
 
 trait ProductRelations
 {
@@ -48,8 +49,11 @@ trait ProductRelations
         return $this->belongsToMany(Product::class, 'related_products', 'product_id', 'related_id', 'id', 'id');
     }
 
-    public function sold()
+    public function orderProduct()
     {
-        return $this->hasMany(SoldProduct::class);
+        return $this->hasMany(OrderProduct::class);
     }
+
+
+
 }

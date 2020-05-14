@@ -87,8 +87,8 @@ class OrderRequest extends FormRequest
     public function productsFillData()
     {
         return [
-            'products'=>$this->products,
-            'count' => $this->count,
+            'products'=>$this->products,// array
+            'count' => $this->count, // array
         ];
     }
 

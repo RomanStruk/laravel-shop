@@ -86,6 +86,14 @@ class Order extends Model
         return (new OrdersFilter())->apply($query, $filter);
     }
 
+    /**
+     * @param Builder $query
+     * @return Builder
+     */
+    public function scopeCountProductGroupByWeek(Builder $query)
+    {
+        return $query->select('week(created_at)')->from();
+    }
 
     /**
      * Return list of status codes and labels
@@ -112,8 +120,11 @@ class Order extends Model
      */
     public function scopeAllRelations($query)
     {
-        return $query->with('products')
-            ->with('products.category')
+        return $query
+            ->with('orderProducts')
+            ->with('orderProducts.product')
+            ->with('orderProducts.product.category')
+            ->with('orderProducts.syllable')
             ->with('user')
             ->with('user.detail')
             ->with('histories')

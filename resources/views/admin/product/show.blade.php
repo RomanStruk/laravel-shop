@@ -249,9 +249,9 @@
                                         <li>Нема даних</li>
                                     @endforelse
                                     </ul>
-                                    <span class="badge badge-primary">Доставлено</span>
-                                    <span class="badge badge-success">Залишається</span>
-                                    <span class="badge badge-info">Обробляється</span>
+                                    <span class="badge badge-primary">@lang('shop.imported')</span>
+                                    <span class="badge badge-success">@lang('shop.remains')</span>
+                                    <span class="badge badge-info">@lang('shop.processed')</span>
                                 </div>
                             </div>
                         </div>

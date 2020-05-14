@@ -142,7 +142,8 @@ class Product extends Model
      */
     public function scopeAllRelations($query)
     {
-        return $query->with(['category', 'media:media.id,media.url'])
+        return $query
+            ->with(['category', 'media:media.id,media.url'])
             ->with('comments')
             ->with('comments.user')
             ->with('comments.user.detail')

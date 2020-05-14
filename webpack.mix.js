@@ -17,6 +17,7 @@ mix
     .js('resources/js/admin/dashboard.js', 'public/adm/js')
     .js('resources/js/admin/order-edit.js', 'public/adm/js')
     .js('resources/js/admin/product.js', 'public/adm/js')
+    .js('resources/js/admin/syllable.js', 'public/adm/js')
 
     // .js('resources/js/admin/app.js', 'public/adm/js')
     .js('resources/js/app.js', 'public/js')

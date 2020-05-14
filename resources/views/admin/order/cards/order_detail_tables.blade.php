@@ -35,17 +35,17 @@
                     </tr>
                     </thead>
                     <tbody>
-                    @foreach($order->products as $product)
+                    @foreach($order->orderProducts as $orderProduct)
                     <tr>
-                        <td class="text-center">{{ $product->id }}</td>
+                        <td class="text-center">{{ $orderProduct->product->id }}</td>
                         <td class="text-left">
-                            <a href="{{route('admin.product.show', ['product' => $product->id])}}">{{$product->title}}</a>
+                            <a href="{{route('admin.product.show', ['product' => $orderProduct->product->id])}}">{{$orderProduct->product->title}}</a>
 
                         </td>
-                        <td class="text-left">{{$product->category->name}}</td>
-                        <td class="text-right">{{$product->pivot->count}}</td>
-                        <td class="text-right">{{ $product->price }} {{config('shop.currency_short')}}</td>
-                        <td class="text-right">{{ $order->getTotalPriceForProduct($product->id) }} {{config('shop.currency_short')}}</td>
+                        <td class="text-left">{{$orderProduct->product->category->name}}</td>
+                        <td class="text-right">{{$orderProduct->count}}</td>
+                        <td class="text-right">{{ $orderProduct->product->price }} {{config('shop.currency_short')}}</td>
+                        <td class="text-right">{{ $orderProduct->getTotalPriceForProduct() }} {{config('shop.currency_short')}}</td>
                     </tr>
                     @endforeach
                     <tr>

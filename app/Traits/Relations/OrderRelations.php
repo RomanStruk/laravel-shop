@@ -20,9 +20,9 @@ trait OrderRelations
     /**
      * @return BelongsToMany
      */
-    public function products()
+    public function orderProducts()
     {
-        return $this->belongsToMany('App\Product')->withPivot('count');
+        return $this->hasMany('App\OrderProduct');
     }
 
     /**

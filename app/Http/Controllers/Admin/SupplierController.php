@@ -8,18 +8,22 @@ use App\Services\PaginateSession;
 use App\Supplier;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
+use Illuminate\Http\Request;
 
 class SupplierController extends Controller
 {
     /**
      * Display a listing of the resource.
      *
+     * @param Request $request
      * @param PaginateSession $paginateSession
      * @return View
      */
-    public function index(PaginateSession $paginateSession)
+    public function index(Request $request, PaginateSession $paginateSession)
     {
-        $suppliers = Supplier::paginate($paginateSession->getLimit());
+        $filters = $request->except('limit');
+        $filters['date'] = 'desc';
+        $suppliers = Supplier::filter($filters)->paginate($paginateSession->getLimit());
         return  view('admin.supplier.index')->with('suppliers', $suppliers);
     }
 

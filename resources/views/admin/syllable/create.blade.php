@@ -1,10 +1,12 @@
 @extends('admin.layouts.app')
-
+@section('script')
+    <script src="{{ mix('adm/js/syllable.js')}}"></script>
+@endsection
 @section('content')
     @include('admin.component.title_breadcrumbs', [
-    'title' => 'Додати постачальників',
+    'title' => 'Додати товар на склад',
     'breadcrumbs' => [
-        'Постачальники' => route('admin.supplier.index'),
+        'Склад' => route('admin.syllable.index'),
         'Додати',
     ]])
     <!-- Main content -->
@@ -13,19 +15,24 @@
 
         <div class="card card-solid">
             <div class="card-body">
-                <form action="{{ route('admin.supplier.store') }}" method="post" class="needs-validation" novalidate>
+                <form action="{{ route('admin.syllable.store') }}" method="post" class="needs-validation" novalidate>
                     @csrf
-                    <div class="form-group row">
-                        <label class="col-sm-2 col-form-label" for="name">Name</label>
-                        <div class="col-sm-10">
-                            <input name="name" type="text" id="name" value="{{old('name')}}" class="form-control">
-                        </div>
+                    <div class="form-group">
+                        <label class="col-form-label" for="supplier">Постачальник</label>
+                        <select id="supplier" name="supplier_id" class="form-control select2" data-dropdown-css-class="select2" style="width: 100%;" ></select>
                     </div>
-                    <div class="form-group row">
-                        <label class="col-sm-2 col-form-label" for="description">Опис</label>
-                        <div class="col-sm-10">
-                            <textarea name="description" id="description" class="form-control" cols="30"
-                                      rows="5">{{old('description')}}</textarea>
+                    <div class="form-group">
+                        <label class="col-form-label" for="product">Товар</label>
+                        <select id="product" name="product_id" class="form-control select2" data-dropdown-css-class="select2" style="width: 100%;" ></select>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-form-label" for="imported">Кількість одиниць товару</label>
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <div class="input-group-text">шт.</div>
+                            </div>
+                            <input name="imported" type="number" class="form-control" id="imported"
+                                   value="{{old('imported')}}">
                         </div>
                     </div>
 

@@ -2,6 +2,8 @@
 
 namespace App;
 
+use App\Services\ScopeFilters\SupplierFilter;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -29,6 +31,12 @@ class Supplier extends Model
     //постачальник
 
     protected $fillable = ['name', 'description'];
+
+    public function scopeFilter(Builder $query, $filter)
+    {
+        return (new SupplierFilter())->apply($query, $filter);
+    }
+
 
     public function products()
     {

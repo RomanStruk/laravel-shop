@@ -23,14 +23,14 @@
                 <table class="table table-striped projects">
                     <thead>
                     <tr>
-                        <td class="text-left col-1"><a class="desc">ID</a></td>
-                        <td class="text-left col-4">Товар</td>
-                        <td class="text-left col-2">Постачатьник</td>
-                        <td class="text-left col-1">Додано</td>
-                        <td class="text-left col-1">Актив</td>
-                        <td class="text-left col-1">Обробляється</td>
-                        <td class="text-left col-2">Опис</td>
-                        <td class="text-left col-1">Дія</td>
+                        <th class="text-left col-1"><a class="desc">ID</a></th>
+                        <th class="text-left col-4">Товар</th>
+                        <th class="text-left col-2">Постачатьник</th>
+                        <th class="text-left col-1">Додано</th>
+                        <th class="text-left col-1">Актив</th>
+                        <th class="text-left col-1">Обробляється</th>
+                        <th class="text-left col-2">Опис</th>
+                        <th class="text-left col-1">Дія</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -42,7 +42,7 @@
                                     {{ $syllable->product->title }}
                                 </a>
                                 <br>
-                                <small>Created  {{ $syllable->created_at->format('d.M.Y h:m') }}</small>
+                                <small>Створено  {{ $syllable->created_at->format('d.M.Y h:m') }}</small>
                             </td>
                             <td class="text-left">
                                 <a href="{{route('admin.supplier.show', $syllable->supplier)}}">
@@ -54,7 +54,10 @@
                             <td class="text-left">{{ $syllable->processed }}</td>
                             <td class="text-left">{{ $syllable->description }}</td>
                             <td class="text-right">
-                                @include('admin.component.dropdown_menu', ['delete' => route( 'admin.syllable.destroy', $syllable),])
+                                @include('admin.component.dropdown_menu', [
+                                        'show'=> route('admin.syllable.show', $syllable),
+                                        'edit'=> route('admin.syllable.edit', $syllable),
+                                        'delete' => route( 'admin.syllable.destroy', $syllable),])
                             </td>
                         </tr>
                     @empty

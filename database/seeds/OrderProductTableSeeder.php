@@ -18,7 +18,11 @@ class OrderProductTableSeeder extends Seeder
         $taggables = [];
         foreach ($orderIds as $id){
             for ($i = 0; $i < (rand(2,8)); $i++) {
-                $taggables[] = ['order_id'=>$id, 'product_id'=>$productIds[array_rand($productIds)]];
+                $taggables[] = [
+                    'order_id'=>$id,
+                    'product_id'=>$productIds[array_rand($productIds)],
+                    'syllable_id'=>$productIds[array_rand($productIds)],
+                ];
             }
         }
 

@@ -16,6 +16,7 @@ class UsersTableSeeder extends Seeder
                 'name' => 'admin',
                 'email' => 'admin@gmail.com',
                 'password' => Hash::make('12345'),
+                'email_verified_at' => now()
             ]
         ]);
         DB::table('user_details')->insert([
@@ -42,8 +43,6 @@ class UsersTableSeeder extends Seeder
             $user->detail()->save($detail);
             $user->roles()->sync([3]);
 
-            $order = factory(App\Order::class,5)->make(['user_id' => $user->id]);
-            $user->orders()->insert($order->toArray());
         });
     }
 }
