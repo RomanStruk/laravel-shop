@@ -26,7 +26,6 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property string|null $keywords
  * @property string|null $description
  * @property string $hit
- * @property int $in_stock
  * @property int $visits
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
@@ -36,14 +35,14 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property-read int|null $comments_count
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Media[] $media
  * @property-read int|null $media_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\OrderProduct[] $orderProduct
+ * @property-read int|null $order_product_count
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Order[] $orders
  * @property-read int|null $orders_count
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Attribute[] $product_attributes
  * @property-read int|null $product_attributes_count
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Product[] $related
  * @property-read int|null $related_count
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\SoldProduct[] $sold
- * @property-read int|null $sold_count
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Syllable[] $syllable
  * @property-read int|null $syllable_count
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Product allRelations()
@@ -64,7 +63,6 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Product whereDescription($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Product whereHit($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Product whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Product whereInStock($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Product whereKeywords($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Product whereOldPrice($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Product wherePrice($value)
@@ -155,4 +153,5 @@ class Product extends Model
     {
         return $this->media()->attach($ids);
     }
+
 }

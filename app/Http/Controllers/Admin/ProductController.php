@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Order;
 use App\OrderProduct;
 use App\Supplier;
+use App\Syllable;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -83,18 +84,13 @@ class ProductController extends Controller
      */
     public function show($id)
     {
-        dd(OrderProduct::top(5)->get()->first()->product->orderProduct()->countProductGroupByWeek()->get());
-
         $product = Product::allRelations()->withTrashed()->avgRating()->countComments()->findOrFail($id);
-//        dd($product->orderProduct);
         $attributes = Filter::allRelations()->get();
+        ;
+//dd($product->availableSyllable(), $product->availableRemains());
         // statistics card
         $range = (new DateGeneration())->generateStartEndMonth(now());
         $rangeLastMonth = (new DateGeneration())->generateStartEndMonth(now()->subMonth());
-
-//        dd($product->orderProduct()->sold($range)->get()->sum('count'));
-
-
         $soldProductCount = $product->orderProduct()->sold($range)->get()->sum('count');
         $soldProductCountLastMonth = $product->orderProduct()->sold($rangeLastMonth)->get()->sum('count');
         $soldProductsOverTime = $product->orderProduct()->sold(null)->get()->sum('count');

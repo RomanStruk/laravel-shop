@@ -3,20 +3,14 @@
 namespace App;
 
 use App\Services\ScopeFilters\OrdersFilter;
-use App\Services\Shipping\ShippingMethods\CourierMethod;
-use App\Services\Shipping\ShippingMethods\NovaPoshtaMethod;
 use App\Traits\Helpers\OrderHelper;
 use App\Traits\Helpers\SerializeDate;
 use App\Traits\Relations\OrderRelations;
 use App\Traits\Status;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Notifications\DatabaseNotification;
-use Illuminate\Notifications\DatabaseNotificationCollection;
 use Illuminate\Notifications\Notifiable;
-use Illuminate\Support\Carbon;
 
 /**
  * App\Order
@@ -33,12 +27,13 @@ use Illuminate\Support\Carbon;
  * @property-read int|null $histories_count
  * @property-read \Illuminate\Notifications\DatabaseNotificationCollection|\Illuminate\Notifications\DatabaseNotification[] $notifications
  * @property-read int|null $notifications_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\OrderProduct[] $orderProducts
+ * @property-read int|null $order_products_count
  * @property-read \App\Payment|null $payment
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Product[] $products
- * @property-read int|null $products_count
  * @property-read \App\Shipping|null $shipping
  * @property-read \App\User $user
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Order allRelations()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Order countProductGroupByWeek()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Order filter($filter)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Order newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Order newQuery()
@@ -67,13 +62,30 @@ class Order extends Model
 
     protected $dates = ['deleted_at'];
 
-    const STATUS_PENDING    = 1;
+    const STATUS_PENDING = 1;
     const STATUS_PROCESSING = 2;
-    const STATUS_COMPLETED  = 3;
-    const STATUS_CANCELED   = 4;
-    const STATUS_DENIED     = 5;
-    const STATUS_FAILED     = 6;
-    const STATUS_REVERSED   = 7;
+    const STATUS_COMPLETED = 3;
+    const STATUS_CANCELED = 4;
+    const STATUS_DENIED = 5;
+    const STATUS_FAILED = 6;
+    const STATUS_REVERSED = 7;
+
+    /**
+     * Return list of status codes and labels
+     * @return array
+     */
+    public static function listStatus()
+    {
+        return [
+            self::STATUS_PENDING => 'Очікує на розгляд',
+            self::STATUS_PROCESSING => 'Обробляється',
+            self::STATUS_COMPLETED => 'Завершений',
+            self::STATUS_CANCELED => 'Скасовано',
+            self::STATUS_DENIED => 'Відхілити',
+            self::STATUS_FAILED => 'Не вдалося',
+            self::STATUS_REVERSED => 'Повернутий',
+        ];
+    }
 
     /**
      * Accept Filters
@@ -92,25 +104,14 @@ class Order extends Model
      */
     public function scopeCountProductGroupByWeek(Builder $query)
     {
-        return $query->select('week(created_at)')->from();
+        return $query->select([\DB::raw("SUM(order_products.count) as count_sold"), \DB::raw("order_products.product_id as product_id"), \DB::raw('week(created_at)')])
+            ->rightJoin('order_products', function ($query) {
+                $query->on('order_products.order_id', '=', 'orders.id')->where('order_products.product_id', '=', '3');
+            })
+            ->where('status', '=', self::STATUS_COMPLETED)
+            ->groupBy('week(created_at)', 'product_id');
     }
 
-    /**
-     * Return list of status codes and labels
-     * @return array
-     */
-    public static function listStatus()
-    {
-        return [
-            self::STATUS_PENDING    => 'Очікує на розгляд',
-            self::STATUS_PROCESSING => 'Обробляється',
-            self::STATUS_COMPLETED  => 'Завершений',
-            self::STATUS_CANCELED   => 'Скасовано',
-            self::STATUS_DENIED     => 'Відхілити',
-            self::STATUS_FAILED     => 'Не вдалося',
-            self::STATUS_REVERSED   => 'Повернутий',
-        ];
-    }
 
     /**
      * Scope a query to get all relations

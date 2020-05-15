@@ -35,7 +35,7 @@ class SupplierController extends Controller
      */
     public function show(Supplier $supplier)
     {
-        $supplier->load('products');
+        $supplier->load(['syllable', 'syllable.product']);
 //        dd($supplier);
         return view('admin.supplier.show')->with('supplier', $supplier);
     }

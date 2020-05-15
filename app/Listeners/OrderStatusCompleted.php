@@ -3,7 +3,6 @@
 namespace App\Listeners;
 
 use App\Events\CompletedOrderStatusEvent;
-use App\SoldProduct;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 
@@ -22,18 +21,17 @@ class OrderStatusCompleted
     /**
      * Handle the event.
      *
-     * @param  CompletedOrderStatusEvent  $event
+     * @param CompletedOrderStatusEvent $event
      * @return void
      */
     public function handle(CompletedOrderStatusEvent $event)
     {
-            foreach ($event->order->products as $product){
-                $soldProduct = new SoldProduct();
-                $soldProduct->product_id =  $product->id;
-                $soldProduct->sale_price =  $product->price;
-                $soldProduct->created_at =  $event->order->created_at;
-                $soldProduct->save();
-                // todo - count products
-            }
+        // todo - count products
+        foreach ($event->order->orderProducts as $orderProduct) {
+            $orderProduct->syllable->remains = $orderProduct->syllable->remains - $orderProduct->count;
+            $orderProduct->syllable->processed = $orderProduct->syllable->processed - $orderProduct->count;
+            $orderProduct->syllable->save();
+
+        }
     }
 }

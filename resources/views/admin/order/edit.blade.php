@@ -128,26 +128,30 @@
                             </div>
                         </div>
                         <div class="card-body" id="card-for-append">
-                            @foreach($order->products as $product)
                             <div class="form-group row">
-                                <div class="col-10">
-                                    <select name="products[]" class="form-control select2 product-select2" style="width: 100%;">
-                                        <option value="{{$product->id}}" selected="selected">{{$product->title}}</option>
+                            <div class="col-6">Товар</div><div class="col-4">Склад</div><div class="col-2">Кількість</div>
+                            </div>
+                        @foreach($order->orderProducts as $orderProduct)
+                                <div class="form-group row">
+                                <div class="col-6">
+                                    <select name="products[{{$orderProduct->id}}][id]" class="form-control select2 product-select2" style="width: 100%;">
+                                        <option value="{{$orderProduct->product->id}}" selected="selected">{{$orderProduct->product->title}}</option>
+                                    </select>
+                                </div>
+                                <div class="col-4">
+                                    <select name="products[{{$orderProduct->id}}][syllable]" id="syllable" class="form-control">
+                                        @foreach($orderProduct->product->syllable as $syllable)
+                                            <option value="{{$syllable->id}}"
+                                            @if ($orderProduct->syllable_id == $syllable->id) selected @endif
+                                            >{{$syllable->supplier->name}} ({{$syllable->remains - $syllable->countProcessed()}})</option>
+                                        @endforeach
                                     </select>
                                 </div>
                                 <div class="col-2">
-                                    <input type="number" name="count[]" class="form-control" value="{{$product->pivot->count}}">
+                                    <input type="number" name="products[{{$orderProduct->id}}][count]" class="form-control" value="{{$orderProduct->count}}">
                                 </div>
                             </div>
                             @endforeach
-                            <div class="form-group row">
-                                <div class="col-10">
-                                    <select name="products[]" class="form-control select2 product-select2" style="width: 100%;"></select>
-                                </div>
-                                <div class="col-2">
-                                    <input type="number" name="count[]" class="form-control" value="1">
-                                </div>
-                            </div>
                         </div>
                         <!-- /.card-body -->
                         <div class="card-footer">

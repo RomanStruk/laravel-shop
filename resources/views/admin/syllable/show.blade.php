@@ -20,7 +20,7 @@
                         <div class="col-4"><b>Товар:</b> <a href="{{route('admin.product.show', $syllable->product)}}">{{$syllable->product->title}}</a></div>
                         <div class="col-1"><span class="badge badge-primary">{{$syllable->imported}}</span></div>
                         <div class="col-1"><span class="badge badge-success">{{$syllable->remains}}</span></div>
-                        <div class="col-1"><span class="badge badge-info">{{$syllable->processed}}</span></div>
+                        <div class="col-1"><span class="badge badge-info">{{$syllable->countProcessed()}}</span></div>
                     </div>
                 <p><b>Постачальник:</b> {{$syllable->supplier->name}}</p>
                 <p><b>Опис:</b> {{$syllable->description}}</p>

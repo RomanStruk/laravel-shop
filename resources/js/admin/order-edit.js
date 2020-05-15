@@ -5,6 +5,17 @@ $(function () {
     'use strict';
     //Initialize Select2 Elements
     // $('#input-product').select2();
+    //generates random id;
+    let guid = () => {
+        let s4 = () => {
+            return Math.floor((1 + Math.random()) * 0x10000)
+                .toString(16)
+                .substring(1);
+        }
+        //return id of format 'aaaaaaaa'-'aaaa'-'aaaa'-'aaaa'-'aaaaaaaaaaaa'
+        return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
+    };
+
     let select2ProductsOptions = {
         ajax: {
             url: "/api/v1/search/products",
@@ -130,13 +141,15 @@ $(function () {
     });
     $('#add-new-field').click(function () {
         // $("#ele-for-clone").clone().appendTo("#card-for-clone");
+        let id = guid();
         $('#card-for-append').append(
             '<div class="form-group row">\n' +
             '            <div class="col-10">\n' +
-            '                <select name="products[]" class="form-control product-select2"></select>\n' +
+            '                <select name="products['+id+'][id]" class="form-control product-select2"></select>\n' +
             '            </div>\n' +
+            '             <input type="hidden" name="products['+id+'][syllable]">' +
             '            <div class="col-2">\n' +
-            '                <input type="number" name="count[]" class="form-control" value="1">\n' +
+            '                <input type="number" name="products['+id+'][count]" class="form-control" value="1">\n' +
             '            </div>\n' +
             '</div>');
         $(".product-select2").select2(select2ProductsOptions);

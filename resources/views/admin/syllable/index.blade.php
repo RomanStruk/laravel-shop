@@ -51,7 +51,7 @@
                             </td>
                             <td class="text-left">{{ $syllable->imported }}</td>
                             <td class="text-left">{{ $syllable->remains }}</td>
-                            <td class="text-left">{{ $syllable->processed }}</td>
+                            <td class="text-left">{{ $syllable->countProcessed() }}</td>
                             <td class="text-left">{{ $syllable->description }}</td>
                             <td class="text-right">
                                 @include('admin.component.dropdown_menu', [

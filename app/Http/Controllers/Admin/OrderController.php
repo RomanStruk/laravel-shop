@@ -12,6 +12,7 @@ use App\Order;
 use App\Services\PaginateSession;
 use App\Services\Shipping\ShippingBase;
 use App\Shipping;
+use App\Syllable;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -87,8 +88,8 @@ class OrderController extends Controller
     {
         // get order
         $order = Order::allRelations()->withTrashed()->findOrFail($orderId);
-
-        return view('admin.order.edit', ['order'=> $order]);
+        $syllables = Syllable::all();
+        return view('admin.order.edit', ['order'=> $order, 'syllables' => $syllables]);
     }
 
 

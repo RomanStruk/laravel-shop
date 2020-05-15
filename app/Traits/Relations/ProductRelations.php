@@ -36,7 +36,7 @@ trait ProductRelations
 
     public function orders()
     {
-        return $this->belongsToMany(Order::class);
+        return $this->belongsToMany(Order::class, OrderProduct::class);
     }
 
     public function media()

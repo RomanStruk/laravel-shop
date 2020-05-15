@@ -116,6 +116,10 @@
                                 <span class="in-stock">в наявності </span>
                                 <span class="badge badge-success">{{$product->quality()}}</span>
                             </p>
+                            <p>
+                                <span class="in-stock">доступно </span>
+                                <span class="badge badge-success">{{$product->availableRemains()}}</span>
+                            </p>
                         </div>
                         <div class="row">
                             <div class="col-2">Ключові слова</div>
@@ -242,7 +246,8 @@
                                                 </a>
                                                 <span class="badge badge-primary">{{$syllable->imported}}</span>
                                                 <span class="badge badge-success">{{$syllable->remains}}</span>
-                                                <span class="badge badge-info">{{$syllable->processed}}</span>
+                                                <span class="badge badge-info">{{$syllable->availableRemains()}}</span>
+                                                <span class="badge badge-warning">{{$syllable->countProcessed()}}</span>
 
                                             </li>
                                     @empty
@@ -251,7 +256,8 @@
                                     </ul>
                                     <span class="badge badge-primary">@lang('shop.imported')</span>
                                     <span class="badge badge-success">@lang('shop.remains')</span>
-                                    <span class="badge badge-info">@lang('shop.processed')</span>
+                                    <span class="badge badge-info">@lang('shop.available')</span>
+                                    <span class="badge badge-warning">@lang('shop.processed')</span>
                                 </div>
                             </div>
                         </div>

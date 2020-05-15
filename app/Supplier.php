@@ -16,6 +16,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Product[] $products
  * @property-read int|null $products_count
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Supplier filter($filter)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Supplier newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Supplier newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Supplier query()
@@ -37,9 +38,14 @@ class Supplier extends Model
         return (new SupplierFilter())->apply($query, $filter);
     }
 
+    public function syllable()
+    {
+        return $this->hasMany(Syllable::class);
+    }
 
     public function products()
     {
-        return $this->belongsToMany(Product::class, 'syllables')->withPivot(['imported', 'remains', 'processed', 'description']);
+        return $this->belongsToMany(Product::class, 'syllables')
+            ->withPivot(['imported', 'remains', 'description']);
     }
 }

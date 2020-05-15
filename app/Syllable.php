@@ -16,6 +16,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property string|null $description
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \App\Product $product
  * @property-read \App\Supplier $supplier
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Syllable newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Syllable newQuery()
@@ -45,4 +46,25 @@ class Syllable extends Model
     {
         return $this->belongsTo(Product::class)->withDefault(['id'=>0,'title'=>'Deleted']);
     }
+
+    public function orderProduct()
+    {
+        return $this->hasMany(OrderProduct::class);
+    }
+
+
+    // підрахунок кількості товарів в замовленнях які ще не розглянуті
+    public function countProcessed()
+    {
+        return $this->orderProduct()->whereHas('order', function ($query){
+            $query->where('status', '=', Order::STATUS_PROCESSING)->orWhere('status', '=', Order::STATUS_PENDING);
+        })->get()->sum('count');
+    }
+
+    // кількість доступних товарів з урахуванням "не розглянутих замовлень"
+    public function availableRemains() : int
+    {
+        return $this->remains - $this->countProcessed();
+    }
+
 }

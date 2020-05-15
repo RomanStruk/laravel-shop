@@ -4,7 +4,6 @@
 namespace App\Services\Analytics;
 
 
-use App\SoldProduct;
 use Illuminate\Support\Carbon;
 
 class Analytics
@@ -26,7 +25,7 @@ class Analytics
 
     /**
      * Для определения среднего темпа роста расчетные показатели по периодам складывают и делят на количество периодов.
-     * @param array $percentPeriods
+     * @param array $volumePeriods
      * @return false|float
      */
     public function averageGrowthRate(array $volumePeriods)

@@ -8,6 +8,8 @@ use App\Notifications\OrderCreatedMailNotificationForUser;
 use App\Notifications\OrderCreatedNotification;
 use App\Notifications\OrderStatusChangeNotification;
 use App\OrderHistory;
+use App\OrderProduct;
+use App\Product;
 use App\Services\Shipping\ShippingBase;
 use App\Shipping;
 use Illuminate\Notifications\Notification;
@@ -58,13 +60,51 @@ trait OrderHelper
      */
     public function syncProducts(array $fields)
     {
-        $this->products()->sync($fields['products']);
-        $this->load('products');
-        foreach ($fields['products'] as $key => $product) {
-            if ($this->products->contains($product)){
-                $pivot = $this->products()->where('product_id', $product)->first()->pivot;
-                $pivot->count = array_key_exists($key, $fields['count'])? $fields['count'][$key]: 1;
-                $pivot->update();
+        foreach ($fields as $id => $updateData) {
+            if (! array_key_exists('id', $updateData)){
+                if($this->orderProducts->where('id', '=', $id)->count()){
+                    //delete
+                    $orderProduct = $this->orderProducts->where('id', '=', $id)->first();
+                    $orderProduct->delete();
+                }
+                continue;
+            }
+            $product = Product::findOrFail($updateData['id']);
+            if ($this->orderProducts->where('id', '=', $id)->count()){
+                // update
+                $orderProduct = $this->orderProducts->where('id', '=', $id)->first();
+
+                // якщо та ж поставка
+                if ($orderProduct->syllable_id == $updateData['syllable']){
+                    //але кількість більша за длступну то пропускаємо
+                    if (($orderProduct->syllable->availableRemains() - ($updateData['count']-$orderProduct->count)) < 0){
+                        continue;
+                    }
+                }else{
+                    // інша поставка
+                    // але кількість більша за доступну то пропускаємо
+                    if (($product->availableSyllableRemains($updateData['syllable']) - $updateData['count']) < 0){
+                        continue;
+                    }
+                }
+                // оновлюємо
+                $orderProduct->product_id = $updateData['id'];
+                $orderProduct->syllable_id = $updateData['syllable'];
+                $orderProduct->count = $updateData['count'];
+                $orderProduct->save();
+                dump('updated');
+
+            }else{
+                //create
+                $syllable = $product->availableSyllable();
+                if ($syllable and ($syllable->availableRemains() - $updateData['count']) > 0){
+                    $orderProduct = new OrderProduct();
+                    $orderProduct->order_id = $this->id;
+                    $orderProduct->product_id = $updateData['id'];
+                    $orderProduct->syllable_id = $syllable->id;
+                    $orderProduct->count = $updateData['count'];
+                    $orderProduct->save();
+                }
             }
         }
     }

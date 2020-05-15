@@ -20,13 +20,13 @@
                 <p><b>Опис:</b> {{$supplier->description}}</p>
                 <b>Товари на складі:</b>
                 <ul>
-                    @forelse($supplier->products as $product)
+                    @forelse($supplier->syllable as $syllable)
                         <li>
                             <div class="row">
-                                <div class="col-5"><a href="{{route('admin.product.show', $product)}}">{{$product->title}}</a></div>
-                                <div class="col-1"><span class="badge badge-primary">{{$product->pivot->imported}}</span></div>
-                                <div class="col-1"><span class="badge badge-success">{{$product->pivot->remains}}</span></div>
-                                <div class="col-1"><span class="badge badge-info">{{$product->pivot->processed}}</span></div>
+                                <div class="col-5"><a href="{{route('admin.product.show', $syllable->product)}}">{{$syllable->product->title}}</a></div>
+                                <div class="col-1"><span class="badge badge-primary">{{$syllable->imported}}</span></div>
+                                <div class="col-1"><span class="badge badge-success">{{$syllable->remains}}</span></div>
+                                <div class="col-1"><span class="badge badge-info">{{$syllable->countProcessed()}}</span></div>
                             </div>
                         </li>
                     @empty

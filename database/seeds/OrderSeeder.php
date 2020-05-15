@@ -15,7 +15,7 @@ class OrderSeeder extends Seeder
     {
         $users = \App\User::all();
         foreach ($users as $user){
-            $order = factory(App\Order::class,3)->make(['user_id' => $user->id]);
+            $order = factory(App\Order::class,5)->make(['user_id' => $user->id]);
             $user->orders()->insert($order->toArray());
         }
 
@@ -23,8 +23,8 @@ class OrderSeeder extends Seeder
         $products = \App\Product::with('syllable')->get();
         foreach ($orders as $order){
             $orderProduct = [];
-            for ($i = 0; $i < (rand(2,8)); $i++) {
-                $product = $products->random(1)->first();
+            $randomProducts = $products->random(rand(2,8));
+            foreach ($randomProducts as $product){
                 $orderProduct[] = [
                     'product_id' => $product->id,
                     'syllable_id' => $product->syllable->first()->id,
@@ -69,13 +69,6 @@ class OrderSeeder extends Seeder
             if ($order->status == \App\Order::STATUS_COMPLETED) {
                 foreach ($order->orderProducts as $orderProduct) {
                     $orderProduct->syllable->remains = $orderProduct->syllable->remains - $orderProduct->count;
-                    $orderProduct->syllable->save();
-
-                }
-            }
-            if ($order->status == \App\Order::STATUS_PENDING or $order->status == \App\Order::STATUS_PROCESSING) {
-                foreach ($order->orderProducts as $orderProduct) {
-                    $orderProduct->syllable->processed = $orderProduct->syllable->processed + $orderProduct->count;
                     $orderProduct->syllable->save();
 
                 }
