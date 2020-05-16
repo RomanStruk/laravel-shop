@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use App\Rules\ShippingCityRule;
+use App\Rules\SyllableForProductRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -31,9 +32,13 @@ class OrderRequest extends FormRequest
 
             'comment' => 'required|string|min:3',
 
-//            'products' => 'required|array|distinct|min:1',
-            'products.*.id' => 'numeric|exists:products,id',
-            'products.*.count' => 'numeric|min:1|max:999',
+            'products' => 'required|array|distinct|min:1',
+
+            'products.first.id' => 'required',
+
+            'products.*.id' => 'nullable|numeric|exists:products,id',
+            'products.*.count' => ['exclude_if:products.*.id,', 'numeric', 'min:1', 'max:999'],
+            'products.*.syllable' => ['exclude_if:products.*.id,', 'numeric', 'min:1', 'exists:syllables,id', new SyllableForProductRule($this->get('products'))],
 //            'count' => 'required|array|min:1',
 
             'method_pay' => ['required', Rule::in(['receipt', 'google-pay', 'card'])],
@@ -108,6 +113,29 @@ class OrderRequest extends FormRequest
             'address' => $this->shipping_method == 'novaposhta'?
                 $this->warehouse_code :
                 ($this->street .', '. $this->house . ', ' . $this->flat),
+        ];
+    }
+
+    /**
+     * Get the error messages for the defined validation rules.
+     *
+     * @return array
+     */
+    public function messages()
+    {
+        return [
+            'products.first.id.required' => 'Products is required',
+            'products.*.id.numeric' => 'Products is numeric',
+            'products.*.id.exists' => 'Products is exists',
+
+            'products.first.count.required' => 'Products count is required',
+            'products.*.count.numeric' => 'Products count is numeric',
+            'products.*.count.min' => 'Products count is numeric',
+            'products.*.count.max' => 'Products count is exists',
+
+            'products.first.syllable.required' => 'A syllable is required',
+            'products.*.syllable.numeric' => 'A syllable is numeric',
+            'products.*.syllable.exists' => 'A syllable is numeric',
         ];
     }
 }

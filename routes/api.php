@@ -37,5 +37,6 @@ Route::group(['prefix' => 'v1'], function (){
     Route::get('/search/users', 'Api\v1\SearchController@users')->middleware(['auth:api']);
     Route::get('/search/products', 'Api\v1\SearchController@products')->middleware(['auth:api']);
     Route::apiResource('supplier', 'Api\v1\SupplierController');
+    Route::apiResource('syllable', 'Api\v1\SyllableController');
 //    Route::post('/user/login', 'Api\v1\UserController@login');
 });
