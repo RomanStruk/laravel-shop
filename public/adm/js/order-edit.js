@@ -34265,17 +34265,14 @@ $(function () {
     placeholder: 'Виберіть відділення'
   };
   var select2SyllableOptions = {
-    product: 0,
     ajax: {
       url: "/api/v1/syllable/index",
       dataType: 'json',
       delay: 250,
       data: function data(params) {
-        console.log(this.selectedProduct);
         return {
           search: params.term,
           // search term
-          product_id: this.product,
           page: params.page
         };
       },
@@ -34301,10 +34298,16 @@ $(function () {
   $("#shipping-select2").select2(select2ShippingOptions);
   $("#address-select2").select2(select2AddressOptions);
   $('.product-select2').on('select2:select', function (e) {
-    var data = e.params.data;
-    select2SyllableOptions.ajax.url = "/api/v1/syllable/index?product_id=" + data.id;
-    $(".syllable-select2").select2(select2SyllableOptions);
-    console.log(data);
+    var select = $(e.target).parents(".form-group.row").find('.syllable-select2');
+    var Options = {
+      data: e.params.data.syllables
+    };
+
+    if ($(select).hasClass("select2-hidden-accessible")) {
+      select.find('option').remove().end();
+    }
+
+    select.select2(Options);
   });
   $('input[name="shipping_method"]').click(function () {
     $(this).tab('show');
@@ -34315,6 +34318,18 @@ $(function () {
     var id = guid();
     $('#card-for-append').append('<div class="form-group row">\n' + '            <div class="col-6">\n' + '                <select name="products[' + id + '][id]" class="form-control product-select2" id="' + id + '"></select>\n' + '            </div>\n' + '             <div class="col-4">\n' + '                <select name="products[' + id + '][syllable]" class="form-control syllable-select2"></select>\n' + '            </div>' + '            <div class="col-2">\n' + '                <input type="number" name="products[' + id + '][count]" class="form-control" value="1">\n' + '            </div>\n' + '</div>');
     $(".product-select2").select2(select2ProductsOptions);
+    $('.product-select2').on('select2:select', function (e) {
+      var select = $(e.target).parents(".form-group.row").find('.syllable-select2');
+      var Options = {
+        data: e.params.data.syllables
+      };
+
+      if ($(select).hasClass("select2-hidden-accessible")) {
+        select.find('option').remove().end();
+      }
+
+      select.select2(Options);
+    });
     return false;
   });
 });

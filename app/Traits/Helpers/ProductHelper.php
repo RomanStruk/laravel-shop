@@ -10,56 +10,29 @@ use phpDocumentor\Reflection\Types\Integer;
 
 trait ProductHelper
 {
-    // кількість доступних товарів по по конкретній поставці
-    public function availableSyllableRemains($syllableId)
-    {
-        $syllable = $this->syllable()->findOrFail($syllableId);
-        return $syllable->remains - $syllable->countProcessed();
-    }
 
-
-    // кількість всього доступних товарів з урахуванням не розглянутих замовлень
+    /**
+     * кількість всього доступних товарів з урахуванням не розглянутих замовлень
+     *
+     * @return int
+     */
     public function availableRemains() : int
     {
-        $available = 0;
-        $bol = true;
-        foreach ($this->syllable as $syllable){
-            $s = $syllable->remains - $syllable->countProcessed();
-            if ($s <= 0){
-                $bol = false;
-                continue;
-            }
-            $available += $s;
-        }
-        if ($bol)
-            return $available;
-        return 0;
+        return $this->syllable->sum('countAvailableRemains');
     }
 
 
-    // повертає першу достуну складську поставку
-    public function availableSyllable()
-    {
-        foreach ($this->syllable as $syllable){
-            if ($syllable->remains - $syllable->countProcessed() > 0)
-                return $syllable;
-        }
-        return null;
-    }
-
-    // скільки всього є товарів на складах без врахування нерозглянутих замовлень
+    /**
+     * скільки всього є товарів на складах без врахування нерозглянутих замовлень
+     *
+     * @return mixed
+     */
     public function quality()
     {
         return $this->syllable->sum('remains');
     }
 
-    public function createSyllable($syllable)
-    {
-        if ($syllable){
-            return $this->syllable()->create($syllable);
-        }
-        return null;
-    }
+
 
     public function scopeAvgRating(Builder $builder)
     {
@@ -71,6 +44,18 @@ trait ProductHelper
     public function scopeCountComments(Builder $builder)
     {
         return $builder->withCount('comments');
+    }
+
+    /**
+     * @param $syllable
+     * @return mixed|null
+     */
+    public function createSyllable($syllable)
+    {
+        if ($syllable){
+            return $this->syllable()->create($syllable);
+        }
+        return null;
     }
 
     public function syncRelatedProducts($products)

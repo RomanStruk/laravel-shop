@@ -88,8 +88,7 @@ class OrderController extends Controller
     {
         // get order
         $order = Order::allRelations()->withTrashed()->findOrFail($orderId);
-        $syllables = Syllable::all();
-        return view('admin.order.edit', ['order'=> $order, 'syllables' => $syllables]);
+        return view('admin.order.edit', ['order'=> $order]);
     }
 
 

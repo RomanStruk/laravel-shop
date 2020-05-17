@@ -161,10 +161,12 @@ $(function () {
     $("#address-select2").select2(select2AddressOptions);
 
     $('.product-select2').on('select2:select', function (e) {
-        var data = e.params.data;
-        select2SyllableOptions.ajax.url = "/api/v1/syllable/index?product_id="+data.id;
-        $(".syllable-select2").select2(select2SyllableOptions);
-        console.log(data);
+        let select = $(e.target).parents(".form-group.row").find('.syllable-select2');
+        let Options = {data: e.params.data.syllables};
+        if ($(select).hasClass("select2-hidden-accessible")) {
+            select.find('option').remove().end();
+        }
+        select.select2(Options);
     });
 
     $('input[name="shipping_method"]').click(function () {
@@ -187,6 +189,14 @@ $(function () {
             '            </div>\n' +
             '</div>');
         $(".product-select2").select2(select2ProductsOptions);
+        $('.product-select2').on('select2:select', function (e) {
+            let select = $(e.target).parents(".form-group.row").find('.syllable-select2');
+            let Options = {data: e.params.data.syllables};
+            if ($(select).hasClass("select2-hidden-accessible")) {
+                select.find('option').remove().end();
+            }
+            select.select2(Options);
+        });
         return false;
     });
 

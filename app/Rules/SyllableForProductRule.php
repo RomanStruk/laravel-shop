@@ -28,22 +28,15 @@ class SyllableForProductRule implements Rule
      */
     public function passes($attribute, $value)
     {
+
         $var = explode('.', $attribute);
         $keyForProducts = $var[1];
-//        if ($keyForProducts != 0)
-//            dd($var, $keyForProducts, $this->products, $attribute, $value);
         $element = $this->products[$keyForProducts];
+//        dump($var, $keyForProducts, $this->products, $attribute, $value);
 
-        if (! array_key_exists('id', $element )) return true;
-
-        if (! array_key_exists('syllable', $element)) return false;
-        if (! \DB::table('syllables')->where('id', '=', (int)$element['syllable'])->where('product_id', '=', (int)$element['id'])->exists()) {
+        if (! \DB::table('syllables')->where('id', '=', (int)$value)->where('product_id', '=', (int)$element['id'])->exists()) {
             return false;
         }
-//        foreach ($this->products as $element) {
-//
-//
-//        }
         return true;
     }
 

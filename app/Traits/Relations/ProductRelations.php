@@ -9,16 +9,19 @@ use App\Order;
 use App\OrderProduct;
 use App\Product;
 use App\Syllable;
-use Illuminate\Database\Eloquent\Builder;
 
 trait ProductRelations
 {
     public function syllable()
     {
+        return $this->hasMany(Syllable::class)->havingCountProcessed()->havingCountAvailableRemains();
+    }
+
+    public function syllableWithOutScope()
+    {
         return $this->hasMany(Syllable::class);
     }
 
-    //
     public function product_attributes()
     {
         return $this->belongsToMany('App\Attribute');

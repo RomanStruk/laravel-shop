@@ -40,7 +40,7 @@ class Supplier extends Model
 
     public function syllable()
     {
-        return $this->hasMany(Syllable::class);
+        return $this->hasMany(Syllable::class)->countProcessed()->countAvailableRemains();
     }
 
     public function products()

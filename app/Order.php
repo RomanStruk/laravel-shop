@@ -53,9 +53,8 @@ use Illuminate\Notifications\Notifiable;
 class Order extends Model
 {
     use SoftDeletes, Notifiable;
-    use OrderRelations;
+    use OrderRelations, OrderHelper;
     use SerializeDate;
-    use OrderHelper;
     use Status;
 
     protected $guarded = [];
@@ -125,7 +124,6 @@ class Order extends Model
             ->with('orderProducts')
             ->with('orderProducts.product')
             ->with('orderProducts.product.category')
-            ->with('orderProducts.syllable')
             ->with('user')
             ->with('user.detail')
             ->with('histories')

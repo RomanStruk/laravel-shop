@@ -2,6 +2,8 @@
 
 namespace App\Http\Requests;
 
+use App\Rules\AvailableRemainsProductRule;
+use App\Rules\OrderProductMinRule;
 use App\Rules\ShippingCityRule;
 use App\Rules\SyllableForProductRule;
 use Illuminate\Foundation\Http\FormRequest;
@@ -32,13 +34,19 @@ class OrderRequest extends FormRequest
 
             'comment' => 'required|string|min:3',
 
-            'products' => 'required|array|distinct|min:1',
-
-            'products.first.id' => 'required',
+            'products' => ['required','array','distinct','min:1', new OrderProductMinRule()],
 
             'products.*.id' => 'nullable|numeric|exists:products,id',
-            'products.*.count' => ['exclude_if:products.*.id,', 'numeric', 'min:1', 'max:999'],
-            'products.*.syllable' => ['exclude_if:products.*.id,', 'numeric', 'min:1', 'exists:syllables,id', new SyllableForProductRule($this->get('products'))],
+            'products.*.count' => ['required_with:products.*.id', 'numeric', 'min:1', 'max:999'],
+            'products.*.syllable' => [
+                'required_with:products.*.id',
+                'numeric',
+                'min:1',
+                'exists:syllables,id',
+                'bail',
+                new SyllableForProductRule($this->get('products')),
+                new AvailableRemainsProductRule($this->get('products'), $this->order)
+            ],
 //            'count' => 'required|array|min:1',
 
             'method_pay' => ['required', Rule::in(['receipt', 'google-pay', 'card'])],
@@ -90,11 +98,16 @@ class OrderRequest extends FormRequest
     */
     public function productsFillData()
     {
-        return $this->products;
-        return [
-            'products'=>$this->products,// array
-            'count' => $this->count, // array
-        ];
+        $result = [];
+        foreach ($this->products as $element){
+            if (! array_key_exists('id', $element)) continue;
+            $result[] = [
+                'product_id' => $element['id'],
+                'syllable_id' => $element['syllable'],
+                'count' => $element['count'],
+            ];
+        }
+        return $result;
     }
 
 
@@ -124,18 +137,18 @@ class OrderRequest extends FormRequest
     public function messages()
     {
         return [
-            'products.first.id.required' => 'Products is required',
+            'products.*.id.required' => 'Products is required',
             'products.*.id.numeric' => 'Products is numeric',
             'products.*.id.exists' => 'Products is exists',
 
-            'products.first.count.required' => 'Products count is required',
+            'products.*.count.required_with' => 'Products count is required',
             'products.*.count.numeric' => 'Products count is numeric',
-            'products.*.count.min' => 'Products count is numeric',
-            'products.*.count.max' => 'Products count is exists',
+            'products.*.count.min' => 'Products count is min',
+            'products.*.count.max' => 'Products count is max',
 
-            'products.first.syllable.required' => 'A syllable is required',
+            'products.*.syllable.required_with' => 'A syllable is required',
             'products.*.syllable.numeric' => 'A syllable is numeric',
-            'products.*.syllable.exists' => 'A syllable is numeric',
+            'products.*.syllable.exists' => 'A syllable is exists',
         ];
     }
 }

@@ -39,7 +39,11 @@ class OrderProduct extends Model
 {
     public $timestamps = false;
 
+    protected $fillable = ['product_id', 'order_id', 'syllable_id', 'count', 'sale_price'];
+
     /**
+     * Відношення до замовлення
+     *
      * @return BelongsTo
      */
     public function order()
@@ -48,6 +52,8 @@ class OrderProduct extends Model
     }
 
     /**
+     * Відношення до товару
+     *
      * @return BelongsTo
      */
     public function product()
@@ -56,6 +62,8 @@ class OrderProduct extends Model
     }
 
     /**
+     * Відношення до конкретної поставки
+     *
      * @return BelongsTo
      */
     public function syllable()

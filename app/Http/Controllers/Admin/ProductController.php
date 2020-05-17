@@ -85,9 +85,9 @@ class ProductController extends Controller
     public function show($id)
     {
         $product = Product::allRelations()->withTrashed()->avgRating()->countComments()->findOrFail($id);
+
         $attributes = Filter::allRelations()->get();
-        ;
-//dd($product->availableSyllable(), $product->availableRemains());
+
         // statistics card
         $range = (new DateGeneration())->generateStartEndMonth(now());
         $rangeLastMonth = (new DateGeneration())->generateStartEndMonth(now()->subMonth());

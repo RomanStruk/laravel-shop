@@ -2,6 +2,7 @@
 
 namespace App;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -53,18 +54,68 @@ class Syllable extends Model
     }
 
 
-    // підрахунок кількості товарів в замовленнях які ще не розглянуті
-    public function countProcessed()
+
+
+    /**
+     * Видібка з підрахунком кількості товарів на розгляді
+     * countProcessed
+     * select `syllables`.*, COALESCE((select SUM(count) from `order_products` where `syllables`.`id` = `order_products`.`syllable_id` and exists (select * from `orders` where `order_products`.`order_id` = `orders`.`id` and (`status` = 2 or `status` = 1) and `orders`.`deleted_at` is null)),0) as `count_processed` from `syllables` where `syllables`.`product_id` = 7 and `syllables`.`product_id` is not null HAVING count_processed<`remains`
+     *
+     * @param Builder $builder
+     * @param null $exclude
+     * @return Builder
+     */
+    public function scopeCountProcessed(Builder $builder, $exclude = null)
     {
-        return $this->orderProduct()->whereHas('order', function ($query){
-            $query->where('status', '=', Order::STATUS_PROCESSING)->orWhere('status', '=', Order::STATUS_PENDING);
-        })->get()->sum('count');
+        return $builder->withCount(['orderProduct as countProcessed' => function($query) use($exclude) {
+                $query->select(\DB::raw('COALESCE(SUM(count),0)'))->whereHas('order', function ($query) use($exclude){
+                    $query->where('status', '=', Order::STATUS_PROCESSING)->orWhere('status', '=', Order::STATUS_PENDING);
+                    if ($exclude) $query->where('id', '<>', $exclude);
+                });
+            }]);
     }
 
-    // кількість доступних товарів з урахуванням "не розглянутих замовлень"
-    public function availableRemains() : int
+    /**
+     * Видібка з підрахунком кількості доступних товарів
+     * countAvailableRemains
+     *
+     * @param Builder $builder
+     * @param null $exclude виключити замовлення з підрахунку
+     * @return Builder
+     */
+    public function scopeCountAvailableRemains(Builder $builder, $exclude = null)
     {
-        return $this->remains - $this->countProcessed();
+        return $builder->withCount(['orderProduct as countAvailableRemains' => function($query) use($exclude) {
+            $query->select(\DB::raw('(syllables.remains-COALESCE(SUM(count),0)) AS c'))->whereHas('order', function ($query) use($exclude){
+                $query->where('status', '=', Order::STATUS_PROCESSING)->orWhere('status', '=', Order::STATUS_PENDING);
+                if ($exclude) $query->where('id', '<>', $exclude);
+            });
+        }]);
     }
 
+    /**
+     * Відсіювання елемнтів в яких кількість доступних товарів менша нуля
+     * havingCountAvailableRemains
+     * @param Builder $builder
+     * @param null $exclude виключити замовлення з підрахунку
+     * @return Builder
+     */
+    public function scopeHavingCountAvailableRemains(Builder $builder, $exclude = null)
+    {
+        return $this->scopeCountAvailableRemains($builder, $exclude)->havingRaw('countAvailableRemains > 0');
+    }
+
+
+    /**
+     * Відсіювання елемнтів в яких кількість товарів на розляді більша загальної кількості
+     * havingCountProcessed
+     *
+     * @param Builder $builder
+     * @param null $exclude виключити замовлення з підрахунку
+     * @return Builder
+     */
+    public function scopeHavingCountProcessed(Builder $builder, $exclude = null)
+    {
+        return $this->scopeCountProcessed($builder, $exclude)->havingRaw('countProcessed < remains');
+    }
 }

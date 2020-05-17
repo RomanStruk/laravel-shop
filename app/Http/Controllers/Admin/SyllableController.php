@@ -19,7 +19,12 @@ class SyllableController extends Controller
      */
     public function index()
     {
-        $syllables = Syllable::orderBy('supplier_id')->latest()->paginate();
+        $syllables = Syllable::with(['supplier','product'])
+            ->countProcessed()
+            ->countAvailableRemains()
+            ->orderBy('supplier_id')
+            ->latest()
+            ->paginate();
         return view('admin.syllable.index')->with('syllables', $syllables);
     }
 
@@ -27,11 +32,12 @@ class SyllableController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param Syllable $syllable
+     * @param $syllable
      * @return View
      */
-    public function show(Syllable $syllable)
+    public function show($syllable)
     {
+        $syllable = Syllable::countProcessed()->countAvailableRemains()->firstOrFail();
         return view('admin.syllable.show')->with('syllable', $syllable);
     }
 

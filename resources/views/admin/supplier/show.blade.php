@@ -26,7 +26,7 @@
                                 <div class="col-5"><a href="{{route('admin.product.show', $syllable->product)}}">{{$syllable->product->title}}</a></div>
                                 <div class="col-1"><span class="badge badge-primary">{{$syllable->imported}}</span></div>
                                 <div class="col-1"><span class="badge badge-success">{{$syllable->remains}}</span></div>
-                                <div class="col-1"><span class="badge badge-info">{{$syllable->countProcessed()}}</span></div>
+                                <div class="col-1"><span class="badge badge-info">{{$syllable->countProcessed}}</span></div>
                             </div>
                         </li>
                     @empty

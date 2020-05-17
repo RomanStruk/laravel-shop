@@ -140,10 +140,10 @@
                                 </div>
                                 <div class="col-4">
                                     <select name="products[{{$orderProduct->id}}][syllable]" id="syllable" class="form-control">
-                                        @foreach($orderProduct->product->syllable as $syllable)
+                                        @foreach($orderProduct->product->syllable()->countAvailableRemains($order->id)->get() as $syllable)
                                             <option value="{{$syllable->id}}"
                                             @if ($orderProduct->syllable_id == $syllable->id) selected @endif
-                                            >{{$syllable->supplier->name}} ({{$syllable->remains - $syllable->countProcessed()}})</option>
+                                            >{{$syllable->supplier->name}} ({{$syllable->countAvailableRemains}})</option>
                                         @endforeach
                                     </select>
                                 </div>
