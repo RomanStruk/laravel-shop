@@ -11,7 +11,7 @@ $factory->define(Syllable::class, function (Faker $faker) {
         'supplier_id' => null,
         'imported' => 1000,
         'remains' => 1000,
-        'processed' => 0,
+        'price' => 2500,
         'description' => null
     ];
 });

@@ -36,7 +36,7 @@ use Illuminate\Database\Eloquent\Model;
 class Syllable extends Model
 {
     //склад
-    protected $fillable = ['imported', 'remains', 'processed', 'product_id', 'supplier_id', 'description'];
+    protected $fillable = ['imported', 'remains', 'price', 'product_id', 'supplier_id', 'description'];
 
     public function supplier()
     {
@@ -51,6 +51,11 @@ class Syllable extends Model
     public function orderProduct()
     {
         return $this->hasMany(OrderProduct::class);
+    }
+
+    public function orders()
+    {
+        return $this->belongsToMany(Order::class, 'order_products');
     }
 
 

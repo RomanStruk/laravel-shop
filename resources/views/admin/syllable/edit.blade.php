@@ -44,6 +44,19 @@
                                    value="{{$syllable->imported}}">
                         </div>
                     </div>
+                    <div class="form-group">
+                        <label class="col-form-label" for="price">Ціна товару</label>
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <div class="input-group-text">{{config('shop.currency_short')}}</div>
+                            </div>
+                            <input name="price" type="text" class="form-control" id="price" value="{{$syllable->price}}">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-form-label" for="description">Опис (необов'язково)</label>
+                        <textarea class="form-control" name="description" id="description" cols="30" rows="5">{{$syllable->description}}</textarea>
+                    </div>
 
                     <div class="form-group row">
                         <div class="col-sm-12">

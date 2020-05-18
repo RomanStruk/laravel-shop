@@ -53,7 +53,7 @@
                             <td class="text-left">{{ $syllable->remains }}</td>
                             <td class="text-left">{{ $syllable->countProcessed }}</td>
                             <td class="text-left">{{ $syllable->description }}</td>
-                            <td class="text-right">
+                            <td class="text-right" style="min-width: 140px;">
                                 @include('admin.component.dropdown_menu', [
                                         'show'=> route('admin.syllable.show', $syllable),
                                         'edit'=> route('admin.syllable.edit', $syllable),

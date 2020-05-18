@@ -34,7 +34,7 @@
                                 <th class="text-left">Total</th>
                                 <th class="text-left">Date Modified</th>
                                 <th class="text-center">Status</th>
-                                <th class="text-center">Action</th>
+                                <th class="text-center" >Action</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -69,10 +69,10 @@
                                         @endif
 
                                     </td>
-                                    <td class="project-actions text-right">
+                                    <td class="project-actions text-right" >
                                         @include('admin.component.dropdown_menu', [
                                             'show' => route( 'admin.order.show', ['order' => $order->id]),
-                                            'edit' => route( 'admin.order.edit', ['order' => $order->id]),
+                                            'edit' => $order->isEditable()? route( 'admin.order.edit', ['order' => $order->id]): null,
                                             'delete' => route( 'admin.order.destroy', ['order' => $order->id]),
 
                                         ])

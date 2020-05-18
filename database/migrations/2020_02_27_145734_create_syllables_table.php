@@ -24,7 +24,9 @@ class CreateSyllablesTable extends Migration
 
             $table->integer('imported'); // завезено
             $table->integer('remains'); // залишилось
-            $table->integer('processed'); // обробляється
+
+            $table->integer('price'); // ціна за одиницю товару
+
             $table->text('description')->nullable(); // примітки
             $table->timestamps();
         });

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\SyllableRequest;
+use App\Product;
 use App\Supplier;
 use App\Syllable;
 use Illuminate\Http\RedirectResponse;
@@ -22,7 +23,7 @@ class SyllableController extends Controller
         $syllables = Syllable::with(['supplier','product'])
             ->countProcessed()
             ->countAvailableRemains()
-            ->orderBy('supplier_id')
+            ->orderBy('product_id')
             ->latest()
             ->paginate();
         return view('admin.syllable.index')->with('syllables', $syllables);
@@ -35,9 +36,9 @@ class SyllableController extends Controller
      * @param $syllable
      * @return View
      */
-    public function show($syllable)
+    public function show($syllableId)
     {
-        $syllable = Syllable::countProcessed()->countAvailableRemains()->firstOrFail();
+        $syllable = Syllable::countProcessed()->countAvailableRemains()->findOrFail($syllableId);
         return view('admin.syllable.show')->with('syllable', $syllable);
     }
 
@@ -45,11 +46,13 @@ class SyllableController extends Controller
     /**
      * Show the form for creating a new resource.
      *
+     * @param Request $request
      * @return View
      */
-    public function create()
+    public function create(Request $request)
     {
-        return view('admin.syllable.create');
+        $product = $request->get('product')?Product::find($request->get('product'), ['id', 'title']):null;
+        return view('admin.syllable.create')->with('product', $product);
     }
 
     /**

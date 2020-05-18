@@ -9,7 +9,7 @@
     ],
     'actions' => [
         'print' => route('admin.order.printOrder', $order->id),
-        'edit' => route('admin.order.edit', $order->id),
+        'edit' => $order->isEditable() ? route('admin.order.edit', $order->id) : null,
         'delete' => route('admin.order.destroy', $order->id),
         ]
     ])
@@ -37,15 +37,7 @@
                                         <div class="badge badge-warning">
                                             {{$order->getStatus($order->status)}}
                                         </div>
-                                    @elseif ($order->status == $order::STATUS_CANCELED)
-                                        <div class="badge badge-danger">
-                                            {{$order->getStatus($order->status)}}
-                                        </div>
-                                    @elseif ($order->status == $order::STATUS_PROCESSING)
-                                        <div class="badge badge-success">
-                                            {{$order->getStatus($order->status)}}
-                                        </div>
-                                    @elseif ($order->status == $order::STATUS_COMPLETED)
+                                    @elseif ($order->status == $order::STATUS_PROCESSING or $order->status == $order::STATUS_COMPLETED)
                                         <div class="badge badge-success">
                                             {{$order->getStatus($order->status)}}
                                         </div>

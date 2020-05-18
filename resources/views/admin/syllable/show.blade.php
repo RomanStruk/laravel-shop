@@ -16,21 +16,29 @@
         @include('admin.component.events')
         <div class="card card-solid">
             <div class="card-body">
-                    <div class="row mb-3">
-                        <div class="col-4"><b>Товар:</b> <a href="{{route('admin.product.show', $syllable->product)}}">{{$syllable->product->title}}</a></div>
-                        <div class="col-1"><span class="badge badge-primary">{{$syllable->imported}}</span></div>
-                        <div class="col-1"><span class="badge badge-success">{{$syllable->remains}}</span></div>
-                        <div class="col-1"><span class="badge badge-info">{{$syllable->countProcessed}}</span></div>
-                    </div>
+                <p>
+                    <b>Товар:</b> <a
+                        href="{{route('admin.product.show', $syllable->product)}}">{{$syllable->product->title}}</a>
+                    <span class="badge badge-primary">{{$syllable->imported}}</span>
+                    <span class="badge badge-success">{{$syllable->remains}}</span>
+                    <span class="badge badge-info">{{$syllable->countAvailableRemains}}</span>
+                    <span class="badge badge-warning">{{$syllable->countProcessed}}</span>
+                </p>
                 <p><b>Постачальник:</b> {{$syllable->supplier->name}}</p>
+                <p><b>Ціна:</b> {{$syllable->price}}</p>
                 <p><b>Опис:</b> {{$syllable->description}}</p>
                 <b>Замовлення:</b>
-                <ul>
-                     <li>Нема даних</li>
-                </ul>
+                <p>
+                    @forelse($syllable->orders as $order)
+                        <a href="{{route('admin.order.show', $order)}}">#{{$order->id}}</a>
+                    @empty
+                        <span>Нема даних</span>
+                    @endforelse
+                </p>
                 <span class="badge badge-primary">@lang('shop.imported')</span>
                 <span class="badge badge-success">@lang('shop.remains')</span>
-                <span class="badge badge-info">@lang('shop.processed')</span>
+                <span class="badge badge-info">@lang('shop.available')</span>
+                <span class="badge badge-warning">@lang('shop.processed')</span>
             </div>
         </div>
     </section>

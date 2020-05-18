@@ -27,6 +27,8 @@ class SyllableRequest extends FormRequest
             'supplier_id' => ['required', 'integer', 'exists:suppliers,id'],
             'product_id' => ['required', 'integer', 'exists:products,id'],
             'imported' => ['required', 'integer', 'min:1'],
+            'description' => ['nullable', 'string'],
+            'price' => ['required', 'numeric', 'min:0.01'],
         ];
     }
 
@@ -37,7 +39,8 @@ class SyllableRequest extends FormRequest
             'product_id'    => $this->get('product_id'),
             'imported'      => $this->get('imported'),
             'remains'       => $this->get('imported'),
-            'processed'     => 0,
+            'description'   => $this->get('description'),
+            'price'         => $this->get('price'),
         ];
     }
 }

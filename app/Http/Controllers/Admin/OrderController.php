@@ -87,7 +87,7 @@ class OrderController extends Controller
     public function edit($orderId)
     {
         // get order
-        $order = Order::allRelations()->withTrashed()->findOrFail($orderId);
+        $order = Order::allRelations()->onlyEditable()->findOrFail($orderId);
         return view('admin.order.edit', ['order'=> $order]);
     }
 

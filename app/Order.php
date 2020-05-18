@@ -65,9 +65,9 @@ class Order extends Model
     const STATUS_PROCESSING = 2;
     const STATUS_COMPLETED = 3;
     const STATUS_CANCELED = 4;
-    const STATUS_DENIED = 5;
-    const STATUS_FAILED = 6;
-    const STATUS_REVERSED = 7;
+    const STATUS_REVERSED = 5;
+//    const STATUS_DENIED = 6;
+//    const STATUS_FAILED = 7;
 
     /**
      * Return list of status codes and labels
@@ -80,10 +80,46 @@ class Order extends Model
             self::STATUS_PROCESSING => 'Обробляється',
             self::STATUS_COMPLETED => 'Завершений',
             self::STATUS_CANCELED => 'Скасовано',
-            self::STATUS_DENIED => 'Відхілити',
-            self::STATUS_FAILED => 'Не вдалося',
             self::STATUS_REVERSED => 'Повернутий',
+//            self::STATUS_DENIED => 'Відхілити',
+//            self::STATUS_FAILED => 'Не вдалося',
         ];
+    }
+
+    public function isEditable()
+    {
+        if ($this->status == self::STATUS_PROCESSING or $this->status == self::STATUS_PENDING)
+            return true;
+        return false;
+    }
+
+    public function availableListStatus()
+    {
+        $list = self::listStatus();
+        if ($this->status == self::STATUS_COMPLETED)
+            return [self::STATUS_REVERSED => $list[self::STATUS_REVERSED]];
+        if ($this->status == self::STATUS_PENDING or $this->status == self::STATUS_PROCESSING)
+            return [
+                self::STATUS_PENDING => $list[self::STATUS_PENDING],
+                self::STATUS_PROCESSING => $list[self::STATUS_PROCESSING],
+                self::STATUS_COMPLETED => $list[self::STATUS_COMPLETED],
+                self::STATUS_CANCELED => $list[self::STATUS_CANCELED],
+            ];
+        if ($this->status == self::STATUS_CANCELED)
+            return [self::STATUS_PROCESSING => $list[self::STATUS_PROCESSING]];
+        return $list;
+
+    }
+
+    /**
+     * Тільки замовлення які можна редагувати
+     * @param Builder $query
+     * @return Builder
+     */
+    public function scopeOnlyEditable(Builder $query)
+    {
+        return $query->where('status' , '=', self::STATUS_PENDING)
+            ->orWhere('status' , '=', self::STATUS_PROCESSING);
     }
 
     /**

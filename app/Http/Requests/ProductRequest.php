@@ -58,7 +58,7 @@ class ProductRequest extends FormRequest
                 'supplier_id' => $this->get('supplier'),
                 'imported' => $this->get('imported'),
                 'remains' => $this->get('imported'),
-                'processed' => 0,
+                'price' => $this->get('price'),
             ]: [];
     }
 
