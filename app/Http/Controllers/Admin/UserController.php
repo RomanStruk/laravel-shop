@@ -122,7 +122,9 @@ class UserController extends Controller
      */
     public function destroy($userId)
     {
-        User::destroy($userId);
-        return redirect()->route('admin.user.index')->with('success', __('user.delete'));
+        if (User::destroy($userId))
+            return redirect()->route('admin.user.index')->with('success', __('user.deleted'));
+        else
+            return redirect()->route('admin.user.index')->withErrors( __('user.error_delete'));
     }
 }

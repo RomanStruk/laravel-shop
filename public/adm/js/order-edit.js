@@ -34124,16 +34124,6 @@ __webpack_require__(/*! admin-lte/plugins/select2/js/select2 */ "./node_modules/
 $(function () {
   'use strict'; //Initialize Select2 Elements
   // $('#input-product').select2();
-  //generates random id;
-
-  var guid = function guid() {
-    var s4 = function s4() {
-      return Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1);
-    }; //return id of format 'aaaaaaaa'-'aaaa'-'aaaa'-'aaaa'-'aaaaaaaaaaaa'
-
-
-    return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
-  };
 
   var select2ProductsOptions = {
     ajax: {
@@ -34264,72 +34254,18 @@ $(function () {
     },
     placeholder: 'Виберіть відділення'
   };
-  var select2SyllableOptions = {
-    ajax: {
-      url: "/api/v1/syllable/index",
-      dataType: 'json',
-      delay: 250,
-      data: function data(params) {
-        return {
-          search: params.term,
-          // search term
-          page: params.page
-        };
-      },
-      processResults: function processResults(data, params) {
-        params.page = params.page || 1;
-        var res = $.map(data, function (obj) {
-          obj.text = obj.text || obj.title; // replace name with the property used for the text
-
-          obj.id = obj.code; // replace name with the property used for the text
-
-          return obj;
-        });
-        return {
-          results: res
-        };
-      },
-      cache: true
-    },
-    placeholder: 'Виберіть товар зі складу'
-  };
   $(".product-select2").select2(select2ProductsOptions);
   $("#user-select2").select2(select2UserOptions);
   $("#shipping-select2").select2(select2ShippingOptions);
   $("#address-select2").select2(select2AddressOptions);
-  $('.product-select2').on('select2:select', function (e) {
-    var select = $(e.target).parents(".form-group.row").find('.syllable-select2');
-    var Options = {
-      data: e.params.data.syllables
-    };
-
-    if ($(select).hasClass("select2-hidden-accessible")) {
-      select.find('option').remove().end();
-    }
-
-    select.select2(Options);
-  });
   $('input[name="shipping_method"]').click(function () {
     $(this).tab('show');
     $(this).removeClass('active');
   });
   $('#add-new-field').click(function () {
     // $("#ele-for-clone").clone().appendTo("#card-for-clone");
-    var id = guid();
-    $('#card-for-append').append('<div class="form-group row">\n' + '            <div class="col-6">\n' + '                <select name="products[' + id + '][id]" class="form-control product-select2" id="' + id + '"></select>\n' + '            </div>\n' + '             <div class="col-4">\n' + '                <select name="products[' + id + '][syllable]" class="form-control syllable-select2"></select>\n' + '            </div>' + '            <div class="col-2">\n' + '                <input type="number" name="products[' + id + '][count]" class="form-control" value="1">\n' + '            </div>\n' + '</div>');
+    $('#card-for-append').append('<div class="form-group row">\n' + '            <div class="col-10">\n' + '                <select name="products[]" class="form-control product-select2"></select>\n' + '            </div>\n' + '            <div class="col-2">\n' + '                <input type="number" name="count[]" class="form-control" value="1">\n' + '            </div>\n' + '</div>');
     $(".product-select2").select2(select2ProductsOptions);
-    $('.product-select2').on('select2:select', function (e) {
-      var select = $(e.target).parents(".form-group.row").find('.syllable-select2');
-      var Options = {
-        data: e.params.data.syllables
-      };
-
-      if ($(select).hasClass("select2-hidden-accessible")) {
-        select.find('option').remove().end();
-      }
-
-      select.select2(Options);
-    });
     return false;
   });
 });
@@ -34343,7 +34279,7 @@ $(function () {
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(/*! C:\xampp\htdocs\Laravel-Shop-Learning\resources\js\admin\order-edit.js */"./resources/js/admin/order-edit.js");
+module.exports = __webpack_require__(/*! C:\xampp\htdocs\shop.test\resources\js\admin\order-edit.js */"./resources/js/admin/order-edit.js");
 
 
 /***/ })

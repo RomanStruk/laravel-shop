@@ -28037,9 +28037,9 @@ $.typeahead({
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! C:\xampp\htdocs\Laravel-Shop-Learning\resources\js\admin\basic.js */"./resources/js/admin/basic.js");
-__webpack_require__(/*! C:\xampp\htdocs\Laravel-Shop-Learning\resources\sass\app.scss */"./resources/sass/app.scss");
-module.exports = __webpack_require__(/*! C:\xampp\htdocs\Laravel-Shop-Learning\resources\sass\admin\app.scss */"./resources/sass/admin/app.scss");
+__webpack_require__(/*! C:\xampp\htdocs\shop.test\resources\js\admin\basic.js */"./resources/js/admin/basic.js");
+__webpack_require__(/*! C:\xampp\htdocs\shop.test\resources\sass\app.scss */"./resources/sass/app.scss");
+module.exports = __webpack_require__(/*! C:\xampp\htdocs\shop.test\resources\sass\admin\app.scss */"./resources/sass/admin/app.scss");
 
 
 /***/ })
