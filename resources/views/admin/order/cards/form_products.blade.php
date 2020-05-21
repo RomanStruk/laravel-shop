@@ -14,13 +14,13 @@
 
         <div class="form-group row">
             <div class="col-6">
-                <select name="products[first][id]" class="form-control product-select2"></select>
+                <select name="products[1][id]" class="form-control product-select2"></select>
             </div>
             <div class="col-4">
-                <select name="products[first][syllable]" class="form-control syllable-select2"></select>
+                <select name="products[1][syllable]" class="form-control syllable-select2"></select>
             </div>
             <div class="col-2">
-                <input type="number" name="products[first][count]" class="form-control" value="1">
+                <input type="number" name="products[1][count]" class="form-control" value="1">
             </div>
         </div>
     </div>

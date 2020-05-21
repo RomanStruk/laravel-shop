@@ -60,17 +60,9 @@
     <tbody>
     <tr>
         <td class="text-left col-5">
-            {{ $order->shipping->city }},
-            {{ $order->shipping->region }},
-            {{ $order->shipping->area }}
+            {{ $order->shipping->getCityTitle() }}
             <br>
-            @if($order->shipping->method == 'courier')
-                {{ $order->shipping->street }},
-                {{ $order->shipping->house }},
-                {{ $order->shipping->flat }}
-            @elseif($order->shipping->method == 'novaposhta')
-                {{ $order->shipping->warehouse_title }}
-            @endif
+            {{ $order->shipping->getAddressTitle() }}
         </td>
         <td class="col-8">{{$order->comment}}</td>
     </tr>
@@ -89,17 +81,17 @@
     </tr>
     </thead>
     <tbody>
-    @foreach($order->products as $product)
+    @foreach($order->orderProducts as $orderProduct)
         <tr>
-            <td class="text-center">{{ $product->id }}</td>
+            <td class="text-center">{{ $orderProduct->product->id }}</td>
             <td class="text-left">
-                {{$product->title}}
+                {{$orderProduct->product->title}}
 
             </td>
-            <td class="text-left">{{$product->category->name}}</td>
-            <td class="text-right">{{$product->pivot->count}}</td>
-            <td class="text-right">{{ $product->price }} {{config('shop.currency_short')}}</td>
-            <td class="text-right">{{ $order->getTotalPriceForProduct($product->id) }} {{config('shop.currency_short')}}</td>
+            <td class="text-left">{{$orderProduct->product->category->name}}</td>
+            <td class="text-right">{{$orderProduct->count}}</td>
+            <td class="text-right">{{ $orderProduct->product->price }} {{config('shop.currency_short')}}</td>
+            <td class="text-right">{{ $orderProduct->getTotalPriceForProduct() }} {{config('shop.currency_short')}}</td>
         </tr>
     @endforeach
     <tr>

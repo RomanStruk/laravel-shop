@@ -20,8 +20,12 @@ class ProductResource extends JsonResource
             'title' => $this->title,
             'content' => $this->content,
             'keywords' => $this->keywords,
-            'syllables' => $this->syllableWithOutScope()->countAvailableRemains($request->order)->countProcessed($request->order)->get()->map(function ($syllable){
-
+            'syllables' => $this
+                ->syllableWithOutScope()
+                ->countAvailableRemains($request->order)
+                ->countProcessed($request->order)
+                ->get()
+                ->map(function ($syllable){
                     return [
                         'id' => $syllable->id,
                         'text' => $syllable->supplier->name. ' (' . $syllable->countAvailableRemains . ')',

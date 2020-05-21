@@ -34124,6 +34124,16 @@ __webpack_require__(/*! admin-lte/plugins/select2/js/select2 */ "./node_modules/
 $(function () {
   'use strict'; //Initialize Select2 Elements
   // $('#input-product').select2();
+  //generates random id;
+
+  var guid = function guid() {
+    var s4 = function s4() {
+      return Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1);
+    }; //return id of format 'aaaaaaaa'-'aaaa'-'aaaa'-'aaaa'-'aaaaaaaaaaaa'
+
+
+    return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
+  };
 
   var select2ProductsOptions = {
     ajax: {
@@ -34258,14 +34268,27 @@ $(function () {
   $("#user-select2").select2(select2UserOptions);
   $("#shipping-select2").select2(select2ShippingOptions);
   $("#address-select2").select2(select2AddressOptions);
+  $('.product-select2').on('select2:select', function (e) {
+    var select = $(e.target).parents(".form-group.row").find('.syllable-select2');
+    $.each(e.params.data.syllables, function (key, value) {
+      $(select).append('<option value="' + value.id + '">' + value.text + '</option>');
+    });
+  });
   $('input[name="shipping_method"]').click(function () {
     $(this).tab('show');
     $(this).removeClass('active');
   });
   $('#add-new-field').click(function () {
     // $("#ele-for-clone").clone().appendTo("#card-for-clone");
-    $('#card-for-append').append('<div class="form-group row">\n' + '            <div class="col-10">\n' + '                <select name="products[]" class="form-control product-select2"></select>\n' + '            </div>\n' + '            <div class="col-2">\n' + '                <input type="number" name="count[]" class="form-control" value="1">\n' + '            </div>\n' + '</div>');
+    var id = guid();
+    $('#card-for-append').append('<div class="form-group row">\n' + '            <div class="col-6">\n' + '                <select name="products[' + id + '][id]" class="form-control product-select2" id="' + id + '"></select>\n' + '            </div>\n' + '             <div class="col-4">\n' + '                <select name="products[' + id + '][syllable]" class="form-control syllable-select2"></select>\n' + '            </div>' + '            <div class="col-2">\n' + '                <input type="number" name="products[' + id + '][count]" class="form-control" value="1">\n' + '            </div>\n' + '</div>');
     $(".product-select2").select2(select2ProductsOptions);
+    $('.product-select2').on('select2:select', function (e) {
+      var select = $(e.target).parents(".form-group.row").find('.syllable-select2');
+      $.each(e.params.data.syllables, function (key, value) {
+        $(select).append('<option value="' + value.id + '">' + value.text + '</option>');
+      });
+    });
     return false;
   });
 });
