@@ -3,9 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Product;
-use App\Services\Data\Product\GetProductByIdOrSlug;
-use App\Services\Data\Product\GetProductsByLimit;
-use App\Services\Data\Product\UpdateProductVisits;
 use DB;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Http\JsonResponse;
@@ -26,36 +23,37 @@ class ProductController extends Controller
     /**
      * Відображення даних по get запиту
      * @param Request $request
-     * @param GetProductsByLimit $getProducts
      * @param string $category alias
      * @return View|Factory
      */
-    public function index2(Request $request, GetProductsByLimit $getProducts, $category = '')
+    public function index2(Request $request, $category = '')
     {
         $sorting = $request->except('limit');
         if ($category) $sorting['category'] = $category;
         $sorting['status'] = '1';
-
-        $products = $getProducts->handel(
-            $sorting,
-            $request->get('limit')
-        );
+        $products = Product::filter($sorting)->paginate($request->get('limit'));
         return view('shop', ['products' => $products]);
     }
 
     /**
      * Відображення сторінки з продуктом
-     * @param UpdateProductVisits $productVisits
-     * @param GetProductByIdOrSlug $getProduct
      * @param $alias
      * @return Factory|View
      */
-    public function show(UpdateProductVisits $productVisits,
-                                      GetProductByIdOrSlug $getProduct,
-                                      $alias)
+    public function show($alias)
     {
-        $product = $getProduct->handel($alias);
-        $productVisits->handel($product->id); //оновлення кількості переглядів
+        // get product
+        $product = Product::allRelations()->avgRating()->countComments()->where('alias', $alias)->firstOrFail();
+
+        //оновлення кількості переглядів
+        $product->visits ++;
+
+        // disable the timestamps before saving
+        $product->timestamps = false;
+
+        // save
+        $product->save();
+
         return view('product', ['product' => $product]);
     }
 

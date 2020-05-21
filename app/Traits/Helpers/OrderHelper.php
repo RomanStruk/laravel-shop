@@ -8,6 +8,8 @@ use App\Notifications\OrderCreatedMailNotificationForUser;
 use App\Notifications\OrderCreatedNotification;
 use App\Notifications\OrderStatusChangeNotification;
 use App\OrderHistory;
+use App\OrderProduct;
+use App\Product;
 use App\Services\Shipping\ShippingBase;
 use App\Shipping;
 use Illuminate\Notifications\Notification;
@@ -22,18 +24,7 @@ trait OrderHelper
     {
         return $this->getSubTotalPrice();
     }
-    /**
-     *
-     * Calculated sum price for one product
-     *
-     * @param $productId
-     * @return float|int
-     */
-    public function getTotalPriceForProduct($productId)
-    {
-        $product = $this->products->find($productId);
-        return $product->price * $product->pivot->count;
-    }
+
 
     /**
      *
@@ -43,8 +34,8 @@ trait OrderHelper
      */
     public function getSubTotalPrice()
     {
-        return $this->products->sum(function ($product) {
-            return $product->price*$product->pivot->count;
+        return $this->orderProducts->sum(function ($orderProduct) {
+            return $orderProduct->product->price * $orderProduct->count;
         });
     }
 
@@ -56,8 +47,8 @@ trait OrderHelper
      */
     public function getTotalPrice()
     {
-        $sum = $this->products->sum(function ($product) {
-            return $product->price*$product->pivot->count;
+        $sum = $this->orderProducts->sum(function ($orderProduct) {
+            return $orderProduct->product->price * $orderProduct->count;
         });
         return $sum + $this->shipping->shipping_rate;
     }
@@ -66,18 +57,13 @@ trait OrderHelper
      * Updating products
      *
      * @param array $fields
+     * @return mixed
      */
     public function syncProducts(array $fields)
     {
-        $this->products()->sync($fields['products']);
-        $this->load('products');
-        foreach ($fields['products'] as $key => $product) {
-            if ($this->products->contains($product)){
-                $pivot = $this->products()->where('product_id', $product)->first()->pivot;
-                $pivot->count = array_key_exists($key, $fields['count'])? $fields['count'][$key]: 1;
-                $pivot->update();
-            }
-        }
+        $this->orderProducts()->delete();;
+        return $this->orderProducts()->createMany($fields);
+
     }
 
     /**
@@ -135,7 +121,6 @@ trait OrderHelper
 
         $this->shipping->method   = $fields['method'];
         $this->shipping->shipping_rate   = $fields['shipping_rate'];
-
         $this->shipping->city     = $fields['city'];
         $this->shipping->address  = $fields['address'];
 

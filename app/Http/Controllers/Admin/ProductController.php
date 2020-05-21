@@ -2,26 +2,22 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Order;
+use App\OrderProduct;
+use App\Supplier;
+use App\Syllable;
+use Illuminate\Contracts\View\Factory;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use Illuminate\View\View;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ProductRequest;
 use App\Product;
+use App\Category;
+use App\Filter;
 use App\Services\Analytics\Analytics;
 use App\Services\Analytics\DateGeneration;
-use App\Services\Data\Filter\GetFilters;
-use App\Services\Data\Category\GetCategories;
-use App\Services\Data\SoldProduct\GetSoldProductBetweenDate;
-use App\Services\SaveFile;
-use App\Services\Data\Media\SaveToDbMediaFile;
-use App\Services\Data\Media\UpdateRelationships;
-use App\Services\Data\Product\CreateProductService;
-use App\Services\Data\Product\DeleteProductById;
-use App\Services\Data\Product\GetProductByIdOrSlug;
-use App\Services\Data\Product\GetProductsByLimit;
-use App\Services\Data\Product\UpdateProductById;
-use App\SoldProduct;
-use Illuminate\Contracts\View\Factory;
-use Illuminate\Http\Request;
-use Illuminate\View\View;
+use App\Services\PaginateSession;
 
 class ProductController extends Controller
 {
@@ -29,57 +25,52 @@ class ProductController extends Controller
      * Display a listing of the resource.
      *
      * @param Request $request
-     * @param GetProductsByLimit $getProducts
-     * @param GetCategories $categories
+     * @param PaginateSession $paginateSession
      * @return Factory|View
      */
-    public function index(Request $request,
-                          GetProductsByLimit $getProducts,
-                          GetCategories $categories)
+    public function index(Request $request, PaginateSession $paginateSession)
     {
         $filters = $request->except('limit');
         $filters['date'] = 'desc';
-        $products = $getProducts->handel(
-            $filters,
-            ['*']
-        );
+
+        $products = Product::filter($filters)->with('category')->paginate($paginateSession->getLimit());
 //        dd($products);
         return view('admin.product.index')
-            ->with('categories', $categories->handel(false))
+            ->with('categories', Category::allRelations(false)->get())
             ->with('products', $products);
     }
 
     /**
      * Show the form for creating a new resource.
      *
-     * @param GetCategories $getCategories
-     * @param GetFilters $getFilters
-     * @param GetProductsByLimit $getProducts
      * @return Factory|View
      */
-    public function create(GetCategories $getCategories, GetFilters $getFilters, GetProductsByLimit $getProducts)
+    public function create()
     {
-        $categories = $getCategories->handel(false);
-        $filters = $getFilters->handel();
+        $categories = Category::allRelations(false)->get();
+        $filters = Filter::allRelations()->get();
+        $suppliers = Supplier::all();
 //        dd(count($filters->first()->filterValues->pluck('id')->intersect([1]))?:false);
         return view('admin.product.create')
             ->with('categories', $categories)
-            ->with('filters', $filters);
+            ->with('filters', $filters)
+            ->with('suppliers', $suppliers);
     }
 
     /**
      * Store a newly created resource in storage.
      *
      * @param ProductRequest $request
-     * @param CreateProductService $createProductService
-     * @return \Illuminate\Http\RedirectResponse
+     * @return RedirectResponse
      */
-    public function store(ProductRequest $request, CreateProductService $createProductService)
+    public function store(ProductRequest $request)
     {
-        $product = $createProductService->handel($request->productFillData());
+        $product = new Product($request->productFillData());
+        $product->save();
         $product->syncAttributesOfFilters($request->attributesFillData());
         $product->syncMediaFiles($request->mediaFillData());
         $product->syncRelatedProducts($request->relatedFillData());
+        $product->createSyllable($request->syllableFillData());
 
         return redirect()->route('admin.product.show', ['product' => $product->id])
             ->with('success', __('product.save'));
@@ -88,22 +79,21 @@ class ProductController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param GetProductByIdOrSlug $getProduct
-     * @param GetFilters $getAttributes
-     * @param GetSoldProductBetweenDate $soldProductBetweenDate
      * @param int $id
      * @return Factory|View
      */
-    public function show(GetProductByIdOrSlug $getProduct, GetFilters $getAttributes, GetSoldProductBetweenDate $soldProductBetweenDate, $id)
+    public function show($id)
     {
-        $product = $getProduct->handel($id, ['*'], true);
-        $attributes = $getAttributes->handel();
+        $product = Product::allRelations()->withTrashed()->avgRating()->countComments()->findOrFail($id);
+
+        $attributes = Filter::allRelations()->get();
+
         // statistics card
         $range = (new DateGeneration())->generateStartEndMonth(now());
         $rangeLastMonth = (new DateGeneration())->generateStartEndMonth(now()->subMonth());
-        $soldProductCount = $soldProductBetweenDate->handel($id, $range, true);
-        $soldProductCountLastMonth = $soldProductBetweenDate->handel($id, $rangeLastMonth, true);
-        $soldProductsOverTime = SoldProduct::where('product_id', $id)->count();
+        $soldProductCount = $product->orderProduct()->sold($range)->get()->sum('count');
+        $soldProductCountLastMonth = $product->orderProduct()->sold($rangeLastMonth)->get()->sum('count');
+        $soldProductsOverTime = $product->orderProduct()->sold(null)->get()->sum('count');
         $progress = (new Analytics())->growthRates($soldProductCount, $soldProductCountLastMonth);
         // end
         return view('admin.product.show')
@@ -117,46 +107,44 @@ class ProductController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param GetProductByIdOrSlug $getProduct
-     * @param GetCategories $getCategories
-     * @param GetFilters $getAttributes
      * @param $id
      * @return Factory|View
      */
-    public function edit(GetProductByIdOrSlug $getProduct,
-                         GetCategories $getCategories,
-                         GetFilters $getAttributes,
-                         $id)
+    public function edit($id)
     {
-        $product = $getProduct->handel($id, ['*'], true);
-        $categories = $getCategories->handel(false);
-        $groups = $getAttributes->handel();
+        $product = Product::allRelations()->withTrashed()->findOrFail($id);;
+        $categories = Category::allRelations(false)->get();
+        $groups = Filter::allRelations()->get();
+        $suppliers = Supplier::all();
 //        dd(in_array('4', $product->product_attributes->pluck('id')->toArray()));
 //        dd($product->product_attributes->pluck('id')->toArray());
 //        dd($product, $groups);
         return view('admin.product.edit')
             ->with('product', $product)
             ->with('categories', $categories)
-            ->with('groups', $groups);
+            ->with('groups', $groups)
+            ->with('suppliers', $suppliers);
     }
 
     /**
      * Update the specified resource in storage.
      *
      * @param ProductRequest $request
-     * @param UpdateProductById $updateProductById
      * @param $productId
-     * @return \Illuminate\Http\RedirectResponse
+     * @return RedirectResponse
      */
-    public function update(ProductRequest $request,
-                           UpdateProductById $updateProductById,
-                           $productId)
+    public function update(ProductRequest $request, $productId)
     {
-//        dd($request->productFillData());
-        $product = $updateProductById->handel($productId, $request->productFillData());
+        $product = Product::findOrFail($productId);
+        $product->update($request->productFillData());
+
         $product->syncRelatedProducts($request->relatedFillData());
+
         $product->syncMediaFiles($request->mediaFillData());
+
         $product->syncAttributesOfFilters($request->attributesFillData());
+
+        $product->createSyllable($request->syllableFillData());
 
         return redirect()->back()->with('success', __('product.update'));
     }
@@ -164,13 +152,12 @@ class ProductController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param DeleteProductById $deleteProductById
      * @param Product $product
-     * @return \Illuminate\Http\RedirectResponse
+     * @return RedirectResponse
      */
-    public function destroy(DeleteProductById $deleteProductById, $product)
+    public function destroy($product)
     {
-        $deleteProductById->handel($product, false);
+        Product::destroy($product);
         return redirect()->route('admin.product.index')->with('success', __('product.delete'));
     }
 }

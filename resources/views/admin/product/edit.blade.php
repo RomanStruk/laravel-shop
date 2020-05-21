@@ -49,6 +49,18 @@
                                 </select>
                             </div>
                             <div class="form-group ">
+                                <label for="input-new-price">Ціна</label>
+                                <div class="input-group">
+                                    <input id="input-new-price" name="price" type="text" value="{{$product->price}}"
+                                           class="form-control"
+                                           aria-label="Dollar amount (with dot and two decimal places)">
+                                    <div class="input-group-append">
+                                        <span class="input-group-text">{{config('shop.currency_short')}}</span>
+                                        <span class="input-group-text">0.00</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group ">
                                 <label>Видимий
                                     <input type="radio" name="status" class="radio-inline" value="1"
                                            @if($product->status == '1') checked @endif
@@ -60,6 +72,14 @@
                                     >
                                 </label>
                             </div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Детальніше</h3>
+                        </div>
+                        <div class="card-body">
                             <div class="form-group ">
                                 <label for="input-keywords">Ключові слова</label>
                                 <input name="keywords" id="input-keywords" class="form-control"
@@ -73,33 +93,11 @@
                             <div class="form-group ">
                                 <label for="input-content">Опис</label>
                                 <textarea name="content" id="input-content"
-                                          class="form-control">{{$product->content}}</textarea>
+                                          class="form-control" rows="6">{{$product->content}}</textarea>
                             </div>
                         </div>
                     </div>
-                    <div class="card">
-                        <div class="card-header">
-                            <h3 class="card-title">Ціни</h3>
-                        </div>
-                        <div class="card-body">
-                            <div class="form-group ">
-                                <label for="input-new-price">Ціна</label>
-                                    <div class="input-group">
-                                        <input id="input-new-price" name="price" type="text" value="{{$product->price}}"
-                                               class="form-control"
-                                               aria-label="Dollar amount (with dot and two decimal places)">
-                                        <div class="input-group-append">
-                                            <span class="input-group-text">{{config('shop.currency_short')}}</span>
-                                            <span class="input-group-text">0.00</span>
-                                        </div>
-                                    </div>
-                            </div>
-                            <div class="form-group ">
-                                <label for="input-in-stock">Кількість товарів</label>
-                                    <input id="input-in-stock" name="in_stock" type="number" value="{{$product->in_stock}}" class="form-control">
-                            </div>
-                        </div>
-                    </div>
+
                     <div class="card">
                         <div class="card-header">
                             <h3 class="card-title">Related products</h3>
@@ -161,6 +159,10 @@
                             </div>
                         </div>
                     </div>
+
+                    {{-- card Склад--}}
+                    @include('admin.product.cards.syllables')
+
                     <div class="card">
                         <div class="card-header">
                             <h3 class="card-title">Файли</h3>
@@ -172,7 +174,6 @@
                             <upload-images></upload-images>
                         </div>
                     </div>
-
                 </div>
             </div>
             <div class="form-group row">

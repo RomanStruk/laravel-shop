@@ -55,12 +55,13 @@ class ShippingBase
 
     public function existAddress($addressCode)
     {
-        return$address = $this->shipping_methods[$this->current_method]->existAddress($this->city->code, $addressCode);
+        return $address = $this->shipping_methods[$this->current_method]->existAddress($this->city->code, $addressCode);
     }
 
-    public function setCity($cityCode)
+    public function setCity( $city)
     {
-        $this->city = $this->existCity($cityCode)? : new City($cityCode, $cityCode);
+//        $this->city =new City($city[0], $city[1]);
+        $this->city = $this->existCity($city)? : new City($city, $city);
         return $this;
     }
 
@@ -73,9 +74,10 @@ class ShippingBase
         ];
     }
 
-    public function setAddress($addressCode)
+    public function setAddress($address)
     {
-        $this->address = $this->existAddress($addressCode)? : new Address($addressCode, $addressCode);
+        $this->address = $this->existAddress($address)? : new Address($address, $address);
+//        $this->address =new Address($address[0], $address[1]);
         return $this;
     }
 
@@ -90,7 +92,11 @@ class ShippingBase
     public static function castCity(array $city)
     {
         $castCity = new City($city['code'], $city['title']);
-        $castCity->description = $city['description'];
+        if(array_key_exists('description', $city)){
+            $castCity->description = $city['description'];
+        }else{
+            $castCity->description = $city['title'];
+        }
         return $castCity;
     }
 

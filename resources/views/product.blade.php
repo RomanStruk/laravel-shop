@@ -78,7 +78,7 @@
                             </p>
                         </div>
                         <div class="pro-ref mb-15">
-                            <p><span class="in-stock">в наявності</span><span class="sku">{{$product->in_stock}}</span>
+                            <p><span class="in-stock">в наявності</span><span class="sku">{{$product->quality()}}</span>
                             </p>
                         </div>
                         <basket-button-component v-bind:data='@json($product)'></basket-button-component>

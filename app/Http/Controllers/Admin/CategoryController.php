@@ -2,13 +2,9 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Category;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CategoryRequest;
-use App\Services\Data\Category\DeleteCategory;
-use App\Services\Data\Category\GetCategories;
-use App\Services\Data\Category\GetCategoryByIdOrSlug;
-use App\Services\Data\Category\InsertCategory;
-use App\Services\Data\Category\UpdateCategory;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
@@ -18,27 +14,25 @@ class CategoryController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @param GetCategories $getCategories
      * @return Factory|View
      */
-    public function index(GetCategories $getCategories)
+    public function index()
     {
-
+        $categories = Category::allRelations(false)->select(['id', 'slug', 'name', 'parent_id', 'description'])->paginate();
         return view('admin.category.index')
-            ->with('categories', $getCategories->handel(false));
+            ->with('categories', $categories);
     }
 
     /**
      * Show the form for creating a new resource.
      *
-     * @param GetCategories $getCategories
      * @return Factory|View
      */
-    public function create(GetCategories $getCategories)
+    public function create()
     {
         return view('admin.category.create', [
             'category' => [],
-            'categories' => $getCategories->handel(),
+            'categories' => Category::allRelations()->get(),
             'delimiter' => ''
         ]);
     }
@@ -47,12 +41,12 @@ class CategoryController extends Controller
      * Store a newly created resource in storage.
      *
      * @param CategoryRequest $request
-     * @param InsertCategory $insertCategory
      * @return RedirectResponse
      */
-    public function store(CategoryRequest $request, InsertCategory $insertCategory)
+    public function store(CategoryRequest $request)
     {
-        $category = $insertCategory->handel($request->validated());
+        $category = new Category($request->validated());
+        $category->save();
         return redirect()
             ->route('admin.category.edit', ['category' => $category->id])
             ->with('success', __('category.save'));
@@ -61,16 +55,14 @@ class CategoryController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param GetCategories $getCategories
-     * @param GetCategoryByIdOrSlug $getCategory
      * @param int $category
      * @return Factory|View
      */
-    public function edit(GetCategories $getCategories, GetCategoryByIdOrSlug $getCategory, int $category)
+    public function edit(int $category)
     {
         return view('admin.category.edit', [
-            'category' => $getCategory->handel($category),
-            'categories' => $getCategories->handel(),
+            'category' => Category::getCategoryByIdOrSlug($category)->get()->first(),
+            'categories' => Category::allRelations()->get(),
             'delimiter' => ''
         ]);
     }
@@ -79,13 +71,13 @@ class CategoryController extends Controller
      * Update the specified resource in storage.
      *
      * @param CategoryRequest $request
-     * @param UpdateCategory $updateCategory
      * @param integer $category
      * @return RedirectResponse
      */
-    public function update(CategoryRequest $request, UpdateCategory $updateCategory, $category)
+    public function update(CategoryRequest $request, $category)
     {
-        $updateCategory->handel($category, $request->validated());
+        $updateCategory = Category::findOrFail($category);
+        $updateCategory->update($request->validated());
         return redirect()
             ->back()
             ->with('success', __('category.update'));
@@ -94,13 +86,12 @@ class CategoryController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param DeleteCategory $deleteCategory
      * @param integer $category
      * @return RedirectResponse
      */
-    public function destroy(DeleteCategory $deleteCategory, $category)
+    public function destroy($category)
     {
-        $deleteCategory->handel($category);
+        Category::destroy($category);
         return redirect()->back()->with('success', __('category.delete'));
     }
 }

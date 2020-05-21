@@ -30,11 +30,7 @@
                                     <div class="badge badge-danger">
                                         {{$order->getStatus($history->status)}}
                                     </div>
-                                @elseif ($history->status == $order::STATUS_PROCESSING)
-                                    <div class="badge badge-success">
-                                        {{$order->getStatus($history->status)}}
-                                    </div>
-                                @elseif ($history->status == $order::STATUS_COMPLETED)
+                                @elseif ($history->status == $order::STATUS_PROCESSING or $history->status == $order::STATUS_COMPLETED)
                                     <div class="badge badge-success">
                                         {{$order->getStatus($history->status)}}
                                     </div>
@@ -68,7 +64,7 @@
                 <div class="form-group">
                     <label for="input-order-status">Статус замовлення</label>
                     <select name="status" id="input-order-status" class="form-control">
-                        @foreach($order::listStatus() as $key => $status)
+                        @foreach($order->availableListStatus() as $key => $status)
                             <option value="{{$key}}"
                                     @if ($key == $order->status) selected="selected" @endif
                             >{{$status}}</option>

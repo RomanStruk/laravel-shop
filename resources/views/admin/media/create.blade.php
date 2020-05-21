@@ -45,7 +45,7 @@
         <div class="form-group row">
             <label class="col-sm-2 col-form-label" for="product">Прикріпити до товару</label>
             <div class="col-sm-10">
-                <select name="products" id="product" class="form-control">
+                <select name="products[]" id="product" class="form-control">
                     <option value="">-- Не вибрано товару --</option>
                     @foreach($products as $product)
                         <option value="{{$product->id}}">{{$product->title}}</option>

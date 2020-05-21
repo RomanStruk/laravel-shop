@@ -1,9 +1,3 @@
-<div class="row">
-    <div class="col"></div>
-    <div class="col"></div>
-    <div class="col"></div>
-    <div class="col"></div>
-</div>
 @if (! empty($show))
     <a class="btn btn-primary btn-sm" href="{{ $show }}" title="View">
         <i class="fas fa-eye"></i>
@@ -18,7 +12,7 @@
     <form method="POST" class="d-inline" action="{{$delete}}">
         @csrf
         @method('DELETE')
-        <button class="btn btn-danger btn-sm" value="submit" type="submit" title="Видалити">
+        <button class="btn btn-danger btn-sm" value="submit" type="submit" title="Видалити" onclick="return confirm('Видалити?');">
             <i class="fa fa-trash"></i>
         </button>
     </form>
@@ -28,7 +22,7 @@
           action="{{$forceDelete}}">
         @csrf
         @method('DELETE')
-        <button class="btn btn-danger btn-sm" value="submit" type="submit"><i class="fa fa-trash"></i>
+        <button class="btn btn-danger btn-sm" value="submit" type="submit" onclick="return  confirm('Видалити?');"><i class="fa fa-trash"></i>
             Видалити назавжди
         </button>
     </form>

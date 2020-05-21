@@ -8,7 +8,11 @@ use App\Media;
 use App\Observers\CategoryObserver;
 use App\Observers\MediaObserver;
 use App\Observers\OrderHistoryObserver;
+use App\Observers\OrderObserver;
+use App\Observers\ProductObserver;
+use App\Order;
 use App\OrderHistory;
+use App\Product;
 use Blade;
 use Illuminate\Support\ServiceProvider;
 
@@ -31,10 +35,11 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-//        Order::observe(OrderObserver::class);
+        Order::observe(OrderObserver::class);
         OrderHistory::observe(OrderHistoryObserver::class);
         Category::observe(CategoryObserver::class);
         Media::observe(MediaObserver::class);
+        Product::observe(ProductObserver::class);
 
 
         // TODO дереткива на створення відобрадення брендів @brands

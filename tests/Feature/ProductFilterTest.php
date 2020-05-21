@@ -6,9 +6,6 @@ use App\Attribute;
 use App\Category;
 use App\Filter;
 use App\Product;
-use App\Services\PaginateSession;
-use App\Services\ScopeFilters\ProductsFilter;
-use App\Services\Data\Product\GetProductsByLimit;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -30,12 +27,7 @@ class ProductFilterTest extends TestCase
         $filters = [
             'category' => 2
         ];
-        $products = (
-            new GetProductsByLimit(
-                new ProductsFilter(),
-                new PaginateSession(Request::capture())
-            )
-        )->handel($filters);
+        $products = Product::filter($filters)->paginate();
         $this->assertTrue($products->total() == 1);
     }
 
@@ -48,12 +40,8 @@ class ProductFilterTest extends TestCase
         $filters = [
             'category' => 'for-test'
         ];
-        $products = (
-        new GetProductsByLimit(
-            new ProductsFilter(),
-            new PaginateSession(Request::capture())
-        )
-        )->handel($filters);
+
+        $products = Product::filter($filters)->paginate();
         $this->assertTrue($products->total() == 1);
     }
 
@@ -64,12 +52,8 @@ class ProductFilterTest extends TestCase
         $filters = [
             'title' => 'for-test'
         ];
-        $products = (
-        new GetProductsByLimit(
-            new ProductsFilter(),
-            new PaginateSession(Request::capture())
-        )
-        )->handel($filters);
+
+        $products = Product::filter($filters)->paginate();
         $this->assertTrue($products->total() == 50);
     }
 
@@ -80,12 +64,8 @@ class ProductFilterTest extends TestCase
         $filters = [
             'status' => '1'
         ];
-        $products = (
-        new GetProductsByLimit(
-            new ProductsFilter(),
-            new PaginateSession(Request::capture())
-        )
-        )->handel($filters);
+
+        $products = Product::filter($filters)->paginate();
         $this->assertTrue($products->total() == 5);
     }
 
@@ -106,12 +86,8 @@ class ProductFilterTest extends TestCase
             'attribute' => '1'
         ];
 //        dd($d);
-        $products = (
-        new GetProductsByLimit(
-            new ProductsFilter(),
-            new PaginateSession(Request::capture())
-        )
-        )->handel($filters);
+
+        $products = Product::filter($filters)->paginate();
         $this->assertTrue($products->total() == 5);
     }
     public function test_filter_by_attributes_for_products_with_filter_class()
@@ -137,12 +113,8 @@ class ProductFilterTest extends TestCase
                 2 => [2],
             ]
         ];
-        $products = (
-        new GetProductsByLimit(
-            new ProductsFilter(),
-            new PaginateSession(Request::capture())
-        )
-        )->handel($filters);
+
+        $products = Product::filter($filters)->paginate();
         $this->assertTrue($products->total() == 5);
     }
     public function test_filter_by_attributes_mach_variables_for_products_with_filter_class()
@@ -173,12 +145,8 @@ class ProductFilterTest extends TestCase
                 2 => [2],
             ]
         ];
-        $products = (
-        new GetProductsByLimit(
-            new ProductsFilter(),
-            new PaginateSession(Request::capture())
-        )
-        )->handel($filters);
+
+        $products = Product::filter($filters)->paginate();
 //        dump($products);
         $this->assertTrue($products->total() == 1);
 
@@ -187,12 +155,8 @@ class ProductFilterTest extends TestCase
                 2 => [2,3],
             ]
         ];
-        $products2 = (
-        new GetProductsByLimit(
-            new ProductsFilter(),
-            new PaginateSession(Request::capture())
-        )
-        )->handel($filters2);
+
+        $products2 = Product::filter($filters2)->paginate();
         $this->assertTrue($products2->total() == 2);
     }
     public function test_filter_by_price_desc_for_products_with_filter_class()
@@ -206,12 +170,8 @@ class ProductFilterTest extends TestCase
         /*end prepare*/
 
         $filters = ['price' => 'desc'];
-        $products = (
-        new GetProductsByLimit(
-            new ProductsFilter(),
-            new PaginateSession(Request::capture())
-        )
-        )->handel($filters);
+
+        $products = Product::filter($filters)->paginate();
         foreach ($products as $product){
             $this->assertTrue($product->price == $price);
             $this->assertTrue($product->id == 3);
@@ -230,12 +190,8 @@ class ProductFilterTest extends TestCase
         /*end prepare*/
 
         $filters = ['price' => 'asc'];
-        $products = (
-        new GetProductsByLimit(
-            new ProductsFilter(),
-            new PaginateSession(Request::capture())
-        )
-        )->handel($filters);
+
+        $products = Product::filter($filters)->paginate();
         foreach ($products as $product){
             $this->assertTrue($product->price == $price);
             $this->assertTrue($product->id == 3);
@@ -254,12 +210,8 @@ class ProductFilterTest extends TestCase
         /*end prepare*/
 
         $filters = ['novelty' => 'desc'];
-        $products = (
-        new GetProductsByLimit(
-            new ProductsFilter(),
-            new PaginateSession(Request::capture())
-        )
-        )->handel($filters);
+
+        $products = Product::filter($filters)->paginate();
         foreach ($products as $product){
             $this->assertTrue($now->eq($product->created_at));
             $this->assertTrue($product->id == 3);
@@ -278,12 +230,8 @@ class ProductFilterTest extends TestCase
         /*end prepare*/
 
         $filters = ['popular' => 'desc'];
-        $products = (
-        new GetProductsByLimit(
-            new ProductsFilter(),
-            new PaginateSession(Request::capture())
-        )
-        )->handel($filters);
+
+        $products = Product::filter($filters)->paginate();
         foreach ($products as $product){
             $this->assertTrue($product->visits == $visits);
             $this->assertTrue($product->id == 3);

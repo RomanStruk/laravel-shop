@@ -7,18 +7,15 @@ use Carbon\Carbon;
 use Faker\Generator as Faker;
 
 $factory->define(Order::class, function (Faker $faker) {
-    $status = rand(1, 7);
+    $status = rand(1, 5);
     if ($status != App\Order::STATUS_COMPLETED){
-        $status = rand(1, 7);
+        $status = rand(1, 5);
     }
     if ($status != App\Order::STATUS_COMPLETED){
-        $status = rand(1, 7);
+        $status = rand(1, 5);
     }
     if ($status != App\Order::STATUS_COMPLETED){
-        $status = rand(1, 7);
-    }
-    if ($status != App\Order::STATUS_COMPLETED){
-        $status = rand(1, 7);
+        $status = rand(1, 5);
     }
     $time = $faker->dateTimeBetween('-2 months', 'now');
     if ($time->format('d') == '29' and $time->format('m') == '03' and $time->format('H') == '02'){

@@ -112,7 +112,11 @@ Route::group([
 
 
     Route::resource('category', 'Admin\CategoryController')->except(['show']);
+
     Route::resource('product', 'Admin\ProductController');
+    Route::resource('supplier', 'Admin\SupplierController');
+    Route::resource('syllable', 'Admin\SyllableController');
+
     Route::resource('media', 'Admin\MediaController');
     Route::resource('user', 'Admin\UserController');
     Route::resource('filter', 'Admin\FilterController');

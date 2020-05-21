@@ -13,33 +13,21 @@ use Illuminate\Database\Eloquent\Model;
  *
  * @property int $id
  * @property int $order_id
+ * @property int $shipping_rate
  * @property string $method
- * @property float $shipping_rate
  * @property array $city
- * @property array|null $address
+ * @property array $address
  * @property-read \App\Order $order
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Shipping newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Shipping newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Shipping query()
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Shipping whereArea($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Shipping whereAddress($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Shipping whereCity($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Shipping whereCityRef($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Shipping whereFlat($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Shipping whereHouse($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Shipping whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Shipping whereMethod($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Shipping whereOrderId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Shipping whereRegion($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Shipping whereShippingRate($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Shipping whereStreet($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Shipping whereWarehouseRef($value)
  * @mixin \Eloquent
- * @property string|null $warehouse_title
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Shipping whereWarehouseTitle($value)
- * @property string $city_code
- * @property string|null $warehouse_code
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Shipping whereCityCode($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Shipping whereWarehouseCode($value)
  */
 class Shipping extends Model
 {
@@ -113,15 +101,15 @@ class Shipping extends Model
 
     /**
      *
-     * Перетаорення даних для збереження в ДБ
+     * Переторення даних для збереження в ДБ
      *
      * @param $value
      */
     public function setCityAttribute($value)
     {
-        $shippingBase = new ShippingBase(self::$shipping_methods, $this->method);
-        $city = $shippingBase->setCity($value)->cityFillDataForSave();
-        $this->attributes['city'] = json_encode($city);
+//        $shippingBase = new ShippingBase(self::$shipping_methods, $this->method);
+//        $city = $shippingBase->setCity($value)->cityFillDataForSave();
+        $this->attributes['city'] = json_encode($value);
     }
 
     /**
@@ -132,8 +120,8 @@ class Shipping extends Model
      */
     public function setAddressAttribute($value)
     {
-        $shippingBase = new ShippingBase(self::$shipping_methods, $this->method);
-        $address = $shippingBase->setCity($this->city['code'])->setAddress($value)->addressFillDataForSave();
-        $this->attributes['address'] = json_encode($address);
+//        $shippingBase = new ShippingBase(self::$shipping_methods, $this->method);
+//        $address = $shippingBase->setCity($this->city['code'])->setAddress($value)->addressFillDataForSave();
+        $this->attributes['address'] = json_encode($value);
     }
 }

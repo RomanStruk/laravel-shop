@@ -45,7 +45,7 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="{{ route('admin.category.index') }}" class="nav-link @if(Route::currentRouteName() == 'admin.category.index') active @endif">
+                    <a href="{{ route('admin.category.index') }}" class="nav-link @if(request()->routeIs('admin.category*')) active @endif">
                         <i class="nav-icon fas fa-book"></i>
                         <p>
                             Категорії
@@ -53,14 +53,40 @@
                         </p>
                     </a>
                 </li>
-                <li class="nav-item">
-                    <a href="{{ route('admin.product.index') }}" class="nav-link @if(Route::currentRouteName() == 'admin.product.index') active @endif">
+                <li class="nav-item has-treeview @if(request()->routeIs('admin.product*') or request()->routeIs('admin.supplier*') or request()->routeIs('admin.syllable*')) menu-open @endif">
+                    <a href="{{ route('admin.product.index') }}" class="nav-link @if(request()->routeIs('admin.product*') or request()->routeIs('admin.supplier*') or request()->routeIs('admin.syllable*')) active @endif">
                         <i class="nav-icon fas fa-lira-sign"></i>
                         <p>
                             Товари
                             <i class="right fas fa-angle-left"></i>
                         </p>
                     </a>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a href="{{ route('admin.product.index') }}" class="nav-link @if(request()->routeIs('admin.product.index')) active @endif">
+                                <i class="nav-icon fas fa-lira-sign"></i>
+                                <p>Товари</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ route('admin.product.create') }}" class="nav-link @if(request()->routeIs('admin.product.create')) active @endif">
+                                <i class="icon fas fa-plus nav-icon"></i>
+                                <p>Додати товар</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ route('admin.supplier.index') }}" class="nav-link @if(request()->routeIs('admin.supplier*')) active @endif">
+                                <i class="icon fas fa-truck nav-icon"></i>
+                                <p>Постачальники</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ route('admin.syllable.index') }}" class="nav-link @if(request()->routeIs('admin.syllable*')) active @endif">
+                                <i class="icon fas fa-shopping-bag nav-icon"></i>
+                                <p>Склад</p>
+                            </a>
+                        </li>
+                    </ul>
                 </li>
                 <li class="nav-item">
                     <a href="{{ route('admin.user.index') }}" class="nav-link @if(Route::currentRouteName() == 'admin.user.index') active @endif">

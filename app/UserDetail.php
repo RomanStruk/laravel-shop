@@ -12,26 +12,26 @@ use Illuminate\Database\Eloquent\Model;
  * @property string $first_name
  * @property string $last_name
  * @property string $phone
- * @method static \Illuminate\Database\Eloquent\Builder|\App\UserDetail newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|\App\UserDetail newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|\App\UserDetail query()
- * @method static \Illuminate\Database\Eloquent\Builder|\App\UserDetail whereFirstName($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\UserDetail whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\UserDetail whereLastName($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\UserDetail wherePhone($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\UserDetail whereUserId($value)
- * @mixin \Eloquent
- * @property-read \App\User $user
  * @property string|null $avatar
  * @property string|null $country
  * @property string|null $birthday
  * @property string|null $location
  * @property int $status
+ * @property-read \App\User $user
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\UserDetail newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\UserDetail newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\UserDetail query()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\UserDetail whereAvatar($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\UserDetail whereBirthday($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\UserDetail whereCountry($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\UserDetail whereFirstName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\UserDetail whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\UserDetail whereLastName($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\UserDetail whereLocation($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\UserDetail wherePhone($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\UserDetail whereStatus($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\UserDetail whereUserId($value)
+ * @mixin \Eloquent
  */
 class UserDetail extends Model
 {

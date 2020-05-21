@@ -4,32 +4,26 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Order;
+use App\OrderProduct;
 use App\Services\Analytics\Analytics;
-use App\Services\Data\SoldProduct\GetCountProductGroupByWeek;
-use App\Services\Data\SoldProduct\GetTopProductsByLimit;
 
 class HomeController extends Controller
 {
-    public function index(
-        Analytics $analytics,
-        GetTopProductsByLimit $topProducts,
-        GetCountProductGroupByWeek $productGroupByWeek)
+    public function index(Analytics $analytics)
     {
 
-        $products = $topProducts->handel(5);
+        $soldProducts = OrderProduct::top(5)->get();
         $topList = [];
-        foreach ($products as $product) {
-            $volumePeriods = $productGroupByWeek->handel($product->product->id);
+        foreach ($soldProducts as $soldProduct) {
+//            dd($soldProduct);
+            //$product->orderProduct()->sold($range)->get()->sum('count')
+            $c = $soldProduct->countProductGroupByWeek()->get()->pluck('count_sold')->toArray();
             $topList[] = [
-                'analytic'=>$analytics->averageGrowthRate($volumePeriods),
-                'sales' => $product->c,
-                'product' => $product->product,
+                'analytic'=>$analytics->averageGrowthRate($c),
+                'sales' => $soldProduct->c, // всього продано
+                'product' => $soldProduct->product,
             ];
-
         }
-
-//        dump($topList);
-
         $orders = Order::filter(['dateDesc' => true])->allRelations()->paginate(5);
 
         return view('admin.home', ['topList' => $topList])

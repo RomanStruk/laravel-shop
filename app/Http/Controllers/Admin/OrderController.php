@@ -3,12 +3,16 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Events\ChangeOrderStatusEvent;
+use App\Events\CompletedOrderStatusEvent;
 use App\Events\OrderCreatedEvent;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\OrderRequest;
 use App\Http\Requests\StatusOrderRequest;
 use App\Order;
 use App\Services\PaginateSession;
+use App\Services\Shipping\ShippingBase;
+use App\Shipping;
+use App\Syllable;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -51,13 +55,28 @@ class OrderController extends Controller
 
     public function store(OrderRequest $request)
     {
+        // create new Order
         $order = new Order($request->orderFillData());
         // TODO check count available products
+        // try to save order
         $order->save();
+
+        // sync products
         $order->syncProducts($request->productsFillData());
+
+        //create payment information
         $order->paymentCreate($request->paymentFillData());
-        $order->shippingCreate($request->shippingFillData());
-        event(new OrderCreatedEvent($order));   // event
+
+        // create shipping information
+        $shipping = $request->shippingFillData();
+        $shippingBase = new ShippingBase(Shipping::$shipping_methods, $shipping['method']);
+        $shipping['city'] = $shippingBase->setCity($shipping['city'])->cityFillDataForSave();
+        $shipping['address'] = $shippingBase->setAddress($shipping['address'])->addressFillDataForSave();
+        $order->shippingCreate($shipping);
+
+        // event
+        event(new OrderCreatedEvent($order));
+
         return redirect()->route('admin.order.show', $order)->with('success', __('order.save'));
     }
 
@@ -68,8 +87,7 @@ class OrderController extends Controller
     public function edit($orderId)
     {
         // get order
-        $order = Order::allRelations()->withTrashed()->findOrFail($orderId);
-        // show edit view
+        $order = Order::allRelations()->onlyEditable()->findOrFail($orderId);
         return view('admin.order.edit', ['order'=> $order]);
     }
 
@@ -95,7 +113,11 @@ class OrderController extends Controller
         $order->paymentUpdate($request->paymentFillData());
 
         // update shipping of order
-        $order->shippingUpdate($request->shippingFillData());
+        $shipping = $request->shippingFillData();
+        $shippingBase = new ShippingBase(Shipping::$shipping_methods, $shipping['method']);
+        $shipping['city'] = $shippingBase->setCity($shipping['city'])->cityFillDataForSave();
+        $shipping['address'] = $shippingBase->setAddress($shipping['address'])->addressFillDataForSave();
+        $order->shippingUpdate($shipping);
 
         return redirect()->back()->with('success', __('order.updated'));
     }
@@ -122,6 +144,9 @@ class OrderController extends Controller
         // update order status
         $order = Order::findOrFail($orderId);
         $order->statusUpdate($request->statusFillData());
+
+        // create event for completed status
+        if ($request->status == Order::STATUS_COMPLETED) event(new CompletedOrderStatusEvent($order));
 
         // create event for change status
         if ($request->get('notification')) event(new ChangeOrderStatusEvent($order));

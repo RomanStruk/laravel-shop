@@ -2,7 +2,10 @@
 
 namespace App\Http\Requests;
 
+use App\Rules\AvailableRemainsProductRule;
+use App\Rules\OrderProductMinRule;
 use App\Rules\ShippingCityRule;
+use App\Rules\SyllableForProductRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -31,11 +34,20 @@ class OrderRequest extends FormRequest
 
             'comment' => 'required|string|min:3',
 
-            'products' => 'required|array|distinct|min:1',
-            'products.*' => 'numeric|exists:products,id',
+            'products' => ['required','array','distinct','min:1', new OrderProductMinRule()],
 
-            'count.*' => 'numeric|min:1|max:999',
-            'count' => 'required|array|min:1',
+            'products.*.id' => 'nullable|numeric|exists:products,id',
+            'products.*.count' => ['required_with:products.*.id', 'numeric', 'min:1', 'max:999'],
+            'products.*.syllable' => [
+                'required_with:products.*.id',
+                'numeric',
+                'min:1',
+                'exists:syllables,id',
+                'bail',
+                new SyllableForProductRule($this->get('products')),
+                new AvailableRemainsProductRule($this->get('products'), $this->order)
+            ],
+//            'count' => 'required|array|min:1',
 
             'method_pay' => ['required', Rule::in(['receipt', 'google-pay', 'card'])],
             'paid' => 'required|boolean',
@@ -86,10 +98,16 @@ class OrderRequest extends FormRequest
     */
     public function productsFillData()
     {
-        return [
-            'products'=>$this->products,
-            'count' => $this->count,
-        ];
+        $result = [];
+        foreach ($this->products as $element){
+            if (! array_key_exists('id', $element)) continue;
+            $result[] = [
+                'product_id' => $element['id'],
+                'syllable_id' => $element['syllable'],
+                'count' => $element['count'],
+            ];
+        }
+        return $result;
     }
 
 
@@ -108,6 +126,29 @@ class OrderRequest extends FormRequest
             'address' => $this->shipping_method == 'novaposhta'?
                 $this->warehouse_code :
                 ($this->street .', '. $this->house . ', ' . $this->flat),
+        ];
+    }
+
+    /**
+     * Get the error messages for the defined validation rules.
+     *
+     * @return array
+     */
+    public function messages()
+    {
+        return [
+            'products.*.id.required' => 'Products is required',
+            'products.*.id.numeric' => 'Products is numeric',
+            'products.*.id.exists' => 'Products is exists',
+
+            'products.*.count.required_with' => 'Products count is required',
+            'products.*.count.numeric' => 'Products count is numeric',
+            'products.*.count.min' => 'Products count is min',
+            'products.*.count.max' => 'Products count is max',
+
+            'products.*.syllable.required_with' => 'A syllable is required',
+            'products.*.syllable.numeric' => 'A syllable is numeric',
+            'products.*.syllable.exists' => 'A syllable is exists',
         ];
     }
 }

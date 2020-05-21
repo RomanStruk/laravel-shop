@@ -19,7 +19,8 @@ use Illuminate\Database\Eloquent\Model;
  * @property string|null $description
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \App\Product $product
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Product[] $products
+ * @property-read int|null $products_count
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Media newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Media newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Media query()
@@ -36,8 +37,6 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Media whereUrl($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Media whereVisibility($value)
  * @mixin \Eloquent
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Product[] $products
- * @property-read int|null $products_count
  */
 class Media extends Model
 {
@@ -59,5 +58,27 @@ class Media extends Model
         return number_format($size / pow(1024, $power), 2, '.', ',') . ' ' . $units[$power];
 
     }
+
+    public function syncProducts(array $ids)
+    {
+        $this->products()->detach();
+        return $this->products()->sync($ids);
+    }
+
+    public function tryDelete()
+    {
+        if ($this->products()->count() > 1) return false;
+        foreach ($this->products as $product){
+            if ($product->media()->count() == 1) return false; // якшо тільки одна фотка в продукта
+        }
+        $path = $this->path;
+        $disc = $this->disc;
+        $this->delete(); //observer видаляє зображення з диска
+        return [
+            'path' => $path,
+            'disc' => $disc
+        ];
+    }
+
 
 }

@@ -2,15 +2,15 @@
 
 namespace App\Http\Controllers\Api\v1;
 
+use App\Filter;
 use App\Http\Controllers\Controller;
-use App\Services\Data\Filter\GetFilters;
 use Illuminate\Http\Request;
 
 class FilterController extends Controller
 {
-    public function index(Request $request, GetFilters $getFilters)
+    public function index(Request $request)
     {
-        $filters = $getFilters->handel(false, ['*'], $request->get('category'));
+        $filters = Filter::allRelations()->get();
         return response()->json($filters);
     }
 }

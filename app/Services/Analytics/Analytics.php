@@ -4,7 +4,6 @@
 namespace App\Services\Analytics;
 
 
-use App\SoldProduct;
 use Illuminate\Support\Carbon;
 
 class Analytics
@@ -18,13 +17,15 @@ class Analytics
      */
     public function growthRates($current, $base)
     {
+        if ($current == 0 && $base == 0) return 0;
+
         $base =  $base == 0 ? $current: $base;
         return round(($current - $base) / $base * 100, 2);
     }
 
     /**
      * Для определения среднего темпа роста расчетные показатели по периодам складывают и делят на количество периодов.
-     * @param array $percentPeriods
+     * @param array $volumePeriods
      * @return false|float
      */
     public function averageGrowthRate(array $volumePeriods)
