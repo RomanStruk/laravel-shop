@@ -16,9 +16,7 @@ Route::get('/admin/lte', function () {
     return view('admin.layouts.root');
 });
 
-Route::get('/', function () {
-    return view('index');
-});
+Route::get('/', 'IndexPageController@index');
 Route::get('/index-2', function () {
     return view('index-2');
 });
@@ -39,7 +37,7 @@ Route::group(['prefix' => '/shop'], function () {
 });
 
 Route::get('/product/{alias}', 'ProductController@show')
-    ->name('product.index')
+    ->name('product.show')
     ->middleware('test');
 
 Route::post('/product/{id}/comment/create', 'CommentController@create')

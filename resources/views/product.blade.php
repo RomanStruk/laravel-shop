@@ -70,7 +70,7 @@
                             </div>
                         </div>
                         <div class="pro-price mb-10">
-                            <p>$
+                            <p>{{config('shop.currency_short')}}
                                 <span class="price">{{$product->price}}</span>
                                 @if($product->old_price > $product->price)
                                 <del class="prev-price">-{{$product->old_price}}</del>

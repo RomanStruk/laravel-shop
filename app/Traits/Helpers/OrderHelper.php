@@ -172,7 +172,7 @@ trait OrderHelper
         $this->notify(
             (new OrderStatusChangeNotification(
                 $this->user->fullName,
-                $this->products,
+                $this->orderProducts,
                 $this->id,
                 $this->getStatus($this->status))
             )->onQueue('default')
