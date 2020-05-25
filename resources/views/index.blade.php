@@ -236,284 +236,68 @@
                         <div class="slider-right-content side-product-list-active owl-carousel">
                             <!-- Double Product Start -->
                             <div class="double-pro">
-                                <!-- Single Product Start -->
-                                <div class="single-product">
-                                    <div class="pro-img">
-                                        <a href="product.html"><img class="img" src="img/products/1.jpg" alt="product-image"></a>
-                                    </div>
-                                    <div class="pro-content">
-                                        <div class="product-rating">
-                                            <i class="fa fa-star"></i>
-                                            <i class="fa fa-star"></i>
-                                            <i class="fa fa-star"></i>
-                                            <i class="fa fa-star"></i>
-                                            <i class="fa fa-star"></i>
+                                @forelse($popular->take(4) as $product)
+                                    <!-- Single Product Start -->
+                                    <div class="single-product">
+                                            <div class="pro-img">
+                                                <a href="{{route('product.show', $product->alias)}}"><img class="img" src="img/products/1.jpg" alt="product-image"></a>
+                                            </div>
+                                            <div class="pro-content">
+                                                <div class="product-rating">
+                                                    @for($i = 1; $i <= 5; $i++)
+                                                        @if($i <= $product->average_rating)
+                                                            <i class="fa fa-star"></i>
+                                                        @else
+                                                            <i class="fa fa-star-o"></i>
+                                                        @endif
+                                                    @endfor
+                                                </div>
+                                                <h4><a href="{{route('product.show', $product->alias)}}">{{$product->title}}</a></h4>
+                                                <p>{{config('shop.currency_short')}}
+                                                    <span class="price">{{$product->price}}</span>
+                                                    @if($product->old_price > $product->price)
+                                                        <del class="prev-price">-{{$product->old_price}}</del>
+                                                    @endif
+                                                </p>
+                                            </div>
                                         </div>
-                                        <h4><a href="product.html">Products Name Here</a></h4>
-                                        <p><span class="price">$30.00</span><del class="prev-price">$32.00</del></p>
-                                    </div>
-                                </div>
-                                <!-- Single Product End -->
-                                <!-- Single Product Start -->
-                                <div class="single-product">
-                                    <div class="pro-img">
-                                        <a href="product.html"><img class="img" src="img/products/2.jpg" alt="product-image"></a>
-                                    </div>
-                                    <div class="pro-content">
-                                        <div class="product-rating">
-                                            <i class="fa fa-star"></i>
-                                            <i class="fa fa-star"></i>
-                                            <i class="fa fa-star"></i>
-                                            <i class="fa fa-star"></i>
-                                            <i class="fa fa-star"></i>
-                                        </div>
-                                        <h4><a href="product.html">Products Name Here</a></h4>
-                                        <p><span class="price">$30.00</span><del class="prev-price">$32.00</del></p>
-                                    </div>
-                                </div>
-                                <!-- Single Product End -->
-                                <!-- Single Product Start -->
-                                <div class="single-product">
-                                    <div class="pro-img">
-                                        <a href="product.html"><img class="img" src="img/products/3.jpg" alt="product-image"></a>
-                                    </div>
-                                    <div class="pro-content">
-                                        <div class="product-rating">
-                                            <i class="fa fa-star"></i>
-                                            <i class="fa fa-star"></i>
-                                            <i class="fa fa-star"></i>
-                                            <i class="fa fa-star"></i>
-                                            <i class="fa fa-star"></i>
-                                        </div>
-                                        <h4><a href="product.html">Products Name Here</a></h4>
-                                        <p><span class="price">$30.00</span><del class="prev-price">$32.00</del></p>
-                                    </div>
-                                </div>
-                                <!-- Single Product End -->
-                                <!-- Single Product Start -->
-                                <div class="single-product">
-                                    <div class="pro-img">
-                                        <a href="product.html"><img class="img" src="img/products/4.jpg" alt="product-image"></a>
-                                    </div>
-                                    <div class="pro-content">
-                                        <div class="product-rating">
-                                            <i class="fa fa-star"></i>
-                                            <i class="fa fa-star"></i>
-                                            <i class="fa fa-star"></i>
-                                            <i class="fa fa-star"></i>
-                                            <i class="fa fa-star"></i>
-                                        </div>
-                                        <h4><a href="product.html">Products Name Here</a></h4>
-                                        <p><span class="price">$30.00</span><del class="prev-price">$32.00</del></p>
-                                    </div>
-                                </div>
-                                <!-- Single Product End -->
-                                <!-- Single Product Start -->
-                                <div class="single-product">
-                                    <div class="pro-img">
-                                        <a href="product.html"><img class="img" src="img/products/5.jpg" alt="product-image"></a>
-                                    </div>
-                                    <div class="pro-content">
-                                        <div class="product-rating">
-                                            <i class="fa fa-star"></i>
-                                            <i class="fa fa-star"></i>
-                                            <i class="fa fa-star"></i>
-                                            <i class="fa fa-star"></i>
-                                            <i class="fa fa-star"></i>
-                                        </div>
-                                        <h4><a href="product.html">Products Name Here</a></h4>
-                                        <p><span class="price">$30.00</span><del class="prev-price">$32.00</del></p>
-                                    </div>
-                                </div>
-                                <!-- Single Product End -->
+                                    <!-- Single Product End -->
+                                @empty
+                                    <p>empty</p>
+                                @endforelse
                             </div>
                             <!-- Double Product End -->
                             <!-- Double Product Start -->
                             <div class="double-pro">
+                            @forelse($popular->skip(4)->take(4) as $product)
                                 <!-- Single Product Start -->
-                                <div class="single-product">
-                                    <div class="pro-img">
-                                        <a href="product.html"><img class="img" src="img/products/6.jpg" alt="product-image"></a>
-                                    </div>
-                                    <div class="pro-content">
-                                        <div class="product-rating">
-                                            <i class="fa fa-star"></i>
-                                            <i class="fa fa-star"></i>
-                                            <i class="fa fa-star"></i>
-                                            <i class="fa fa-star"></i>
-                                            <i class="fa fa-star"></i>
+                                    <div class="single-product">
+                                        <div class="pro-img">
+                                            <a href="{{route('product.show', $product->alias)}}"><img class="img" src="img/products/1.jpg" alt="product-image"></a>
                                         </div>
-                                        <h4><a href="product.html">Products Name Here</a></h4>
-                                        <p><span class="price">$30.00</span><del class="prev-price">$32.00</del></p>
-                                    </div>
-                                </div>
-                                <!-- Single Product End -->
-                                <!-- Single Product Start -->
-                                <div class="single-product">
-                                    <div class="pro-img">
-                                        <a href="product.html"><img class="img" src="img/products/7.jpg" alt="product-image"></a>
-                                    </div>
-                                    <div class="pro-content">
-                                        <div class="product-rating">
-                                            <i class="fa fa-star"></i>
-                                            <i class="fa fa-star"></i>
-                                            <i class="fa fa-star"></i>
-                                            <i class="fa fa-star"></i>
-                                            <i class="fa fa-star"></i>
+                                        <div class="pro-content">
+                                            <div class="product-rating">
+                                                @for($i = 1; $i <= 5; $i++)
+                                                    @if($i <= $product->average_rating)
+                                                        <i class="fa fa-star"></i>
+                                                    @else
+                                                        <i class="fa fa-star-o"></i>
+                                                    @endif
+                                                @endfor
+                                            </div>
+                                            <h4><a href="{{route('product.show', $product->alias)}}">{{$product->title}}</a></h4>
+                                            <p>{{config('shop.currency_short')}}
+                                                <span class="price">{{$product->price}}</span>
+                                                @if($product->old_price > $product->price)
+                                                    <del class="prev-price">-{{$product->old_price}}</del>
+                                                @endif
+                                            </p>
                                         </div>
-                                        <h4><a href="product.html">Products Name Here</a></h4>
-                                        <p><span class="price">$30.00</span><del class="prev-price">$32.00</del></p>
                                     </div>
-                                </div>
-                                <!-- Single Product End -->
-                                <!-- Single Product Start -->
-                                <div class="single-product">
-                                    <div class="pro-img">
-                                        <a href="product.html"><img class="img" src="img/products/8.jpg" alt="product-image"></a>
-                                    </div>
-                                    <div class="pro-content">
-                                        <div class="product-rating">
-                                            <i class="fa fa-star"></i>
-                                            <i class="fa fa-star"></i>
-                                            <i class="fa fa-star"></i>
-                                            <i class="fa fa-star"></i>
-                                            <i class="fa fa-star"></i>
-                                        </div>
-                                        <h4><a href="product.html">Products Name Here</a></h4>
-                                        <p><span class="price">$30.00</span><del class="prev-price">$32.00</del></p>
-                                    </div>
-                                </div>
-                                <!-- Single Product End -->
-                                <!-- Single Product Start -->
-                                <div class="single-product">
-                                    <div class="pro-img">
-                                        <a href="product.html"><img class="img" src="img/products/5.jpg" alt="product-image"></a>
-                                    </div>
-                                    <div class="pro-content">
-                                        <div class="product-rating">
-                                            <i class="fa fa-star"></i>
-                                            <i class="fa fa-star"></i>
-                                            <i class="fa fa-star"></i>
-                                            <i class="fa fa-star"></i>
-                                            <i class="fa fa-star"></i>
-                                        </div>
-                                        <h4><a href="product.html">Products Name Here</a></h4>
-                                        <p><span class="price">$30.00</span><del class="prev-price">$32.00</del></p>
-                                    </div>
-                                </div>
-                                <!-- Single Product End -->
-                                <!-- Single Product Start -->
-                                <div class="single-product">
-                                    <div class="pro-img">
-                                        <a href="product.html"><img class="img" src="img/products/4.jpg" alt="product-image"></a>
-                                    </div>
-                                    <div class="pro-content">
-                                        <div class="product-rating">
-                                            <i class="fa fa-star"></i>
-                                            <i class="fa fa-star"></i>
-                                            <i class="fa fa-star"></i>
-                                            <i class="fa fa-star"></i>
-                                            <i class="fa fa-star"></i>
-                                        </div>
-                                        <h4><a href="product.html">Products Name Here</a></h4>
-                                        <p><span class="price">$30.00</span><del class="prev-price">$32.00</del></p>
-                                    </div>
-                                </div>
-                                <!-- Single Product End -->
-                            </div>
-                            <!-- Double Product End -->
-                            <!-- Double Product Start -->
-                            <div class="double-pro">
-                                <!-- Single Product Start -->
-                                <div class="single-product">
-                                    <div class="pro-img">
-                                        <a href="product.html"><img class="img" src="img/products/1.jpg" alt="product-image"></a>
-                                    </div>
-                                    <div class="pro-content">
-                                        <div class="product-rating">
-                                            <i class="fa fa-star"></i>
-                                            <i class="fa fa-star"></i>
-                                            <i class="fa fa-star"></i>
-                                            <i class="fa fa-star"></i>
-                                            <i class="fa fa-star"></i>
-                                        </div>
-                                        <h4><a href="product.html">Products Name Here</a></h4>
-                                        <p><span class="price">$30.00</span><del class="prev-price">$32.00</del></p>
-                                    </div>
-                                </div>
-                                <!-- Single Product End -->
-                                <!-- Single Product Start -->
-                                <div class="single-product">
-                                    <div class="pro-img">
-                                        <a href="product.html"><img class="img" src="img/products/2.jpg" alt="product-image"></a>
-                                    </div>
-                                    <div class="pro-content">
-                                        <div class="product-rating">
-                                            <i class="fa fa-star"></i>
-                                            <i class="fa fa-star"></i>
-                                            <i class="fa fa-star"></i>
-                                            <i class="fa fa-star"></i>
-                                            <i class="fa fa-star"></i>
-                                        </div>
-                                        <h4><a href="product.html">Products Name Here</a></h4>
-                                        <p><span class="price">$30.00</span><del class="prev-price">$32.00</del></p>
-                                    </div>
-                                </div>
-                                <!-- Single Product End -->
-                                <!-- Single Product Start -->
-                                <div class="single-product">
-                                    <div class="pro-img">
-                                        <a href="product.html"><img class="img" src="img/products/3.jpg" alt="product-image"></a>
-                                    </div>
-                                    <div class="pro-content">
-                                        <div class="product-rating">
-                                            <i class="fa fa-star"></i>
-                                            <i class="fa fa-star"></i>
-                                            <i class="fa fa-star"></i>
-                                            <i class="fa fa-star"></i>
-                                            <i class="fa fa-star"></i>
-                                        </div>
-                                        <h4><a href="product.html">Products Name Here</a></h4>
-                                        <p><span class="price">$30.00</span><del class="prev-price">$32.00</del></p>
-                                    </div>
-                                </div>
-                                <!-- Single Product End -->
-                                <!-- Single Product Start -->
-                                <div class="single-product">
-                                    <div class="pro-img">
-                                        <a href="product.html"><img class="img" src="img/products/4.jpg" alt="product-image"></a>
-                                    </div>
-                                    <div class="pro-content">
-                                        <div class="product-rating">
-                                            <i class="fa fa-star"></i>
-                                            <i class="fa fa-star"></i>
-                                            <i class="fa fa-star"></i>
-                                            <i class="fa fa-star"></i>
-                                            <i class="fa fa-star"></i>
-                                        </div>
-                                        <h4><a href="product.html">Products Name Here</a></h4>
-                                        <p><span class="price">$30.00</span><del class="prev-price">$32.00</del></p>
-                                    </div>
-                                </div>
-                                <!-- Single Product End -->
-                                <!-- Single Product Start -->
-                                <div class="single-product">
-                                    <div class="pro-img">
-                                        <a href="product.html"><img class="img" src="img/products/5.jpg" alt="product-image"></a>
-                                    </div>
-                                    <div class="pro-content">
-                                        <div class="product-rating">
-                                            <i class="fa fa-star"></i>
-                                            <i class="fa fa-star"></i>
-                                            <i class="fa fa-star"></i>
-                                            <i class="fa fa-star"></i>
-                                            <i class="fa fa-star"></i>
-                                        </div>
-                                        <h4><a href="product.html">Products Name Here</a></h4>
-                                        <p><span class="price">$30.00</span><del class="prev-price">$32.00</del></p>
-                                    </div>
-                                </div>
-                                <!-- Single Product End -->
+                                    <!-- Single Product End -->
+                                @empty
+                                    <p>empty</p>
+                                @endforelse
                             </div>
                             <!-- Double Product End -->
                         </div>

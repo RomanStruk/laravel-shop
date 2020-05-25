@@ -37,8 +37,7 @@ Route::group(['prefix' => '/shop'], function () {
 });
 
 Route::get('/product/{alias}', 'ProductController@show')
-    ->name('product.show')
-    ->middleware('test');
+    ->name('product.show');
 
 Route::post('/product/{id}/comment/create', 'CommentController@create')
     ->name('comment.create');

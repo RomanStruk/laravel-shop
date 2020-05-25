@@ -2,8 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\OrderProduct;
-use App\Product;
+use App\Models\Product;
 use Illuminate\Http\Request;
 
 class Banner{
@@ -14,14 +13,17 @@ class IndexPageController extends Controller
 {
     public function index()
     {
+        //Популярні товари
+        $popular = Product::top(8)->get();
+
         //Нові надходження
-        $newArrival = Product::avgRating()->latest()->take(5)->get();
+        $newArrival = Product::with('media')->latest()->take(5)->get();
 
         //Рекомендовані
-        $featured = Product::avgRating()->take(5)->get();
+        $featured = Product::with('media')->take(5)->get();
 
         //Високо оцінений
-        $topRated = Product::avgRating()->orderBy('average_rating')->take(5)->get();
+        $topRated = Product::with('media')->orderBy('average_rating')->take(5)->get();
 
         //
         $banner = new Banner();
@@ -30,6 +32,7 @@ class IndexPageController extends Controller
             ->with('newArrival', $newArrival)
             ->with('featured', $featured)
             ->with('topRated', $topRated)
-            ->with('banner', $banner);
+            ->with('banner', $banner)
+            ->with('popular', $popular);
     }
 }

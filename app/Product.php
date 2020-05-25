@@ -82,17 +82,7 @@ class Product extends Model
     use ProductHelper;
     use Status;
 
-    public $fillable = [
-        'title',
-        'alias',
-        'category_id',
-        'keywords',
-        'description',
-        'content',
-        'price',
-        'in_stock',
-        'status',
-        ];
+    public $fillable = ['alias', 'title', 'category_id', 'keywords', 'description', 'content', 'price', 'in_stock', 'status'];
 
     const STATUS_HIDE       = 0;
     const STATUS_ACTIVE     = 1;
