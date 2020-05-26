@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Models\Traits\PriceMutators;
 use App\Services\ScopeFilters\ProductsFilter;
 use App\Traits\Helpers\ProductHelper;
 use App\Traits\Helpers\SerializeDate;
@@ -104,22 +105,8 @@ class Product extends Model
         return (new ProductsFilter())->apply($query, $filter);
     }
 
-    public function getPriceAttribute($value)
-    {
-        return round(($value/100), 2);
-    }
-    public function setPriceAttribute($value)
-    {
-        $this->attributes['price'] = (int)((float)$value*100);
-    }
-    public function getOldPriceAttribute($value)
-    {
-        return round(($value/100), 2);
-    }
-    public function setOldPriceAttribute($value)
-    {
-        $this->attributes['old_price'] = (int)((float)$value*100);
-    }
+    use PriceMutators;
+
 
 
     /**

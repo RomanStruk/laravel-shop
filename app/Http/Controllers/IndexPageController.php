@@ -13,8 +13,11 @@ class IndexPageController extends Controller
 {
     public function index()
     {
+        // Вибрані сторінки
+        $favorite = Product::with('media')->favorite()->get();
+
         //Популярні товари
-        $popular = Product::top(8)->get();
+        $popular = Product::with('media')->top(8)->get();
 
         //Нові надходження
         $newArrival = Product::with('media')->latest()->take(5)->get();
@@ -33,6 +36,7 @@ class IndexPageController extends Controller
             ->with('featured', $featured)
             ->with('topRated', $topRated)
             ->with('banner', $banner)
-            ->with('popular', $popular);
+            ->with('popular', $popular)
+            ->with('favorite', $favorite);
     }
 }

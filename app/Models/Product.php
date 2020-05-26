@@ -3,6 +3,8 @@
 namespace App\Models;
 
 use App\Models\Scope\ProductAvgRating;
+use App\Models\Scope\ProductTop;
+use App\Models\Traits\PriceMutators;
 use App\Order;
 use App\Traits\Relations\ProductRelations;
 use DB;
@@ -14,7 +16,7 @@ class Product extends Model
 {
     use SoftDeletes;
     use ProductRelations;
-
+    use PriceMutators; // мутатори для ціни
 
     public $fillable = ['alias', 'title', 'category_id', 'keywords', 'description', 'content', 'price', 'in_stock', 'status'];
 
@@ -41,6 +43,12 @@ class Product extends Model
             }])
             ->orderByDesc('c')
             ->limit($limit);
+    }
+
+    public function scopeFavorite(Builder $query)
+    {
+//        return $query->where('favorite', '=', 1);
+        return $query->limit(4);
     }
 
 }
