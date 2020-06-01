@@ -26,6 +26,7 @@ Route::group(['prefix' => 'v1'], function (){
 
     Route::get('/shipping/address', 'Api\v1\ShippingController@listOfAddresses');
     Route::get('/shipping/city', 'Api\v1\ShippingController@listOfCities');
+    Route::get('/search/shipping/city', 'Api\v1\SearchController@shippingCity');
 
     //TODO токени авторизації
     Route::get('/dashboard/sales', 'Api\v1\DashboardController@sales')->middleware(['auth:api']);

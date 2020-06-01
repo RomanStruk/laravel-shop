@@ -83,6 +83,8 @@ class Product extends Model
     use ProductHelper;
     use Status;
 
+    use PriceMutators;
+
     public $fillable = ['alias', 'title', 'category_id', 'keywords', 'description', 'content', 'price', 'in_stock', 'status'];
 
     const STATUS_HIDE       = 0;
@@ -105,7 +107,6 @@ class Product extends Model
         return (new ProductsFilter())->apply($query, $filter);
     }
 
-    use PriceMutators;
 
 
 

@@ -9,7 +9,6 @@ import Basket from "./components/Basket";
 require('./bootstrap');
 
 window.Vue = require('vue');
-
 /**
  * The following block of code may be used to automatically register your
  * Vue components. It will recursively scan this directory for the Vue
@@ -20,7 +19,8 @@ window.Vue = require('vue');
 
 // const files = require.context('./', true, /\.vue$/i)
 // files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key).default))
-
+import vSelect from 'vue-select';
+Vue.component("v-select", vSelect);
 Vue.component('example-component', require('./components/ExampleComponent.vue').default);
 Vue.component('shop-component', require('./components/Shop.vue').default);
 Vue.component('basket-component', require('./components/Basket.vue').default);

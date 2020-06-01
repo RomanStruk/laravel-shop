@@ -48,7 +48,7 @@ class Product extends Model
     public function scopeFavorite(Builder $query)
     {
 //        return $query->where('favorite', '=', 1);
-        return $query->limit(4);
+        return $query->limit(4); //todo favorite scope
     }
 
 }
