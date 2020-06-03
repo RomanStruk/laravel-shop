@@ -2758,37 +2758,297 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
       options: [],
-      city: '',
+      city: {},
       warehouses: {},
-      type_delivery: '',
       is_refresh: false,
       selected: false,
-      show_list: false,
-      next_steep: false
+      next_steep: 1,
+      validate_messages: {
+        'require': 'Поле обовязкове до заповнення!'
+      },
+      errors: {
+        form_city_code: {},
+        form_comment: {},
+        form_shipping_method: {},
+        form_street: {},
+        form_house: {},
+        form_flat: {},
+        form_warehouse_code: {},
+        form_payment_method: {}
+      },
+      csrf: document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+      //watch
+      city_code: '',
+      // код міста
+      shipping_method: '',
+      // метод доставки
+      payment_method: '',
+      // метод оплати
+      comment: '',
+      // коментар замовника
+      street: '',
+      // вулиця
+      house: '',
+      // будинок
+      flat: '',
+      // квартира
+      warehouse_code: '',
+      // код відділення
+      // form data for send
+      form_city_code: '',
+      form_products: [],
+      form_shipping_method: '',
+      form_comment: '',
+      form_street: '',
+      form_house: '',
+      form_flat: '',
+      form_warehouse_code: '',
+      form_payment_method: ''
     };
   },
-  props: ['if_user_auth'],
+  props: ['if_user_auth', 'action'],
   watch: {
-    type_delivery: function type_delivery() {
-      if (this.type_delivery === 'Pickup') {
+    shipping_method: function shipping_method() {
+      this.validate();
+
+      if (this.shipping_method === 'novaposhta') {
         this.loadWarehouses();
-        this.show_list = true;
+        this.form_shipping_method = 'novaposhta';
       }
 
-      if (this.type_delivery === 'Courier') {
-        this.show_list = false;
+      if (this.shipping_method === 'courier') {
+        this.form_shipping_method = 'courier';
       }
+    },
+    street: function street() {
+      this.validate();
+    },
+    house: function house() {
+      this.validate();
+    },
+    flat: function flat() {
+      this.validate();
+    },
+    city_code: function city_code() {
+      this.validate();
+    },
+    warehouse_code: function warehouse_code() {
+      this.validate();
+    },
+    payment_method: function payment_method() {
+      this.validate();
     }
   },
-  mounted: function mounted() {},
+  mounted: function mounted() {
+    if (this.if_user_auth) {
+      this.next_steep = 2;
+    }
+  },
   methods: {
+    validate: function validate() {
+      this.errors.form_city_code["required"] = false;
+      this.errors.form_shipping_method.required = false;
+      this.errors.form_street.required = false;
+      this.errors.form_house.required = false;
+      this.errors.form_flat.required = false;
+      this.errors.form_warehouse_code.required = false;
+      this.errors.form_payment_method.required = false; // city
+
+      if (this.city_code === '') {
+        this.errors.form_city_code["required"] = true;
+        this.form_city_code = '';
+      } else {
+        this.form_city_code = this.city_code;
+      } // shipping_method
+
+
+      if (this.shipping_method !== 'courier' && this.shipping_method !== 'novaposhta') {
+        this.errors.form_shipping_method.required = true;
+        this.form_shipping_method = '';
+      } else {
+        this.form_shipping_method = this.shipping_method;
+      }
+
+      if (this.shipping_method === 'courier') {
+        if (this.street === '') {
+          this.errors.form_street.required = true;
+          this.form_street = '';
+        } else {
+          this.form_street = this.street;
+        }
+
+        if (this.house === '') {
+          this.errors.form_house.required = true;
+          this.form_house = '';
+        } else {
+          this.form_house = this.house;
+        }
+
+        if (this.flat === '') {
+          this.errors.form_flat.required = true;
+          this.form_flat = '';
+        } else {
+          this.form_flat = this.flat;
+        }
+      }
+
+      if (this.shipping_method === 'novaposhta') {
+        if (this.warehouse_code === '') {
+          this.errors.form_warehouse_code.required = true;
+          this.form_warehouse_code = '';
+        } else {
+          this.form_warehouse_code = this.warehouse_code;
+        }
+      } // comment
+
+
+      this.errors.form_comment["required"] = this.form_comment === ''; // payment_method
+
+      if (this.payment_method !== 'receipt' && this.payment_method !== 'google-pay' && this.payment_method !== 'card') {
+        this.errors.form_payment_method.required = true;
+        this.form_payment_method = '';
+      } else {
+        this.form_payment_method = this.payment_method;
+      }
+    },
+    checkValidation: function checkValidation() {
+      this.validate();
+
+      for (var key in this.errors) {
+        console.log(key);
+      }
+    },
     setSelected: function setSelected(value) {
-      this.selected = value !== null;
-      this.city = value;
+      if (value !== null) {
+        this.selected = true;
+        this.city = value;
+        this.city_code = value.id;
+      } else {
+        this.selected = false;
+        this.city = {};
+        this.city_code = '';
+      }
     },
     onSearch: function onSearch(search, loading) {
       if (search === '') return;
@@ -2804,8 +3064,7 @@ __webpack_require__.r(__webpack_exports__);
       loading(false);
     }, 350),
     nextSteep: function nextSteep() {
-      this.next_steep = true;
-      this.if_user_auth = true;
+      this.next_steep = 2;
     },
     loadWarehouses: function loadWarehouses() {
       var _this = this;
@@ -40374,16 +40633,688 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("div", [
-    !_vm.if_user_auth
-      ? _c("div", [
-          _c("h3", [_vm._v("Контактні дані")]),
+  return _c(
+    "form",
+    {
+      staticClass: "form-row",
+      attrs: { action: _vm.action, method: "post" },
+      on: {
+        submit: function($event) {
+          $event.preventDefault()
+          return _vm.checkValidation()
+        }
+      }
+    },
+    [
+      _c("input", {
+        attrs: { type: "hidden", name: "_token" },
+        domProps: { value: _vm.csrf }
+      }),
+      _vm._v(" "),
+      _c("input", {
+        attrs: { type: "hidden", name: "city" },
+        domProps: { value: _vm.form_city_code }
+      }),
+      _vm._v(" "),
+      _vm._l(_vm.localStorage.basket_list, function(order) {
+        return [
+          _c("input", {
+            attrs: { type: "hidden", name: "products[" + order.id + "][id]" },
+            domProps: { value: order.id }
+          }),
           _vm._v(" "),
-          _vm._m(0),
-          _vm._v(" "),
-          _vm._m(1),
-          _vm._v(" "),
-          _c("div", { staticClass: "row" }, [
+          _c("input", {
+            attrs: {
+              type: "hidden",
+              name: "products[" + order.id + "][count]"
+            },
+            domProps: { value: order.count }
+          })
+        ]
+      }),
+      _vm._v(" "),
+      _c("input", {
+        attrs: { type: "hidden", name: "shipping_method" },
+        domProps: { value: _vm.form_shipping_method }
+      }),
+      _vm._v(" "),
+      _vm.form_shipping_method === "novaposhta"
+        ? _c("input", {
+            attrs: { type: "hidden", name: "warehouse_code" },
+            domProps: { value: _vm.form_warehouse_code }
+          })
+        : _vm._e(),
+      _vm._v(" "),
+      _vm.form_shipping_method === "courier"
+        ? _c("input", {
+            attrs: { type: "hidden", name: "street" },
+            domProps: { value: _vm.form_street }
+          })
+        : _vm._e(),
+      _vm._v(" "),
+      _vm.form_shipping_method === "courier"
+        ? _c("input", {
+            attrs: { type: "hidden", name: "house" },
+            domProps: { value: _vm.form_house }
+          })
+        : _vm._e(),
+      _vm._v(" "),
+      _vm.form_shipping_method === "courier"
+        ? _c("input", {
+            attrs: { type: "hidden", name: "flat" },
+            domProps: { value: _vm.form_flat }
+          })
+        : _vm._e(),
+      _vm._v(" "),
+      _c("div", { staticClass: "col-lg-6 col-md-6" }, [
+        _c("div", { staticClass: "card card-primary" }, [
+          _c("div", { staticClass: "card-body" }, [
+            _vm.next_steep === 1
+              ? _c("div", [
+                  _c("h3", [_vm._v("Контактні дані")]),
+                  _vm._v(" "),
+                  _vm._m(0),
+                  _vm._v(" "),
+                  _vm._m(1)
+                ])
+              : _vm._e(),
+            _vm._v(" "),
+            _vm.next_steep === 2
+              ? _c("div", [
+                  _c("h3", [_vm._v("Вибір способів доставки й оплати")]),
+                  _vm._v(" "),
+                  _c("div", { staticClass: "row form-group" }, [
+                    _vm._m(2),
+                    _vm._v(" "),
+                    _c(
+                      "div",
+                      { staticClass: "col-sm-9" },
+                      [
+                        _c(
+                          "v-select",
+                          {
+                            attrs: {
+                              label: "name",
+                              filterable: false,
+                              options: _vm.options
+                            },
+                            on: {
+                              search: _vm.onSearch,
+                              input: _vm.setSelected
+                            },
+                            scopedSlots: _vm._u(
+                              [
+                                {
+                                  key: "option",
+                                  fn: function(option) {
+                                    return [
+                                      _c("div", { staticClass: "d-center" }, [
+                                        _vm._v(
+                                          "\n                                        " +
+                                            _vm._s(option.description) +
+                                            "\n                                    "
+                                        )
+                                      ])
+                                    ]
+                                  }
+                                },
+                                {
+                                  key: "selected-option",
+                                  fn: function(option) {
+                                    return [
+                                      _c(
+                                        "div",
+                                        { staticClass: "selected d-center" },
+                                        [
+                                          _vm._v(
+                                            "\n                                        " +
+                                              _vm._s(option.description) +
+                                              "\n                                    "
+                                          )
+                                        ]
+                                      )
+                                    ]
+                                  }
+                                }
+                              ],
+                              null,
+                              false,
+                              2163421572
+                            )
+                          },
+                          [
+                            _c("template", { slot: "no-options" }, [
+                              _vm._v(
+                                "\n                                    Введіть назву населеного пункту для доставки\n                                "
+                              )
+                            ])
+                          ],
+                          2
+                        ),
+                        _vm._v(" "),
+                        _c(
+                          "div",
+                          { staticClass: "text-danger mt-2 text-small" },
+                          [
+                            _vm.errors.form_city_code.required
+                              ? _c("div", [
+                                  _vm._v(_vm._s(_vm.validate_messages.require))
+                                ])
+                              : _vm._e()
+                          ]
+                        )
+                      ],
+                      1
+                    )
+                  ]),
+                  _vm._v(" "),
+                  _c(
+                    "fieldset",
+                    {
+                      staticClass: "form-group border-bottom",
+                      style: _vm.selected === false ? "opacity:0.5;" : ""
+                    },
+                    [
+                      _c("div", { staticClass: "row" }, [
+                        _c(
+                          "legend",
+                          { staticClass: "col-form-label col-sm-3 pt-0" },
+                          [_vm._v("Спосіб доставки")]
+                        ),
+                        _vm._v(" "),
+                        _c("div", { staticClass: "col-sm-9" }, [
+                          _c("div", { staticClass: "form-check" }, [
+                            _c("input", {
+                              directives: [
+                                {
+                                  name: "model",
+                                  rawName: "v-model",
+                                  value: _vm.shipping_method,
+                                  expression: "shipping_method"
+                                }
+                              ],
+                              key: "courier",
+                              staticClass: "form-check-input",
+                              attrs: {
+                                type: "radio",
+                                id: "gridRadios1",
+                                value: "courier"
+                              },
+                              domProps: {
+                                checked: _vm._q(_vm.shipping_method, "courier")
+                              },
+                              on: {
+                                change: function($event) {
+                                  _vm.shipping_method = "courier"
+                                }
+                              }
+                            }),
+                            _vm._v(" "),
+                            _c(
+                              "label",
+                              {
+                                staticClass: "form-check-label",
+                                attrs: { for: "gridRadios1" }
+                              },
+                              [_vm._v("Кур'єр на вашу адресу")]
+                            ),
+                            _vm._v(" "),
+                            _vm.shipping_method === "courier"
+                              ? _c("div", { staticClass: "form-group" }, [
+                                  _c("label", [_vm._v("Адрес")]),
+                                  _vm._v(" "),
+                                  _c("div", { staticClass: "form-row" }, [
+                                    _c(
+                                      "div",
+                                      {
+                                        staticClass:
+                                          "input-group col-6 input-group-sm"
+                                      },
+                                      [
+                                        _vm._m(3),
+                                        _vm._v(" "),
+                                        _c("input", {
+                                          directives: [
+                                            {
+                                              name: "model",
+                                              rawName: "v-model",
+                                              value: _vm.street,
+                                              expression: "street"
+                                            }
+                                          ],
+                                          staticClass: "form-control",
+                                          attrs: {
+                                            type: "text",
+                                            id: "address_street"
+                                          },
+                                          domProps: { value: _vm.street },
+                                          on: {
+                                            input: function($event) {
+                                              if ($event.target.composing) {
+                                                return
+                                              }
+                                              _vm.street = $event.target.value
+                                            }
+                                          }
+                                        })
+                                      ]
+                                    ),
+                                    _vm._v(" "),
+                                    _c(
+                                      "div",
+                                      {
+                                        staticClass:
+                                          "input-group col-3 input-group-sm"
+                                      },
+                                      [
+                                        _vm._m(4),
+                                        _vm._v(" "),
+                                        _c("input", {
+                                          directives: [
+                                            {
+                                              name: "model",
+                                              rawName: "v-model",
+                                              value: _vm.house,
+                                              expression: "house"
+                                            }
+                                          ],
+                                          staticClass: "form-control",
+                                          attrs: {
+                                            id: "address_house",
+                                            type: "text"
+                                          },
+                                          domProps: { value: _vm.house },
+                                          on: {
+                                            input: function($event) {
+                                              if ($event.target.composing) {
+                                                return
+                                              }
+                                              _vm.house = $event.target.value
+                                            }
+                                          }
+                                        })
+                                      ]
+                                    ),
+                                    _vm._v(" "),
+                                    _c(
+                                      "div",
+                                      {
+                                        staticClass:
+                                          "input-group col-3 input-group-sm"
+                                      },
+                                      [
+                                        _vm._m(5),
+                                        _vm._v(" "),
+                                        _c("input", {
+                                          directives: [
+                                            {
+                                              name: "model",
+                                              rawName: "v-model",
+                                              value: _vm.flat,
+                                              expression: "flat"
+                                            }
+                                          ],
+                                          staticClass: "form-control",
+                                          attrs: {
+                                            id: "address_flat",
+                                            type: "text"
+                                          },
+                                          domProps: { value: _vm.flat },
+                                          on: {
+                                            input: function($event) {
+                                              if ($event.target.composing) {
+                                                return
+                                              }
+                                              _vm.flat = $event.target.value
+                                            }
+                                          }
+                                        })
+                                      ]
+                                    )
+                                  ])
+                                ])
+                              : _vm._e()
+                          ]),
+                          _vm._v(" "),
+                          _c("div", { staticClass: "form-check" }, [
+                            _c("input", {
+                              directives: [
+                                {
+                                  name: "model",
+                                  rawName: "v-model",
+                                  value: _vm.shipping_method,
+                                  expression: "shipping_method"
+                                }
+                              ],
+                              key: "novaposhta",
+                              staticClass: "form-check-input",
+                              attrs: {
+                                type: "radio",
+                                id: "novaposhta",
+                                value: "novaposhta"
+                              },
+                              domProps: {
+                                checked: _vm._q(
+                                  _vm.shipping_method,
+                                  "novaposhta"
+                                )
+                              },
+                              on: {
+                                change: function($event) {
+                                  _vm.shipping_method = "novaposhta"
+                                }
+                              }
+                            }),
+                            _vm._v(" "),
+                            _c(
+                              "label",
+                              {
+                                staticClass: "form-check-label",
+                                attrs: { for: "novaposhta" }
+                              },
+                              [_vm._v("Самовивіз з Нової Пошти")]
+                            ),
+                            _vm._v(" "),
+                            _vm.shipping_method === "novaposhta"
+                              ? _c("div", { staticClass: "form-group" }, [
+                                  _c(
+                                    "label",
+                                    { attrs: { for: "warehouses" } },
+                                    [_vm._v("Виберіть відповідне відділення:")]
+                                  ),
+                                  _vm._v(" "),
+                                  _c(
+                                    "select",
+                                    {
+                                      directives: [
+                                        {
+                                          name: "model",
+                                          rawName: "v-model",
+                                          value: _vm.warehouse_code,
+                                          expression: "warehouse_code"
+                                        }
+                                      ],
+                                      staticClass:
+                                        "form-control form-control-sm",
+                                      attrs: { id: "warehouses" },
+                                      on: {
+                                        change: function($event) {
+                                          var $$selectedVal = Array.prototype.filter
+                                            .call(
+                                              $event.target.options,
+                                              function(o) {
+                                                return o.selected
+                                              }
+                                            )
+                                            .map(function(o) {
+                                              var val =
+                                                "_value" in o
+                                                  ? o._value
+                                                  : o.value
+                                              return val
+                                            })
+                                          _vm.warehouse_code = $event.target
+                                            .multiple
+                                            ? $$selectedVal
+                                            : $$selectedVal[0]
+                                        }
+                                      }
+                                    },
+                                    _vm._l(_vm.warehouses, function(house) {
+                                      return _c(
+                                        "option",
+                                        { domProps: { value: house.code } },
+                                        [
+                                          _vm._v(
+                                            "\n                                                " +
+                                              _vm._s(house.title) +
+                                              "\n                                            "
+                                          )
+                                        ]
+                                      )
+                                    }),
+                                    0
+                                  )
+                                ])
+                              : _vm._e()
+                          ]),
+                          _vm._v(" "),
+                          _c(
+                            "div",
+                            { staticClass: "text-danger mt-2 text-small" },
+                            [
+                              _vm.errors.form_shipping_method.required
+                                ? _c("div", [
+                                    _vm._v("Виберіть спосіб доставки товару")
+                                  ])
+                                : _vm._e(),
+                              _vm._v(" "),
+                              _vm.errors.form_street.required
+                                ? _c("div", [
+                                    _vm._v("Вкажіть вулицю для доставки")
+                                  ])
+                                : _vm._e(),
+                              _vm._v(" "),
+                              _vm.errors.form_house.required
+                                ? _c("div", [
+                                    _vm._v("Вкажіть будинок для доставки")
+                                  ])
+                                : _vm._e(),
+                              _vm._v(" "),
+                              _vm.errors.form_flat.required
+                                ? _c("div", [
+                                    _vm._v("Вкажіть квартиру для доставки")
+                                  ])
+                                : _vm._e(),
+                              _vm._v(" "),
+                              _vm.errors.form_warehouse_code.required
+                                ? _c("div", [
+                                    _vm._v("Вкажіть відділення для доставки")
+                                  ])
+                                : _vm._e()
+                            ]
+                          )
+                        ])
+                      ])
+                    ]
+                  ),
+                  _vm._v(" "),
+                  _c(
+                    "fieldset",
+                    {
+                      staticClass: "form-group",
+                      style: _vm.selected === false ? "opacity:0.5;" : ""
+                    },
+                    [
+                      _c("div", { staticClass: "row" }, [
+                        _c(
+                          "legend",
+                          { staticClass: "col-form-label col-sm-3 pt-0" },
+                          [_vm._v("Спосіб оплати")]
+                        ),
+                        _vm._v(" "),
+                        _c("div", { staticClass: "col-sm-9" }, [
+                          _c("div", { staticClass: "form-check" }, [
+                            _c("input", {
+                              directives: [
+                                {
+                                  name: "model",
+                                  rawName: "v-model",
+                                  value: _vm.payment_method,
+                                  expression: "payment_method"
+                                }
+                              ],
+                              staticClass: "form-check-input",
+                              attrs: {
+                                type: "radio",
+                                id: "pay_method_first",
+                                value: "receipt"
+                              },
+                              domProps: {
+                                checked: _vm._q(_vm.payment_method, "receipt")
+                              },
+                              on: {
+                                change: function($event) {
+                                  _vm.payment_method = "receipt"
+                                }
+                              }
+                            }),
+                            _vm._v(" "),
+                            _c(
+                              "label",
+                              {
+                                staticClass: "form-check-label",
+                                attrs: { for: "pay_method_first" }
+                              },
+                              [
+                                _vm._v(
+                                  "Оплата при отриманні\n                                        замовлення"
+                                )
+                              ]
+                            )
+                          ]),
+                          _vm._v(" "),
+                          _c("div", { staticClass: "form-check" }, [
+                            _c("input", {
+                              directives: [
+                                {
+                                  name: "model",
+                                  rawName: "v-model",
+                                  value: _vm.payment_method,
+                                  expression: "payment_method"
+                                }
+                              ],
+                              staticClass: "form-check-input",
+                              attrs: {
+                                type: "radio",
+                                id: "pay_method_second",
+                                value: "google-pay"
+                              },
+                              domProps: {
+                                checked: _vm._q(
+                                  _vm.payment_method,
+                                  "google-pay"
+                                )
+                              },
+                              on: {
+                                change: function($event) {
+                                  _vm.payment_method = "google-pay"
+                                }
+                              }
+                            }),
+                            _vm._v(" "),
+                            _c(
+                              "label",
+                              {
+                                staticClass: "form-check-label",
+                                attrs: { for: "pay_method_second" }
+                              },
+                              [_vm._v("Google Pay")]
+                            )
+                          ]),
+                          _vm._v(" "),
+                          _c("div", { staticClass: "form-check" }, [
+                            _c("input", {
+                              directives: [
+                                {
+                                  name: "model",
+                                  rawName: "v-model",
+                                  value: _vm.payment_method,
+                                  expression: "payment_method"
+                                }
+                              ],
+                              staticClass: "form-check-input",
+                              attrs: {
+                                type: "radio",
+                                id: "pay_method_thirty",
+                                value: "card"
+                              },
+                              domProps: {
+                                checked: _vm._q(_vm.payment_method, "card")
+                              },
+                              on: {
+                                change: function($event) {
+                                  _vm.payment_method = "card"
+                                }
+                              }
+                            }),
+                            _vm._v(" "),
+                            _c(
+                              "label",
+                              {
+                                staticClass: "form-check-label",
+                                attrs: { for: "pay_method_thirty" }
+                              },
+                              [
+                                _vm._v(
+                                  "Оплатити зараз карткою\n                                        Visa/Mastercard"
+                                )
+                              ]
+                            )
+                          ]),
+                          _vm._v(" "),
+                          _c(
+                            "div",
+                            { staticClass: "text-danger mt-2 text-small" },
+                            [
+                              _vm.errors.form_payment_method.required
+                                ? _c("div", [
+                                    _vm._v(
+                                      _vm._s(_vm.validate_messages.require)
+                                    )
+                                  ])
+                                : _vm._e()
+                            ]
+                          )
+                        ])
+                      ])
+                    ]
+                  ),
+                  _vm._v(" "),
+                  _c(
+                    "div",
+                    {
+                      staticClass: "row form-group",
+                      style: _vm.selected === false ? "opacity:0.5;" : ""
+                    },
+                    [
+                      _c(
+                        "label",
+                        {
+                          staticClass: "col-sm-3 col-form-label",
+                          attrs: { for: "comment" }
+                        },
+                        [_vm._v("Коментар")]
+                      ),
+                      _vm._v(" "),
+                      _c("div", { staticClass: "col-sm-9" }, [
+                        _c("textarea", {
+                          directives: [
+                            {
+                              name: "model",
+                              rawName: "v-model",
+                              value: _vm.comment,
+                              expression: "comment"
+                            }
+                          ],
+                          staticClass: "form-control",
+                          attrs: { id: "comment", cols: "30", rows: "5" },
+                          domProps: { value: _vm.comment },
+                          on: {
+                            input: function($event) {
+                              if ($event.target.composing) {
+                                return
+                              }
+                              _vm.comment = $event.target.value
+                            }
+                          }
+                        })
+                      ])
+                    ]
+                  )
+                ])
+              : _vm._e(),
+            _vm._v(" "),
             _c(
               "button",
               {
@@ -40391,6 +41322,7 @@ var render = function() {
                 attrs: { type: "button" },
                 on: {
                   click: function($event) {
+                    $event.preventDefault()
                     return _vm.nextSteep()
                   }
                 }
@@ -40399,206 +41331,63 @@ var render = function() {
             )
           ])
         ])
-      : _vm._e(),
-    _vm._v(" "),
-    _vm.next_steep || _vm.if_user_auth
-      ? _c("div", [
-          _c("h3", [_vm._v("Вибір способів доставки й оплати")]),
+      ]),
+      _vm._v(" "),
+      _c("div", { staticClass: "col-lg-6 col-md-6" }, [
+        _c("div", { staticClass: "your-order" }, [
+          _c("h3", [_vm._v("Ваше замовлення")]),
           _vm._v(" "),
-          _c("div", { staticClass: "form-group row" }, [
-            _vm._m(2),
-            _vm._v(" "),
-            _c(
-              "div",
-              { staticClass: "col-sm-9" },
-              [
-                _c(
-                  "v-select",
-                  {
-                    attrs: {
-                      label: "name",
-                      filterable: false,
-                      options: _vm.options
-                    },
-                    on: { search: _vm.onSearch, input: _vm.setSelected },
-                    scopedSlots: _vm._u(
-                      [
-                        {
-                          key: "option",
-                          fn: function(option) {
-                            return [
-                              _c("div", { staticClass: "d-center" }, [
-                                _vm._v(
-                                  "\n                            " +
-                                    _vm._s(option.description) +
-                                    "\n                        "
-                                )
-                              ])
-                            ]
-                          }
-                        },
-                        {
-                          key: "selected-option",
-                          fn: function(option) {
-                            return [
-                              _c("div", { staticClass: "selected d-center" }, [
-                                _vm._v(
-                                  "\n                            " +
-                                    _vm._s(option.description) +
-                                    "\n                        "
-                                )
-                              ])
-                            ]
-                          }
-                        }
-                      ],
-                      null,
-                      false,
-                      524084356
-                    )
-                  },
-                  [
-                    _c("template", { slot: "no-options" }, [
+          _c("div", { staticClass: "your-order-table table-responsive" }, [
+            _c("table", [
+              _vm._m(6),
+              _vm._v(" "),
+              _c(
+                "tbody",
+                _vm._l(_vm.localStorage.basket_list, function(order) {
+                  return _c("tr", { staticClass: "cart_item" }, [
+                    _c("td", { staticClass: "product-name" }, [
                       _vm._v(
-                        "\n                        Введіть назву населеного пункту для доставки\n                    "
-                      )
+                        "\n                            " +
+                          _vm._s(order.title) +
+                          " "
+                      ),
+                      _c("strong", { staticClass: "product-quantity" }, [
+                        _vm._v(" × " + _vm._s(order.count))
+                      ])
+                    ]),
+                    _vm._v(" "),
+                    _c("td", { staticClass: "product-total" }, [
+                      _c("span", { staticClass: "amount" }, [
+                        _vm._v("£" + _vm._s(order.price))
+                      ])
                     ])
-                  ],
-                  2
-                )
-              ],
-              1
-            )
-          ]),
-          _vm._v(" "),
-          _c(
-            "fieldset",
-            {
-              staticClass: "form-group",
-              style: _vm.selected === false ? "opacity:0.5;" : ""
-            },
-            [
-              _c("div", { staticClass: "row" }, [
-                _c("legend", { staticClass: "col-form-label col-sm-3 pt-0" }, [
-                  _vm._v("Спосіб доставки")
-                ]),
-                _vm._v(" "),
-                _c("div", { staticClass: "col-sm-9" }, [
-                  _c("div", { staticClass: "form-check" }, [
-                    _c("input", {
-                      directives: [
-                        {
-                          name: "model",
-                          rawName: "v-model",
-                          value: _vm.type_delivery,
-                          expression: "type_delivery"
-                        }
-                      ],
-                      key: "Courier",
-                      staticClass: "form-check-input",
-                      attrs: {
-                        type: "radio",
-                        name: "type_delivery",
-                        id: "gridRadios1",
-                        value: "Courier"
-                      },
-                      domProps: {
-                        checked: _vm._q(_vm.type_delivery, "Courier")
-                      },
-                      on: {
-                        change: function($event) {
-                          _vm.type_delivery = "Courier"
-                        }
-                      }
-                    }),
-                    _vm._v(" "),
-                    _c(
-                      "label",
-                      {
-                        staticClass: "form-check-label",
-                        attrs: { for: "gridRadios1" }
-                      },
-                      [_vm._v("Кур'єр на вашу адресу")]
-                    )
-                  ]),
+                  ])
+                }),
+                0
+              ),
+              _vm._v(" "),
+              _c("tfoot", [
+                _c("tr", { staticClass: "order-total" }, [
+                  _c("th", [_vm._v("Всього замовлено:")]),
                   _vm._v(" "),
-                  _c("div", { staticClass: "form-check" }, [
-                    _c("input", {
-                      directives: [
-                        {
-                          name: "model",
-                          rawName: "v-model",
-                          value: _vm.type_delivery,
-                          expression: "type_delivery"
-                        }
-                      ],
-                      key: "Pickup",
-                      staticClass: "form-check-input",
-                      attrs: {
-                        type: "radio",
-                        name: "type_delivery",
-                        id: "gridRadios2",
-                        value: "Pickup"
-                      },
-                      domProps: {
-                        checked: _vm._q(_vm.type_delivery, "Pickup")
-                      },
-                      on: {
-                        change: function($event) {
-                          _vm.type_delivery = "Pickup"
-                        }
-                      }
-                    }),
-                    _vm._v(" "),
-                    _c(
-                      "label",
-                      {
-                        staticClass: "form-check-label",
-                        attrs: { for: "gridRadios2" }
-                      },
-                      [_vm._v("Самовивіз з Нової Пошти")]
-                    ),
-                    _vm._v(" "),
-                    _vm.show_list
-                      ? _c("div", { staticClass: "form-group" }, [
-                          _c("label", { attrs: { for: "warehouses" } }, [
-                            _vm._v("Виберіть відповідне відділення:")
-                          ]),
-                          _vm._v(" "),
-                          _c(
-                            "select",
-                            {
-                              staticClass: "form-control form-control-sm",
-                              attrs: { name: "warehouse", id: "warehouses" }
-                            },
-                            _vm._l(_vm.warehouses, function(house) {
-                              return _c(
-                                "option",
-                                { domProps: { value: house.code } },
-                                [_vm._v(_vm._s(house.title))]
-                              )
-                            }),
-                            0
-                          )
-                        ])
-                      : _vm._e()
+                  _c("td", [
+                    _c("strong", [
+                      _c("span", { staticClass: "amount" }, [
+                        _vm._v("£" + _vm._s(_vm.localStorage.basket_list_sum))
+                      ])
+                    ])
                   ])
                 ])
               ])
-            ]
-          ),
+            ])
+          ]),
           _vm._v(" "),
-          _c(
-            "fieldset",
-            {
-              staticClass: "form-group",
-              style: _vm.selected === false ? "opacity:0.5;" : ""
-            },
-            [_vm._m(3)]
-          )
+          _vm._m(7)
         ])
-      : _vm._e()
-  ])
+      ])
+    ],
+    2
+  )
 }
 var staticRenderFns = [
   function() {
@@ -40620,7 +41409,7 @@ var staticRenderFns = [
           _c("div", { staticClass: "coupon-info" }, [
             _c("p", { staticClass: "coupon-text" }, [
               _vm._v(
-                "Quisque gravida turpis sit amet nulla posuere lacinia. Cras sed est sit\n                        amet\n                        ipsum luctus."
+                "Quisque gravida turpis sit amet nulla posuere lacinia. Cras\n                                    sed est\n                                    sit\n                                    amet\n                                    ipsum luctus."
               )
             ]),
             _vm._v(" "),
@@ -40649,7 +41438,7 @@ var staticRenderFns = [
                 _c("label", [
                   _c("input", { attrs: { type: "checkbox" } }),
                   _vm._v(
-                    "\n                                Remember me\n                            "
+                    "\n                                            Remember me\n                                        "
                   )
                 ])
               ]),
@@ -40719,83 +41508,57 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c(
-      "label",
-      { staticClass: "col-sm-3 col-form-label", attrs: { for: "inputCity" } },
-      [_vm._v("Місто "), _c("span", { staticClass: "required" }, [_vm._v("*")])]
-    )
+    return _c("label", { staticClass: "col-sm-3 col-form-label" }, [
+      _vm._v("Місто "),
+      _c("span", { staticClass: "required" }, [_vm._v("*")])
+    ])
   },
   function() {
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "row" }, [
-      _c("legend", { staticClass: "col-form-label col-sm-3 pt-0" }, [
-        _vm._v("Спосіб доставки")
-      ]),
-      _vm._v(" "),
-      _c("div", { staticClass: "col-sm-9" }, [
-        _c("div", { staticClass: "form-check" }, [
-          _c("input", {
-            staticClass: "form-check-input",
-            attrs: {
-              type: "radio",
-              id: "pay_method_first",
-              name: "pay_method",
-              value: "on_place"
-            }
-          }),
-          _vm._v(" "),
-          _c(
-            "label",
-            {
-              staticClass: "form-check-label",
-              attrs: { for: "pay_method_first" }
-            },
-            [_vm._v("Оплата при отриманні замовлення")]
-          )
-        ]),
+    return _c("div", { staticClass: "input-group-prepend" }, [
+      _c("div", { staticClass: "input-group-text" }, [_vm._v("вул.")])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "input-group-prepend" }, [
+      _c("div", { staticClass: "input-group-text" }, [_vm._v("буд.")])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "input-group-prepend" }, [
+      _c("div", { staticClass: "input-group-text" }, [_vm._v("кв.")])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("thead", [
+      _c("tr", [
+        _c("th", { staticClass: "product-name" }, [_vm._v("Продукт")]),
         _vm._v(" "),
-        _c("div", { staticClass: "form-check" }, [
+        _c("th", { staticClass: "product-total" }, [_vm._v("Всього")])
+      ])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "payment-method" }, [
+      _c("div", { staticClass: "payment-accordion" }, [
+        _c("div", { staticClass: "order-button-payment" }, [
           _c("input", {
-            staticClass: "form-check-input",
-            attrs: {
-              type: "radio",
-              id: "pay_method_second",
-              name: "pay_method",
-              value: "google_pay"
-            }
-          }),
-          _vm._v(" "),
-          _c(
-            "label",
-            {
-              staticClass: "form-check-label",
-              attrs: { for: "pay_method_second" }
-            },
-            [_vm._v("Google Pay")]
-          )
-        ]),
-        _vm._v(" "),
-        _c("div", { staticClass: "form-check" }, [
-          _c("input", {
-            staticClass: "form-check-input",
-            attrs: {
-              type: "radio",
-              id: "pay_method_thirty",
-              name: "pay_method",
-              value: "credit_card"
-            }
-          }),
-          _vm._v(" "),
-          _c(
-            "label",
-            {
-              staticClass: "form-check-label",
-              attrs: { for: "pay_method_thirty" }
-            },
-            [_vm._v("Оплатити зараз карткою Visa/Mastercard")]
-          )
+            attrs: { type: "submit", name: "s", value: "Place order" }
+          })
         ])
       ])
     ])

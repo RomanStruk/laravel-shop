@@ -33,21 +33,13 @@
                     </ul>
                 </div>
             @endif
-            <form action="{{ route('checkout') }}" method="post" class="form-row">
-                @csrf
-                <div class="col-lg-6 col-md-6">
                     @auth
-                        <check-out-form-main :if_user_auth="true"></check-out-form-main>
+                        <check-out-form-main :if_user_auth="true" action="{{route('checkout')}}"></check-out-form-main>
                     @endauth
 
                     @guest
                         <check-out-form-main :if_user_auth="false"></check-out-form-main>
                     @endguest
-                </div>
-                <div class="col-lg-6 col-md-6">
-                    <your-order-component></your-order-component>
-                </div>
-            </form>
         </div>
     </div>
     <!-- checkout-area end -->

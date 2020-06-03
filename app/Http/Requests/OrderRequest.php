@@ -58,7 +58,7 @@ class OrderRequest extends FormRequest
             'city_code'  => ['required', 'string', new ShippingCityRule],
 
             'street'    => 'required_if:shipping_method,courier|nullable|string',
-            'house'     => 'required_if:shipping_method,courier|nullable|numeric',
+            'house'     => 'required_if:shipping_method,courier|nullable|string',
             'flat'      => 'required_if:shipping_method,courier|nullable|numeric',
 
             'warehouse_code' => ['required_if:shipping_method,novaposhta', 'nullable', 'string'],
