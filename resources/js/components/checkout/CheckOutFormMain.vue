@@ -1,17 +1,17 @@
 <template>
     <form :action="action" method="post" class="form-row" @submit.prevent="checkValidation()">
         <input type="hidden" name="_token" :value="csrf">
-        <input type="hidden" name="city" :value="form_city_code">
+        <input type="hidden" name="city" :value="city_code">
         <template v-for="order in localStorage.basket_list">
             <input type="hidden" v-bind:name="'products['+order.id+'][id]'" :value="order.id"/>
             <input type="hidden" v-bind:name="'products['+order.id+'][count]'" :value="order.count"/>
         </template>
-        <input type="hidden" name="shipping_method" v-bind:value="form_shipping_method">
-        <input type="hidden" name="warehouse_code" v-bind:value="form_warehouse_code"
-               v-if="form_shipping_method === 'novaposhta'">
-        <input type="hidden" name="street" v-bind:value="form_street" v-if="form_shipping_method === 'courier'">
-        <input type="hidden" name="house" v-bind:value="form_house" v-if="form_shipping_method === 'courier'">
-        <input type="hidden" name="flat" v-bind:value="form_flat" v-if="form_shipping_method === 'courier'">
+        <input type="hidden" name="shipping_method" v-bind:value="shipping_method">
+        <input type="hidden" name="warehouse_code" v-bind:value="warehouse_code"
+               v-if="shipping_method === 'novaposhta'">
+        <input type="hidden" name="street" v-bind:value="street" v-if="shipping_method === 'courier'">
+        <input type="hidden" name="house" v-bind:value="house" v-if="shipping_method === 'courier'">
+        <input type="hidden" name="flat" v-bind:value="flat" v-if="shipping_method === 'courier'">
         <div class="col-lg-6 col-md-6">
             <div class="card card-primary">
                 <div class="card-body">
@@ -98,23 +98,24 @@
                                         </div>
                                     </template>
                                 </v-select>
-                                <div class="text-danger mt-2 text-small">
-                                    <div v-if="errors.form_city_code.required">{{validate_messages.require}}</div>
-                                </div>
+
+                                <div :style="{'display': $v.city_code.$error?'block':'none'}" class="invalid-feedback" v-if="!$v.city_code.required">Поле обовязкове до заповнення!</div>
                             </div>
                         </div>
                         <!--Shipping-->
-                        <fieldset class="form-group border-bottom" :style="selected === false ? 'opacity:0.5;' : ''">
+                        <fieldset class="form-group border-bottom" > <!-- :style="selected === false ? 'opacity:0.5;' : ''"-->
                             <div class="row">
                                 <legend class="col-form-label col-sm-3 pt-0">Спосіб доставки</legend>
                                 <div class="col-sm-9">
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="radio" id="gridRadios1"
+                                    <div class="custom-control custom-radio">
+                                        <input class="custom-control-input" type="radio" id="gridRadios1"
                                                value="courier"
                                                v-model="shipping_method"
                                                :key="'courier'"
+                                               @blur="$v.shipping_method.$touch()"
+                                               :class="{'is-invalid': $v.shipping_method.$error}"
                                         >
-                                        <label class="form-check-label" for="gridRadios1">Кур'єр на вашу адресу</label>
+                                        <label class="custom-control-label" for="gridRadios1">Кур'єр на вашу адресу</label>
                                         <div class="form-group" v-if="shipping_method === 'courier'">
                                             <label>Адрес</label>
                                             <div class="form-row">
@@ -122,48 +123,65 @@
                                                     <div class="input-group-prepend">
                                                         <div class="input-group-text">вул.</div>
                                                     </div>
-                                                    <input v-model="street" type="text" class="form-control"
-                                                           id="address_street">
+                                                    <input type="text" class="form-control"
+                                                           id="address_street"
+                                                           v-model="street"
+                                                           @blur="$v.street.$touch()"
+                                                           :class="{'is-invalid': $v.street.$error}"
+                                                    >
                                                 </div>
                                                 <div class="input-group col-3 input-group-sm">
                                                     <div class="input-group-prepend">
                                                         <div class="input-group-text">буд.</div>
                                                     </div>
                                                     <input v-model="house" id="address_house" type="text"
-                                                           class="form-control">
+                                                           class="form-control"
+                                                           @blur="$v.house.$touch()"
+                                                           :class="{'is-invalid': $v.house.$error}"
+                                                    >
                                                 </div>
                                                 <div class="input-group col-3 input-group-sm">
                                                     <div class="input-group-prepend">
                                                         <div class="input-group-text">кв.</div>
                                                     </div>
                                                     <input v-model="flat" id="address_flat" type="text"
-                                                           class="form-control">
+                                                           class="form-control"
+                                                           @blur="$v.flat.$touch()"
+                                                           :class="{'is-invalid': $v.flat.$error}"
+                                                    >
                                                 </div>
                                             </div>
+                                            <div :style="{'display': $v.street.$error?'block':'none'}" v-if="!$v.street.required" class="invalid-feedback" >Вкажіть вулицю для доставки</div>
+                                            <div :style="{'display': $v.house.$error?'block':'none'}" class="invalid-feedback" v-if="!$v.house.required">Вкажіть будинок для доставки</div>
+                                            <div :style="{'display': $v.flat.$error?'block':'none'}" class="invalid-feedback" v-if="!$v.flat.required">Вкажіть квартиру для доставки</div>
                                         </div>
                                     </div>
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="radio" id="novaposhta"
+                                    <div class="custom-control custom-radio">
+                                        <input class="custom-control-input "
+                                               type="radio"
+                                               id="novaposhta"
                                                value="novaposhta"
                                                v-model="shipping_method"
-                                               :key="'novaposhta'">
-                                        <label class="form-check-label" for="novaposhta">Самовивіз з Нової Пошти</label>
+                                               :key="'novaposhta'"
+                                               @blur="$v.shipping_method.$touch()"
+                                               :class="{'is-invalid': $v.shipping_method.$error}"
+                                        >
+                                        <label class="custom-control-label" for="novaposhta">Самовивіз з Нової Пошти</label>
                                         <div class="form-group" v-if="shipping_method === 'novaposhta'">
                                             <label for="warehouses">Виберіть відповідне відділення:</label>
-                                            <select v-model="warehouse_code" class="form-control form-control-sm"
-                                                    id="warehouses">
-                                                <option v-for="house in warehouses" :value="house.code">
-                                                    {{house.title}}
-                                                </option>
+                                            <select class="custom-select custom-select-sm"
+                                                    id="warehouses"
+                                                    v-model="warehouse_code"
+                                                    @blur="$v.warehouse_code.$touch()"
+                                                    v-bind:class="{'is-invalid': $v.warehouse_code.$error}"
+                                            >
+                                                <option v-for="house in warehouses" :value="house.code">{{house.title}}</option>
+                                                <option disabled>Нема мого відділення</option>
                                             </select>
+                                            <div class="invalid-feedback" v-if="!$v.warehouse_code.required">Вкажіть відділення для доставки!</div>
                                         </div>
-                                    </div>
-                                    <div class="text-danger mt-2 text-small">
-                                        <div v-if="errors.form_shipping_method.required">Виберіть спосіб доставки товару</div>
-                                        <div v-if="errors.form_street.required">Вкажіть вулицю для доставки</div>
-                                        <div v-if="errors.form_house.required">Вкажіть будинок для доставки</div>
-                                        <div v-if="errors.form_flat.required">Вкажіть квартиру для доставки</div>
-                                        <div v-if="errors.form_warehouse_code.required">Вкажіть відділення для доставки</div>
+                                        <div class="invalid-feedback" v-if="!$v.shipping_method.required">Поле обовязкове до заповнення!</div>
+                                        <div class="invalid-feedback" v-if="!$v.shipping_method.mustBeCool" >Виберіть один з доступних способів доставки</div>
                                     </div>
                                 </div>
                             </div>
@@ -173,29 +191,40 @@
                             <div class="row">
                                 <legend class="col-form-label col-sm-3 pt-0">Спосіб оплати</legend>
                                 <div class="col-sm-9">
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="radio" id="pay_method_first"
+                                    <div class="custom-control custom-radio">
+                                        <input class="custom-control-input" type="radio" id="pay_method_first"
                                                v-model="payment_method"
-                                               value="receipt">
-                                        <label class="form-check-label" for="pay_method_first">Оплата при отриманні
+                                               value="receipt"
+                                               @blur="$v.payment_method.$touch()"
+                                               :class="{'is-invalid': $v.payment_method.$error}"
+                                        >
+                                        <label class="custom-control-label" for="pay_method_first">Оплата при отриманні
                                             замовлення</label>
                                     </div>
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="radio" id="pay_method_second"
+                                    <div class="custom-control custom-radio">
+                                        <input class="custom-control-input"
+                                               id="pay_method_second"
+                                               type="radio"
+                                               value="google-pay"
                                                v-model="payment_method"
-                                               value="google-pay">
-                                        <label class="form-check-label" for="pay_method_second">Google Pay</label>
+                                               @blur="$v.payment_method.$touch()"
+                                               :class="{'is-invalid': $v.payment_method.$error}"
+                                        >
+                                        <label class="custom-control-label" for="pay_method_second">Google Pay</label>
                                     </div>
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="radio" id="pay_method_thirty"
+                                    <div class="custom-control custom-radio">
+                                        <input class="custom-control-input"
+                                               id="pay_method_thirty"
+                                               type="radio"
+                                               value="card"
                                                v-model="payment_method"
-                                               value="card">
-                                        <label class="form-check-label" for="pay_method_thirty">Оплатити зараз карткою
+                                               @blur="$v.payment_method.$touch()"
+                                               :class="{'is-invalid': $v.payment_method.$error}"
+                                        >
+                                        <label class="custom-control-label" for="pay_method_thirty">Оплатити зараз карткою
                                             Visa/Mastercard</label>
                                     </div>
-                                    <div class="text-danger mt-2 text-small">
-                                        <div v-if="errors.form_payment_method.required">{{validate_messages.require}}</div>
-                                    </div>
+                                    <div :style="{'display': $v.payment_method.$error?'block':'none'}" class="invalid-feedback" v-if="!$v.payment_method.mustBePayment" >Виберіть один з доступних способів оплати</div>
                                 </div>
                             </div>
                         </fieldset>
@@ -254,33 +283,22 @@
 </template>
 
 <script>
+    import { required, requiredIf } from 'vuelidate/lib/validators';
+    const mustBeMethod = (value) => (value === 'courier') || (value ===  'novaposhta');
+    const mustBePayment = (value) => (value === 'receipt') || (value ===  'google-pay') || (value ===  'card');
+
     export default {
         data() {
             return {
-                options: [],
+                options: [],        // варіанти з пошуку міст
+                city: {},           // вибране місто
+                selected: false,    // чи вибране місто
 
-                city: {},
-
-                warehouses: {},
+                warehouses: {},     // доступні відділення для міста
 
                 is_refresh: false,
-                selected: false,
-                next_steep: 1,
+                next_steep: 1,      // крок
 
-                validate_messages: {
-                    'require': 'Поле обовязкове до заповнення!',
-                },
-                errors: {
-                    form_city_code: {},
-                    form_comment: {},
-                    form_shipping_method: {},
-                    form_street:{},
-                    form_house:{},
-                    form_flat:{},
-                    form_warehouse_code:{},
-                    form_payment_method:{}
-
-                },
 
                 csrf: document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
 
@@ -295,127 +313,52 @@
                 flat: '',               // квартира
                 warehouse_code: '',     // код відділення
 
-                // form data for send
-                form_city_code: '',
-
-                form_products: [],
-                form_shipping_method: '',
-                form_comment: '',
-
-                form_street: '',
-                form_house: '',
-                form_flat: '',
-                form_warehouse_code: '',
-
-                form_payment_method: ''
-
             }
+        },
+        validations: {
+            city_code : {
+                required,
+            },
+            shipping_method: {
+                required,
+                mustBeMethod
+            },
+            payment_method:{
+                required,
+                mustBePayment
+            },
+            street: {
+                required: requiredIf(function (nestedModel) {
+                    // console.log(nestedModel);
+                    return this.shipping_method === 'courier'
+                })
+            },             // вулиця
+            house: {
+                required: requiredIf(function (nestedModel) {
+                    return this.shipping_method === 'courier'
+                })
+            },              // будинок
+            flat: {
+                required: requiredIf(function (nestedModel) {
+                    return this.shipping_method === 'courier'
+                })
+            },               // квартира
+            warehouse_code: {
+                required: requiredIf(function (nestedModel) {
+                    return this.shipping_method === 'novaposhta'
+                })
+            },     // код відділення
         },
         props: ['if_user_auth', 'action'],
-        watch: {
-            shipping_method: function () {
-                this.validate();
-                if (this.shipping_method === 'novaposhta') {
-                    this.loadWarehouses();
-                    this.form_shipping_method = 'novaposhta';
-                }
-                if (this.shipping_method === 'courier') {
-                    this.form_shipping_method = 'courier';
-                }
-            },
-            street:function () {
-                this.validate();
-            },
-            house:function () {
-                this.validate();
-            },
-            flat:function () {
-                this.validate();
-            },
-            city_code:function () {
-                this.validate();
-            },
-            warehouse_code:function () {
-                this.validate();
-            },
-            payment_method:function () {
-                this.validate();
-            }
-        },
+        watch: {},
         mounted() {
             if (this.if_user_auth) {
                 this.next_steep = 2;
             }
         },
         methods: {
-            validate() {
-                this.errors.form_city_code["required"] = false;
-                this.errors.form_shipping_method.required = false;
-                this.errors.form_street.required = false;
-                this.errors.form_house.required = false;
-                this.errors.form_flat.required = false;
-                this.errors.form_warehouse_code.required = false;
-                this.errors.form_payment_method.required = false;
-                // city
-                if (this.city_code === ''){
-                    this.errors.form_city_code["required"] = true;
-                    this.form_city_code = '';
-                }else {
-                    this.form_city_code = this.city_code;
-                }
-
-                // shipping_method
-                if ((this.shipping_method !== 'courier') && (this.shipping_method !==  'novaposhta')){
-                    this.errors.form_shipping_method.required = true;
-                    this.form_shipping_method = '';
-                }else {
-                    this.form_shipping_method = this.shipping_method;
-                }
-                if (this.shipping_method === 'courier'){
-                    if (this.street ===''){
-                        this.errors.form_street.required = true;
-                        this.form_street = '';
-                    }else {
-                        this.form_street = this.street;
-                    }
-                    if (this.house ===''){
-                        this.errors.form_house.required = true;
-                        this.form_house = '';
-                    }else {
-                        this.form_house = this.house;
-                    }
-                    if (this.flat ===''){
-                        this.errors.form_flat.required = true;
-                        this.form_flat = '';
-                    }else {
-                        this.form_flat = this.flat;
-                    }
-                }
-
-                if (this.shipping_method === 'novaposhta') {
-                    if (this.warehouse_code === '') {
-                        this.errors.form_warehouse_code.required = true;
-                        this.form_warehouse_code = '';
-                    } else {
-                        this.form_warehouse_code = this.warehouse_code;
-                    }
-                }
-                // comment
-                this.errors.form_comment["required"] = this.form_comment === '';
-
-                // payment_method
-                if ((this.payment_method !== 'receipt') && (this.payment_method !==  'google-pay') && (this.payment_method !==  'card')){
-                    this.errors.form_payment_method.required = true;
-                    this.form_payment_method = '';
-                }else {
-                    this.form_payment_method = this.payment_method;
-                }
-            },
             checkValidation(){
-                this.validate();
-                for ( let key in this.errors){
-                    console.log(key);
-                }
+
             },
             setSelected(value) {
                 if (value !== null) {
@@ -427,7 +370,8 @@
                     this.city = {};
                     this.city_code = '';
                 }
-
+                this.$v.city_code.$touch();
+                this.loadWarehouses();
             },
             onSearch(search, loading) {
                 if (search === '') return;
@@ -452,16 +396,10 @@
                     console.log(this.warehouses);
                 })
             },
-            change: function () {
-                this.description = '';
-                this.selected = false;
-            },
         }
     }
 </script>
 
 <style scoped>
-    .custom-cursor:hover {
-        cursor: pointer;
-    }
+
 </style>
