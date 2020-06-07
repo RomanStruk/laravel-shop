@@ -15,7 +15,6 @@
                 >
 
                     <td class="product-name">
-                        <input type="hidden" name="products[]" :value="order.id"/>
                         {{ order.title}} <strong class="product-quantity"> × {{ order.count}}</strong></td>
                     <td class="product-total"><span class="amount">£{{ order.price}}</span></td>
                 </tr>
@@ -28,32 +27,25 @@
                 </tfoot>
             </table>
         </div>
-        <div class="payment-method">
-            <div class="payment-accordion">
-                <div class="order-button-payment"><input type="submit" value="Place order"></div>
-            </div>
-        </div>
     </div>
 </template>
 
 <script>
     export default {
-        name: "YourOrderComponent",
+        name: "YourOrderProductsComponent",
         data() {
             return {
-
+                di:'sdsd'
             }
         },
         watch:{
 
         },
         mounted() {
-            console.log(this.localStorage.basket_list);
+            // console.log(this.localStorage.basket_list);
         },
         methods: {
-            c(){
 
-            }
         }
     }
 </script>

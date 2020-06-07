@@ -18,6 +18,15 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 });
 
 Route::group(['prefix' => 'v1'], function (){
+    //auth
+    Route::post('/login', 'Api\v1\AuthController@login');
+    Route::post('/fast-register', 'Api\v1\AuthController@fastRegister');
+    Route::get('/logout', 'Api\v1\AuthController@logout')->middleware(['auth:api']);
+
+    // order
+    Route::apiResource('order', 'Api\v1\OrderController')->middleware(['auth:api']);
+
+
     Route::get('/product/index', 'Api\v1\ProductController@index');
     Route::get('/product/search', 'Api\v1\ProductController@search');
     Route::get('/category/index', 'Api\v1\CategoryController@index');
@@ -27,6 +36,10 @@ Route::group(['prefix' => 'v1'], function (){
     Route::get('/shipping/address', 'Api\v1\ShippingController@listOfAddresses');
     Route::get('/shipping/city', 'Api\v1\ShippingController@listOfCities');
     Route::get('/search/shipping/city', 'Api\v1\SearchController@shippingCity');
+    // validate unique email
+    Route::get('/validate/email/{email}', 'Api\v1\ValidateController@email');
+
+
 
     //TODO токени авторизації
     Route::get('/dashboard/sales', 'Api\v1\DashboardController@sales')->middleware(['auth:api']);

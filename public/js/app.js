@@ -2548,73 +2548,10 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
-/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/YourOrderComponent.vue?vue&type=script&lang=js&":
-/*!*****************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/YourOrderComponent.vue?vue&type=script&lang=js& ***!
-  \*****************************************************************************************************************************************************************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-/* harmony default export */ __webpack_exports__["default"] = ({
-  name: "YourOrderComponent",
-  data: function data() {
-    return {};
-  },
-  watch: {},
-  mounted: function mounted() {
-    console.log(this.localStorage.basket_list);
-  },
-  methods: {
-    c: function c() {}
-  }
-});
-
-/***/ }),
-
-/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/checkout/CheckOutFormMain.vue?vue&type=script&lang=js&":
-/*!************************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/checkout/CheckOutFormMain.vue?vue&type=script&lang=js& ***!
-  \************************************************************************************************************************************************************************************/
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/auth/FastRegisterComponent.vue?vue&type=script&lang=js&":
+/*!*************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/auth/FastRegisterComponent.vue?vue&type=script&lang=js& ***!
+  \*************************************************************************************************************************************************************************************/
 /*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
@@ -2714,6 +2651,118 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+
+
+var mustBePhone = function mustBePhone(value) {
+  if (value === '') return true;
+  return Boolean(value.match(/^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/im));
+};
+
+var mustBeFullName = function mustBeFullName(value) {
+  if (value === '') return true;
+  return Boolean(value.match(/^[a-zA-Zа-яА-Я]{2,50} [a-zA-Zа-яА-Я]{2,50}$/));
+};
+
+var mustBeUniqueEmail = function mustBeUniqueEmail(value) {
+  if (value === '') return true;
+  return new Promise(function (resolve, reject) {
+    setTimeout(function () {
+      axios.get('/api/v1/validate/email/' + value).then(function (response) {
+        resolve(!response.data.exists);
+      })["catch"](function (error) {
+        resolve(true);
+      });
+    }, 1000);
+  });
+};
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+  name: "FastRegisterComponent",
+  data: function data() {
+    return {
+      //user
+      email: '',
+      phone: '',
+      full_name: '',
+      success: null,
+      error: null,
+      message: ''
+    };
+  },
+  validations: {
+    email: {
+      required: Object(vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_0__["requiredIf"])(function (value) {
+        return !this.loggedIn;
+      }),
+      email: vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_0__["email"],
+      unique: mustBeUniqueEmail
+    },
+    phone: {
+      required: Object(vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_0__["requiredIf"])(function (value) {
+        return !this.loggedIn;
+      }),
+      mustBePhone: mustBePhone
+    },
+    full_name: {
+      required: Object(vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_0__["requiredIf"])(function (value) {
+        return !this.loggedIn;
+      }),
+      mustBeFullName: mustBeFullName
+    }
+  },
+  computed: {
+    loggedIn: function loggedIn() {
+      return this.$store.getters.loggedIn;
+    }
+  },
+  methods: {
+    submit: function submit() {
+      var _this = this;
+
+      axios.post('/api/v1/fast-register', {
+        email: this.email,
+        full_name: this.full_name,
+        phone: this.phone
+      }).then(function (response) {
+        console.log(response); // debug
+
+        _this.success = true;
+        _this.error = false;
+        _this.message = 'Реєстрація пройшла успішно';
+
+        _this.$store.commit('retrieveUser', response.data);
+
+        localStorage.setItem('access_token', response.data.access_token);
+
+        _this.$store.commit('retrieveToken', response.data.access_token);
+
+        _this.$emit('registered', true); // подія
+
+      })["catch"](function (error) {
+        _this.success = false;
+        _this.error = true;
+        _this.message = 'Помилка реєстрації';
+
+        _this.$emit('registered', false); // подія
+
+
+        console.log(error); // debug error
+      });
+    }
+  }
+});
+
+/***/ }),
+
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/auth/LoginComponent.vue?vue&type=script&lang=js&":
+/*!******************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/auth/LoginComponent.vue?vue&type=script&lang=js& ***!
+  \******************************************************************************************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
 //
 //
 //
@@ -2757,6 +2806,60 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+/* harmony default export */ __webpack_exports__["default"] = ({
+  name: "LoginComponent",
+  data: function data() {
+    return {
+      //login
+      auth_email: '',
+      auth_password: '',
+      success: null,
+      error: null,
+      message: ''
+    };
+  },
+  methods: {
+    login: function login() {
+      var _this = this;
+
+      this.$store.dispatch('retrieveToken', {
+        email: this.auth_email,
+        password: this.auth_password
+      }).then(function (response) {
+        _this.success = true;
+        _this.error = false;
+        _this.message = 'Авторизація пройшла успішно';
+
+        _this.$emit('changeStatus', true); // подія
+
+      })["catch"](function (error) {
+        _this.success = false;
+        _this.error = true;
+        _this.message = 'Помилка авторизації';
+
+        _this.$emit('changeStatus', false); // подія
+
+      });
+    }
+  }
+});
+
+/***/ }),
+
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/checkout/CheckOutFormMain.vue?vue&type=script&lang=js&":
+/*!************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/checkout/CheckOutFormMain.vue?vue&type=script&lang=js& ***!
+  \************************************************************************************************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vuelidate/lib/validators */ "./node_modules/vuelidate/lib/validators/index.js");
+/* harmony import */ var vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _auth_LoginComponent__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../auth/LoginComponent */ "./resources/js/components/auth/LoginComponent.vue");
+/* harmony import */ var _YourOrderProductsComponent__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./YourOrderProductsComponent */ "./resources/js/components/checkout/YourOrderProductsComponent.vue");
+/* harmony import */ var _auth_FastRegisterComponent__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../auth/FastRegisterComponent */ "./resources/js/components/auth/FastRegisterComponent.vue");
 //
 //
 //
@@ -2906,6 +3009,83 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+
+
 
 
 var mustBeMethod = function mustBeMethod(value) {
@@ -2917,8 +3097,15 @@ var mustBePayment = function mustBePayment(value) {
 };
 
 /* harmony default export */ __webpack_exports__["default"] = ({
+  components: {
+    FastRegisterComponent: _auth_FastRegisterComponent__WEBPACK_IMPORTED_MODULE_3__["default"],
+    YourOrderProductsComponent: _YourOrderProductsComponent__WEBPACK_IMPORTED_MODULE_2__["default"],
+    LoginComponent: _auth_LoginComponent__WEBPACK_IMPORTED_MODULE_1__["default"]
+  },
   data: function data() {
     return {
+      //login
+      status_auth: false,
       options: [],
       // варіанти з пошуку міст
       city: {},
@@ -2931,7 +3118,11 @@ var mustBePayment = function mustBePayment(value) {
       next_steep: 1,
       // крок
       csrf: document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
-      //watch
+      //user
+      email: '',
+      full_name: '',
+      phone: '',
+      //order
       city_code: '',
       // код міста
       shipping_method: '',
@@ -2950,6 +3141,13 @@ var mustBePayment = function mustBePayment(value) {
 
     };
   },
+  mounted: function mounted() {
+    if (this.if_user_auth || this.loggedIn) {
+      this.status_auth = this.loggedIn;
+      this.next_steep = 2;
+    } // console.log(this.$store.state.basket_list)
+
+  },
   validations: {
     city_code: {
       required: vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_0__["required"]
@@ -2962,46 +3160,70 @@ var mustBePayment = function mustBePayment(value) {
       required: vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_0__["required"],
       mustBePayment: mustBePayment
     },
-    street: {
-      required: Object(vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_0__["requiredIf"])(function (nestedModel) {
-        // console.log(nestedModel);
-        return this.shipping_method === 'courier';
-      })
-    },
     // вулиця
-    house: {
-      required: Object(vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_0__["requiredIf"])(function (nestedModel) {
+    street: {
+      required: Object(vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_0__["requiredIf"])(function (value) {
         return this.shipping_method === 'courier';
       })
     },
     // будинок
-    flat: {
-      required: Object(vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_0__["requiredIf"])(function (nestedModel) {
+    house: {
+      required: Object(vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_0__["requiredIf"])(function (value) {
         return this.shipping_method === 'courier';
       })
     },
     // квартира
+    flat: {
+      required: Object(vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_0__["requiredIf"])(function (value) {
+        return this.shipping_method === 'courier';
+      })
+    },
+    // код відділення
     warehouse_code: {
       required: Object(vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_0__["requiredIf"])(function (nestedModel) {
         return this.shipping_method === 'novaposhta';
       })
-    } // код відділення
-
+    }
   },
   props: ['if_user_auth', 'action'],
   watch: {},
-  mounted: function mounted() {
-    if (this.if_user_auth) {
-      this.next_steep = 2;
+  computed: {
+    loggedIn: function loggedIn() {
+      return this.$store.getters.loggedIn;
     }
   },
   methods: {
-    checkValidation: function checkValidation() {},
+    login: function login(value) {
+      this.status_auth = value;
+      if (value) this.nextSteep();
+    },
+    formSubmit: function formSubmit() {
+      this.storeOrder();
+    },
+    storeOrder: function storeOrder() {
+      axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.token;
+      axios.post('/api/v1/order', {
+        comment: this.comment,
+        products: localStorage.basket_list,
+        method_pay: this.method_pay,
+        shipping_method: this.shipping_method,
+        city_code: this.city_code,
+        street: this.street,
+        house: this.house,
+        flat: this.flat,
+        warehouse_code: this.warehouse_code
+      }).then(function (response) {
+        console.log(response);
+      })["catch"](function (error) {
+        console.log(error); // debug error
+      });
+    },
     setSelected: function setSelected(value) {
       if (value !== null) {
         this.selected = true;
         this.city = value;
         this.city_code = value.id;
+        this.loadWarehouses();
       } else {
         this.selected = false;
         this.city = {};
@@ -3009,7 +3231,6 @@ var mustBePayment = function mustBePayment(value) {
       }
 
       this.$v.city_code.$touch();
-      this.loadWarehouses();
     },
     onSearch: function onSearch(search, loading) {
       if (search === '') return;
@@ -3032,7 +3253,6 @@ var mustBePayment = function mustBePayment(value) {
 
       axios.get('/api/v1/shipping/address?shipping_method=novaposhta&code=' + this.city.id).then(function (response) {
         _this.warehouses = response.data;
-        console.log(_this.warehouses);
       });
     }
   }
@@ -3126,6 +3346,62 @@ __webpack_require__.r(__webpack_exports__);
   mounted: function mounted() {
     console.log('CheckOutForm mounted.');
   }
+});
+
+/***/ }),
+
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/checkout/YourOrderProductsComponent.vue?vue&type=script&lang=js&":
+/*!**********************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/checkout/YourOrderProductsComponent.vue?vue&type=script&lang=js& ***!
+  \**********************************************************************************************************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+/* harmony default export */ __webpack_exports__["default"] = ({
+  name: "YourOrderProductsComponent",
+  data: function data() {
+    return {
+      di: 'sdsd'
+    };
+  },
+  watch: {},
+  mounted: function mounted() {// console.log(this.localStorage.basket_list);
+  },
+  methods: {}
 });
 
 /***/ }),
@@ -40428,10 +40704,10 @@ render._withStripped = true
 
 /***/ }),
 
-/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/YourOrderComponent.vue?vue&type=template&id=5cc89d0d&scoped=true&":
-/*!*********************************************************************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/YourOrderComponent.vue?vue&type=template&id=5cc89d0d&scoped=true& ***!
-  \*********************************************************************************************************************************************************************************************************************************/
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/auth/FastRegisterComponent.vue?vue&type=template&id=f7d64b3c&scoped=true&":
+/*!*****************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/auth/FastRegisterComponent.vue?vue&type=template&id=f7d64b3c&scoped=true& ***!
+  \*****************************************************************************************************************************************************************************************************************************************/
 /*! exports provided: render, staticRenderFns */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
@@ -40443,55 +40719,233 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("div", { staticClass: "your-order" }, [
-    _c("h3", [_vm._v("Ваше замовлення")]),
+  return _c("div", [
+    _c("h3", [_vm._v("Контактні дані")]),
     _vm._v(" "),
-    _c("div", { staticClass: "your-order-table table-responsive" }, [
-      _c("table", [
-        _vm._m(0),
-        _vm._v(" "),
-        _c(
-          "tbody",
-          _vm._l(_vm.localStorage.basket_list, function(order) {
-            return _c("tr", { staticClass: "cart_item" }, [
-              _c("td", { staticClass: "product-name" }, [
-                _c("input", {
-                  attrs: { type: "hidden", name: "products[]" },
-                  domProps: { value: order.id }
-                }),
-                _vm._v("\n                    " + _vm._s(order.title) + " "),
-                _c("strong", { staticClass: "product-quantity" }, [
-                  _vm._v(" × " + _vm._s(order.count))
-                ])
-              ]),
-              _vm._v(" "),
-              _c("td", { staticClass: "product-total" }, [
-                _c("span", { staticClass: "amount" }, [
-                  _vm._v("£" + _vm._s(order.price))
-                ])
-              ])
-            ])
-          }),
-          0
-        ),
-        _vm._v(" "),
-        _c("tfoot", [
-          _c("tr", { staticClass: "order-total" }, [
-            _c("th", [_vm._v("Всього замовлено:")]),
-            _vm._v(" "),
-            _c("td", [
-              _c("strong", [
-                _c("span", { staticClass: "amount" }, [
-                  _vm._v("£" + _vm._s(_vm.localStorage.basket_list_sum))
-                ])
-              ])
-            ])
-          ])
+    _vm.success === true
+      ? _c("div", { staticClass: "alert alert-success alert-dismissible" }, [
+          _c(
+            "button",
+            {
+              staticClass: "close",
+              attrs: {
+                type: "button",
+                "data-dismiss": "alert",
+                "aria-hidden": "true"
+              }
+            },
+            [_vm._v("×")]
+          ),
+          _vm._v(" "),
+          _c("h5", [_vm._v("Успіх!")]),
+          _vm._v("\n        " + _vm._s(_vm.message) + "\n    ")
         ])
-      ])
-    ]),
+      : _vm._e(),
     _vm._v(" "),
-    _vm._m(1)
+    _vm.error === true
+      ? _c("div", { staticClass: "alert alert-danger alert-dismissible" }, [
+          _c(
+            "button",
+            {
+              staticClass: "close",
+              attrs: {
+                type: "button",
+                "data-dismiss": "alert",
+                "aria-hidden": "true"
+              }
+            },
+            [_vm._v("×")]
+          ),
+          _vm._v(" "),
+          _c("h5", [_vm._v("Помилка!")]),
+          _vm._v(" "),
+          _c("ul", [_c("li", [_vm._v(_vm._s(_vm.message))])])
+        ])
+      : _vm._e(),
+    _vm._v(" "),
+    _c("div", { staticClass: "row" }, [
+      _c("div", { staticClass: "col-md-12" }, [
+        _c("div", { staticClass: "checkout-form-list" }, [
+          _vm._m(0),
+          _vm._v(" "),
+          _c("input", {
+            directives: [
+              {
+                name: "model",
+                rawName: "v-model",
+                value: _vm.full_name,
+                expression: "full_name"
+              }
+            ],
+            class: { "is-invalid": _vm.$v.full_name.$error },
+            attrs: {
+              id: "full_name",
+              name: "full_name",
+              type: "text",
+              placeholder: ""
+            },
+            domProps: { value: _vm.full_name },
+            on: {
+              blur: function($event) {
+                return _vm.$v.full_name.$touch()
+              },
+              input: function($event) {
+                if ($event.target.composing) {
+                  return
+                }
+                _vm.full_name = $event.target.value
+              }
+            }
+          }),
+          _vm._v(" "),
+          !_vm.$v.full_name.required
+            ? _c("div", { staticClass: "invalid-feedback" }, [
+                _vm._v(
+                  "Поле обов'язкове до\n                    заповнення\n                "
+                )
+              ])
+            : _vm._e(),
+          _vm._v(" "),
+          !_vm.$v.full_name.mustBeFullName
+            ? _c("div", { staticClass: "invalid-feedback" }, [
+                _vm._v(
+                  "Вкажіть Ваше\n                    Прізвище та Ім'я\n                "
+                )
+              ])
+            : _vm._e()
+        ])
+      ]),
+      _vm._v(" "),
+      _c("div", { staticClass: "col-md-12" }, [
+        _c("div", { staticClass: "checkout-form-list" }, [
+          _vm._m(1),
+          _vm._v(" "),
+          _c("input", {
+            directives: [
+              {
+                name: "model",
+                rawName: "v-model",
+                value: _vm.email,
+                expression: "email"
+              }
+            ],
+            staticClass: "form-control",
+            class: { "is-invalid": _vm.$v.email.$error },
+            attrs: {
+              id: "email",
+              name: "email",
+              type: "email",
+              placeholder: ""
+            },
+            domProps: { value: _vm.email },
+            on: {
+              blur: function($event) {
+                return _vm.$v.email.$touch()
+              },
+              input: function($event) {
+                if ($event.target.composing) {
+                  return
+                }
+                _vm.email = $event.target.value
+              }
+            }
+          }),
+          _vm._v(" "),
+          !_vm.$v.email.required
+            ? _c("div", { staticClass: "invalid-feedback" }, [
+                _vm._v(
+                  "Поле обов'язкове до\n                    заповнення\n                "
+                )
+              ])
+            : _vm._e(),
+          _vm._v(" "),
+          !_vm.$v.email.email
+            ? _c("div", { staticClass: "invalid-feedback" }, [
+                _vm._v(
+                  "Вкажіть правильну\n                    електронну пошту\n                "
+                )
+              ])
+            : _vm._e(),
+          _vm._v(" "),
+          !_vm.$v.email.unique
+            ? _c("div", { staticClass: "invalid-feedback" }, [
+                _vm._v(
+                  "Електронна пошта вже\n                    використовується\n                "
+                )
+              ])
+            : _vm._e()
+        ])
+      ]),
+      _vm._v(" "),
+      _c("div", { staticClass: "col-md-12" }, [
+        _c("div", { staticClass: "checkout-form-list mb-30" }, [
+          _vm._m(2),
+          _vm._v(" "),
+          _c("input", {
+            directives: [
+              {
+                name: "model",
+                rawName: "v-model",
+                value: _vm.phone,
+                expression: "phone"
+              }
+            ],
+            class: { "is-invalid": _vm.$v.phone.$error },
+            attrs: {
+              id: "phone",
+              name: "phone",
+              type: "text",
+              placeholder: ""
+            },
+            domProps: { value: _vm.phone },
+            on: {
+              blur: function($event) {
+                return _vm.$v.phone.$touch()
+              },
+              input: function($event) {
+                if ($event.target.composing) {
+                  return
+                }
+                _vm.phone = $event.target.value
+              }
+            }
+          }),
+          _vm._v(" "),
+          !_vm.$v.phone.required
+            ? _c("div", { staticClass: "invalid-feedback" }, [
+                _vm._v(
+                  "Поле обов'язкове до\n                    заповнення\n                "
+                )
+              ])
+            : _vm._e(),
+          _vm._v(" "),
+          !_vm.$v.phone.mustBePhone
+            ? _c("div", { staticClass: "invalid-feedback" }, [
+                _vm._v(
+                  "Вкажіть правильний\n                    номер телефону\n                "
+                )
+              ])
+            : _vm._e()
+        ])
+      ]),
+      _vm._v(" "),
+      _c("div", { staticClass: "col-md-12" }, [
+        _c(
+          "button",
+          {
+            staticClass: "btn btn-primary float-right",
+            attrs: { disabled: _vm.$v.$invalid },
+            on: {
+              click: function($event) {
+                $event.preventDefault()
+                return _vm.submit($event)
+              }
+            }
+          },
+          [_vm._v("Реєстрація")]
+        )
+      ])
+    ])
   ])
 }
 var staticRenderFns = [
@@ -40499,11 +40953,199 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("thead", [
-      _c("tr", [
-        _c("th", { staticClass: "product-name" }, [_vm._v("Продукт")]),
-        _vm._v(" "),
-        _c("th", { staticClass: "product-total" }, [_vm._v("Всього")])
+    return _c("label", { attrs: { for: "full_name" } }, [
+      _vm._v("Ім'я та прізвище "),
+      _c("span", { staticClass: "required" }, [_vm._v("*")])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("label", { attrs: { for: "email" } }, [
+      _vm._v("Ел. пошта"),
+      _c("span", { staticClass: "required" }, [_vm._v("*")])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("label", { attrs: { for: "phone" } }, [
+      _vm._v("Мобільний телефон "),
+      _c("span", { staticClass: "required" }, [_vm._v("*")])
+    ])
+  }
+]
+render._withStripped = true
+
+
+
+/***/ }),
+
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/auth/LoginComponent.vue?vue&type=template&id=5a228f80&scoped=true&":
+/*!**********************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/auth/LoginComponent.vue?vue&type=template&id=5a228f80&scoped=true& ***!
+  \**********************************************************************************************************************************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c("div", { staticClass: "coupon-accordion" }, [
+    _vm._m(0),
+    _vm._v(" "),
+    _c(
+      "div",
+      { staticClass: "coupon-content", attrs: { id: "checkout-login" } },
+      [
+        _c("div", { staticClass: "coupon-info" }, [
+          _vm.success === true
+            ? _c(
+                "div",
+                { staticClass: "alert alert-success alert-dismissible" },
+                [
+                  _c(
+                    "button",
+                    {
+                      staticClass: "close",
+                      attrs: {
+                        type: "button",
+                        "data-dismiss": "alert",
+                        "aria-hidden": "true"
+                      }
+                    },
+                    [_vm._v("×")]
+                  ),
+                  _vm._v(" "),
+                  _c("h5", [_vm._v("Успіх!")]),
+                  _vm._v(
+                    "\n                " +
+                      _vm._s(_vm.message) +
+                      "\n            "
+                  )
+                ]
+              )
+            : _vm._e(),
+          _vm._v(" "),
+          _vm.error === true
+            ? _c(
+                "div",
+                { staticClass: "alert alert-danger alert-dismissible" },
+                [
+                  _c(
+                    "button",
+                    {
+                      staticClass: "close",
+                      attrs: {
+                        type: "button",
+                        "data-dismiss": "alert",
+                        "aria-hidden": "true"
+                      }
+                    },
+                    [_vm._v("×")]
+                  ),
+                  _vm._v(" "),
+                  _c("h5", [_vm._v("Помилка!")]),
+                  _vm._v(" "),
+                  _c("ul", [_c("li", [_vm._v(_vm._s(_vm.message))])])
+                ]
+              )
+            : _vm._e(),
+          _vm._v(" "),
+          _c("p", { staticClass: "coupon-text" }, [
+            _vm._v(
+              "Quisque gravida turpis sit amet nulla posuere lacinia. Cras sed\n                est sitametipsum luctus."
+            )
+          ]),
+          _vm._v(" "),
+          _c(
+            "form",
+            {
+              attrs: { action: "/login", method: "post" },
+              on: {
+                submit: function($event) {
+                  $event.preventDefault()
+                  return _vm.login()
+                }
+              }
+            },
+            [
+              _c("p", { staticClass: "form-row-first" }, [
+                _vm._m(1),
+                _vm._v(" "),
+                _c("input", {
+                  directives: [
+                    {
+                      name: "model",
+                      rawName: "v-model",
+                      value: _vm.auth_email,
+                      expression: "auth_email"
+                    }
+                  ],
+                  attrs: { type: "text", name: "email" },
+                  domProps: { value: _vm.auth_email },
+                  on: {
+                    input: function($event) {
+                      if ($event.target.composing) {
+                        return
+                      }
+                      _vm.auth_email = $event.target.value
+                    }
+                  }
+                })
+              ]),
+              _vm._v(" "),
+              _c("p", { staticClass: "form-row-last" }, [
+                _vm._m(2),
+                _vm._v(" "),
+                _c("input", {
+                  directives: [
+                    {
+                      name: "model",
+                      rawName: "v-model",
+                      value: _vm.auth_password,
+                      expression: "auth_password"
+                    }
+                  ],
+                  attrs: { type: "password", name: "password" },
+                  domProps: { value: _vm.auth_password },
+                  on: {
+                    input: function($event) {
+                      if ($event.target.composing) {
+                        return
+                      }
+                      _vm.auth_password = $event.target.value
+                    }
+                  }
+                })
+              ]),
+              _vm._v(" "),
+              _vm._m(3),
+              _vm._v(" "),
+              _vm._m(4)
+            ]
+          )
+        ])
+      ]
+    )
+  ])
+}
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("h3", [
+      _vm._v("Returning customer? "),
+      _c("span", { attrs: { id: "showlogin" } }, [
+        _vm._v("Click here to login")
       ])
     ])
   },
@@ -40511,12 +41153,34 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "payment-method" }, [
-      _c("div", { staticClass: "payment-accordion" }, [
-        _c("div", { staticClass: "order-button-payment" }, [
-          _c("input", { attrs: { type: "submit", value: "Place order" } })
-        ])
-      ])
+    return _c("label", [
+      _vm._v("Username or email "),
+      _c("span", { staticClass: "required" }, [_vm._v("*")])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("label", [
+      _vm._v("Password "),
+      _c("span", { staticClass: "required" }, [_vm._v("*")])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("p", { staticClass: "form-row" }, [
+      _c("input", { attrs: { type: "submit", value: "Login" } })
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("p", { staticClass: "lost-password" }, [
+      _c("a", { attrs: { href: "#" } }, [_vm._v("Lost your password?")])
     ])
   }
 ]
@@ -40541,98 +41205,27 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c(
-    "form",
-    {
-      staticClass: "form-row",
-      attrs: { action: _vm.action, method: "post" },
-      on: {
-        submit: function($event) {
-          $event.preventDefault()
-          return _vm.checkValidation()
-        }
-      }
-    },
-    [
-      _c("input", {
-        attrs: { type: "hidden", name: "_token" },
-        domProps: { value: _vm.csrf }
-      }),
-      _vm._v(" "),
-      _c("input", {
-        attrs: { type: "hidden", name: "city" },
-        domProps: { value: _vm.city_code }
-      }),
-      _vm._v(" "),
-      _vm._l(_vm.localStorage.basket_list, function(order) {
-        return [
-          _c("input", {
-            attrs: { type: "hidden", name: "products[" + order.id + "][id]" },
-            domProps: { value: order.id }
-          }),
-          _vm._v(" "),
-          _c("input", {
-            attrs: {
-              type: "hidden",
-              name: "products[" + order.id + "][count]"
-            },
-            domProps: { value: order.count }
-          })
-        ]
-      }),
-      _vm._v(" "),
-      _c("input", {
-        attrs: { type: "hidden", name: "shipping_method" },
-        domProps: { value: _vm.shipping_method }
-      }),
-      _vm._v(" "),
-      _vm.shipping_method === "novaposhta"
-        ? _c("input", {
-            attrs: { type: "hidden", name: "warehouse_code" },
-            domProps: { value: _vm.warehouse_code }
-          })
-        : _vm._e(),
-      _vm._v(" "),
-      _vm.shipping_method === "courier"
-        ? _c("input", {
-            attrs: { type: "hidden", name: "street" },
-            domProps: { value: _vm.street }
-          })
-        : _vm._e(),
-      _vm._v(" "),
-      _vm.shipping_method === "courier"
-        ? _c("input", {
-            attrs: { type: "hidden", name: "house" },
-            domProps: { value: _vm.house }
-          })
-        : _vm._e(),
-      _vm._v(" "),
-      _vm.shipping_method === "courier"
-        ? _c("input", {
-            attrs: { type: "hidden", name: "flat" },
-            domProps: { value: _vm.flat }
-          })
-        : _vm._e(),
-      _vm._v(" "),
-      _c("div", { staticClass: "col-lg-6 col-md-6" }, [
-        _c("div", { staticClass: "card card-primary" }, [
-          _c("div", { staticClass: "card-body" }, [
-            _vm.next_steep === 1
-              ? _c("div", [
-                  _c("h3", [_vm._v("Контактні дані")]),
-                  _vm._v(" "),
-                  _vm._m(0),
-                  _vm._v(" "),
-                  _vm._m(1)
-                ])
+  return _c("div", { staticClass: "row" }, [
+    _c("div", { staticClass: "col-lg-6 col-md-6" }, [
+      _c("div", { staticClass: "card card-primary" }, [
+        _c(
+          "div",
+          { staticClass: "card-body" },
+          [
+            !_vm.status_auth
+              ? _c("LoginComponent", { on: { changeStatus: _vm.login } })
+              : _vm._e(),
+            _vm._v(" "),
+            _vm.next_steep === 1 && _vm.status_auth === false
+              ? _c("FastRegisterComponent", { on: { registered: _vm.login } })
               : _vm._e(),
             _vm._v(" "),
             _vm.next_steep === 2
               ? _c("div", [
-                  _c("h3", [_vm._v("Вибір способів доставки й оплати")]),
+                  _c("h5", [_vm._v("Вибір способів доставки й оплати")]),
                   _vm._v(" "),
                   _c("div", { staticClass: "row form-group" }, [
-                    _vm._m(2),
+                    _vm._m(0),
                     _vm._v(" "),
                     _c(
                       "div",
@@ -40711,7 +41304,11 @@ var render = function() {
                                     : "none"
                                 }
                               },
-                              [_vm._v("Поле обовязкове до заповнення!")]
+                              [
+                                _vm._v(
+                                  "Поле обовязкове до\n                                заповнення!\n                            "
+                                )
+                              ]
                             )
                           : _vm._e()
                       ],
@@ -40719,816 +41316,728 @@ var render = function() {
                     )
                   ]),
                   _vm._v(" "),
-                  _c("fieldset", { staticClass: "form-group border-bottom" }, [
-                    _c("div", { staticClass: "row" }, [
-                      _c(
-                        "legend",
-                        { staticClass: "col-form-label col-sm-3 pt-0" },
-                        [_vm._v("Спосіб доставки")]
-                      ),
-                      _vm._v(" "),
-                      _c("div", { staticClass: "col-sm-9" }, [
-                        _c(
-                          "div",
-                          { staticClass: "custom-control custom-radio" },
-                          [
-                            _c("input", {
-                              directives: [
-                                {
-                                  name: "model",
-                                  rawName: "v-model",
-                                  value: _vm.shipping_method,
-                                  expression: "shipping_method"
-                                }
-                              ],
-                              key: "courier",
-                              staticClass: "custom-control-input",
-                              class: {
-                                "is-invalid": _vm.$v.shipping_method.$error
-                              },
-                              attrs: {
-                                type: "radio",
-                                id: "gridRadios1",
-                                value: "courier"
-                              },
-                              domProps: {
-                                checked: _vm._q(_vm.shipping_method, "courier")
-                              },
-                              on: {
-                                blur: function($event) {
-                                  return _vm.$v.shipping_method.$touch()
-                                },
-                                change: function($event) {
-                                  _vm.shipping_method = "courier"
-                                }
-                              }
-                            }),
-                            _vm._v(" "),
+                  _vm.selected
+                    ? _c(
+                        "fieldset",
+                        { staticClass: "form-group border-bottom" },
+                        [
+                          _c("div", { staticClass: "row" }, [
                             _c(
-                              "label",
-                              {
-                                staticClass: "custom-control-label",
-                                attrs: { for: "gridRadios1" }
-                              },
-                              [_vm._v("Кур'єр на вашу адресу")]
+                              "legend",
+                              { staticClass: "col-form-label col-sm-3 pt-0" },
+                              [_vm._v("Спосіб доставки")]
                             ),
                             _vm._v(" "),
-                            _vm.shipping_method === "courier"
-                              ? _c("div", { staticClass: "form-group" }, [
-                                  _c("label", [_vm._v("Адрес")]),
-                                  _vm._v(" "),
-                                  _c("div", { staticClass: "form-row" }, [
-                                    _c(
-                                      "div",
+                            _c("div", { staticClass: "col-sm-9" }, [
+                              _c(
+                                "div",
+                                { staticClass: "custom-control custom-radio" },
+                                [
+                                  _c("input", {
+                                    directives: [
                                       {
-                                        staticClass:
-                                          "input-group col-6 input-group-sm"
-                                      },
-                                      [
-                                        _vm._m(3),
-                                        _vm._v(" "),
-                                        _c("input", {
-                                          directives: [
-                                            {
-                                              name: "model",
-                                              rawName: "v-model",
-                                              value: _vm.street,
-                                              expression: "street"
-                                            }
-                                          ],
-                                          staticClass: "form-control",
-                                          class: {
-                                            "is-invalid": _vm.$v.street.$error
-                                          },
-                                          attrs: {
-                                            type: "text",
-                                            id: "address_street"
-                                          },
-                                          domProps: { value: _vm.street },
-                                          on: {
-                                            blur: function($event) {
-                                              return _vm.$v.street.$touch()
-                                            },
-                                            input: function($event) {
-                                              if ($event.target.composing) {
-                                                return
-                                              }
-                                              _vm.street = $event.target.value
-                                            }
-                                          }
-                                        })
-                                      ]
-                                    ),
-                                    _vm._v(" "),
-                                    _c(
-                                      "div",
-                                      {
-                                        staticClass:
-                                          "input-group col-3 input-group-sm"
-                                      },
-                                      [
-                                        _vm._m(4),
-                                        _vm._v(" "),
-                                        _c("input", {
-                                          directives: [
-                                            {
-                                              name: "model",
-                                              rawName: "v-model",
-                                              value: _vm.house,
-                                              expression: "house"
-                                            }
-                                          ],
-                                          staticClass: "form-control",
-                                          class: {
-                                            "is-invalid": _vm.$v.house.$error
-                                          },
-                                          attrs: {
-                                            id: "address_house",
-                                            type: "text"
-                                          },
-                                          domProps: { value: _vm.house },
-                                          on: {
-                                            blur: function($event) {
-                                              return _vm.$v.house.$touch()
-                                            },
-                                            input: function($event) {
-                                              if ($event.target.composing) {
-                                                return
-                                              }
-                                              _vm.house = $event.target.value
-                                            }
-                                          }
-                                        })
-                                      ]
-                                    ),
-                                    _vm._v(" "),
-                                    _c(
-                                      "div",
-                                      {
-                                        staticClass:
-                                          "input-group col-3 input-group-sm"
-                                      },
-                                      [
-                                        _vm._m(5),
-                                        _vm._v(" "),
-                                        _c("input", {
-                                          directives: [
-                                            {
-                                              name: "model",
-                                              rawName: "v-model",
-                                              value: _vm.flat,
-                                              expression: "flat"
-                                            }
-                                          ],
-                                          staticClass: "form-control",
-                                          class: {
-                                            "is-invalid": _vm.$v.flat.$error
-                                          },
-                                          attrs: {
-                                            id: "address_flat",
-                                            type: "text"
-                                          },
-                                          domProps: { value: _vm.flat },
-                                          on: {
-                                            blur: function($event) {
-                                              return _vm.$v.flat.$touch()
-                                            },
-                                            input: function($event) {
-                                              if ($event.target.composing) {
-                                                return
-                                              }
-                                              _vm.flat = $event.target.value
-                                            }
-                                          }
-                                        })
-                                      ]
-                                    )
-                                  ]),
-                                  _vm._v(" "),
-                                  !_vm.$v.street.required
-                                    ? _c(
-                                        "div",
-                                        {
-                                          staticClass: "invalid-feedback",
-                                          style: {
-                                            display: _vm.$v.street.$error
-                                              ? "block"
-                                              : "none"
-                                          }
-                                        },
-                                        [_vm._v("Вкажіть вулицю для доставки")]
+                                        name: "model",
+                                        rawName: "v-model",
+                                        value: _vm.shipping_method,
+                                        expression: "shipping_method"
+                                      }
+                                    ],
+                                    key: "courier",
+                                    staticClass: "custom-control-input",
+                                    class: {
+                                      "is-invalid":
+                                        _vm.$v.shipping_method.$error
+                                    },
+                                    attrs: {
+                                      type: "radio",
+                                      id: "gridRadios1",
+                                      value: "courier"
+                                    },
+                                    domProps: {
+                                      checked: _vm._q(
+                                        _vm.shipping_method,
+                                        "courier"
                                       )
-                                    : _vm._e(),
+                                    },
+                                    on: {
+                                      blur: function($event) {
+                                        return _vm.$v.shipping_method.$touch()
+                                      },
+                                      change: function($event) {
+                                        _vm.shipping_method = "courier"
+                                      }
+                                    }
+                                  }),
                                   _vm._v(" "),
-                                  !_vm.$v.house.required
-                                    ? _c(
-                                        "div",
-                                        {
-                                          staticClass: "invalid-feedback",
-                                          style: {
-                                            display: _vm.$v.house.$error
-                                              ? "block"
-                                              : "none"
-                                          }
-                                        },
-                                        [_vm._v("Вкажіть будинок для доставки")]
-                                      )
-                                    : _vm._e(),
-                                  _vm._v(" "),
-                                  !_vm.$v.flat.required
-                                    ? _c(
-                                        "div",
-                                        {
-                                          staticClass: "invalid-feedback",
-                                          style: {
-                                            display: _vm.$v.flat.$error
-                                              ? "block"
-                                              : "none"
-                                          }
-                                        },
-                                        [
-                                          _vm._v(
-                                            "Вкажіть квартиру для доставки"
-                                          )
-                                        ]
-                                      )
-                                    : _vm._e()
-                                ])
-                              : _vm._e()
-                          ]
-                        ),
-                        _vm._v(" "),
-                        _c(
-                          "div",
-                          { staticClass: "custom-control custom-radio" },
-                          [
-                            _c("input", {
-                              directives: [
-                                {
-                                  name: "model",
-                                  rawName: "v-model",
-                                  value: _vm.shipping_method,
-                                  expression: "shipping_method"
-                                }
-                              ],
-                              key: "novaposhta",
-                              staticClass: "custom-control-input ",
-                              class: {
-                                "is-invalid": _vm.$v.shipping_method.$error
-                              },
-                              attrs: {
-                                type: "radio",
-                                id: "novaposhta",
-                                value: "novaposhta"
-                              },
-                              domProps: {
-                                checked: _vm._q(
-                                  _vm.shipping_method,
-                                  "novaposhta"
-                                )
-                              },
-                              on: {
-                                blur: function($event) {
-                                  return _vm.$v.shipping_method.$touch()
-                                },
-                                change: function($event) {
-                                  _vm.shipping_method = "novaposhta"
-                                }
-                              }
-                            }),
-                            _vm._v(" "),
-                            _c(
-                              "label",
-                              {
-                                staticClass: "custom-control-label",
-                                attrs: { for: "novaposhta" }
-                              },
-                              [_vm._v("Самовивіз з Нової Пошти")]
-                            ),
-                            _vm._v(" "),
-                            _vm.shipping_method === "novaposhta"
-                              ? _c("div", { staticClass: "form-group" }, [
                                   _c(
                                     "label",
-                                    { attrs: { for: "warehouses" } },
-                                    [_vm._v("Виберіть відповідне відділення:")]
-                                  ),
-                                  _vm._v(" "),
-                                  _c(
-                                    "select",
                                     {
-                                      directives: [
-                                        {
-                                          name: "model",
-                                          rawName: "v-model",
-                                          value: _vm.warehouse_code,
-                                          expression: "warehouse_code"
-                                        }
-                                      ],
-                                      staticClass:
-                                        "custom-select custom-select-sm",
-                                      class: {
-                                        "is-invalid":
-                                          _vm.$v.warehouse_code.$error
-                                      },
-                                      attrs: { id: "warehouses" },
-                                      on: {
-                                        blur: function($event) {
-                                          return _vm.$v.warehouse_code.$touch()
-                                        },
-                                        change: function($event) {
-                                          var $$selectedVal = Array.prototype.filter
-                                            .call(
-                                              $event.target.options,
-                                              function(o) {
-                                                return o.selected
-                                              }
-                                            )
-                                            .map(function(o) {
-                                              var val =
-                                                "_value" in o
-                                                  ? o._value
-                                                  : o.value
-                                              return val
-                                            })
-                                          _vm.warehouse_code = $event.target
-                                            .multiple
-                                            ? $$selectedVal
-                                            : $$selectedVal[0]
-                                        }
-                                      }
+                                      staticClass: "custom-control-label",
+                                      attrs: { for: "gridRadios1" }
                                     },
                                     [
-                                      _vm._l(_vm.warehouses, function(house) {
-                                        return _c(
-                                          "option",
-                                          { domProps: { value: house.code } },
-                                          [_vm._v(_vm._s(house.title))]
-                                        )
-                                      }),
-                                      _vm._v(" "),
-                                      _c(
-                                        "option",
-                                        { attrs: { disabled: "" } },
-                                        [_vm._v("Нема мого відділення")]
+                                      _vm._v(
+                                        "Кур'єр на вашу\n                                        адресу"
                                       )
-                                    ],
-                                    2
+                                    ]
                                   ),
                                   _vm._v(" "),
-                                  !_vm.$v.warehouse_code.required
+                                  _vm.shipping_method === "courier"
+                                    ? _c("div", { staticClass: "form-group" }, [
+                                        _c("label", [_vm._v("Адрес")]),
+                                        _vm._v(" "),
+                                        _c("div", { staticClass: "form-row" }, [
+                                          _c(
+                                            "div",
+                                            {
+                                              staticClass:
+                                                "input-group col-6 input-group-sm"
+                                            },
+                                            [
+                                              _vm._m(1),
+                                              _vm._v(" "),
+                                              _c("input", {
+                                                directives: [
+                                                  {
+                                                    name: "model",
+                                                    rawName: "v-model",
+                                                    value: _vm.street,
+                                                    expression: "street"
+                                                  }
+                                                ],
+                                                staticClass: "form-control",
+                                                class: {
+                                                  "is-invalid":
+                                                    _vm.$v.street.$error
+                                                },
+                                                attrs: {
+                                                  type: "text",
+                                                  id: "address_street"
+                                                },
+                                                domProps: { value: _vm.street },
+                                                on: {
+                                                  blur: function($event) {
+                                                    return _vm.$v.street.$touch()
+                                                  },
+                                                  input: function($event) {
+                                                    if (
+                                                      $event.target.composing
+                                                    ) {
+                                                      return
+                                                    }
+                                                    _vm.street =
+                                                      $event.target.value
+                                                  }
+                                                }
+                                              })
+                                            ]
+                                          ),
+                                          _vm._v(" "),
+                                          _c(
+                                            "div",
+                                            {
+                                              staticClass:
+                                                "input-group col-3 input-group-sm"
+                                            },
+                                            [
+                                              _vm._m(2),
+                                              _vm._v(" "),
+                                              _c("input", {
+                                                directives: [
+                                                  {
+                                                    name: "model",
+                                                    rawName: "v-model",
+                                                    value: _vm.house,
+                                                    expression: "house"
+                                                  }
+                                                ],
+                                                staticClass: "form-control",
+                                                class: {
+                                                  "is-invalid":
+                                                    _vm.$v.house.$error
+                                                },
+                                                attrs: {
+                                                  id: "address_house",
+                                                  type: "text"
+                                                },
+                                                domProps: { value: _vm.house },
+                                                on: {
+                                                  blur: function($event) {
+                                                    return _vm.$v.house.$touch()
+                                                  },
+                                                  input: function($event) {
+                                                    if (
+                                                      $event.target.composing
+                                                    ) {
+                                                      return
+                                                    }
+                                                    _vm.house =
+                                                      $event.target.value
+                                                  }
+                                                }
+                                              })
+                                            ]
+                                          ),
+                                          _vm._v(" "),
+                                          _c(
+                                            "div",
+                                            {
+                                              staticClass:
+                                                "input-group col-3 input-group-sm"
+                                            },
+                                            [
+                                              _vm._m(3),
+                                              _vm._v(" "),
+                                              _c("input", {
+                                                directives: [
+                                                  {
+                                                    name: "model",
+                                                    rawName: "v-model",
+                                                    value: _vm.flat,
+                                                    expression: "flat"
+                                                  }
+                                                ],
+                                                staticClass: "form-control",
+                                                class: {
+                                                  "is-invalid":
+                                                    _vm.$v.flat.$error
+                                                },
+                                                attrs: {
+                                                  id: "address_flat",
+                                                  type: "number"
+                                                },
+                                                domProps: { value: _vm.flat },
+                                                on: {
+                                                  blur: function($event) {
+                                                    return _vm.$v.flat.$touch()
+                                                  },
+                                                  input: function($event) {
+                                                    if (
+                                                      $event.target.composing
+                                                    ) {
+                                                      return
+                                                    }
+                                                    _vm.flat =
+                                                      $event.target.value
+                                                  }
+                                                }
+                                              })
+                                            ]
+                                          )
+                                        ]),
+                                        _vm._v(" "),
+                                        !_vm.$v.street.required
+                                          ? _c(
+                                              "div",
+                                              {
+                                                staticClass: "invalid-feedback",
+                                                style: {
+                                                  display: _vm.$v.street.$error
+                                                    ? "block"
+                                                    : "none"
+                                                }
+                                              },
+                                              [
+                                                _vm._v(
+                                                  "Вкажіть вулицю\n                                            для доставки\n                                        "
+                                                )
+                                              ]
+                                            )
+                                          : _vm._e(),
+                                        _vm._v(" "),
+                                        !_vm.$v.house.required
+                                          ? _c(
+                                              "div",
+                                              {
+                                                staticClass: "invalid-feedback",
+                                                style: {
+                                                  display: _vm.$v.house.$error
+                                                    ? "block"
+                                                    : "none"
+                                                }
+                                              },
+                                              [
+                                                _vm._v(
+                                                  "Вкажіть будинок\n                                            для доставки\n                                        "
+                                                )
+                                              ]
+                                            )
+                                          : _vm._e(),
+                                        _vm._v(" "),
+                                        !_vm.$v.flat.required
+                                          ? _c(
+                                              "div",
+                                              {
+                                                staticClass: "invalid-feedback",
+                                                style: {
+                                                  display: _vm.$v.flat.$error
+                                                    ? "block"
+                                                    : "none"
+                                                }
+                                              },
+                                              [
+                                                _vm._v(
+                                                  "Вкажіть квартиру\n                                            для доставки\n                                        "
+                                                )
+                                              ]
+                                            )
+                                          : _vm._e()
+                                      ])
+                                    : _vm._e()
+                                ]
+                              ),
+                              _vm._v(" "),
+                              _c(
+                                "div",
+                                { staticClass: "custom-control custom-radio" },
+                                [
+                                  _c("input", {
+                                    directives: [
+                                      {
+                                        name: "model",
+                                        rawName: "v-model",
+                                        value: _vm.shipping_method,
+                                        expression: "shipping_method"
+                                      }
+                                    ],
+                                    key: "novaposhta",
+                                    staticClass: "custom-control-input ",
+                                    class: {
+                                      "is-invalid":
+                                        _vm.$v.shipping_method.$error
+                                    },
+                                    attrs: {
+                                      type: "radio",
+                                      id: "novaposhta",
+                                      value: "novaposhta"
+                                    },
+                                    domProps: {
+                                      checked: _vm._q(
+                                        _vm.shipping_method,
+                                        "novaposhta"
+                                      )
+                                    },
+                                    on: {
+                                      blur: function($event) {
+                                        return _vm.$v.shipping_method.$touch()
+                                      },
+                                      change: function($event) {
+                                        _vm.shipping_method = "novaposhta"
+                                      }
+                                    }
+                                  }),
+                                  _vm._v(" "),
+                                  _c(
+                                    "label",
+                                    {
+                                      staticClass: "custom-control-label",
+                                      attrs: { for: "novaposhta" }
+                                    },
+                                    [
+                                      _vm._v(
+                                        "Самовивіз з Нової\n                                        Пошти"
+                                      )
+                                    ]
+                                  ),
+                                  _vm._v(" "),
+                                  _vm.shipping_method === "novaposhta"
+                                    ? _c("div", { staticClass: "form-group" }, [
+                                        _c(
+                                          "label",
+                                          { attrs: { for: "warehouses" } },
+                                          [
+                                            _vm._v(
+                                              "Виберіть відповідне відділення:"
+                                            )
+                                          ]
+                                        ),
+                                        _vm._v(" "),
+                                        _c(
+                                          "select",
+                                          {
+                                            directives: [
+                                              {
+                                                name: "model",
+                                                rawName: "v-model",
+                                                value: _vm.warehouse_code,
+                                                expression: "warehouse_code"
+                                              }
+                                            ],
+                                            staticClass:
+                                              "custom-select custom-select-sm",
+                                            class: {
+                                              "is-invalid":
+                                                _vm.$v.warehouse_code.$error
+                                            },
+                                            attrs: { id: "warehouses" },
+                                            on: {
+                                              blur: function($event) {
+                                                return _vm.$v.warehouse_code.$touch()
+                                              },
+                                              change: function($event) {
+                                                var $$selectedVal = Array.prototype.filter
+                                                  .call(
+                                                    $event.target.options,
+                                                    function(o) {
+                                                      return o.selected
+                                                    }
+                                                  )
+                                                  .map(function(o) {
+                                                    var val =
+                                                      "_value" in o
+                                                        ? o._value
+                                                        : o.value
+                                                    return val
+                                                  })
+                                                _vm.warehouse_code = $event
+                                                  .target.multiple
+                                                  ? $$selectedVal
+                                                  : $$selectedVal[0]
+                                              }
+                                            }
+                                          },
+                                          [
+                                            _vm._l(_vm.warehouses, function(
+                                              house
+                                            ) {
+                                              return _c(
+                                                "option",
+                                                {
+                                                  domProps: {
+                                                    value: house.code
+                                                  }
+                                                },
+                                                [
+                                                  _vm._v(
+                                                    "\n                                                " +
+                                                      _vm._s(house.title) +
+                                                      "\n                                            "
+                                                  )
+                                                ]
+                                              )
+                                            }),
+                                            _vm._v(" "),
+                                            _c(
+                                              "option",
+                                              { attrs: { disabled: "" } },
+                                              [_vm._v("Нема мого відділення")]
+                                            )
+                                          ],
+                                          2
+                                        ),
+                                        _vm._v(" "),
+                                        !_vm.$v.warehouse_code.required
+                                          ? _c(
+                                              "div",
+                                              {
+                                                staticClass: "invalid-feedback"
+                                              },
+                                              [
+                                                _vm._v(
+                                                  "Вкажіть\n                                            відділення для доставки!\n                                        "
+                                                )
+                                              ]
+                                            )
+                                          : _vm._e()
+                                      ])
+                                    : _vm._e(),
+                                  _vm._v(" "),
+                                  !_vm.$v.shipping_method.required
                                     ? _c(
                                         "div",
                                         { staticClass: "invalid-feedback" },
                                         [
                                           _vm._v(
-                                            "Вкажіть відділення для доставки!"
+                                            "Поле\n                                        обовязкове до заповнення!\n                                    "
+                                          )
+                                        ]
+                                      )
+                                    : _vm._e(),
+                                  _vm._v(" "),
+                                  !_vm.$v.shipping_method.mustBeCool
+                                    ? _c(
+                                        "div",
+                                        { staticClass: "invalid-feedback" },
+                                        [
+                                          _vm._v(
+                                            "Виберіть\n                                        один з доступних способів доставки\n                                    "
                                           )
                                         ]
                                       )
                                     : _vm._e()
-                                ])
-                              : _vm._e(),
-                            _vm._v(" "),
-                            !_vm.$v.shipping_method.required
-                              ? _c("div", { staticClass: "invalid-feedback" }, [
-                                  _vm._v("Поле обовязкове до заповнення!")
-                                ])
-                              : _vm._e(),
-                            _vm._v(" "),
-                            !_vm.$v.shipping_method.mustBeCool
-                              ? _c("div", { staticClass: "invalid-feedback" }, [
-                                  _vm._v(
-                                    "Виберіть один з доступних способів доставки"
-                                  )
-                                ])
-                              : _vm._e()
-                          ]
-                        )
-                      ])
-                    ])
-                  ]),
+                                ]
+                              )
+                            ])
+                          ])
+                        ]
+                      )
+                    : _vm._e(),
                   _vm._v(" "),
-                  _c(
-                    "fieldset",
-                    {
-                      staticClass: "form-group",
-                      style: _vm.selected === false ? "opacity:0.5;" : ""
-                    },
-                    [
-                      _c("div", { staticClass: "row" }, [
+                  _vm.selected
+                    ? _c("fieldset", { staticClass: "form-group" }, [
+                        _c("div", { staticClass: "row" }, [
+                          _c(
+                            "legend",
+                            { staticClass: "col-form-label col-sm-3 pt-0" },
+                            [_vm._v("Спосіб оплати")]
+                          ),
+                          _vm._v(" "),
+                          _c("div", { staticClass: "col-sm-9" }, [
+                            _c(
+                              "div",
+                              { staticClass: "custom-control custom-radio" },
+                              [
+                                _c("input", {
+                                  directives: [
+                                    {
+                                      name: "model",
+                                      rawName: "v-model",
+                                      value: _vm.payment_method,
+                                      expression: "payment_method"
+                                    }
+                                  ],
+                                  staticClass: "custom-control-input",
+                                  class: {
+                                    "is-invalid": _vm.$v.payment_method.$error
+                                  },
+                                  attrs: {
+                                    type: "radio",
+                                    id: "pay_method_first",
+                                    value: "receipt"
+                                  },
+                                  domProps: {
+                                    checked: _vm._q(
+                                      _vm.payment_method,
+                                      "receipt"
+                                    )
+                                  },
+                                  on: {
+                                    blur: function($event) {
+                                      return _vm.$v.payment_method.$touch()
+                                    },
+                                    change: function($event) {
+                                      _vm.payment_method = "receipt"
+                                    }
+                                  }
+                                }),
+                                _vm._v(" "),
+                                _c(
+                                  "label",
+                                  {
+                                    staticClass: "custom-control-label",
+                                    attrs: { for: "pay_method_first" }
+                                  },
+                                  [
+                                    _vm._v(
+                                      "Оплата при\n                                        отриманні замовлення"
+                                    )
+                                  ]
+                                )
+                              ]
+                            ),
+                            _vm._v(" "),
+                            _c(
+                              "div",
+                              { staticClass: "custom-control custom-radio" },
+                              [
+                                _c("input", {
+                                  directives: [
+                                    {
+                                      name: "model",
+                                      rawName: "v-model",
+                                      value: _vm.payment_method,
+                                      expression: "payment_method"
+                                    }
+                                  ],
+                                  staticClass: "custom-control-input",
+                                  class: {
+                                    "is-invalid": _vm.$v.payment_method.$error
+                                  },
+                                  attrs: {
+                                    id: "pay_method_second",
+                                    type: "radio",
+                                    value: "google-pay"
+                                  },
+                                  domProps: {
+                                    checked: _vm._q(
+                                      _vm.payment_method,
+                                      "google-pay"
+                                    )
+                                  },
+                                  on: {
+                                    blur: function($event) {
+                                      return _vm.$v.payment_method.$touch()
+                                    },
+                                    change: function($event) {
+                                      _vm.payment_method = "google-pay"
+                                    }
+                                  }
+                                }),
+                                _vm._v(" "),
+                                _c(
+                                  "label",
+                                  {
+                                    staticClass: "custom-control-label",
+                                    attrs: { for: "pay_method_second" }
+                                  },
+                                  [
+                                    _vm._v(
+                                      "Google\n                                        Pay"
+                                    )
+                                  ]
+                                )
+                              ]
+                            ),
+                            _vm._v(" "),
+                            _c(
+                              "div",
+                              { staticClass: "custom-control custom-radio" },
+                              [
+                                _c("input", {
+                                  directives: [
+                                    {
+                                      name: "model",
+                                      rawName: "v-model",
+                                      value: _vm.payment_method,
+                                      expression: "payment_method"
+                                    }
+                                  ],
+                                  staticClass: "custom-control-input",
+                                  class: {
+                                    "is-invalid": _vm.$v.payment_method.$error
+                                  },
+                                  attrs: {
+                                    id: "pay_method_thirty",
+                                    type: "radio",
+                                    value: "card"
+                                  },
+                                  domProps: {
+                                    checked: _vm._q(_vm.payment_method, "card")
+                                  },
+                                  on: {
+                                    blur: function($event) {
+                                      return _vm.$v.payment_method.$touch()
+                                    },
+                                    change: function($event) {
+                                      _vm.payment_method = "card"
+                                    }
+                                  }
+                                }),
+                                _vm._v(" "),
+                                _c(
+                                  "label",
+                                  {
+                                    staticClass: "custom-control-label",
+                                    attrs: { for: "pay_method_thirty" }
+                                  },
+                                  [
+                                    _vm._v(
+                                      "Оплатити зараз\n                                        карткою Visa/Mastercard"
+                                    )
+                                  ]
+                                )
+                              ]
+                            ),
+                            _vm._v(" "),
+                            !_vm.$v.payment_method.mustBePayment
+                              ? _c(
+                                  "div",
+                                  {
+                                    staticClass: "invalid-feedback",
+                                    style: {
+                                      display: _vm.$v.payment_method.$error
+                                        ? "block"
+                                        : "none"
+                                    }
+                                  },
+                                  [
+                                    _vm._v(
+                                      "Виберіть\n                                    один з доступних способів оплати\n                                "
+                                    )
+                                  ]
+                                )
+                              : _vm._e()
+                          ])
+                        ])
+                      ])
+                    : _vm._e(),
+                  _vm._v(" "),
+                  _vm.selected
+                    ? _c("div", { staticClass: "row form-group" }, [
                         _c(
-                          "legend",
-                          { staticClass: "col-form-label col-sm-3 pt-0" },
-                          [_vm._v("Спосіб оплати")]
+                          "label",
+                          {
+                            staticClass: "col-sm-3 col-form-label",
+                            attrs: { for: "comment" }
+                          },
+                          [_vm._v("Коментар")]
                         ),
                         _vm._v(" "),
                         _c("div", { staticClass: "col-sm-9" }, [
-                          _c(
-                            "div",
-                            { staticClass: "custom-control custom-radio" },
-                            [
-                              _c("input", {
-                                directives: [
-                                  {
-                                    name: "model",
-                                    rawName: "v-model",
-                                    value: _vm.payment_method,
-                                    expression: "payment_method"
-                                  }
-                                ],
-                                staticClass: "custom-control-input",
-                                class: {
-                                  "is-invalid": _vm.$v.payment_method.$error
-                                },
-                                attrs: {
-                                  type: "radio",
-                                  id: "pay_method_first",
-                                  value: "receipt"
-                                },
-                                domProps: {
-                                  checked: _vm._q(_vm.payment_method, "receipt")
-                                },
-                                on: {
-                                  blur: function($event) {
-                                    return _vm.$v.payment_method.$touch()
-                                  },
-                                  change: function($event) {
-                                    _vm.payment_method = "receipt"
-                                  }
+                          _c("textarea", {
+                            directives: [
+                              {
+                                name: "model",
+                                rawName: "v-model",
+                                value: _vm.comment,
+                                expression: "comment"
+                              }
+                            ],
+                            staticClass: "form-control",
+                            attrs: { id: "comment", cols: "30", rows: "5" },
+                            domProps: { value: _vm.comment },
+                            on: {
+                              input: function($event) {
+                                if ($event.target.composing) {
+                                  return
                                 }
-                              }),
-                              _vm._v(" "),
-                              _c(
-                                "label",
-                                {
-                                  staticClass: "custom-control-label",
-                                  attrs: { for: "pay_method_first" }
-                                },
-                                [
-                                  _vm._v(
-                                    "Оплата при отриманні\n                                        замовлення"
-                                  )
-                                ]
-                              )
-                            ]
-                          ),
-                          _vm._v(" "),
-                          _c(
-                            "div",
-                            { staticClass: "custom-control custom-radio" },
-                            [
-                              _c("input", {
-                                directives: [
-                                  {
-                                    name: "model",
-                                    rawName: "v-model",
-                                    value: _vm.payment_method,
-                                    expression: "payment_method"
-                                  }
-                                ],
-                                staticClass: "custom-control-input",
-                                class: {
-                                  "is-invalid": _vm.$v.payment_method.$error
-                                },
-                                attrs: {
-                                  id: "pay_method_second",
-                                  type: "radio",
-                                  value: "google-pay"
-                                },
-                                domProps: {
-                                  checked: _vm._q(
-                                    _vm.payment_method,
-                                    "google-pay"
-                                  )
-                                },
-                                on: {
-                                  blur: function($event) {
-                                    return _vm.$v.payment_method.$touch()
-                                  },
-                                  change: function($event) {
-                                    _vm.payment_method = "google-pay"
-                                  }
-                                }
-                              }),
-                              _vm._v(" "),
-                              _c(
-                                "label",
-                                {
-                                  staticClass: "custom-control-label",
-                                  attrs: { for: "pay_method_second" }
-                                },
-                                [_vm._v("Google Pay")]
-                              )
-                            ]
-                          ),
-                          _vm._v(" "),
-                          _c(
-                            "div",
-                            { staticClass: "custom-control custom-radio" },
-                            [
-                              _c("input", {
-                                directives: [
-                                  {
-                                    name: "model",
-                                    rawName: "v-model",
-                                    value: _vm.payment_method,
-                                    expression: "payment_method"
-                                  }
-                                ],
-                                staticClass: "custom-control-input",
-                                class: {
-                                  "is-invalid": _vm.$v.payment_method.$error
-                                },
-                                attrs: {
-                                  id: "pay_method_thirty",
-                                  type: "radio",
-                                  value: "card"
-                                },
-                                domProps: {
-                                  checked: _vm._q(_vm.payment_method, "card")
-                                },
-                                on: {
-                                  blur: function($event) {
-                                    return _vm.$v.payment_method.$touch()
-                                  },
-                                  change: function($event) {
-                                    _vm.payment_method = "card"
-                                  }
-                                }
-                              }),
-                              _vm._v(" "),
-                              _c(
-                                "label",
-                                {
-                                  staticClass: "custom-control-label",
-                                  attrs: { for: "pay_method_thirty" }
-                                },
-                                [
-                                  _vm._v(
-                                    "Оплатити зараз карткою\n                                        Visa/Mastercard"
-                                  )
-                                ]
-                              )
-                            ]
-                          ),
-                          _vm._v(" "),
-                          !_vm.$v.payment_method.mustBePayment
-                            ? _c(
-                                "div",
-                                {
-                                  staticClass: "invalid-feedback",
-                                  style: {
-                                    display: _vm.$v.payment_method.$error
-                                      ? "block"
-                                      : "none"
-                                  }
-                                },
-                                [
-                                  _vm._v(
-                                    "Виберіть один з доступних способів оплати"
-                                  )
-                                ]
-                              )
-                            : _vm._e()
+                                _vm.comment = $event.target.value
+                              }
+                            }
+                          })
                         ])
                       ])
-                    ]
-                  ),
-                  _vm._v(" "),
-                  _c(
-                    "div",
-                    {
-                      staticClass: "row form-group",
-                      style: _vm.selected === false ? "opacity:0.5;" : ""
-                    },
-                    [
-                      _c(
-                        "label",
-                        {
-                          staticClass: "col-sm-3 col-form-label",
-                          attrs: { for: "comment" }
-                        },
-                        [_vm._v("Коментар")]
-                      ),
-                      _vm._v(" "),
-                      _c("div", { staticClass: "col-sm-9" }, [
-                        _c("textarea", {
-                          directives: [
-                            {
-                              name: "model",
-                              rawName: "v-model",
-                              value: _vm.comment,
-                              expression: "comment"
-                            }
-                          ],
-                          staticClass: "form-control",
-                          attrs: { id: "comment", cols: "30", rows: "5" },
-                          domProps: { value: _vm.comment },
-                          on: {
-                            input: function($event) {
-                              if ($event.target.composing) {
-                                return
-                              }
-                              _vm.comment = $event.target.value
-                            }
-                          }
-                        })
-                      ])
-                    ]
-                  )
+                    : _vm._e()
                 ])
               : _vm._e(),
             _vm._v(" "),
-            _c(
-              "button",
-              {
-                staticClass: "btn btn-primary",
-                attrs: { type: "button" },
-                on: {
-                  click: function($event) {
-                    $event.preventDefault()
-                    return _vm.nextSteep()
-                  }
-                }
-              },
-              [_vm._v("Далі")]
-            )
-          ])
-        ])
-      ]),
-      _vm._v(" "),
-      _c("div", { staticClass: "col-lg-6 col-md-6" }, [
-        _c("div", { staticClass: "your-order" }, [
-          _c("h3", [_vm._v("Ваше замовлення")]),
-          _vm._v(" "),
-          _c("div", { staticClass: "your-order-table table-responsive" }, [
-            _c("table", [
-              _vm._m(6),
-              _vm._v(" "),
-              _c(
-                "tbody",
-                _vm._l(_vm.localStorage.basket_list, function(order) {
-                  return _c("tr", { staticClass: "cart_item" }, [
-                    _c("td", { staticClass: "product-name" }, [
-                      _vm._v(
-                        "\n                            " +
-                          _vm._s(order.title) +
-                          " "
-                      ),
-                      _c("strong", { staticClass: "product-quantity" }, [
-                        _vm._v(" × " + _vm._s(order.count))
-                      ])
-                    ]),
-                    _vm._v(" "),
-                    _c("td", { staticClass: "product-total" }, [
-                      _c("span", { staticClass: "amount" }, [
-                        _vm._v("£" + _vm._s(order.price))
-                      ])
-                    ])
-                  ])
-                }),
-                0
-              ),
-              _vm._v(" "),
-              _c("tfoot", [
-                _c("tr", { staticClass: "order-total" }, [
-                  _c("th", [_vm._v("Всього замовлено:")]),
-                  _vm._v(" "),
-                  _c("td", [
-                    _c("strong", [
-                      _c("span", { staticClass: "amount" }, [
-                        _vm._v("£" + _vm._s(_vm.localStorage.basket_list_sum))
-                      ])
-                    ])
-                  ])
+            _c("div", { staticClass: "payment-method" }, [
+              _c("div", { staticClass: "payment-accordion" }, [
+                _c("div", { staticClass: "order-button-payment" }, [
+                  _vm.next_steep === 2
+                    ? _c(
+                        "button",
+                        {
+                          staticClass: "btn",
+                          attrs: { disabled: _vm.$v.$invalid },
+                          on: {
+                            click: function($event) {
+                              $event.preventDefault()
+                              return _vm.formSubmit()
+                            }
+                          }
+                        },
+                        [_vm._v("Оформити замовлення")]
+                      )
+                    : _vm._e()
                 ])
               ])
             ])
-          ]),
-          _vm._v(" "),
-          _vm._m(7)
-        ])
+          ],
+          1
+        )
       ])
-    ],
-    2
-  )
+    ]),
+    _vm._v(" "),
+    _c(
+      "div",
+      { staticClass: "col-lg-6 col-md-6" },
+      [_c("YourOrderProductsComponent")],
+      1
+    )
+  ])
 }
 var staticRenderFns = [
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "coupon-accordion" }, [
-      _c("h3", [
-        _vm._v("Returning customer? "),
-        _c("span", { attrs: { id: "showlogin" } }, [
-          _vm._v("Click here to login")
-        ])
-      ]),
-      _vm._v(" "),
-      _c(
-        "div",
-        { staticClass: "coupon-content", attrs: { id: "checkout-login" } },
-        [
-          _c("div", { staticClass: "coupon-info" }, [
-            _c("p", { staticClass: "coupon-text" }, [
-              _vm._v(
-                "Quisque gravida turpis sit amet nulla posuere lacinia. Cras\n                                    sed est\n                                    sit\n                                    amet\n                                    ipsum luctus."
-              )
-            ]),
-            _vm._v(" "),
-            _c("form", { attrs: { action: "#" } }, [
-              _c("p", { staticClass: "form-row-first" }, [
-                _c("label", [
-                  _vm._v("Username or email "),
-                  _c("span", { staticClass: "required" }, [_vm._v("*")])
-                ]),
-                _vm._v(" "),
-                _c("input", { attrs: { type: "text" } })
-              ]),
-              _vm._v(" "),
-              _c("p", { staticClass: "form-row-last" }, [
-                _c("label", [
-                  _vm._v("Password "),
-                  _c("span", { staticClass: "required" }, [_vm._v("*")])
-                ]),
-                _vm._v(" "),
-                _c("input", { attrs: { type: "text" } })
-              ]),
-              _vm._v(" "),
-              _c("p", { staticClass: "form-row" }, [
-                _c("input", { attrs: { type: "submit", value: "Login" } }),
-                _vm._v(" "),
-                _c("label", [
-                  _c("input", { attrs: { type: "checkbox" } }),
-                  _vm._v(
-                    "\n                                            Remember me\n                                        "
-                  )
-                ])
-              ]),
-              _vm._v(" "),
-              _c("p", { staticClass: "lost-password" }, [
-                _c("a", { attrs: { href: "#" } }, [
-                  _vm._v("Lost your password?")
-                ])
-              ])
-            ])
-          ])
-        ]
-      )
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "row" }, [
-      _c("div", { staticClass: "col-md-12" }, [
-        _c("div", { staticClass: "checkout-form-list" }, [
-          _c("label", [
-            _vm._v("Ім'я та прізвище "),
-            _c("span", { staticClass: "required" }, [_vm._v("*")]),
-            _vm._v(" "),
-            _c("input", {
-              attrs: { name: "name", type: "text", placeholder: "", value: "" }
-            })
-          ])
-        ])
-      ]),
-      _vm._v(" "),
-      _c("div", { staticClass: "col-md-12" }, [
-        _c("div", { staticClass: "checkout-form-list" }, [
-          _c("label", [
-            _vm._v("Ел. пошта"),
-            _c("span", { staticClass: "required" }, [_vm._v("*")]),
-            _vm._v(" "),
-            _c("input", {
-              attrs: {
-                name: "email",
-                type: "email",
-                placeholder: "",
-                value: ""
-              }
-            })
-          ])
-        ])
-      ]),
-      _vm._v(" "),
-      _c("div", { staticClass: "col-md-12" }, [
-        _c("div", { staticClass: "checkout-form-list mb-30" }, [
-          _c("label", [
-            _vm._v("Мобільний телефон "),
-            _c("span", { staticClass: "required" }, [_vm._v("*")]),
-            _vm._v(" "),
-            _c("input", {
-              attrs: { name: "phone", type: "text", placeholder: "", value: "" }
-            })
-          ])
-        ])
-      ])
-    ])
-  },
   function() {
     var _vm = this
     var _h = _vm.$createElement
@@ -41560,32 +42069,6 @@ var staticRenderFns = [
     var _c = _vm._self._c || _h
     return _c("div", { staticClass: "input-group-prepend" }, [
       _c("div", { staticClass: "input-group-text" }, [_vm._v("кв.")])
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("thead", [
-      _c("tr", [
-        _c("th", { staticClass: "product-name" }, [_vm._v("Продукт")]),
-        _vm._v(" "),
-        _c("th", { staticClass: "product-total" }, [_vm._v("Всього")])
-      ])
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "payment-method" }, [
-      _c("div", { staticClass: "payment-accordion" }, [
-        _c("div", { staticClass: "order-button-payment" }, [
-          _c("input", {
-            attrs: { type: "submit", name: "s", value: "Place order" }
-          })
-        ])
-      ])
     ])
   }
 ]
@@ -41745,6 +42228,86 @@ var staticRenderFns = [
             ])
           ])
         ])
+      ])
+    ])
+  }
+]
+render._withStripped = true
+
+
+
+/***/ }),
+
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/checkout/YourOrderProductsComponent.vue?vue&type=template&id=57d6a56c&scoped=true&":
+/*!**************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/checkout/YourOrderProductsComponent.vue?vue&type=template&id=57d6a56c&scoped=true& ***!
+  \**************************************************************************************************************************************************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c("div", { staticClass: "your-order" }, [
+    _c("h3", [_vm._v("Ваше замовлення")]),
+    _vm._v(" "),
+    _c("div", { staticClass: "your-order-table table-responsive" }, [
+      _c("table", [
+        _vm._m(0),
+        _vm._v(" "),
+        _c(
+          "tbody",
+          _vm._l(_vm.localStorage.basket_list, function(order) {
+            return _c("tr", { staticClass: "cart_item" }, [
+              _c("td", { staticClass: "product-name" }, [
+                _vm._v("\n                    " + _vm._s(order.title) + " "),
+                _c("strong", { staticClass: "product-quantity" }, [
+                  _vm._v(" × " + _vm._s(order.count))
+                ])
+              ]),
+              _vm._v(" "),
+              _c("td", { staticClass: "product-total" }, [
+                _c("span", { staticClass: "amount" }, [
+                  _vm._v("£" + _vm._s(order.price))
+                ])
+              ])
+            ])
+          }),
+          0
+        ),
+        _vm._v(" "),
+        _c("tfoot", [
+          _c("tr", { staticClass: "order-total" }, [
+            _c("th", [_vm._v("Всього замовлено:")]),
+            _vm._v(" "),
+            _c("td", [
+              _c("strong", [
+                _c("span", { staticClass: "amount" }, [
+                  _vm._v("£" + _vm._s(_vm.localStorage.basket_list_sum))
+                ])
+              ])
+            ])
+          ])
+        ])
+      ])
+    ])
+  ])
+}
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("thead", [
+      _c("tr", [
+        _c("th", { staticClass: "product-name" }, [_vm._v("Продукт")]),
+        _vm._v(" "),
+        _c("th", { staticClass: "product-total" }, [_vm._v("Всього")])
       ])
     ])
   }
@@ -56097,6 +56660,1078 @@ exports.withParams = withParams;
 
 /***/ }),
 
+/***/ "./node_modules/vuex/dist/vuex.esm.js":
+/*!********************************************!*\
+  !*** ./node_modules/vuex/dist/vuex.esm.js ***!
+  \********************************************/
+/*! exports provided: default, Store, install, mapState, mapMutations, mapGetters, mapActions, createNamespacedHelpers */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* WEBPACK VAR INJECTION */(function(global) {/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "Store", function() { return Store; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "install", function() { return install; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "mapState", function() { return mapState; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "mapMutations", function() { return mapMutations; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "mapGetters", function() { return mapGetters; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "mapActions", function() { return mapActions; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "createNamespacedHelpers", function() { return createNamespacedHelpers; });
+/**
+ * vuex v3.1.3
+ * (c) 2020 Evan You
+ * @license MIT
+ */
+function applyMixin (Vue) {
+  var version = Number(Vue.version.split('.')[0]);
+
+  if (version >= 2) {
+    Vue.mixin({ beforeCreate: vuexInit });
+  } else {
+    // override init and inject vuex init procedure
+    // for 1.x backwards compatibility.
+    var _init = Vue.prototype._init;
+    Vue.prototype._init = function (options) {
+      if ( options === void 0 ) options = {};
+
+      options.init = options.init
+        ? [vuexInit].concat(options.init)
+        : vuexInit;
+      _init.call(this, options);
+    };
+  }
+
+  /**
+   * Vuex init hook, injected into each instances init hooks list.
+   */
+
+  function vuexInit () {
+    var options = this.$options;
+    // store injection
+    if (options.store) {
+      this.$store = typeof options.store === 'function'
+        ? options.store()
+        : options.store;
+    } else if (options.parent && options.parent.$store) {
+      this.$store = options.parent.$store;
+    }
+  }
+}
+
+var target = typeof window !== 'undefined'
+  ? window
+  : typeof global !== 'undefined'
+    ? global
+    : {};
+var devtoolHook = target.__VUE_DEVTOOLS_GLOBAL_HOOK__;
+
+function devtoolPlugin (store) {
+  if (!devtoolHook) { return }
+
+  store._devtoolHook = devtoolHook;
+
+  devtoolHook.emit('vuex:init', store);
+
+  devtoolHook.on('vuex:travel-to-state', function (targetState) {
+    store.replaceState(targetState);
+  });
+
+  store.subscribe(function (mutation, state) {
+    devtoolHook.emit('vuex:mutation', mutation, state);
+  });
+}
+
+/**
+ * Get the first item that pass the test
+ * by second argument function
+ *
+ * @param {Array} list
+ * @param {Function} f
+ * @return {*}
+ */
+
+/**
+ * forEach for object
+ */
+function forEachValue (obj, fn) {
+  Object.keys(obj).forEach(function (key) { return fn(obj[key], key); });
+}
+
+function isObject (obj) {
+  return obj !== null && typeof obj === 'object'
+}
+
+function isPromise (val) {
+  return val && typeof val.then === 'function'
+}
+
+function assert (condition, msg) {
+  if (!condition) { throw new Error(("[vuex] " + msg)) }
+}
+
+function partial (fn, arg) {
+  return function () {
+    return fn(arg)
+  }
+}
+
+// Base data struct for store's module, package with some attribute and method
+var Module = function Module (rawModule, runtime) {
+  this.runtime = runtime;
+  // Store some children item
+  this._children = Object.create(null);
+  // Store the origin module object which passed by programmer
+  this._rawModule = rawModule;
+  var rawState = rawModule.state;
+
+  // Store the origin module's state
+  this.state = (typeof rawState === 'function' ? rawState() : rawState) || {};
+};
+
+var prototypeAccessors = { namespaced: { configurable: true } };
+
+prototypeAccessors.namespaced.get = function () {
+  return !!this._rawModule.namespaced
+};
+
+Module.prototype.addChild = function addChild (key, module) {
+  this._children[key] = module;
+};
+
+Module.prototype.removeChild = function removeChild (key) {
+  delete this._children[key];
+};
+
+Module.prototype.getChild = function getChild (key) {
+  return this._children[key]
+};
+
+Module.prototype.update = function update (rawModule) {
+  this._rawModule.namespaced = rawModule.namespaced;
+  if (rawModule.actions) {
+    this._rawModule.actions = rawModule.actions;
+  }
+  if (rawModule.mutations) {
+    this._rawModule.mutations = rawModule.mutations;
+  }
+  if (rawModule.getters) {
+    this._rawModule.getters = rawModule.getters;
+  }
+};
+
+Module.prototype.forEachChild = function forEachChild (fn) {
+  forEachValue(this._children, fn);
+};
+
+Module.prototype.forEachGetter = function forEachGetter (fn) {
+  if (this._rawModule.getters) {
+    forEachValue(this._rawModule.getters, fn);
+  }
+};
+
+Module.prototype.forEachAction = function forEachAction (fn) {
+  if (this._rawModule.actions) {
+    forEachValue(this._rawModule.actions, fn);
+  }
+};
+
+Module.prototype.forEachMutation = function forEachMutation (fn) {
+  if (this._rawModule.mutations) {
+    forEachValue(this._rawModule.mutations, fn);
+  }
+};
+
+Object.defineProperties( Module.prototype, prototypeAccessors );
+
+var ModuleCollection = function ModuleCollection (rawRootModule) {
+  // register root module (Vuex.Store options)
+  this.register([], rawRootModule, false);
+};
+
+ModuleCollection.prototype.get = function get (path) {
+  return path.reduce(function (module, key) {
+    return module.getChild(key)
+  }, this.root)
+};
+
+ModuleCollection.prototype.getNamespace = function getNamespace (path) {
+  var module = this.root;
+  return path.reduce(function (namespace, key) {
+    module = module.getChild(key);
+    return namespace + (module.namespaced ? key + '/' : '')
+  }, '')
+};
+
+ModuleCollection.prototype.update = function update$1 (rawRootModule) {
+  update([], this.root, rawRootModule);
+};
+
+ModuleCollection.prototype.register = function register (path, rawModule, runtime) {
+    var this$1 = this;
+    if ( runtime === void 0 ) runtime = true;
+
+  if (true) {
+    assertRawModule(path, rawModule);
+  }
+
+  var newModule = new Module(rawModule, runtime);
+  if (path.length === 0) {
+    this.root = newModule;
+  } else {
+    var parent = this.get(path.slice(0, -1));
+    parent.addChild(path[path.length - 1], newModule);
+  }
+
+  // register nested modules
+  if (rawModule.modules) {
+    forEachValue(rawModule.modules, function (rawChildModule, key) {
+      this$1.register(path.concat(key), rawChildModule, runtime);
+    });
+  }
+};
+
+ModuleCollection.prototype.unregister = function unregister (path) {
+  var parent = this.get(path.slice(0, -1));
+  var key = path[path.length - 1];
+  if (!parent.getChild(key).runtime) { return }
+
+  parent.removeChild(key);
+};
+
+function update (path, targetModule, newModule) {
+  if (true) {
+    assertRawModule(path, newModule);
+  }
+
+  // update target module
+  targetModule.update(newModule);
+
+  // update nested modules
+  if (newModule.modules) {
+    for (var key in newModule.modules) {
+      if (!targetModule.getChild(key)) {
+        if (true) {
+          console.warn(
+            "[vuex] trying to add a new module '" + key + "' on hot reloading, " +
+            'manual reload is needed'
+          );
+        }
+        return
+      }
+      update(
+        path.concat(key),
+        targetModule.getChild(key),
+        newModule.modules[key]
+      );
+    }
+  }
+}
+
+var functionAssert = {
+  assert: function (value) { return typeof value === 'function'; },
+  expected: 'function'
+};
+
+var objectAssert = {
+  assert: function (value) { return typeof value === 'function' ||
+    (typeof value === 'object' && typeof value.handler === 'function'); },
+  expected: 'function or object with "handler" function'
+};
+
+var assertTypes = {
+  getters: functionAssert,
+  mutations: functionAssert,
+  actions: objectAssert
+};
+
+function assertRawModule (path, rawModule) {
+  Object.keys(assertTypes).forEach(function (key) {
+    if (!rawModule[key]) { return }
+
+    var assertOptions = assertTypes[key];
+
+    forEachValue(rawModule[key], function (value, type) {
+      assert(
+        assertOptions.assert(value),
+        makeAssertionMessage(path, key, type, value, assertOptions.expected)
+      );
+    });
+  });
+}
+
+function makeAssertionMessage (path, key, type, value, expected) {
+  var buf = key + " should be " + expected + " but \"" + key + "." + type + "\"";
+  if (path.length > 0) {
+    buf += " in module \"" + (path.join('.')) + "\"";
+  }
+  buf += " is " + (JSON.stringify(value)) + ".";
+  return buf
+}
+
+var Vue; // bind on install
+
+var Store = function Store (options) {
+  var this$1 = this;
+  if ( options === void 0 ) options = {};
+
+  // Auto install if it is not done yet and `window` has `Vue`.
+  // To allow users to avoid auto-installation in some cases,
+  // this code should be placed here. See #731
+  if (!Vue && typeof window !== 'undefined' && window.Vue) {
+    install(window.Vue);
+  }
+
+  if (true) {
+    assert(Vue, "must call Vue.use(Vuex) before creating a store instance.");
+    assert(typeof Promise !== 'undefined', "vuex requires a Promise polyfill in this browser.");
+    assert(this instanceof Store, "store must be called with the new operator.");
+  }
+
+  var plugins = options.plugins; if ( plugins === void 0 ) plugins = [];
+  var strict = options.strict; if ( strict === void 0 ) strict = false;
+
+  // store internal state
+  this._committing = false;
+  this._actions = Object.create(null);
+  this._actionSubscribers = [];
+  this._mutations = Object.create(null);
+  this._wrappedGetters = Object.create(null);
+  this._modules = new ModuleCollection(options);
+  this._modulesNamespaceMap = Object.create(null);
+  this._subscribers = [];
+  this._watcherVM = new Vue();
+  this._makeLocalGettersCache = Object.create(null);
+
+  // bind commit and dispatch to self
+  var store = this;
+  var ref = this;
+  var dispatch = ref.dispatch;
+  var commit = ref.commit;
+  this.dispatch = function boundDispatch (type, payload) {
+    return dispatch.call(store, type, payload)
+  };
+  this.commit = function boundCommit (type, payload, options) {
+    return commit.call(store, type, payload, options)
+  };
+
+  // strict mode
+  this.strict = strict;
+
+  var state = this._modules.root.state;
+
+  // init root module.
+  // this also recursively registers all sub-modules
+  // and collects all module getters inside this._wrappedGetters
+  installModule(this, state, [], this._modules.root);
+
+  // initialize the store vm, which is responsible for the reactivity
+  // (also registers _wrappedGetters as computed properties)
+  resetStoreVM(this, state);
+
+  // apply plugins
+  plugins.forEach(function (plugin) { return plugin(this$1); });
+
+  var useDevtools = options.devtools !== undefined ? options.devtools : Vue.config.devtools;
+  if (useDevtools) {
+    devtoolPlugin(this);
+  }
+};
+
+var prototypeAccessors$1 = { state: { configurable: true } };
+
+prototypeAccessors$1.state.get = function () {
+  return this._vm._data.$$state
+};
+
+prototypeAccessors$1.state.set = function (v) {
+  if (true) {
+    assert(false, "use store.replaceState() to explicit replace store state.");
+  }
+};
+
+Store.prototype.commit = function commit (_type, _payload, _options) {
+    var this$1 = this;
+
+  // check object-style commit
+  var ref = unifyObjectStyle(_type, _payload, _options);
+    var type = ref.type;
+    var payload = ref.payload;
+    var options = ref.options;
+
+  var mutation = { type: type, payload: payload };
+  var entry = this._mutations[type];
+  if (!entry) {
+    if (true) {
+      console.error(("[vuex] unknown mutation type: " + type));
+    }
+    return
+  }
+  this._withCommit(function () {
+    entry.forEach(function commitIterator (handler) {
+      handler(payload);
+    });
+  });
+
+  this._subscribers
+    .slice() // shallow copy to prevent iterator invalidation if subscriber synchronously calls unsubscribe
+    .forEach(function (sub) { return sub(mutation, this$1.state); });
+
+  if (
+     true &&
+    options && options.silent
+  ) {
+    console.warn(
+      "[vuex] mutation type: " + type + ". Silent option has been removed. " +
+      'Use the filter functionality in the vue-devtools'
+    );
+  }
+};
+
+Store.prototype.dispatch = function dispatch (_type, _payload) {
+    var this$1 = this;
+
+  // check object-style dispatch
+  var ref = unifyObjectStyle(_type, _payload);
+    var type = ref.type;
+    var payload = ref.payload;
+
+  var action = { type: type, payload: payload };
+  var entry = this._actions[type];
+  if (!entry) {
+    if (true) {
+      console.error(("[vuex] unknown action type: " + type));
+    }
+    return
+  }
+
+  try {
+    this._actionSubscribers
+      .slice() // shallow copy to prevent iterator invalidation if subscriber synchronously calls unsubscribe
+      .filter(function (sub) { return sub.before; })
+      .forEach(function (sub) { return sub.before(action, this$1.state); });
+  } catch (e) {
+    if (true) {
+      console.warn("[vuex] error in before action subscribers: ");
+      console.error(e);
+    }
+  }
+
+  var result = entry.length > 1
+    ? Promise.all(entry.map(function (handler) { return handler(payload); }))
+    : entry[0](payload);
+
+  return result.then(function (res) {
+    try {
+      this$1._actionSubscribers
+        .filter(function (sub) { return sub.after; })
+        .forEach(function (sub) { return sub.after(action, this$1.state); });
+    } catch (e) {
+      if (true) {
+        console.warn("[vuex] error in after action subscribers: ");
+        console.error(e);
+      }
+    }
+    return res
+  })
+};
+
+Store.prototype.subscribe = function subscribe (fn) {
+  return genericSubscribe(fn, this._subscribers)
+};
+
+Store.prototype.subscribeAction = function subscribeAction (fn) {
+  var subs = typeof fn === 'function' ? { before: fn } : fn;
+  return genericSubscribe(subs, this._actionSubscribers)
+};
+
+Store.prototype.watch = function watch (getter, cb, options) {
+    var this$1 = this;
+
+  if (true) {
+    assert(typeof getter === 'function', "store.watch only accepts a function.");
+  }
+  return this._watcherVM.$watch(function () { return getter(this$1.state, this$1.getters); }, cb, options)
+};
+
+Store.prototype.replaceState = function replaceState (state) {
+    var this$1 = this;
+
+  this._withCommit(function () {
+    this$1._vm._data.$$state = state;
+  });
+};
+
+Store.prototype.registerModule = function registerModule (path, rawModule, options) {
+    if ( options === void 0 ) options = {};
+
+  if (typeof path === 'string') { path = [path]; }
+
+  if (true) {
+    assert(Array.isArray(path), "module path must be a string or an Array.");
+    assert(path.length > 0, 'cannot register the root module by using registerModule.');
+  }
+
+  this._modules.register(path, rawModule);
+  installModule(this, this.state, path, this._modules.get(path), options.preserveState);
+  // reset store to update getters...
+  resetStoreVM(this, this.state);
+};
+
+Store.prototype.unregisterModule = function unregisterModule (path) {
+    var this$1 = this;
+
+  if (typeof path === 'string') { path = [path]; }
+
+  if (true) {
+    assert(Array.isArray(path), "module path must be a string or an Array.");
+  }
+
+  this._modules.unregister(path);
+  this._withCommit(function () {
+    var parentState = getNestedState(this$1.state, path.slice(0, -1));
+    Vue.delete(parentState, path[path.length - 1]);
+  });
+  resetStore(this);
+};
+
+Store.prototype.hotUpdate = function hotUpdate (newOptions) {
+  this._modules.update(newOptions);
+  resetStore(this, true);
+};
+
+Store.prototype._withCommit = function _withCommit (fn) {
+  var committing = this._committing;
+  this._committing = true;
+  fn();
+  this._committing = committing;
+};
+
+Object.defineProperties( Store.prototype, prototypeAccessors$1 );
+
+function genericSubscribe (fn, subs) {
+  if (subs.indexOf(fn) < 0) {
+    subs.push(fn);
+  }
+  return function () {
+    var i = subs.indexOf(fn);
+    if (i > -1) {
+      subs.splice(i, 1);
+    }
+  }
+}
+
+function resetStore (store, hot) {
+  store._actions = Object.create(null);
+  store._mutations = Object.create(null);
+  store._wrappedGetters = Object.create(null);
+  store._modulesNamespaceMap = Object.create(null);
+  var state = store.state;
+  // init all modules
+  installModule(store, state, [], store._modules.root, true);
+  // reset vm
+  resetStoreVM(store, state, hot);
+}
+
+function resetStoreVM (store, state, hot) {
+  var oldVm = store._vm;
+
+  // bind store public getters
+  store.getters = {};
+  // reset local getters cache
+  store._makeLocalGettersCache = Object.create(null);
+  var wrappedGetters = store._wrappedGetters;
+  var computed = {};
+  forEachValue(wrappedGetters, function (fn, key) {
+    // use computed to leverage its lazy-caching mechanism
+    // direct inline function use will lead to closure preserving oldVm.
+    // using partial to return function with only arguments preserved in closure environment.
+    computed[key] = partial(fn, store);
+    Object.defineProperty(store.getters, key, {
+      get: function () { return store._vm[key]; },
+      enumerable: true // for local getters
+    });
+  });
+
+  // use a Vue instance to store the state tree
+  // suppress warnings just in case the user has added
+  // some funky global mixins
+  var silent = Vue.config.silent;
+  Vue.config.silent = true;
+  store._vm = new Vue({
+    data: {
+      $$state: state
+    },
+    computed: computed
+  });
+  Vue.config.silent = silent;
+
+  // enable strict mode for new vm
+  if (store.strict) {
+    enableStrictMode(store);
+  }
+
+  if (oldVm) {
+    if (hot) {
+      // dispatch changes in all subscribed watchers
+      // to force getter re-evaluation for hot reloading.
+      store._withCommit(function () {
+        oldVm._data.$$state = null;
+      });
+    }
+    Vue.nextTick(function () { return oldVm.$destroy(); });
+  }
+}
+
+function installModule (store, rootState, path, module, hot) {
+  var isRoot = !path.length;
+  var namespace = store._modules.getNamespace(path);
+
+  // register in namespace map
+  if (module.namespaced) {
+    if (store._modulesNamespaceMap[namespace] && "development" !== 'production') {
+      console.error(("[vuex] duplicate namespace " + namespace + " for the namespaced module " + (path.join('/'))));
+    }
+    store._modulesNamespaceMap[namespace] = module;
+  }
+
+  // set state
+  if (!isRoot && !hot) {
+    var parentState = getNestedState(rootState, path.slice(0, -1));
+    var moduleName = path[path.length - 1];
+    store._withCommit(function () {
+      if (true) {
+        if (moduleName in parentState) {
+          console.warn(
+            ("[vuex] state field \"" + moduleName + "\" was overridden by a module with the same name at \"" + (path.join('.')) + "\"")
+          );
+        }
+      }
+      Vue.set(parentState, moduleName, module.state);
+    });
+  }
+
+  var local = module.context = makeLocalContext(store, namespace, path);
+
+  module.forEachMutation(function (mutation, key) {
+    var namespacedType = namespace + key;
+    registerMutation(store, namespacedType, mutation, local);
+  });
+
+  module.forEachAction(function (action, key) {
+    var type = action.root ? key : namespace + key;
+    var handler = action.handler || action;
+    registerAction(store, type, handler, local);
+  });
+
+  module.forEachGetter(function (getter, key) {
+    var namespacedType = namespace + key;
+    registerGetter(store, namespacedType, getter, local);
+  });
+
+  module.forEachChild(function (child, key) {
+    installModule(store, rootState, path.concat(key), child, hot);
+  });
+}
+
+/**
+ * make localized dispatch, commit, getters and state
+ * if there is no namespace, just use root ones
+ */
+function makeLocalContext (store, namespace, path) {
+  var noNamespace = namespace === '';
+
+  var local = {
+    dispatch: noNamespace ? store.dispatch : function (_type, _payload, _options) {
+      var args = unifyObjectStyle(_type, _payload, _options);
+      var payload = args.payload;
+      var options = args.options;
+      var type = args.type;
+
+      if (!options || !options.root) {
+        type = namespace + type;
+        if ( true && !store._actions[type]) {
+          console.error(("[vuex] unknown local action type: " + (args.type) + ", global type: " + type));
+          return
+        }
+      }
+
+      return store.dispatch(type, payload)
+    },
+
+    commit: noNamespace ? store.commit : function (_type, _payload, _options) {
+      var args = unifyObjectStyle(_type, _payload, _options);
+      var payload = args.payload;
+      var options = args.options;
+      var type = args.type;
+
+      if (!options || !options.root) {
+        type = namespace + type;
+        if ( true && !store._mutations[type]) {
+          console.error(("[vuex] unknown local mutation type: " + (args.type) + ", global type: " + type));
+          return
+        }
+      }
+
+      store.commit(type, payload, options);
+    }
+  };
+
+  // getters and state object must be gotten lazily
+  // because they will be changed by vm update
+  Object.defineProperties(local, {
+    getters: {
+      get: noNamespace
+        ? function () { return store.getters; }
+        : function () { return makeLocalGetters(store, namespace); }
+    },
+    state: {
+      get: function () { return getNestedState(store.state, path); }
+    }
+  });
+
+  return local
+}
+
+function makeLocalGetters (store, namespace) {
+  if (!store._makeLocalGettersCache[namespace]) {
+    var gettersProxy = {};
+    var splitPos = namespace.length;
+    Object.keys(store.getters).forEach(function (type) {
+      // skip if the target getter is not match this namespace
+      if (type.slice(0, splitPos) !== namespace) { return }
+
+      // extract local getter type
+      var localType = type.slice(splitPos);
+
+      // Add a port to the getters proxy.
+      // Define as getter property because
+      // we do not want to evaluate the getters in this time.
+      Object.defineProperty(gettersProxy, localType, {
+        get: function () { return store.getters[type]; },
+        enumerable: true
+      });
+    });
+    store._makeLocalGettersCache[namespace] = gettersProxy;
+  }
+
+  return store._makeLocalGettersCache[namespace]
+}
+
+function registerMutation (store, type, handler, local) {
+  var entry = store._mutations[type] || (store._mutations[type] = []);
+  entry.push(function wrappedMutationHandler (payload) {
+    handler.call(store, local.state, payload);
+  });
+}
+
+function registerAction (store, type, handler, local) {
+  var entry = store._actions[type] || (store._actions[type] = []);
+  entry.push(function wrappedActionHandler (payload) {
+    var res = handler.call(store, {
+      dispatch: local.dispatch,
+      commit: local.commit,
+      getters: local.getters,
+      state: local.state,
+      rootGetters: store.getters,
+      rootState: store.state
+    }, payload);
+    if (!isPromise(res)) {
+      res = Promise.resolve(res);
+    }
+    if (store._devtoolHook) {
+      return res.catch(function (err) {
+        store._devtoolHook.emit('vuex:error', err);
+        throw err
+      })
+    } else {
+      return res
+    }
+  });
+}
+
+function registerGetter (store, type, rawGetter, local) {
+  if (store._wrappedGetters[type]) {
+    if (true) {
+      console.error(("[vuex] duplicate getter key: " + type));
+    }
+    return
+  }
+  store._wrappedGetters[type] = function wrappedGetter (store) {
+    return rawGetter(
+      local.state, // local state
+      local.getters, // local getters
+      store.state, // root state
+      store.getters // root getters
+    )
+  };
+}
+
+function enableStrictMode (store) {
+  store._vm.$watch(function () { return this._data.$$state }, function () {
+    if (true) {
+      assert(store._committing, "do not mutate vuex store state outside mutation handlers.");
+    }
+  }, { deep: true, sync: true });
+}
+
+function getNestedState (state, path) {
+  return path.reduce(function (state, key) { return state[key]; }, state)
+}
+
+function unifyObjectStyle (type, payload, options) {
+  if (isObject(type) && type.type) {
+    options = payload;
+    payload = type;
+    type = type.type;
+  }
+
+  if (true) {
+    assert(typeof type === 'string', ("expects string as the type, but found " + (typeof type) + "."));
+  }
+
+  return { type: type, payload: payload, options: options }
+}
+
+function install (_Vue) {
+  if (Vue && _Vue === Vue) {
+    if (true) {
+      console.error(
+        '[vuex] already installed. Vue.use(Vuex) should be called only once.'
+      );
+    }
+    return
+  }
+  Vue = _Vue;
+  applyMixin(Vue);
+}
+
+/**
+ * Reduce the code which written in Vue.js for getting the state.
+ * @param {String} [namespace] - Module's namespace
+ * @param {Object|Array} states # Object's item can be a function which accept state and getters for param, you can do something for state and getters in it.
+ * @param {Object}
+ */
+var mapState = normalizeNamespace(function (namespace, states) {
+  var res = {};
+  if ( true && !isValidMap(states)) {
+    console.error('[vuex] mapState: mapper parameter must be either an Array or an Object');
+  }
+  normalizeMap(states).forEach(function (ref) {
+    var key = ref.key;
+    var val = ref.val;
+
+    res[key] = function mappedState () {
+      var state = this.$store.state;
+      var getters = this.$store.getters;
+      if (namespace) {
+        var module = getModuleByNamespace(this.$store, 'mapState', namespace);
+        if (!module) {
+          return
+        }
+        state = module.context.state;
+        getters = module.context.getters;
+      }
+      return typeof val === 'function'
+        ? val.call(this, state, getters)
+        : state[val]
+    };
+    // mark vuex getter for devtools
+    res[key].vuex = true;
+  });
+  return res
+});
+
+/**
+ * Reduce the code which written in Vue.js for committing the mutation
+ * @param {String} [namespace] - Module's namespace
+ * @param {Object|Array} mutations # Object's item can be a function which accept `commit` function as the first param, it can accept anthor params. You can commit mutation and do any other things in this function. specially, You need to pass anthor params from the mapped function.
+ * @return {Object}
+ */
+var mapMutations = normalizeNamespace(function (namespace, mutations) {
+  var res = {};
+  if ( true && !isValidMap(mutations)) {
+    console.error('[vuex] mapMutations: mapper parameter must be either an Array or an Object');
+  }
+  normalizeMap(mutations).forEach(function (ref) {
+    var key = ref.key;
+    var val = ref.val;
+
+    res[key] = function mappedMutation () {
+      var args = [], len = arguments.length;
+      while ( len-- ) args[ len ] = arguments[ len ];
+
+      // Get the commit method from store
+      var commit = this.$store.commit;
+      if (namespace) {
+        var module = getModuleByNamespace(this.$store, 'mapMutations', namespace);
+        if (!module) {
+          return
+        }
+        commit = module.context.commit;
+      }
+      return typeof val === 'function'
+        ? val.apply(this, [commit].concat(args))
+        : commit.apply(this.$store, [val].concat(args))
+    };
+  });
+  return res
+});
+
+/**
+ * Reduce the code which written in Vue.js for getting the getters
+ * @param {String} [namespace] - Module's namespace
+ * @param {Object|Array} getters
+ * @return {Object}
+ */
+var mapGetters = normalizeNamespace(function (namespace, getters) {
+  var res = {};
+  if ( true && !isValidMap(getters)) {
+    console.error('[vuex] mapGetters: mapper parameter must be either an Array or an Object');
+  }
+  normalizeMap(getters).forEach(function (ref) {
+    var key = ref.key;
+    var val = ref.val;
+
+    // The namespace has been mutated by normalizeNamespace
+    val = namespace + val;
+    res[key] = function mappedGetter () {
+      if (namespace && !getModuleByNamespace(this.$store, 'mapGetters', namespace)) {
+        return
+      }
+      if ( true && !(val in this.$store.getters)) {
+        console.error(("[vuex] unknown getter: " + val));
+        return
+      }
+      return this.$store.getters[val]
+    };
+    // mark vuex getter for devtools
+    res[key].vuex = true;
+  });
+  return res
+});
+
+/**
+ * Reduce the code which written in Vue.js for dispatch the action
+ * @param {String} [namespace] - Module's namespace
+ * @param {Object|Array} actions # Object's item can be a function which accept `dispatch` function as the first param, it can accept anthor params. You can dispatch action and do any other things in this function. specially, You need to pass anthor params from the mapped function.
+ * @return {Object}
+ */
+var mapActions = normalizeNamespace(function (namespace, actions) {
+  var res = {};
+  if ( true && !isValidMap(actions)) {
+    console.error('[vuex] mapActions: mapper parameter must be either an Array or an Object');
+  }
+  normalizeMap(actions).forEach(function (ref) {
+    var key = ref.key;
+    var val = ref.val;
+
+    res[key] = function mappedAction () {
+      var args = [], len = arguments.length;
+      while ( len-- ) args[ len ] = arguments[ len ];
+
+      // get dispatch function from store
+      var dispatch = this.$store.dispatch;
+      if (namespace) {
+        var module = getModuleByNamespace(this.$store, 'mapActions', namespace);
+        if (!module) {
+          return
+        }
+        dispatch = module.context.dispatch;
+      }
+      return typeof val === 'function'
+        ? val.apply(this, [dispatch].concat(args))
+        : dispatch.apply(this.$store, [val].concat(args))
+    };
+  });
+  return res
+});
+
+/**
+ * Rebinding namespace param for mapXXX function in special scoped, and return them by simple object
+ * @param {String} namespace
+ * @return {Object}
+ */
+var createNamespacedHelpers = function (namespace) { return ({
+  mapState: mapState.bind(null, namespace),
+  mapGetters: mapGetters.bind(null, namespace),
+  mapMutations: mapMutations.bind(null, namespace),
+  mapActions: mapActions.bind(null, namespace)
+}); };
+
+/**
+ * Normalize the map
+ * normalizeMap([1, 2, 3]) => [ { key: 1, val: 1 }, { key: 2, val: 2 }, { key: 3, val: 3 } ]
+ * normalizeMap({a: 1, b: 2, c: 3}) => [ { key: 'a', val: 1 }, { key: 'b', val: 2 }, { key: 'c', val: 3 } ]
+ * @param {Array|Object} map
+ * @return {Object}
+ */
+function normalizeMap (map) {
+  if (!isValidMap(map)) {
+    return []
+  }
+  return Array.isArray(map)
+    ? map.map(function (key) { return ({ key: key, val: key }); })
+    : Object.keys(map).map(function (key) { return ({ key: key, val: map[key] }); })
+}
+
+/**
+ * Validate whether given map is valid or not
+ * @param {*} map
+ * @return {Boolean}
+ */
+function isValidMap (map) {
+  return Array.isArray(map) || isObject(map)
+}
+
+/**
+ * Return a function expect two param contains namespace and map. it will normalize the namespace and then the param's function will handle the new namespace and the map.
+ * @param {Function} fn
+ * @return {Function}
+ */
+function normalizeNamespace (fn) {
+  return function (namespace, map) {
+    if (typeof namespace !== 'string') {
+      map = namespace;
+      namespace = '';
+    } else if (namespace.charAt(namespace.length - 1) !== '/') {
+      namespace += '/';
+    }
+    return fn(namespace, map)
+  }
+}
+
+/**
+ * Search a special module from store by namespace. if module not exist, print error message.
+ * @param {Object} store
+ * @param {String} helper
+ * @param {String} namespace
+ * @return {Object}
+ */
+function getModuleByNamespace (store, helper, namespace) {
+  var module = store._modulesNamespaceMap[namespace];
+  if ( true && !module) {
+    console.error(("[vuex] module namespace not found in " + helper + "(): " + namespace));
+  }
+  return module
+}
+
+var index_esm = {
+  Store: Store,
+  install: install,
+  version: '3.1.3',
+  mapState: mapState,
+  mapMutations: mapMutations,
+  mapGetters: mapGetters,
+  mapActions: mapActions,
+  createNamespacedHelpers: createNamespacedHelpers
+};
+
+/* harmony default export */ __webpack_exports__["default"] = (index_esm);
+
+
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../../webpack/buildin/global.js */ "./node_modules/webpack/buildin/global.js")))
+
+/***/ }),
+
 /***/ "./node_modules/webpack/buildin/global.js":
 /*!***********************************!*\
   !*** (webpack)/buildin/global.js ***!
@@ -56171,12 +57806,13 @@ module.exports = function(module) {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _components_Basket__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./components/Basket */ "./resources/js/components/Basket.vue");
-/* harmony import */ var vue_select__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! vue-select */ "./node_modules/vue-select/dist/vue-select.js");
-/* harmony import */ var vue_select__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(vue_select__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var vuelidate__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! vuelidate */ "./node_modules/vuelidate/lib/index.js");
-/* harmony import */ var vuelidate__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(vuelidate__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var vue_reactive_storage__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! vue-reactive-storage */ "./node_modules/vue-reactive-storage/dist/index.js");
-/* harmony import */ var vue_reactive_storage__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(vue_reactive_storage__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var _components_store_store__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./components/store/store */ "./resources/js/components/store/store.js");
+/* harmony import */ var vue_select__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! vue-select */ "./node_modules/vue-select/dist/vue-select.js");
+/* harmony import */ var vue_select__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(vue_select__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var vuelidate__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! vuelidate */ "./node_modules/vuelidate/lib/index.js");
+/* harmony import */ var vuelidate__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(vuelidate__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var vue_reactive_storage__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! vue-reactive-storage */ "./node_modules/vue-reactive-storage/dist/index.js");
+/* harmony import */ var vue_reactive_storage__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(vue_reactive_storage__WEBPACK_IMPORTED_MODULE_4__);
 /**
  * First we will load all of this project's JavaScript dependencies which
  * includes Vue and other libraries. It is a great starting point when
@@ -56187,41 +57823,28 @@ __webpack_require__.r(__webpack_exports__);
 __webpack_require__(/*! ./bootstrap */ "./resources/js/bootstrap.js");
 
 window.Vue = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.common.js");
-/**
- * The following block of code may be used to automatically register your
- * Vue components. It will recursively scan this directory for the Vue
- * components and automatically register them with their "basename".
- *
- * Eg. ./components/ExampleComponent.vue -> <example-component></example-component>
- */
-// const files = require.context('./', true, /\.vue$/i)
-// files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key).default))
 
 
 
-Vue.use(vuelidate__WEBPACK_IMPORTED_MODULE_2___default.a);
-Vue.component("v-select", vue_select__WEBPACK_IMPORTED_MODULE_1___default.a);
+
+window.eventBus = new Vue();
+Vue.use(vuelidate__WEBPACK_IMPORTED_MODULE_3___default.a);
+Vue.use(vue_reactive_storage__WEBPACK_IMPORTED_MODULE_4___default.a, {
+  basket_list: [],
+  basket_list_sum: 0
+});
+Vue.component("v-select", vue_select__WEBPACK_IMPORTED_MODULE_2___default.a);
 Vue.component('example-component', __webpack_require__(/*! ./components/ExampleComponent.vue */ "./resources/js/components/ExampleComponent.vue")["default"]);
 Vue.component('shop-component', __webpack_require__(/*! ./components/Shop.vue */ "./resources/js/components/Shop.vue")["default"]);
 Vue.component('basket-component', __webpack_require__(/*! ./components/Basket.vue */ "./resources/js/components/Basket.vue")["default"]);
-Vue.component('your-order-component', __webpack_require__(/*! ./components/YourOrderComponent.vue */ "./resources/js/components/YourOrderComponent.vue")["default"]);
+Vue.component('your-order-component', __webpack_require__(/*! ./components/checkout/YourOrderProductsComponent.vue */ "./resources/js/components/checkout/YourOrderProductsComponent.vue")["default"]);
 Vue.component('basket-button-component', __webpack_require__(/*! ./components/product/BasketButton.vue */ "./resources/js/components/product/BasketButton.vue")["default"]);
 Vue.component('comments-component', __webpack_require__(/*! ./components/product/Comments.vue */ "./resources/js/components/product/Comments.vue")["default"]);
 Vue.component('check-out-form-shipping', __webpack_require__(/*! ./components/checkout/CheckOutFormShipping.vue */ "./resources/js/components/checkout/CheckOutFormShipping.vue")["default"]);
 Vue.component('check-out-form-main', __webpack_require__(/*! ./components/checkout/CheckOutFormMain.vue */ "./resources/js/components/checkout/CheckOutFormMain.vue")["default"]);
-/**
- * Next, we will create a fresh Vue application instance and attach it to
- * the page. Then, you may begin adding components to this application
- * or customize the JavaScript scaffolding to fit your unique needs.
- */
-
-
-Vue.use(vue_reactive_storage__WEBPACK_IMPORTED_MODULE_3___default.a, {
-  basket_list: [],
-  basket_list_sum: 0
-});
 var app = new Vue({
-  el: '#app'
+  el: '#app',
+  store: _components_store_store__WEBPACK_IMPORTED_MODULE_1__["store"]
 });
 
 /***/ }),
@@ -56721,18 +58344,18 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
-/***/ "./resources/js/components/YourOrderComponent.vue":
-/*!********************************************************!*\
-  !*** ./resources/js/components/YourOrderComponent.vue ***!
-  \********************************************************/
+/***/ "./resources/js/components/auth/FastRegisterComponent.vue":
+/*!****************************************************************!*\
+  !*** ./resources/js/components/auth/FastRegisterComponent.vue ***!
+  \****************************************************************/
 /*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _YourOrderComponent_vue_vue_type_template_id_5cc89d0d_scoped_true___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./YourOrderComponent.vue?vue&type=template&id=5cc89d0d&scoped=true& */ "./resources/js/components/YourOrderComponent.vue?vue&type=template&id=5cc89d0d&scoped=true&");
-/* harmony import */ var _YourOrderComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./YourOrderComponent.vue?vue&type=script&lang=js& */ "./resources/js/components/YourOrderComponent.vue?vue&type=script&lang=js&");
-/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+/* harmony import */ var _FastRegisterComponent_vue_vue_type_template_id_f7d64b3c_scoped_true___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./FastRegisterComponent.vue?vue&type=template&id=f7d64b3c&scoped=true& */ "./resources/js/components/auth/FastRegisterComponent.vue?vue&type=template&id=f7d64b3c&scoped=true&");
+/* harmony import */ var _FastRegisterComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./FastRegisterComponent.vue?vue&type=script&lang=js& */ "./resources/js/components/auth/FastRegisterComponent.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
 
 
 
@@ -56741,50 +58364,119 @@ __webpack_require__.r(__webpack_exports__);
 /* normalize component */
 
 var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
-  _YourOrderComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
-  _YourOrderComponent_vue_vue_type_template_id_5cc89d0d_scoped_true___WEBPACK_IMPORTED_MODULE_0__["render"],
-  _YourOrderComponent_vue_vue_type_template_id_5cc89d0d_scoped_true___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  _FastRegisterComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _FastRegisterComponent_vue_vue_type_template_id_f7d64b3c_scoped_true___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _FastRegisterComponent_vue_vue_type_template_id_f7d64b3c_scoped_true___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
   false,
   null,
-  "5cc89d0d",
+  "f7d64b3c",
   null
   
 )
 
 /* hot reload */
 if (false) { var api; }
-component.options.__file = "resources/js/components/YourOrderComponent.vue"
+component.options.__file = "resources/js/components/auth/FastRegisterComponent.vue"
 /* harmony default export */ __webpack_exports__["default"] = (component.exports);
 
 /***/ }),
 
-/***/ "./resources/js/components/YourOrderComponent.vue?vue&type=script&lang=js&":
-/*!*********************************************************************************!*\
-  !*** ./resources/js/components/YourOrderComponent.vue?vue&type=script&lang=js& ***!
-  \*********************************************************************************/
+/***/ "./resources/js/components/auth/FastRegisterComponent.vue?vue&type=script&lang=js&":
+/*!*****************************************************************************************!*\
+  !*** ./resources/js/components/auth/FastRegisterComponent.vue?vue&type=script&lang=js& ***!
+  \*****************************************************************************************/
 /*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_YourOrderComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib??ref--4-0!../../../node_modules/vue-loader/lib??vue-loader-options!./YourOrderComponent.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/YourOrderComponent.vue?vue&type=script&lang=js&");
-/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_YourOrderComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_FastRegisterComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/babel-loader/lib??ref--4-0!../../../../node_modules/vue-loader/lib??vue-loader-options!./FastRegisterComponent.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/auth/FastRegisterComponent.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_FastRegisterComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
 
 /***/ }),
 
-/***/ "./resources/js/components/YourOrderComponent.vue?vue&type=template&id=5cc89d0d&scoped=true&":
-/*!***************************************************************************************************!*\
-  !*** ./resources/js/components/YourOrderComponent.vue?vue&type=template&id=5cc89d0d&scoped=true& ***!
-  \***************************************************************************************************/
+/***/ "./resources/js/components/auth/FastRegisterComponent.vue?vue&type=template&id=f7d64b3c&scoped=true&":
+/*!***********************************************************************************************************!*\
+  !*** ./resources/js/components/auth/FastRegisterComponent.vue?vue&type=template&id=f7d64b3c&scoped=true& ***!
+  \***********************************************************************************************************/
 /*! exports provided: render, staticRenderFns */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_YourOrderComponent_vue_vue_type_template_id_5cc89d0d_scoped_true___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../node_modules/vue-loader/lib??vue-loader-options!./YourOrderComponent.vue?vue&type=template&id=5cc89d0d&scoped=true& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/YourOrderComponent.vue?vue&type=template&id=5cc89d0d&scoped=true&");
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_YourOrderComponent_vue_vue_type_template_id_5cc89d0d_scoped_true___WEBPACK_IMPORTED_MODULE_0__["render"]; });
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_FastRegisterComponent_vue_vue_type_template_id_f7d64b3c_scoped_true___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../../node_modules/vue-loader/lib??vue-loader-options!./FastRegisterComponent.vue?vue&type=template&id=f7d64b3c&scoped=true& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/auth/FastRegisterComponent.vue?vue&type=template&id=f7d64b3c&scoped=true&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_FastRegisterComponent_vue_vue_type_template_id_f7d64b3c_scoped_true___WEBPACK_IMPORTED_MODULE_0__["render"]; });
 
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_YourOrderComponent_vue_vue_type_template_id_5cc89d0d_scoped_true___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_FastRegisterComponent_vue_vue_type_template_id_f7d64b3c_scoped_true___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+
+
+
+/***/ }),
+
+/***/ "./resources/js/components/auth/LoginComponent.vue":
+/*!*********************************************************!*\
+  !*** ./resources/js/components/auth/LoginComponent.vue ***!
+  \*********************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _LoginComponent_vue_vue_type_template_id_5a228f80_scoped_true___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./LoginComponent.vue?vue&type=template&id=5a228f80&scoped=true& */ "./resources/js/components/auth/LoginComponent.vue?vue&type=template&id=5a228f80&scoped=true&");
+/* harmony import */ var _LoginComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./LoginComponent.vue?vue&type=script&lang=js& */ "./resources/js/components/auth/LoginComponent.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+/* normalize component */
+
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
+  _LoginComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _LoginComponent_vue_vue_type_template_id_5a228f80_scoped_true___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _LoginComponent_vue_vue_type_template_id_5a228f80_scoped_true___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  false,
+  null,
+  "5a228f80",
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/components/auth/LoginComponent.vue"
+/* harmony default export */ __webpack_exports__["default"] = (component.exports);
+
+/***/ }),
+
+/***/ "./resources/js/components/auth/LoginComponent.vue?vue&type=script&lang=js&":
+/*!**********************************************************************************!*\
+  !*** ./resources/js/components/auth/LoginComponent.vue?vue&type=script&lang=js& ***!
+  \**********************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_LoginComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/babel-loader/lib??ref--4-0!../../../../node_modules/vue-loader/lib??vue-loader-options!./LoginComponent.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/auth/LoginComponent.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_LoginComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./resources/js/components/auth/LoginComponent.vue?vue&type=template&id=5a228f80&scoped=true&":
+/*!****************************************************************************************************!*\
+  !*** ./resources/js/components/auth/LoginComponent.vue?vue&type=template&id=5a228f80&scoped=true& ***!
+  \****************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_LoginComponent_vue_vue_type_template_id_5a228f80_scoped_true___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../../node_modules/vue-loader/lib??vue-loader-options!./LoginComponent.vue?vue&type=template&id=5a228f80&scoped=true& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/auth/LoginComponent.vue?vue&type=template&id=5a228f80&scoped=true&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_LoginComponent_vue_vue_type_template_id_5a228f80_scoped_true___WEBPACK_IMPORTED_MODULE_0__["render"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_LoginComponent_vue_vue_type_template_id_5a228f80_scoped_true___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
 
 
 
@@ -56923,6 +58615,75 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_CheckOutFormShipping_vue_vue_type_template_id_f3561534_scoped_true___WEBPACK_IMPORTED_MODULE_0__["render"]; });
 
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_CheckOutFormShipping_vue_vue_type_template_id_f3561534_scoped_true___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+
+
+
+/***/ }),
+
+/***/ "./resources/js/components/checkout/YourOrderProductsComponent.vue":
+/*!*************************************************************************!*\
+  !*** ./resources/js/components/checkout/YourOrderProductsComponent.vue ***!
+  \*************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _YourOrderProductsComponent_vue_vue_type_template_id_57d6a56c_scoped_true___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./YourOrderProductsComponent.vue?vue&type=template&id=57d6a56c&scoped=true& */ "./resources/js/components/checkout/YourOrderProductsComponent.vue?vue&type=template&id=57d6a56c&scoped=true&");
+/* harmony import */ var _YourOrderProductsComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./YourOrderProductsComponent.vue?vue&type=script&lang=js& */ "./resources/js/components/checkout/YourOrderProductsComponent.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+/* normalize component */
+
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
+  _YourOrderProductsComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _YourOrderProductsComponent_vue_vue_type_template_id_57d6a56c_scoped_true___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _YourOrderProductsComponent_vue_vue_type_template_id_57d6a56c_scoped_true___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  false,
+  null,
+  "57d6a56c",
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/components/checkout/YourOrderProductsComponent.vue"
+/* harmony default export */ __webpack_exports__["default"] = (component.exports);
+
+/***/ }),
+
+/***/ "./resources/js/components/checkout/YourOrderProductsComponent.vue?vue&type=script&lang=js&":
+/*!**************************************************************************************************!*\
+  !*** ./resources/js/components/checkout/YourOrderProductsComponent.vue?vue&type=script&lang=js& ***!
+  \**************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_YourOrderProductsComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/babel-loader/lib??ref--4-0!../../../../node_modules/vue-loader/lib??vue-loader-options!./YourOrderProductsComponent.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/checkout/YourOrderProductsComponent.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_YourOrderProductsComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./resources/js/components/checkout/YourOrderProductsComponent.vue?vue&type=template&id=57d6a56c&scoped=true&":
+/*!********************************************************************************************************************!*\
+  !*** ./resources/js/components/checkout/YourOrderProductsComponent.vue?vue&type=template&id=57d6a56c&scoped=true& ***!
+  \********************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_YourOrderProductsComponent_vue_vue_type_template_id_57d6a56c_scoped_true___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../../node_modules/vue-loader/lib??vue-loader-options!./YourOrderProductsComponent.vue?vue&type=template&id=57d6a56c&scoped=true& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/checkout/YourOrderProductsComponent.vue?vue&type=template&id=57d6a56c&scoped=true&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_YourOrderProductsComponent_vue_vue_type_template_id_57d6a56c_scoped_true___WEBPACK_IMPORTED_MODULE_0__["render"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_YourOrderProductsComponent_vue_vue_type_template_id_57d6a56c_scoped_true___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
 
 
 
@@ -57081,6 +58842,74 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_Comments_vue_vue_type_template_id_13ed977f_scoped_true___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
 
 
+
+/***/ }),
+
+/***/ "./resources/js/components/store/store.js":
+/*!************************************************!*\
+  !*** ./resources/js/components/store/store.js ***!
+  \************************************************/
+/*! exports provided: store */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "store", function() { return store; });
+/* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.common.js");
+/* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(vue__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var vuex__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! vuex */ "./node_modules/vuex/dist/vuex.esm.js");
+
+
+vue__WEBPACK_IMPORTED_MODULE_0___default.a.use(vuex__WEBPACK_IMPORTED_MODULE_1__["default"]);
+var store = new vuex__WEBPACK_IMPORTED_MODULE_1__["default"].Store({
+  state: {
+    token: localStorage.getItem('access_token') || null,
+    user: null // basket_list: localStorage.getItem('basket_list')
+
+  },
+  mutations: {
+    retrieveUser: function retrieveUser(state, user) {
+      state.user = user;
+    },
+    retrieveToken: function retrieveToken(state, token) {
+      state.token = token;
+    },
+    destroyToken: function destroyToken(state) {
+      state.token = null;
+    }
+  },
+  getters: {
+    loggedIn: function loggedIn(state) {
+      return state.token !== null;
+    }
+  },
+  actions: {
+    retrieveToken: function retrieveToken(context, credentials) {
+      return new Promise(function (resolve, reject) {
+        axios.post('/api/v1/login', {
+          email: credentials.email,
+          password: credentials.password
+        }).then(function (response) {
+          var token = response.data.access_token;
+          localStorage.setItem('access_token', token);
+          context.commit('retrieveToken', token);
+          resolve(response);
+        })["catch"](function (error) {
+          console.log(error);
+          reject(error);
+        });
+      });
+    },
+    retrieveTodos: function retrieveTodos(context) {
+      axios.defaults.headers.common['Authorization'] = 'Bearer ' + context.state.token;
+      axios.get('/').then(function (response) {
+        context.commit('retrieveTodos', response.data);
+      })["catch"](function (error) {
+        console.log(error);
+      });
+    }
+  }
+});
 
 /***/ }),
 
