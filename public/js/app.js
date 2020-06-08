@@ -2860,6 +2860,33 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _auth_LoginComponent__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../auth/LoginComponent */ "./resources/js/components/auth/LoginComponent.vue");
 /* harmony import */ var _YourOrderProductsComponent__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./YourOrderProductsComponent */ "./resources/js/components/checkout/YourOrderProductsComponent.vue");
 /* harmony import */ var _auth_FastRegisterComponent__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../auth/FastRegisterComponent */ "./resources/js/components/auth/FastRegisterComponent.vue");
+function _createForOfIteratorHelper(o) { if (typeof Symbol === "undefined" || o[Symbol.iterator] == null) { if (Array.isArray(o) || (o = _unsupportedIterableToArray(o))) { var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e) { throw _e; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var it, normalCompletion = true, didErr = false, err; return { s: function s() { it = o[Symbol.iterator](); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e2) { didErr = true; err = _e2; }, f: function f() { try { if (!normalCompletion && it["return"] != null) it["return"](); } finally { if (didErr) throw err; } } }; }
+
+function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(n); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
+
+function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
+
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 //
 //
 //
@@ -3114,10 +3141,14 @@ var mustBePayment = function mustBePayment(value) {
       // чи вибране місто
       warehouses: {},
       // доступні відділення для міста
-      is_refresh: false,
       next_steep: 1,
       // крок
-      csrf: document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+      is_refresh: false,
+      completed: null,
+      message: {
+        id: null,
+        text: ''
+      },
       //user
       email: '',
       full_name: '',
@@ -3147,6 +3178,31 @@ var mustBePayment = function mustBePayment(value) {
       this.next_steep = 2;
     } // console.log(this.$store.state.basket_list)
 
+
+    var form = {
+      products: {}
+    };
+    var obj = JSON.parse(localStorage.basket_list);
+
+    var _iterator = _createForOfIteratorHelper(obj),
+        _step;
+
+    try {
+      for (_iterator.s(); !(_step = _iterator.n()).done;) {
+        var item = _step.value;
+        form['products'][item.id] = {
+          id: item.id,
+          count: item.count
+        };
+      }
+    } catch (err) {
+      _iterator.e(err);
+    } finally {
+      _iterator.f();
+    }
+
+    console.log(form);
+    console.log(obj);
   },
   validations: {
     city_code: {
@@ -3201,20 +3257,54 @@ var mustBePayment = function mustBePayment(value) {
       this.storeOrder();
     },
     storeOrder: function storeOrder() {
+      var _this = this;
+
+      this.is_refresh = true;
       axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.token;
-      axios.post('/api/v1/order', {
+      var form = {
         comment: this.comment,
-        products: localStorage.basket_list,
-        method_pay: this.method_pay,
+        method_pay: this.payment_method,
         shipping_method: this.shipping_method,
         city_code: this.city_code,
         street: this.street,
         house: this.house,
         flat: this.flat,
-        warehouse_code: this.warehouse_code
-      }).then(function (response) {
-        console.log(response);
+        warehouse_code: this.warehouse_code,
+        products: {}
+      };
+      var obj = JSON.parse(localStorage.basket_list);
+
+      var _iterator2 = _createForOfIteratorHelper(obj),
+          _step2;
+
+      try {
+        for (_iterator2.s(); !(_step2 = _iterator2.n()).done;) {
+          var item = _step2.value;
+          form['products'][item.id] = {
+            id: item.id,
+            count: item.count
+          };
+        }
+      } catch (err) {
+        _iterator2.e(err);
+      } finally {
+        _iterator2.f();
+      }
+
+      axios.post('/api/v1/order', form).then(function (response) {
+        // console.log('Success');
+        // console.log(response);
+        localStorage.basket_list = {};
+        _this.completed = true;
+        _this.message.id = response.data.id;
+        _this.message.text = response.data.status;
+        _this.is_refresh = false;
       })["catch"](function (error) {
+        this.completed = false;
+        this.message.text = error;
+        this.is_refresh = false;
+        console.log('error'); // debug error
+
         console.log(error); // debug error
       });
     },
@@ -3249,10 +3339,10 @@ var mustBePayment = function mustBePayment(value) {
       this.next_steep = 2;
     },
     loadWarehouses: function loadWarehouses() {
-      var _this = this;
+      var _this2 = this;
 
       axios.get('/api/v1/shipping/address?shipping_method=novaposhta&code=' + this.city.id).then(function (response) {
-        _this.warehouses = response.data;
+        _this2.warehouses = response.data;
       });
     }
   }
@@ -8098,6 +8188,25 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 // module
 exports.push([module.i, "\n.load[data-v-e1ea323e]{\n    background-image: url(\"/img/load.png\");\n    height: 64px;\n    width: 64px;\n    background-repeat: no-repeat;\n    background-size: 100%;\n    cursor: pointer;\n}\n", ""]);
+
+// exports
+
+
+/***/ }),
+
+/***/ "./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/checkout/CheckOutFormMain.vue?vue&type=style&index=0&id=5caf2ff1&scoped=true&lang=css&":
+/*!*******************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/css-loader??ref--7-1!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src??ref--7-2!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/checkout/CheckOutFormMain.vue?vue&type=style&index=0&id=5caf2ff1&scoped=true&lang=css& ***!
+  \*******************************************************************************************************************************************************************************************************************************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__(/*! ../../../../node_modules/css-loader/lib/css-base.js */ "./node_modules/css-loader/lib/css-base.js")(false);
+// imports
+
+
+// module
+exports.push([module.i, "\n.spinner[data-v-5caf2ff1] {\n    height: 60px;\n    width: 60px;\n    margin: auto;\n    display: flex;\n    position: absolute;\n    -webkit-animation: rotation-data-v-5caf2ff1 .6s infinite linear;\n    animation: rotation-data-v-5caf2ff1 .6s infinite linear;\n    border-left: 6px solid rgba(0, 174, 239, .15);\n    border-right: 6px solid rgba(0, 174, 239, .15);\n    border-bottom: 6px solid rgba(0, 174, 239, .15);\n    border-top: 6px solid rgba(0, 174, 239, .8);\n    border-radius: 100%;\n}\n@-webkit-keyframes rotation-data-v-5caf2ff1 {\nfrom {\n        -webkit-transform: rotate(0deg);\n}\nto {\n        -webkit-transform: rotate(359deg);\n}\n}\n@keyframes rotation-data-v-5caf2ff1 {\nfrom {\n        transform: rotate(0deg);\n}\nto {\n        transform: rotate(359deg);\n}\n}\n#overlay[data-v-5caf2ff1] {\n    position: absolute;\n    display: none;\n    top: 0;\n    left: 0;\n    right: 0;\n    bottom: 0;\n    background-color: rgba(0,0,0,0.5);\n    z-index: 2;\n    cursor: pointer;\n}\n\n\n\n", ""]);
 
 // exports
 
@@ -39215,6 +39324,36 @@ if(false) {}
 
 /***/ }),
 
+/***/ "./node_modules/style-loader/index.js!./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/checkout/CheckOutFormMain.vue?vue&type=style&index=0&id=5caf2ff1&scoped=true&lang=css&":
+/*!***********************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/style-loader!./node_modules/css-loader??ref--7-1!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src??ref--7-2!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/checkout/CheckOutFormMain.vue?vue&type=style&index=0&id=5caf2ff1&scoped=true&lang=css& ***!
+  \***********************************************************************************************************************************************************************************************************************************************************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+
+var content = __webpack_require__(/*! !../../../../node_modules/css-loader??ref--7-1!../../../../node_modules/vue-loader/lib/loaders/stylePostLoader.js!../../../../node_modules/postcss-loader/src??ref--7-2!../../../../node_modules/vue-loader/lib??vue-loader-options!./CheckOutFormMain.vue?vue&type=style&index=0&id=5caf2ff1&scoped=true&lang=css& */ "./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/checkout/CheckOutFormMain.vue?vue&type=style&index=0&id=5caf2ff1&scoped=true&lang=css&");
+
+if(typeof content === 'string') content = [[module.i, content, '']];
+
+var transform;
+var insertInto;
+
+
+
+var options = {"hmr":true}
+
+options.transform = transform
+options.insertInto = undefined;
+
+var update = __webpack_require__(/*! ../../../../node_modules/style-loader/lib/addStyles.js */ "./node_modules/style-loader/lib/addStyles.js")(content, options);
+
+if(content.locals) module.exports = content.locals;
+
+if(false) {}
+
+/***/ }),
+
 /***/ "./node_modules/style-loader/index.js!./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/product/BasketButton.vue?vue&type=style&index=0&id=328df6a3&scoped=true&lang=css&":
 /*!******************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
   !*** ./node_modules/style-loader!./node_modules/css-loader??ref--7-1!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src??ref--7-2!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/product/BasketButton.vue?vue&type=style&index=0&id=328df6a3&scoped=true&lang=css& ***!
@@ -41208,525 +41347,695 @@ var render = function() {
   return _c("div", { staticClass: "row" }, [
     _c("div", { staticClass: "col-lg-6 col-md-6" }, [
       _c("div", { staticClass: "card card-primary" }, [
-        _c(
-          "div",
-          { staticClass: "card-body" },
-          [
-            !_vm.status_auth
-              ? _c("LoginComponent", { on: { changeStatus: _vm.login } })
-              : _vm._e(),
-            _vm._v(" "),
-            _vm.next_steep === 1 && _vm.status_auth === false
-              ? _c("FastRegisterComponent", { on: { registered: _vm.login } })
-              : _vm._e(),
-            _vm._v(" "),
-            _vm.next_steep === 2
-              ? _c("div", [
-                  _c("h5", [_vm._v("Вибір способів доставки й оплати")]),
+        _c("div", { staticClass: "card-body" }, [
+          _c(
+            "div",
+            {
+              style: { display: _vm.is_refresh === true ? "flex" : "none" },
+              attrs: { id: "overlay" }
+            },
+            [_vm._m(0)]
+          ),
+          _vm._v(" "),
+          _vm.completed === true
+            ? _c(
+                "div",
+                { staticClass: "alert alert-success alert-dismissible" },
+                [
+                  _c(
+                    "button",
+                    {
+                      staticClass: "close",
+                      attrs: {
+                        type: "button",
+                        "data-dismiss": "alert",
+                        "aria-hidden": "true"
+                      }
+                    },
+                    [_vm._v("×")]
+                  ),
                   _vm._v(" "),
-                  _c("div", { staticClass: "row form-group" }, [
-                    _vm._m(0),
-                    _vm._v(" "),
-                    _c(
-                      "div",
-                      { staticClass: "col-sm-9" },
-                      [
-                        _c(
-                          "v-select",
-                          {
-                            attrs: {
-                              label: "name",
-                              filterable: false,
-                              options: _vm.options
-                            },
-                            on: {
-                              search: _vm.onSearch,
-                              input: _vm.setSelected
-                            },
-                            scopedSlots: _vm._u(
-                              [
-                                {
-                                  key: "option",
-                                  fn: function(option) {
-                                    return [
-                                      _c("div", { staticClass: "d-center" }, [
-                                        _vm._v(
-                                          "\n                                        " +
-                                            _vm._s(option.description) +
-                                            "\n                                    "
-                                        )
-                                      ])
-                                    ]
-                                  }
-                                },
-                                {
-                                  key: "selected-option",
-                                  fn: function(option) {
-                                    return [
-                                      _c(
-                                        "div",
-                                        { staticClass: "selected d-center" },
-                                        [
-                                          _vm._v(
-                                            "\n                                        " +
-                                              _vm._s(option.description) +
-                                              "\n                                    "
-                                          )
-                                        ]
-                                      )
-                                    ]
-                                  }
-                                }
-                              ],
-                              null,
-                              false,
-                              2163421572
-                            )
-                          },
-                          [
-                            _c("template", { slot: "no-options" }, [
-                              _vm._v(
-                                "\n                                    Введіть назву населеного пункту для доставки\n                                "
-                              )
-                            ])
-                          ],
-                          2
-                        ),
+                  _c("h5", [_vm._v("Успіх")]),
+                  _vm._v(
+                    "\n                    Замовлення #" +
+                      _vm._s(_vm.message.id) +
+                      " успішно відправлено!"
+                  ),
+                  _c("br"),
+                  _vm._v(
+                    "\n                    Статус замовлення: " +
+                      _vm._s(_vm.message.text) +
+                      "\n                "
+                  )
+                ]
+              )
+            : _vm._e(),
+          _vm._v(" "),
+          _vm.completed === false
+            ? _c(
+                "div",
+                { staticClass: "alert alert-danger alert-dismissible" },
+                [
+                  _c(
+                    "button",
+                    {
+                      staticClass: "close",
+                      attrs: {
+                        type: "button",
+                        "data-dismiss": "alert",
+                        "aria-hidden": "true"
+                      }
+                    },
+                    [_vm._v("×")]
+                  ),
+                  _vm._v(" "),
+                  _c("h5", [_vm._v("Помилка")]),
+                  _vm._v(
+                    "\n                    Під час збереження замовлення сталась неочікувана помилка: " +
+                      _vm._s(_vm.message.text) +
+                      "\n                "
+                  )
+                ]
+              )
+            : _vm._e(),
+          _vm._v(" "),
+          _vm.completed !== true
+            ? _c(
+                "div",
+                [
+                  !_vm.status_auth
+                    ? _c("LoginComponent", { on: { changeStatus: _vm.login } })
+                    : _vm._e(),
+                  _vm._v(" "),
+                  _vm.next_steep === 1 && _vm.status_auth === false
+                    ? _c("FastRegisterComponent", {
+                        on: { registered: _vm.login }
+                      })
+                    : _vm._e(),
+                  _vm._v(" "),
+                  _vm.next_steep === 2
+                    ? _c("div", [
+                        _c("h5", [_vm._v("Вибір способів доставки й оплати")]),
                         _vm._v(" "),
-                        !_vm.$v.city_code.required
-                          ? _c(
-                              "div",
-                              {
-                                staticClass: "invalid-feedback",
-                                style: {
-                                  display: _vm.$v.city_code.$error
-                                    ? "block"
-                                    : "none"
-                                }
-                              },
-                              [
-                                _vm._v(
-                                  "Поле обовязкове до\n                                заповнення!\n                            "
-                                )
-                              ]
-                            )
-                          : _vm._e()
-                      ],
-                      1
-                    )
-                  ]),
-                  _vm._v(" "),
-                  _vm.selected
-                    ? _c(
-                        "fieldset",
-                        { staticClass: "form-group border-bottom" },
-                        [
-                          _c("div", { staticClass: "row" }, [
-                            _c(
-                              "legend",
-                              { staticClass: "col-form-label col-sm-3 pt-0" },
-                              [_vm._v("Спосіб доставки")]
-                            ),
-                            _vm._v(" "),
-                            _c("div", { staticClass: "col-sm-9" }, [
+                        _c("div", { staticClass: "row form-group" }, [
+                          _vm._m(1),
+                          _vm._v(" "),
+                          _c(
+                            "div",
+                            { staticClass: "col-sm-9" },
+                            [
                               _c(
-                                "div",
-                                { staticClass: "custom-control custom-radio" },
-                                [
-                                  _c("input", {
-                                    directives: [
+                                "v-select",
+                                {
+                                  attrs: {
+                                    label: "name",
+                                    filterable: false,
+                                    options: _vm.options
+                                  },
+                                  on: {
+                                    search: _vm.onSearch,
+                                    input: _vm.setSelected
+                                  },
+                                  scopedSlots: _vm._u(
+                                    [
                                       {
-                                        name: "model",
-                                        rawName: "v-model",
-                                        value: _vm.shipping_method,
-                                        expression: "shipping_method"
+                                        key: "option",
+                                        fn: function(option) {
+                                          return [
+                                            _c(
+                                              "div",
+                                              { staticClass: "d-center" },
+                                              [
+                                                _vm._v(
+                                                  "\n                                            " +
+                                                    _vm._s(option.description) +
+                                                    "\n                                        "
+                                                )
+                                              ]
+                                            )
+                                          ]
+                                        }
+                                      },
+                                      {
+                                        key: "selected-option",
+                                        fn: function(option) {
+                                          return [
+                                            _c(
+                                              "div",
+                                              {
+                                                staticClass: "selected d-center"
+                                              },
+                                              [
+                                                _vm._v(
+                                                  "\n                                            " +
+                                                    _vm._s(option.description) +
+                                                    "\n                                        "
+                                                )
+                                              ]
+                                            )
+                                          ]
+                                        }
                                       }
                                     ],
-                                    key: "courier",
-                                    staticClass: "custom-control-input",
-                                    class: {
-                                      "is-invalid":
-                                        _vm.$v.shipping_method.$error
-                                    },
-                                    attrs: {
-                                      type: "radio",
-                                      id: "gridRadios1",
-                                      value: "courier"
-                                    },
-                                    domProps: {
-                                      checked: _vm._q(
-                                        _vm.shipping_method,
-                                        "courier"
-                                      )
-                                    },
-                                    on: {
-                                      blur: function($event) {
-                                        return _vm.$v.shipping_method.$touch()
-                                      },
-                                      change: function($event) {
-                                        _vm.shipping_method = "courier"
-                                      }
-                                    }
-                                  }),
-                                  _vm._v(" "),
-                                  _c(
-                                    "label",
-                                    {
-                                      staticClass: "custom-control-label",
-                                      attrs: { for: "gridRadios1" }
-                                    },
-                                    [
-                                      _vm._v(
-                                        "Кур'єр на вашу\n                                        адресу"
-                                      )
-                                    ]
-                                  ),
-                                  _vm._v(" "),
-                                  _vm.shipping_method === "courier"
-                                    ? _c("div", { staticClass: "form-group" }, [
-                                        _c("label", [_vm._v("Адрес")]),
-                                        _vm._v(" "),
-                                        _c("div", { staticClass: "form-row" }, [
-                                          _c(
-                                            "div",
-                                            {
-                                              staticClass:
-                                                "input-group col-6 input-group-sm"
-                                            },
-                                            [
-                                              _vm._m(1),
-                                              _vm._v(" "),
-                                              _c("input", {
-                                                directives: [
-                                                  {
-                                                    name: "model",
-                                                    rawName: "v-model",
-                                                    value: _vm.street,
-                                                    expression: "street"
-                                                  }
-                                                ],
-                                                staticClass: "form-control",
-                                                class: {
-                                                  "is-invalid":
-                                                    _vm.$v.street.$error
-                                                },
-                                                attrs: {
-                                                  type: "text",
-                                                  id: "address_street"
-                                                },
-                                                domProps: { value: _vm.street },
-                                                on: {
-                                                  blur: function($event) {
-                                                    return _vm.$v.street.$touch()
-                                                  },
-                                                  input: function($event) {
-                                                    if (
-                                                      $event.target.composing
-                                                    ) {
-                                                      return
-                                                    }
-                                                    _vm.street =
-                                                      $event.target.value
-                                                  }
-                                                }
-                                              })
-                                            ]
-                                          ),
-                                          _vm._v(" "),
-                                          _c(
-                                            "div",
-                                            {
-                                              staticClass:
-                                                "input-group col-3 input-group-sm"
-                                            },
-                                            [
-                                              _vm._m(2),
-                                              _vm._v(" "),
-                                              _c("input", {
-                                                directives: [
-                                                  {
-                                                    name: "model",
-                                                    rawName: "v-model",
-                                                    value: _vm.house,
-                                                    expression: "house"
-                                                  }
-                                                ],
-                                                staticClass: "form-control",
-                                                class: {
-                                                  "is-invalid":
-                                                    _vm.$v.house.$error
-                                                },
-                                                attrs: {
-                                                  id: "address_house",
-                                                  type: "text"
-                                                },
-                                                domProps: { value: _vm.house },
-                                                on: {
-                                                  blur: function($event) {
-                                                    return _vm.$v.house.$touch()
-                                                  },
-                                                  input: function($event) {
-                                                    if (
-                                                      $event.target.composing
-                                                    ) {
-                                                      return
-                                                    }
-                                                    _vm.house =
-                                                      $event.target.value
-                                                  }
-                                                }
-                                              })
-                                            ]
-                                          ),
-                                          _vm._v(" "),
-                                          _c(
-                                            "div",
-                                            {
-                                              staticClass:
-                                                "input-group col-3 input-group-sm"
-                                            },
-                                            [
-                                              _vm._m(3),
-                                              _vm._v(" "),
-                                              _c("input", {
-                                                directives: [
-                                                  {
-                                                    name: "model",
-                                                    rawName: "v-model",
-                                                    value: _vm.flat,
-                                                    expression: "flat"
-                                                  }
-                                                ],
-                                                staticClass: "form-control",
-                                                class: {
-                                                  "is-invalid":
-                                                    _vm.$v.flat.$error
-                                                },
-                                                attrs: {
-                                                  id: "address_flat",
-                                                  type: "number"
-                                                },
-                                                domProps: { value: _vm.flat },
-                                                on: {
-                                                  blur: function($event) {
-                                                    return _vm.$v.flat.$touch()
-                                                  },
-                                                  input: function($event) {
-                                                    if (
-                                                      $event.target.composing
-                                                    ) {
-                                                      return
-                                                    }
-                                                    _vm.flat =
-                                                      $event.target.value
-                                                  }
-                                                }
-                                              })
-                                            ]
-                                          )
-                                        ]),
-                                        _vm._v(" "),
-                                        !_vm.$v.street.required
-                                          ? _c(
-                                              "div",
-                                              {
-                                                staticClass: "invalid-feedback",
-                                                style: {
-                                                  display: _vm.$v.street.$error
-                                                    ? "block"
-                                                    : "none"
-                                                }
-                                              },
-                                              [
-                                                _vm._v(
-                                                  "Вкажіть вулицю\n                                            для доставки\n                                        "
-                                                )
-                                              ]
-                                            )
-                                          : _vm._e(),
-                                        _vm._v(" "),
-                                        !_vm.$v.house.required
-                                          ? _c(
-                                              "div",
-                                              {
-                                                staticClass: "invalid-feedback",
-                                                style: {
-                                                  display: _vm.$v.house.$error
-                                                    ? "block"
-                                                    : "none"
-                                                }
-                                              },
-                                              [
-                                                _vm._v(
-                                                  "Вкажіть будинок\n                                            для доставки\n                                        "
-                                                )
-                                              ]
-                                            )
-                                          : _vm._e(),
-                                        _vm._v(" "),
-                                        !_vm.$v.flat.required
-                                          ? _c(
-                                              "div",
-                                              {
-                                                staticClass: "invalid-feedback",
-                                                style: {
-                                                  display: _vm.$v.flat.$error
-                                                    ? "block"
-                                                    : "none"
-                                                }
-                                              },
-                                              [
-                                                _vm._v(
-                                                  "Вкажіть квартиру\n                                            для доставки\n                                        "
-                                                )
-                                              ]
-                                            )
-                                          : _vm._e()
-                                      ])
-                                    : _vm._e()
-                                ]
+                                    null,
+                                    false,
+                                    1839308932
+                                  )
+                                },
+                                [
+                                  _c("template", { slot: "no-options" }, [
+                                    _vm._v(
+                                      "\n                                        Введіть назву населеного пункту для доставки\n                                    "
+                                    )
+                                  ])
+                                ],
+                                2
                               ),
                               _vm._v(" "),
-                              _c(
-                                "div",
-                                { staticClass: "custom-control custom-radio" },
-                                [
-                                  _c("input", {
-                                    directives: [
-                                      {
-                                        name: "model",
-                                        rawName: "v-model",
-                                        value: _vm.shipping_method,
-                                        expression: "shipping_method"
-                                      }
-                                    ],
-                                    key: "novaposhta",
-                                    staticClass: "custom-control-input ",
-                                    class: {
-                                      "is-invalid":
-                                        _vm.$v.shipping_method.$error
-                                    },
-                                    attrs: {
-                                      type: "radio",
-                                      id: "novaposhta",
-                                      value: "novaposhta"
-                                    },
-                                    domProps: {
-                                      checked: _vm._q(
-                                        _vm.shipping_method,
-                                        "novaposhta"
-                                      )
-                                    },
-                                    on: {
-                                      blur: function($event) {
-                                        return _vm.$v.shipping_method.$touch()
-                                      },
-                                      change: function($event) {
-                                        _vm.shipping_method = "novaposhta"
-                                      }
-                                    }
-                                  }),
-                                  _vm._v(" "),
-                                  _c(
-                                    "label",
+                              !_vm.$v.city_code.required
+                                ? _c(
+                                    "div",
                                     {
-                                      staticClass: "custom-control-label",
-                                      attrs: { for: "novaposhta" }
+                                      staticClass: "invalid-feedback",
+                                      style: {
+                                        display: _vm.$v.city_code.$error
+                                          ? "block"
+                                          : "none"
+                                      }
                                     },
                                     [
                                       _vm._v(
-                                        "Самовивіз з Нової\n                                        Пошти"
+                                        "Поле обовязкове до\n                                    заповнення!\n                                "
                                       )
                                     ]
+                                  )
+                                : _vm._e()
+                            ],
+                            1
+                          )
+                        ]),
+                        _vm._v(" "),
+                        _vm.selected
+                          ? _c(
+                              "fieldset",
+                              { staticClass: "form-group border-bottom" },
+                              [
+                                _c("div", { staticClass: "row" }, [
+                                  _c(
+                                    "legend",
+                                    {
+                                      staticClass:
+                                        "col-form-label col-sm-3 pt-0"
+                                    },
+                                    [_vm._v("Спосіб доставки")]
                                   ),
                                   _vm._v(" "),
-                                  _vm.shipping_method === "novaposhta"
-                                    ? _c("div", { staticClass: "form-group" }, [
+                                  _c("div", { staticClass: "col-sm-9" }, [
+                                    _c(
+                                      "div",
+                                      {
+                                        staticClass:
+                                          "custom-control custom-radio"
+                                      },
+                                      [
+                                        _c("input", {
+                                          directives: [
+                                            {
+                                              name: "model",
+                                              rawName: "v-model",
+                                              value: _vm.shipping_method,
+                                              expression: "shipping_method"
+                                            }
+                                          ],
+                                          key: "courier",
+                                          staticClass: "custom-control-input",
+                                          class: {
+                                            "is-invalid":
+                                              _vm.$v.shipping_method.$error
+                                          },
+                                          attrs: {
+                                            type: "radio",
+                                            id: "gridRadios1",
+                                            value: "courier"
+                                          },
+                                          domProps: {
+                                            checked: _vm._q(
+                                              _vm.shipping_method,
+                                              "courier"
+                                            )
+                                          },
+                                          on: {
+                                            blur: function($event) {
+                                              return _vm.$v.shipping_method.$touch()
+                                            },
+                                            change: function($event) {
+                                              _vm.shipping_method = "courier"
+                                            }
+                                          }
+                                        }),
+                                        _vm._v(" "),
                                         _c(
                                           "label",
-                                          { attrs: { for: "warehouses" } },
+                                          {
+                                            staticClass: "custom-control-label",
+                                            attrs: { for: "gridRadios1" }
+                                          },
                                           [
                                             _vm._v(
-                                              "Виберіть відповідне відділення:"
+                                              "Кур'єр на вашу\n                                            адресу"
                                             )
                                           ]
                                         ),
                                         _vm._v(" "),
-                                        _c(
-                                          "select",
-                                          {
-                                            directives: [
-                                              {
-                                                name: "model",
-                                                rawName: "v-model",
-                                                value: _vm.warehouse_code,
-                                                expression: "warehouse_code"
-                                              }
-                                            ],
-                                            staticClass:
-                                              "custom-select custom-select-sm",
-                                            class: {
-                                              "is-invalid":
-                                                _vm.$v.warehouse_code.$error
-                                            },
-                                            attrs: { id: "warehouses" },
-                                            on: {
-                                              blur: function($event) {
-                                                return _vm.$v.warehouse_code.$touch()
-                                              },
-                                              change: function($event) {
-                                                var $$selectedVal = Array.prototype.filter
-                                                  .call(
-                                                    $event.target.options,
-                                                    function(o) {
-                                                      return o.selected
-                                                    }
-                                                  )
-                                                  .map(function(o) {
-                                                    var val =
-                                                      "_value" in o
-                                                        ? o._value
-                                                        : o.value
-                                                    return val
-                                                  })
-                                                _vm.warehouse_code = $event
-                                                  .target.multiple
-                                                  ? $$selectedVal
-                                                  : $$selectedVal[0]
-                                              }
+                                        _vm.shipping_method === "courier"
+                                          ? _c(
+                                              "div",
+                                              { staticClass: "form-group" },
+                                              [
+                                                _c("label", [_vm._v("Адрес")]),
+                                                _vm._v(" "),
+                                                _c(
+                                                  "div",
+                                                  { staticClass: "form-row" },
+                                                  [
+                                                    _c(
+                                                      "div",
+                                                      {
+                                                        staticClass:
+                                                          "input-group col-6 input-group-sm"
+                                                      },
+                                                      [
+                                                        _vm._m(2),
+                                                        _vm._v(" "),
+                                                        _c("input", {
+                                                          directives: [
+                                                            {
+                                                              name: "model",
+                                                              rawName:
+                                                                "v-model",
+                                                              value: _vm.street,
+                                                              expression:
+                                                                "street"
+                                                            }
+                                                          ],
+                                                          staticClass:
+                                                            "form-control",
+                                                          class: {
+                                                            "is-invalid":
+                                                              _vm.$v.street
+                                                                .$error
+                                                          },
+                                                          attrs: {
+                                                            type: "text",
+                                                            id: "address_street"
+                                                          },
+                                                          domProps: {
+                                                            value: _vm.street
+                                                          },
+                                                          on: {
+                                                            blur: function(
+                                                              $event
+                                                            ) {
+                                                              return _vm.$v.street.$touch()
+                                                            },
+                                                            input: function(
+                                                              $event
+                                                            ) {
+                                                              if (
+                                                                $event.target
+                                                                  .composing
+                                                              ) {
+                                                                return
+                                                              }
+                                                              _vm.street =
+                                                                $event.target.value
+                                                            }
+                                                          }
+                                                        })
+                                                      ]
+                                                    ),
+                                                    _vm._v(" "),
+                                                    _c(
+                                                      "div",
+                                                      {
+                                                        staticClass:
+                                                          "input-group col-3 input-group-sm"
+                                                      },
+                                                      [
+                                                        _vm._m(3),
+                                                        _vm._v(" "),
+                                                        _c("input", {
+                                                          directives: [
+                                                            {
+                                                              name: "model",
+                                                              rawName:
+                                                                "v-model",
+                                                              value: _vm.house,
+                                                              expression:
+                                                                "house"
+                                                            }
+                                                          ],
+                                                          staticClass:
+                                                            "form-control",
+                                                          class: {
+                                                            "is-invalid":
+                                                              _vm.$v.house
+                                                                .$error
+                                                          },
+                                                          attrs: {
+                                                            id: "address_house",
+                                                            type: "text"
+                                                          },
+                                                          domProps: {
+                                                            value: _vm.house
+                                                          },
+                                                          on: {
+                                                            blur: function(
+                                                              $event
+                                                            ) {
+                                                              return _vm.$v.house.$touch()
+                                                            },
+                                                            input: function(
+                                                              $event
+                                                            ) {
+                                                              if (
+                                                                $event.target
+                                                                  .composing
+                                                              ) {
+                                                                return
+                                                              }
+                                                              _vm.house =
+                                                                $event.target.value
+                                                            }
+                                                          }
+                                                        })
+                                                      ]
+                                                    ),
+                                                    _vm._v(" "),
+                                                    _c(
+                                                      "div",
+                                                      {
+                                                        staticClass:
+                                                          "input-group col-3 input-group-sm"
+                                                      },
+                                                      [
+                                                        _vm._m(4),
+                                                        _vm._v(" "),
+                                                        _c("input", {
+                                                          directives: [
+                                                            {
+                                                              name: "model",
+                                                              rawName:
+                                                                "v-model",
+                                                              value: _vm.flat,
+                                                              expression: "flat"
+                                                            }
+                                                          ],
+                                                          staticClass:
+                                                            "form-control",
+                                                          class: {
+                                                            "is-invalid":
+                                                              _vm.$v.flat.$error
+                                                          },
+                                                          attrs: {
+                                                            id: "address_flat",
+                                                            type: "number"
+                                                          },
+                                                          domProps: {
+                                                            value: _vm.flat
+                                                          },
+                                                          on: {
+                                                            blur: function(
+                                                              $event
+                                                            ) {
+                                                              return _vm.$v.flat.$touch()
+                                                            },
+                                                            input: function(
+                                                              $event
+                                                            ) {
+                                                              if (
+                                                                $event.target
+                                                                  .composing
+                                                              ) {
+                                                                return
+                                                              }
+                                                              _vm.flat =
+                                                                $event.target.value
+                                                            }
+                                                          }
+                                                        })
+                                                      ]
+                                                    )
+                                                  ]
+                                                ),
+                                                _vm._v(" "),
+                                                !_vm.$v.street.required
+                                                  ? _c(
+                                                      "div",
+                                                      {
+                                                        staticClass:
+                                                          "invalid-feedback",
+                                                        style: {
+                                                          display: _vm.$v.street
+                                                            .$error
+                                                            ? "block"
+                                                            : "none"
+                                                        }
+                                                      },
+                                                      [
+                                                        _vm._v(
+                                                          "Вкажіть вулицю\n                                                для доставки\n                                            "
+                                                        )
+                                                      ]
+                                                    )
+                                                  : _vm._e(),
+                                                _vm._v(" "),
+                                                !_vm.$v.house.required
+                                                  ? _c(
+                                                      "div",
+                                                      {
+                                                        staticClass:
+                                                          "invalid-feedback",
+                                                        style: {
+                                                          display: _vm.$v.house
+                                                            .$error
+                                                            ? "block"
+                                                            : "none"
+                                                        }
+                                                      },
+                                                      [
+                                                        _vm._v(
+                                                          "Вкажіть будинок\n                                                для доставки\n                                            "
+                                                        )
+                                                      ]
+                                                    )
+                                                  : _vm._e(),
+                                                _vm._v(" "),
+                                                !_vm.$v.flat.required
+                                                  ? _c(
+                                                      "div",
+                                                      {
+                                                        staticClass:
+                                                          "invalid-feedback",
+                                                        style: {
+                                                          display: _vm.$v.flat
+                                                            .$error
+                                                            ? "block"
+                                                            : "none"
+                                                        }
+                                                      },
+                                                      [
+                                                        _vm._v(
+                                                          "Вкажіть квартиру\n                                                для доставки\n                                            "
+                                                        )
+                                                      ]
+                                                    )
+                                                  : _vm._e()
+                                              ]
+                                            )
+                                          : _vm._e()
+                                      ]
+                                    ),
+                                    _vm._v(" "),
+                                    _c(
+                                      "div",
+                                      {
+                                        staticClass:
+                                          "custom-control custom-radio"
+                                      },
+                                      [
+                                        _c("input", {
+                                          directives: [
+                                            {
+                                              name: "model",
+                                              rawName: "v-model",
+                                              value: _vm.shipping_method,
+                                              expression: "shipping_method"
                                             }
+                                          ],
+                                          key: "novaposhta",
+                                          staticClass: "custom-control-input ",
+                                          class: {
+                                            "is-invalid":
+                                              _vm.$v.shipping_method.$error
+                                          },
+                                          attrs: {
+                                            type: "radio",
+                                            id: "novaposhta",
+                                            value: "novaposhta"
+                                          },
+                                          domProps: {
+                                            checked: _vm._q(
+                                              _vm.shipping_method,
+                                              "novaposhta"
+                                            )
+                                          },
+                                          on: {
+                                            blur: function($event) {
+                                              return _vm.$v.shipping_method.$touch()
+                                            },
+                                            change: function($event) {
+                                              _vm.shipping_method = "novaposhta"
+                                            }
+                                          }
+                                        }),
+                                        _vm._v(" "),
+                                        _c(
+                                          "label",
+                                          {
+                                            staticClass: "custom-control-label",
+                                            attrs: { for: "novaposhta" }
                                           },
                                           [
-                                            _vm._l(_vm.warehouses, function(
-                                              house
-                                            ) {
-                                              return _c(
-                                                "option",
-                                                {
-                                                  domProps: {
-                                                    value: house.code
-                                                  }
-                                                },
-                                                [
-                                                  _vm._v(
-                                                    "\n                                                " +
-                                                      _vm._s(house.title) +
-                                                      "\n                                            "
-                                                  )
-                                                ]
-                                              )
-                                            }),
-                                            _vm._v(" "),
-                                            _c(
-                                              "option",
-                                              { attrs: { disabled: "" } },
-                                              [_vm._v("Нема мого відділення")]
+                                            _vm._v(
+                                              "Самовивіз з Нової\n                                            Пошти"
                                             )
-                                          ],
-                                          2
+                                          ]
                                         ),
                                         _vm._v(" "),
-                                        !_vm.$v.warehouse_code.required
+                                        _vm.shipping_method === "novaposhta"
+                                          ? _c(
+                                              "div",
+                                              { staticClass: "form-group" },
+                                              [
+                                                _c(
+                                                  "label",
+                                                  {
+                                                    attrs: { for: "warehouses" }
+                                                  },
+                                                  [
+                                                    _vm._v(
+                                                      "Виберіть відповідне відділення:"
+                                                    )
+                                                  ]
+                                                ),
+                                                _vm._v(" "),
+                                                _c(
+                                                  "select",
+                                                  {
+                                                    directives: [
+                                                      {
+                                                        name: "model",
+                                                        rawName: "v-model",
+                                                        value:
+                                                          _vm.warehouse_code,
+                                                        expression:
+                                                          "warehouse_code"
+                                                      }
+                                                    ],
+                                                    staticClass:
+                                                      "custom-select custom-select-sm",
+                                                    class: {
+                                                      "is-invalid":
+                                                        _vm.$v.warehouse_code
+                                                          .$error
+                                                    },
+                                                    attrs: { id: "warehouses" },
+                                                    on: {
+                                                      blur: function($event) {
+                                                        return _vm.$v.warehouse_code.$touch()
+                                                      },
+                                                      change: function($event) {
+                                                        var $$selectedVal = Array.prototype.filter
+                                                          .call(
+                                                            $event.target
+                                                              .options,
+                                                            function(o) {
+                                                              return o.selected
+                                                            }
+                                                          )
+                                                          .map(function(o) {
+                                                            var val =
+                                                              "_value" in o
+                                                                ? o._value
+                                                                : o.value
+                                                            return val
+                                                          })
+                                                        _vm.warehouse_code = $event
+                                                          .target.multiple
+                                                          ? $$selectedVal
+                                                          : $$selectedVal[0]
+                                                      }
+                                                    }
+                                                  },
+                                                  [
+                                                    _vm._l(
+                                                      _vm.warehouses,
+                                                      function(house) {
+                                                        return _c(
+                                                          "option",
+                                                          {
+                                                            domProps: {
+                                                              value: house.code
+                                                            }
+                                                          },
+                                                          [
+                                                            _vm._v(
+                                                              "\n                                                    " +
+                                                                _vm._s(
+                                                                  house.title
+                                                                ) +
+                                                                "\n                                                "
+                                                            )
+                                                          ]
+                                                        )
+                                                      }
+                                                    ),
+                                                    _vm._v(" "),
+                                                    _c(
+                                                      "option",
+                                                      {
+                                                        attrs: { disabled: "" }
+                                                      },
+                                                      [
+                                                        _vm._v(
+                                                          "Нема мого відділення"
+                                                        )
+                                                      ]
+                                                    )
+                                                  ],
+                                                  2
+                                                ),
+                                                _vm._v(" "),
+                                                !_vm.$v.warehouse_code.required
+                                                  ? _c(
+                                                      "div",
+                                                      {
+                                                        staticClass:
+                                                          "invalid-feedback"
+                                                      },
+                                                      [
+                                                        _vm._v(
+                                                          "Вкажіть\n                                                відділення для доставки!\n                                            "
+                                                        )
+                                                      ]
+                                                    )
+                                                  : _vm._e()
+                                              ]
+                                            )
+                                          : _vm._e(),
+                                        _vm._v(" "),
+                                        !_vm.$v.shipping_method.required
                                           ? _c(
                                               "div",
                                               {
@@ -41734,298 +42043,311 @@ var render = function() {
                                               },
                                               [
                                                 _vm._v(
-                                                  "Вкажіть\n                                            відділення для доставки!\n                                        "
+                                                  "Поле\n                                            обовязкове до заповнення!\n                                        "
+                                                )
+                                              ]
+                                            )
+                                          : _vm._e(),
+                                        _vm._v(" "),
+                                        !_vm.$v.shipping_method.mustBeCool
+                                          ? _c(
+                                              "div",
+                                              {
+                                                staticClass: "invalid-feedback"
+                                              },
+                                              [
+                                                _vm._v(
+                                                  "Виберіть\n                                            один з доступних способів доставки\n                                        "
                                                 )
                                               ]
                                             )
                                           : _vm._e()
-                                      ])
-                                    : _vm._e(),
-                                  _vm._v(" "),
-                                  !_vm.$v.shipping_method.required
-                                    ? _c(
-                                        "div",
-                                        { staticClass: "invalid-feedback" },
+                                      ]
+                                    )
+                                  ])
+                                ])
+                              ]
+                            )
+                          : _vm._e(),
+                        _vm._v(" "),
+                        _vm.selected
+                          ? _c("fieldset", { staticClass: "form-group" }, [
+                              _c("div", { staticClass: "row" }, [
+                                _c(
+                                  "legend",
+                                  {
+                                    staticClass: "col-form-label col-sm-3 pt-0"
+                                  },
+                                  [_vm._v("Спосіб оплати")]
+                                ),
+                                _vm._v(" "),
+                                _c("div", { staticClass: "col-sm-9" }, [
+                                  _c(
+                                    "div",
+                                    {
+                                      staticClass: "custom-control custom-radio"
+                                    },
+                                    [
+                                      _c("input", {
+                                        directives: [
+                                          {
+                                            name: "model",
+                                            rawName: "v-model",
+                                            value: _vm.payment_method,
+                                            expression: "payment_method"
+                                          }
+                                        ],
+                                        staticClass: "custom-control-input",
+                                        class: {
+                                          "is-invalid":
+                                            _vm.$v.payment_method.$error
+                                        },
+                                        attrs: {
+                                          type: "radio",
+                                          id: "pay_method_first",
+                                          value: "receipt"
+                                        },
+                                        domProps: {
+                                          checked: _vm._q(
+                                            _vm.payment_method,
+                                            "receipt"
+                                          )
+                                        },
+                                        on: {
+                                          blur: function($event) {
+                                            return _vm.$v.payment_method.$touch()
+                                          },
+                                          change: function($event) {
+                                            _vm.payment_method = "receipt"
+                                          }
+                                        }
+                                      }),
+                                      _vm._v(" "),
+                                      _c(
+                                        "label",
+                                        {
+                                          staticClass: "custom-control-label",
+                                          attrs: { for: "pay_method_first" }
+                                        },
                                         [
                                           _vm._v(
-                                            "Поле\n                                        обовязкове до заповнення!\n                                    "
+                                            "Оплата при\n                                            отриманні замовлення"
                                           )
                                         ]
                                       )
-                                    : _vm._e(),
+                                    ]
+                                  ),
                                   _vm._v(" "),
-                                  !_vm.$v.shipping_method.mustBeCool
-                                    ? _c(
-                                        "div",
-                                        { staticClass: "invalid-feedback" },
+                                  _c(
+                                    "div",
+                                    {
+                                      staticClass: "custom-control custom-radio"
+                                    },
+                                    [
+                                      _c("input", {
+                                        directives: [
+                                          {
+                                            name: "model",
+                                            rawName: "v-model",
+                                            value: _vm.payment_method,
+                                            expression: "payment_method"
+                                          }
+                                        ],
+                                        staticClass: "custom-control-input",
+                                        class: {
+                                          "is-invalid":
+                                            _vm.$v.payment_method.$error
+                                        },
+                                        attrs: {
+                                          id: "pay_method_second",
+                                          type: "radio",
+                                          value: "google-pay"
+                                        },
+                                        domProps: {
+                                          checked: _vm._q(
+                                            _vm.payment_method,
+                                            "google-pay"
+                                          )
+                                        },
+                                        on: {
+                                          blur: function($event) {
+                                            return _vm.$v.payment_method.$touch()
+                                          },
+                                          change: function($event) {
+                                            _vm.payment_method = "google-pay"
+                                          }
+                                        }
+                                      }),
+                                      _vm._v(" "),
+                                      _c(
+                                        "label",
+                                        {
+                                          staticClass: "custom-control-label",
+                                          attrs: { for: "pay_method_second" }
+                                        },
                                         [
                                           _vm._v(
-                                            "Виберіть\n                                        один з доступних способів доставки\n                                    "
+                                            "Google\n                                            Pay"
+                                          )
+                                        ]
+                                      )
+                                    ]
+                                  ),
+                                  _vm._v(" "),
+                                  _c(
+                                    "div",
+                                    {
+                                      staticClass: "custom-control custom-radio"
+                                    },
+                                    [
+                                      _c("input", {
+                                        directives: [
+                                          {
+                                            name: "model",
+                                            rawName: "v-model",
+                                            value: _vm.payment_method,
+                                            expression: "payment_method"
+                                          }
+                                        ],
+                                        staticClass: "custom-control-input",
+                                        class: {
+                                          "is-invalid":
+                                            _vm.$v.payment_method.$error
+                                        },
+                                        attrs: {
+                                          id: "pay_method_thirty",
+                                          type: "radio",
+                                          value: "card"
+                                        },
+                                        domProps: {
+                                          checked: _vm._q(
+                                            _vm.payment_method,
+                                            "card"
+                                          )
+                                        },
+                                        on: {
+                                          blur: function($event) {
+                                            return _vm.$v.payment_method.$touch()
+                                          },
+                                          change: function($event) {
+                                            _vm.payment_method = "card"
+                                          }
+                                        }
+                                      }),
+                                      _vm._v(" "),
+                                      _c(
+                                        "label",
+                                        {
+                                          staticClass: "custom-control-label",
+                                          attrs: { for: "pay_method_thirty" }
+                                        },
+                                        [
+                                          _vm._v(
+                                            "Оплатити зараз\n                                            карткою Visa/Mastercard"
+                                          )
+                                        ]
+                                      )
+                                    ]
+                                  ),
+                                  _vm._v(" "),
+                                  !_vm.$v.payment_method.mustBePayment
+                                    ? _c(
+                                        "div",
+                                        {
+                                          staticClass: "invalid-feedback",
+                                          style: {
+                                            display: _vm.$v.payment_method
+                                              .$error
+                                              ? "block"
+                                              : "none"
+                                          }
+                                        },
+                                        [
+                                          _vm._v(
+                                            "Виберіть\n                                        один з доступних способів оплати\n                                    "
                                           )
                                         ]
                                       )
                                     : _vm._e()
-                                ]
-                              )
+                                ])
+                              ])
                             ])
-                          ])
-                        ]
-                      )
-                    : _vm._e(),
-                  _vm._v(" "),
-                  _vm.selected
-                    ? _c("fieldset", { staticClass: "form-group" }, [
-                        _c("div", { staticClass: "row" }, [
-                          _c(
-                            "legend",
-                            { staticClass: "col-form-label col-sm-3 pt-0" },
-                            [_vm._v("Спосіб оплати")]
-                          ),
-                          _vm._v(" "),
-                          _c("div", { staticClass: "col-sm-9" }, [
-                            _c(
-                              "div",
-                              { staticClass: "custom-control custom-radio" },
-                              [
-                                _c("input", {
-                                  directives: [
-                                    {
-                                      name: "model",
-                                      rawName: "v-model",
-                                      value: _vm.payment_method,
-                                      expression: "payment_method"
-                                    }
-                                  ],
-                                  staticClass: "custom-control-input",
-                                  class: {
-                                    "is-invalid": _vm.$v.payment_method.$error
-                                  },
-                                  attrs: {
-                                    type: "radio",
-                                    id: "pay_method_first",
-                                    value: "receipt"
-                                  },
-                                  domProps: {
-                                    checked: _vm._q(
-                                      _vm.payment_method,
-                                      "receipt"
-                                    )
-                                  },
-                                  on: {
-                                    blur: function($event) {
-                                      return _vm.$v.payment_method.$touch()
-                                    },
-                                    change: function($event) {
-                                      _vm.payment_method = "receipt"
-                                    }
-                                  }
-                                }),
-                                _vm._v(" "),
-                                _c(
-                                  "label",
-                                  {
-                                    staticClass: "custom-control-label",
-                                    attrs: { for: "pay_method_first" }
-                                  },
-                                  [
-                                    _vm._v(
-                                      "Оплата при\n                                        отриманні замовлення"
-                                    )
-                                  ]
-                                )
-                              ]
-                            ),
-                            _vm._v(" "),
-                            _c(
-                              "div",
-                              { staticClass: "custom-control custom-radio" },
-                              [
-                                _c("input", {
-                                  directives: [
-                                    {
-                                      name: "model",
-                                      rawName: "v-model",
-                                      value: _vm.payment_method,
-                                      expression: "payment_method"
-                                    }
-                                  ],
-                                  staticClass: "custom-control-input",
-                                  class: {
-                                    "is-invalid": _vm.$v.payment_method.$error
-                                  },
-                                  attrs: {
-                                    id: "pay_method_second",
-                                    type: "radio",
-                                    value: "google-pay"
-                                  },
-                                  domProps: {
-                                    checked: _vm._q(
-                                      _vm.payment_method,
-                                      "google-pay"
-                                    )
-                                  },
-                                  on: {
-                                    blur: function($event) {
-                                      return _vm.$v.payment_method.$touch()
-                                    },
-                                    change: function($event) {
-                                      _vm.payment_method = "google-pay"
-                                    }
-                                  }
-                                }),
-                                _vm._v(" "),
-                                _c(
-                                  "label",
-                                  {
-                                    staticClass: "custom-control-label",
-                                    attrs: { for: "pay_method_second" }
-                                  },
-                                  [
-                                    _vm._v(
-                                      "Google\n                                        Pay"
-                                    )
-                                  ]
-                                )
-                              ]
-                            ),
-                            _vm._v(" "),
-                            _c(
-                              "div",
-                              { staticClass: "custom-control custom-radio" },
-                              [
-                                _c("input", {
-                                  directives: [
-                                    {
-                                      name: "model",
-                                      rawName: "v-model",
-                                      value: _vm.payment_method,
-                                      expression: "payment_method"
-                                    }
-                                  ],
-                                  staticClass: "custom-control-input",
-                                  class: {
-                                    "is-invalid": _vm.$v.payment_method.$error
-                                  },
-                                  attrs: {
-                                    id: "pay_method_thirty",
-                                    type: "radio",
-                                    value: "card"
-                                  },
-                                  domProps: {
-                                    checked: _vm._q(_vm.payment_method, "card")
-                                  },
-                                  on: {
-                                    blur: function($event) {
-                                      return _vm.$v.payment_method.$touch()
-                                    },
-                                    change: function($event) {
-                                      _vm.payment_method = "card"
-                                    }
-                                  }
-                                }),
-                                _vm._v(" "),
-                                _c(
-                                  "label",
-                                  {
-                                    staticClass: "custom-control-label",
-                                    attrs: { for: "pay_method_thirty" }
-                                  },
-                                  [
-                                    _vm._v(
-                                      "Оплатити зараз\n                                        карткою Visa/Mastercard"
-                                    )
-                                  ]
-                                )
-                              ]
-                            ),
-                            _vm._v(" "),
-                            !_vm.$v.payment_method.mustBePayment
-                              ? _c(
-                                  "div",
-                                  {
-                                    staticClass: "invalid-feedback",
-                                    style: {
-                                      display: _vm.$v.payment_method.$error
-                                        ? "block"
-                                        : "none"
-                                    }
-                                  },
-                                  [
-                                    _vm._v(
-                                      "Виберіть\n                                    один з доступних способів оплати\n                                "
-                                    )
-                                  ]
-                                )
-                              : _vm._e()
-                          ])
-                        ])
-                      ])
-                    : _vm._e(),
-                  _vm._v(" "),
-                  _vm.selected
-                    ? _c("div", { staticClass: "row form-group" }, [
-                        _c(
-                          "label",
-                          {
-                            staticClass: "col-sm-3 col-form-label",
-                            attrs: { for: "comment" }
-                          },
-                          [_vm._v("Коментар")]
-                        ),
+                          : _vm._e(),
                         _vm._v(" "),
-                        _c("div", { staticClass: "col-sm-9" }, [
-                          _c("textarea", {
-                            directives: [
-                              {
-                                name: "model",
-                                rawName: "v-model",
-                                value: _vm.comment,
-                                expression: "comment"
-                              }
-                            ],
-                            staticClass: "form-control",
-                            attrs: { id: "comment", cols: "30", rows: "5" },
-                            domProps: { value: _vm.comment },
-                            on: {
-                              input: function($event) {
-                                if ($event.target.composing) {
-                                  return
-                                }
-                                _vm.comment = $event.target.value
-                              }
-                            }
-                          })
-                        ])
+                        _vm.selected
+                          ? _c("div", { staticClass: "row form-group" }, [
+                              _c(
+                                "label",
+                                {
+                                  staticClass: "col-sm-3 col-form-label",
+                                  attrs: { for: "comment" }
+                                },
+                                [_vm._v("Коментар")]
+                              ),
+                              _vm._v(" "),
+                              _c("div", { staticClass: "col-sm-9" }, [
+                                _c("textarea", {
+                                  directives: [
+                                    {
+                                      name: "model",
+                                      rawName: "v-model",
+                                      value: _vm.comment,
+                                      expression: "comment"
+                                    }
+                                  ],
+                                  staticClass: "form-control",
+                                  attrs: {
+                                    id: "comment",
+                                    cols: "30",
+                                    rows: "5"
+                                  },
+                                  domProps: { value: _vm.comment },
+                                  on: {
+                                    input: function($event) {
+                                      if ($event.target.composing) {
+                                        return
+                                      }
+                                      _vm.comment = $event.target.value
+                                    }
+                                  }
+                                })
+                              ])
+                            ])
+                          : _vm._e()
                       ])
-                    : _vm._e()
-                ])
-              : _vm._e(),
-            _vm._v(" "),
-            _c("div", { staticClass: "payment-method" }, [
-              _c("div", { staticClass: "payment-accordion" }, [
-                _c("div", { staticClass: "order-button-payment" }, [
-                  _vm.next_steep === 2
-                    ? _c(
-                        "button",
-                        {
-                          staticClass: "btn",
-                          attrs: { disabled: _vm.$v.$invalid },
-                          on: {
-                            click: function($event) {
-                              $event.preventDefault()
-                              return _vm.formSubmit()
-                            }
-                          }
-                        },
-                        [_vm._v("Оформити замовлення")]
-                      )
-                    : _vm._e()
-                ])
-              ])
-            ])
-          ],
-          1
-        )
+                    : _vm._e(),
+                  _vm._v(" "),
+                  _c("div", { staticClass: "payment-method" }, [
+                    _c("div", { staticClass: "payment-accordion" }, [
+                      _c("div", { staticClass: "order-button-payment" }, [
+                        _vm.next_steep === 2
+                          ? _c(
+                              "button",
+                              {
+                                staticClass: "btn",
+                                attrs: { disabled: _vm.$v.$invalid },
+                                on: {
+                                  click: function($event) {
+                                    $event.preventDefault()
+                                    return _vm.formSubmit()
+                                  }
+                                }
+                              },
+                              [
+                                _vm._v(
+                                  "Оформити замовлення\n                                "
+                                )
+                              ]
+                            )
+                          : _vm._e()
+                      ])
+                    ])
+                  ])
+                ],
+                1
+              )
+            : _vm._e()
+        ])
       ])
     ]),
     _vm._v(" "),
@@ -42038,6 +42360,16 @@ var render = function() {
   ])
 }
 var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c(
+      "div",
+      { staticClass: "w-100 d-flex justify-content-center align-items-center" },
+      [_c("div", { staticClass: "spinner" })]
+    )
+  },
   function() {
     var _vm = this
     var _h = _vm.$createElement
@@ -58493,7 +58825,9 @@ __webpack_require__.r(__webpack_exports__);
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _CheckOutFormMain_vue_vue_type_template_id_5caf2ff1_scoped_true___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./CheckOutFormMain.vue?vue&type=template&id=5caf2ff1&scoped=true& */ "./resources/js/components/checkout/CheckOutFormMain.vue?vue&type=template&id=5caf2ff1&scoped=true&");
 /* harmony import */ var _CheckOutFormMain_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./CheckOutFormMain.vue?vue&type=script&lang=js& */ "./resources/js/components/checkout/CheckOutFormMain.vue?vue&type=script&lang=js&");
-/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+/* empty/unused harmony star reexport *//* harmony import */ var _CheckOutFormMain_vue_vue_type_style_index_0_id_5caf2ff1_scoped_true_lang_css___WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./CheckOutFormMain.vue?vue&type=style&index=0&id=5caf2ff1&scoped=true&lang=css& */ "./resources/js/components/checkout/CheckOutFormMain.vue?vue&type=style&index=0&id=5caf2ff1&scoped=true&lang=css&");
+/* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
 
 
 
@@ -58501,7 +58835,7 @@ __webpack_require__.r(__webpack_exports__);
 
 /* normalize component */
 
-var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_3__["default"])(
   _CheckOutFormMain_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
   _CheckOutFormMain_vue_vue_type_template_id_5caf2ff1_scoped_true___WEBPACK_IMPORTED_MODULE_0__["render"],
   _CheckOutFormMain_vue_vue_type_template_id_5caf2ff1_scoped_true___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
@@ -58530,6 +58864,22 @@ component.options.__file = "resources/js/components/checkout/CheckOutFormMain.vu
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_CheckOutFormMain_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/babel-loader/lib??ref--4-0!../../../../node_modules/vue-loader/lib??vue-loader-options!./CheckOutFormMain.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/checkout/CheckOutFormMain.vue?vue&type=script&lang=js&");
 /* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_CheckOutFormMain_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./resources/js/components/checkout/CheckOutFormMain.vue?vue&type=style&index=0&id=5caf2ff1&scoped=true&lang=css&":
+/*!************************************************************************************************************************!*\
+  !*** ./resources/js/components/checkout/CheckOutFormMain.vue?vue&type=style&index=0&id=5caf2ff1&scoped=true&lang=css& ***!
+  \************************************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_7_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_7_2_node_modules_vue_loader_lib_index_js_vue_loader_options_CheckOutFormMain_vue_vue_type_style_index_0_id_5caf2ff1_scoped_true_lang_css___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/style-loader!../../../../node_modules/css-loader??ref--7-1!../../../../node_modules/vue-loader/lib/loaders/stylePostLoader.js!../../../../node_modules/postcss-loader/src??ref--7-2!../../../../node_modules/vue-loader/lib??vue-loader-options!./CheckOutFormMain.vue?vue&type=style&index=0&id=5caf2ff1&scoped=true&lang=css& */ "./node_modules/style-loader/index.js!./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/checkout/CheckOutFormMain.vue?vue&type=style&index=0&id=5caf2ff1&scoped=true&lang=css&");
+/* harmony import */ var _node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_7_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_7_2_node_modules_vue_loader_lib_index_js_vue_loader_options_CheckOutFormMain_vue_vue_type_style_index_0_id_5caf2ff1_scoped_true_lang_css___WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_7_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_7_2_node_modules_vue_loader_lib_index_js_vue_loader_options_CheckOutFormMain_vue_vue_type_style_index_0_id_5caf2ff1_scoped_true_lang_css___WEBPACK_IMPORTED_MODULE_0__);
+/* harmony reexport (unknown) */ for(var __WEBPACK_IMPORT_KEY__ in _node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_7_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_7_2_node_modules_vue_loader_lib_index_js_vue_loader_options_CheckOutFormMain_vue_vue_type_style_index_0_id_5caf2ff1_scoped_true_lang_css___WEBPACK_IMPORTED_MODULE_0__) if(__WEBPACK_IMPORT_KEY__ !== 'default') (function(key) { __webpack_require__.d(__webpack_exports__, key, function() { return _node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_7_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_7_2_node_modules_vue_loader_lib_index_js_vue_loader_options_CheckOutFormMain_vue_vue_type_style_index_0_id_5caf2ff1_scoped_true_lang_css___WEBPACK_IMPORTED_MODULE_0__[key]; }) }(__WEBPACK_IMPORT_KEY__));
+ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_7_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_7_2_node_modules_vue_loader_lib_index_js_vue_loader_options_CheckOutFormMain_vue_vue_type_style_index_0_id_5caf2ff1_scoped_true_lang_css___WEBPACK_IMPORTED_MODULE_0___default.a); 
 
 /***/ }),
 

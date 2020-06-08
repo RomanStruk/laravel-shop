@@ -90,6 +90,18 @@ class Product extends Model
     const STATUS_HIDE       = 0;
     const STATUS_ACTIVE     = 1;
 
+
+    /**
+     * Повертає індитифікатор доступної з потрібною кількістю товарів поставку
+     * @param integer $count потрібна кількість товарів
+     * @return mixed
+     */
+    public function getAvailableSyllableId(int $count)
+    {
+        return $this->syllable()->availableSyllable($count)->first()->id;
+    }
+
+
     /**
      * Return list of status codes and labels
      * @return array

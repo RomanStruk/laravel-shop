@@ -67,6 +67,18 @@ trait OrderHelper
     }
 
     /**
+     * Updating products
+     *
+     * @param array $fields
+     * @return mixed
+     */
+    public function saveProducts(array $fields)
+    {
+        return $this->orderProducts()->createMany($fields);
+
+    }
+
+    /**
      * Creating payment fields
      *
      * @param array $fields

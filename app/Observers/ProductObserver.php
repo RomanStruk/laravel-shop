@@ -7,6 +7,17 @@ use App\Product;
 class ProductObserver
 {
     /**
+     * Handle the product "creating" event.
+     *
+     * @param  \App\Product  $product
+     * @return void
+     */
+    public function creating(Product $product)
+    {
+
+    }
+
+    /**
      * Handle the product "created" event.
      *
      * @param  \App\Product  $product
