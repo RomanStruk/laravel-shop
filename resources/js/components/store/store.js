@@ -6,10 +6,46 @@ Vue.use(Vuex)
 export const store = new Vuex.Store({
     state: {
         token: localStorage.getItem('access_token') || null,
-        user: null
-        // basket_list: localStorage.getItem('basket_list')
+        user: null,
+        shoppingCart:  JSON.parse(localStorage.getItem('shoppingCart')) || []        //магазинний візок
     },
+    // commit
     mutations: {
+        // add new product in a Shopping Cart
+        putInShoppingCart(state, product){
+            if (state.shoppingCart.length > 0){
+                // якщо є товар в списку то додаємо до загальної кількості
+                state.shoppingCart.forEach(function(item, i, arr) {
+                    if (item.id === product.id){
+                        arr[i].count += product.count;
+                    }
+                });
+                // якщо нема то додаємо до кошику
+                if(state.shoppingCart.every(function(item){if (item.id !== product.id){return true}})){
+                    state.shoppingCart.push(product)
+                }
+            }else {
+                state.shoppingCart.push(product)
+            }
+            localStorage.setItem('shoppingCart', JSON.stringify(state.shoppingCart))
+        },
+        // delete a product from a Shopping Cart
+        pickUpFromShoppingCart(state, id){
+            if (state.shoppingCart.length > 0){
+                state.shoppingCart.forEach(function(item, i, arr) {
+                    if (item.id === id){
+                        arr.splice(i, 1);
+                    }
+                });
+            }
+            localStorage.setItem('shoppingCart', JSON.stringify(state.shoppingCart))
+        },
+        // destroy a Shopping Cart
+        destroyShoppingCart(state){
+            state.shoppingCart = [];
+            localStorage.setItem('shoppingCart', JSON.stringify(state.shoppingCart))
+        },
+
         retrieveUser(state, user) {
             state.user = user
         },
@@ -24,6 +60,18 @@ export const store = new Vuex.Store({
         loggedIn(state) {
             return state.token !== null
         },
+        shoppingCart(state){
+            return state.shoppingCart
+        },
+        shoppingCartSumPrice(state){
+            let sum = 0;
+            if (state.shoppingCart.length > 0){
+                state.shoppingCart.forEach(function(item, i, arr) {
+                    sum += item.count*item.price;
+                });
+            }
+            return sum;
+        }
     },
     actions: {
         retrieveToken(context, credentials) {

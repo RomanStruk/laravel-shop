@@ -79,9 +79,7 @@
                                                 <div class="pro-actions">
                                                     <div class="actions-secondary">
                                                         <a href="wishlist.html" data-toggle="tooltip" title="Add to Wishlist"><i class="fa fa-heart"></i></a>
-                                                        <a class="add-cart" data-toggle="tooltip" title="Add to Cart"
-                                                            @click="onBasketList(index_product)"
-                                                        >Add To Cart</a>
+                                                        <basket-button :count="1" :product="product"></basket-button>
                                                         <a href="compare.html" data-toggle="tooltip" title="Add to Compare"><i class="fa fa-signal"></i></a>
                                                     </div>
                                                 </div>
@@ -127,9 +125,9 @@
                                             <div class="actions-secondary">
                                                 <a href="/wishlist" data-toggle="tooltip" title="Add to Wishlist">
                                                     <i class="fa fa-heart"/></a>
-                                                <a class="add-cart" href="/cart" data-toggle="tooltip" title="Add to Cart"
-                                                    @click="onBasketList(index_product)"
-                                                >Add To Cart</a>
+
+                                                <basket-button :count="1" :product="product"></basket-button>
+
                                                 <a href="/compare" data-toggle="tooltip" title="Add to Compare">
                                                     <i class="fa fa-signal"/>
                                                 </a>
@@ -166,6 +164,7 @@
 <script>
     import CategoryComponent from "./CategoryComponent";
     import FilterComponent from "./FilterComponent";
+    import BasketButton from "./product/BasketButton";
     export default {
         data: function(){
             return {
@@ -193,7 +192,8 @@
             CategoryComponent,
             'component-category': CategoryComponent,
             FilterComponent,
-            'component-filter': FilterComponent
+            'component-filter': FilterComponent,
+            BasketButton
         },
         mounted() {
             console.log('Shop Component mounted.');
@@ -208,18 +208,6 @@
             }
         },
         methods: {
-                                                                    // function додавання в корзину
-            onBasketList(index){
-                this.localStorage.basket_list.push({
-                    id: this.resultData[index].id,                  // додати індитифікатор
-                    count:1,                                        // кількість
-                    title:this.resultData[index].title,             // назва
-                    price: this.resultData[index].price,            // ціна
-                    img: this.resultData[index].img,                // зображення
-                    url: this.resultData[index].alias               // скороч назва
-                });
-                this.localStorage.basket_list_sum += this.resultData[index].price;
-            },
                                                                     // function подія піля вибору фільтрів
             processEventChooseFilter: function(checkbox){
                 this.filter = checkbox;                             // збереження вибраних фільтрів

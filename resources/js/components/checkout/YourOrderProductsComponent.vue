@@ -11,18 +11,18 @@
                 </thead>
                 <tbody>
                 <tr class="cart_item"
-                    v-for="order in localStorage.basket_list"
+                    v-for="product in $store.getters.shoppingCart"
                 >
 
                     <td class="product-name">
-                        {{ order.title}} <strong class="product-quantity"> × {{ order.count}}</strong></td>
-                    <td class="product-total"><span class="amount">£{{ order.price}}</span></td>
+                        {{ product.title}} <strong class="product-quantity"> × {{ product.count}}</strong></td>
+                    <td class="product-total"><span class="amount">£{{ product.price * product.count}}</span></td>
                 </tr>
                 </tbody>
                 <tfoot>
                 <tr class="order-total">
                     <th>Всього замовлено:</th>
-                    <td><strong><span class="amount">£{{localStorage.basket_list_sum}}</span></strong></td>
+                    <td><strong><span class="amount">£{{$store.getters.shoppingCartSumPrice}}</span></strong></td>
                 </tr>
                 </tfoot>
             </table>

@@ -291,19 +291,27 @@
             }
         },
         mounted() {
+            console.log(this.$store.getters.shoppingCart.length)
+            if (this.$store.getters.shoppingCart.length === 0){
+                window.location.href = '/shop';
+
+            }
             if (this.if_user_auth || this.loggedIn) {
                 this.status_auth = this.loggedIn;
                 this.next_steep = 2;
             }
             // console.log(this.$store.state.basket_list)
 
-            let form = {products: {}};
-            let obj = JSON.parse(localStorage.basket_list);
-            for (let item of obj) {
-                form['products'][item.id] = {id: item.id, count: item.count};
-            }
-            console.log(form)
-            console.log(obj)
+            // let form = {products: {}};
+            // for (let item of this.localStorage.basket_list) {
+            //     form['products'][item.id] = {id: item.id, count: item.count};
+            // }
+            // console.log(form)
+            // console.log(this.localStorage)
+            // console.log('this.$store.state.shoppingCart')
+            // console.log(this.$store.getters.shoppingCart)
+            // console.log(this.$store.getters.shoppingCartSumPrice)
+
         },
         validations: {
 
@@ -372,19 +380,17 @@
                     warehouse_code: this.warehouse_code,
                     products: {}
                 };
-                let obj = JSON.parse(localStorage.basket_list);
-                for (let item of obj) {
+                for (let item of this.$store.getters.shoppingCart) {
                     form['products'][item.id] = {id: item.id, count: item.count};
                 }
                 axios.post('/api/v1/order', form).then((response) => {
-                    // console.log('Success');
-                    // console.log(response);
-                    localStorage.basket_list = {};
+                    this.$store.commit('destroyShoppingCart');  // Очистити корзину
+
                     this.completed = true;
                     this.message.id = response.data.id
                     this.message.text = response.data.status
                     this.is_refresh = false;
-                }).catch(function (error) {
+                }).catch((error) => {
                     this.completed = false;
                     this.message.text = error
                     this.is_refresh = false;
@@ -431,7 +437,7 @@
     }
 </script>
 
-<style scoped>
+<style>
     .spinner {
         height: 60px;
         width: 60px;
