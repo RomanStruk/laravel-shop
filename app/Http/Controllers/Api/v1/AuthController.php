@@ -19,7 +19,10 @@ class AuthController extends Controller
             'password' => $request->password,
             'scope' => ''
         ]);
+//        dd($req);
+        //->header('Authorization', 'Bearer ')
         $response = app()->handle($req);
+//        return redirect('/admin/index', 302, ['Authorization', 'Bearer '.$response['access_token']]);
         return $response;
     }
 

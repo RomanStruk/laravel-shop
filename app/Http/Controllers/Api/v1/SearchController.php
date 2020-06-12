@@ -28,6 +28,7 @@ class SearchController extends Controller
     public function products(Request $request, PaginateSession $paginateSession)
     {
         $products = Product::filter(['search' => $request->q])->paginate($paginateSession->getLimit());
+//        response()->header('Access-Control-Allow-Origin', '*')
         return ProductResource::collection($products);
     }
 

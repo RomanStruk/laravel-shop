@@ -1,178 +1,115 @@
 (window["webpackJsonp"] = window["webpackJsonp"] || []).push([[0],{
 
-/***/ "./node_modules/bs-custom-file-input/dist/bs-custom-file-input.js":
-/*!************************************************************************!*\
-  !*** ./node_modules/bs-custom-file-input/dist/bs-custom-file-input.js ***!
-  \************************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/admin/LazyLoadComponent.vue?vue&type=script&lang=js&":
+/*!***********************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/admin/LazyLoadComponent.vue?vue&type=script&lang=js& ***!
+  \***********************************************************************************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
 
-/*!
- * bsCustomFileInput v1.3.4 (https://github.com/Johann-S/bs-custom-file-input)
- * Copyright 2018 - 2020 Johann-S <johann.servoire@gmail.com>
- * Licensed under MIT (https://github.com/Johann-S/bs-custom-file-input/blob/master/LICENSE)
- */
-(function (global, factory) {
-   true ? module.exports = factory() :
-  undefined;
-}(this, (function () { 'use strict';
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+//
+//
+//
+//
+//
+//
+/* harmony default export */ __webpack_exports__["default"] = ({
+  name: "LazyLoadComponent"
+});
 
-  var Selector = {
-    CUSTOMFILE: '.custom-file input[type="file"]',
-    CUSTOMFILELABEL: '.custom-file-label',
-    FORM: 'form',
-    INPUT: 'input'
-  };
+/***/ }),
 
-  var textNodeType = 3;
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/admin/LazyLoadComponent.vue?vue&type=template&id=09c3ad35&scoped=true&":
+/*!***************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/admin/LazyLoadComponent.vue?vue&type=template&id=09c3ad35&scoped=true& ***!
+  \***************************************************************************************************************************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
 
-  var getDefaultText = function getDefaultText(input) {
-    var defaultText = '';
-    var label = input.parentNode.querySelector(Selector.CUSTOMFILELABEL);
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c("div", [_vm._v("\n    Lazy Load Component\n")])
+}
+var staticRenderFns = []
+render._withStripped = true
 
-    if (label) {
-      defaultText = label.textContent;
-    }
 
-    return defaultText;
-  };
 
-  var findFirstChildNode = function findFirstChildNode(element) {
-    if (element.childNodes.length > 0) {
-      var childNodes = [].slice.call(element.childNodes);
+/***/ }),
 
-      for (var i = 0; i < childNodes.length; i++) {
-        var node = childNodes[i];
+/***/ "./resources/js/admin/LazyLoadComponent.vue":
+/*!**************************************************!*\
+  !*** ./resources/js/admin/LazyLoadComponent.vue ***!
+  \**************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
 
-        if (node.nodeType !== textNodeType) {
-          return node;
-        }
-      }
-    }
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _LazyLoadComponent_vue_vue_type_template_id_09c3ad35_scoped_true___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./LazyLoadComponent.vue?vue&type=template&id=09c3ad35&scoped=true& */ "./resources/js/admin/LazyLoadComponent.vue?vue&type=template&id=09c3ad35&scoped=true&");
+/* harmony import */ var _LazyLoadComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./LazyLoadComponent.vue?vue&type=script&lang=js& */ "./resources/js/admin/LazyLoadComponent.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
 
-    return element;
-  };
 
-  var restoreDefaultText = function restoreDefaultText(input) {
-    var defaultText = input.bsCustomFileInput.defaultText;
-    var label = input.parentNode.querySelector(Selector.CUSTOMFILELABEL);
 
-    if (label) {
-      var element = findFirstChildNode(label);
-      element.textContent = defaultText;
-    }
-  };
 
-  var fileApi = !!window.File;
-  var FAKE_PATH = 'fakepath';
-  var FAKE_PATH_SEPARATOR = '\\';
 
-  var getSelectedFiles = function getSelectedFiles(input) {
-    if (input.hasAttribute('multiple') && fileApi) {
-      return [].slice.call(input.files).map(function (file) {
-        return file.name;
-      }).join(', ');
-    }
+/* normalize component */
 
-    if (input.value.indexOf(FAKE_PATH) !== -1) {
-      var splittedValue = input.value.split(FAKE_PATH_SEPARATOR);
-      return splittedValue[splittedValue.length - 1];
-    }
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
+  _LazyLoadComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _LazyLoadComponent_vue_vue_type_template_id_09c3ad35_scoped_true___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _LazyLoadComponent_vue_vue_type_template_id_09c3ad35_scoped_true___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  false,
+  null,
+  "09c3ad35",
+  null
+  
+)
 
-    return input.value;
-  };
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/admin/LazyLoadComponent.vue"
+/* harmony default export */ __webpack_exports__["default"] = (component.exports);
 
-  function handleInputChange() {
-    var label = this.parentNode.querySelector(Selector.CUSTOMFILELABEL);
+/***/ }),
 
-    if (label) {
-      var element = findFirstChildNode(label);
-      var inputValue = getSelectedFiles(this);
+/***/ "./resources/js/admin/LazyLoadComponent.vue?vue&type=script&lang=js&":
+/*!***************************************************************************!*\
+  !*** ./resources/js/admin/LazyLoadComponent.vue?vue&type=script&lang=js& ***!
+  \***************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
 
-      if (inputValue.length) {
-        element.textContent = inputValue;
-      } else {
-        restoreDefaultText(this);
-      }
-    }
-  }
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_LazyLoadComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib??ref--4-0!../../../node_modules/vue-loader/lib??vue-loader-options!./LazyLoadComponent.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/admin/LazyLoadComponent.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_LazyLoadComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
 
-  function handleFormReset() {
-    var customFileList = [].slice.call(this.querySelectorAll(Selector.INPUT)).filter(function (input) {
-      return !!input.bsCustomFileInput;
-    });
+/***/ }),
 
-    for (var i = 0, len = customFileList.length; i < len; i++) {
-      restoreDefaultText(customFileList[i]);
-    }
-  }
+/***/ "./resources/js/admin/LazyLoadComponent.vue?vue&type=template&id=09c3ad35&scoped=true&":
+/*!*********************************************************************************************!*\
+  !*** ./resources/js/admin/LazyLoadComponent.vue?vue&type=template&id=09c3ad35&scoped=true& ***!
+  \*********************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
 
-  var customProperty = 'bsCustomFileInput';
-  var Event = {
-    FORMRESET: 'reset',
-    INPUTCHANGE: 'change'
-  };
-  var bsCustomFileInput = {
-    init: function init(inputSelector, formSelector) {
-      if (inputSelector === void 0) {
-        inputSelector = Selector.CUSTOMFILE;
-      }
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_LazyLoadComponent_vue_vue_type_template_id_09c3ad35_scoped_true___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../node_modules/vue-loader/lib??vue-loader-options!./LazyLoadComponent.vue?vue&type=template&id=09c3ad35&scoped=true& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/admin/LazyLoadComponent.vue?vue&type=template&id=09c3ad35&scoped=true&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_LazyLoadComponent_vue_vue_type_template_id_09c3ad35_scoped_true___WEBPACK_IMPORTED_MODULE_0__["render"]; });
 
-      if (formSelector === void 0) {
-        formSelector = Selector.FORM;
-      }
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_LazyLoadComponent_vue_vue_type_template_id_09c3ad35_scoped_true___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
 
-      var customFileInputList = [].slice.call(document.querySelectorAll(inputSelector));
-      var formList = [].slice.call(document.querySelectorAll(formSelector));
-
-      for (var i = 0, len = customFileInputList.length; i < len; i++) {
-        var input = customFileInputList[i];
-        Object.defineProperty(input, customProperty, {
-          value: {
-            defaultText: getDefaultText(input)
-          },
-          writable: true
-        });
-        handleInputChange.call(input);
-        input.addEventListener(Event.INPUTCHANGE, handleInputChange);
-      }
-
-      for (var _i = 0, _len = formList.length; _i < _len; _i++) {
-        formList[_i].addEventListener(Event.FORMRESET, handleFormReset);
-
-        Object.defineProperty(formList[_i], customProperty, {
-          value: true,
-          writable: true
-        });
-      }
-    },
-    destroy: function destroy() {
-      var formList = [].slice.call(document.querySelectorAll(Selector.FORM)).filter(function (form) {
-        return !!form.bsCustomFileInput;
-      });
-      var customFileInputList = [].slice.call(document.querySelectorAll(Selector.INPUT)).filter(function (input) {
-        return !!input.bsCustomFileInput;
-      });
-
-      for (var i = 0, len = customFileInputList.length; i < len; i++) {
-        var input = customFileInputList[i];
-        restoreDefaultText(input);
-        input[customProperty] = undefined;
-        input.removeEventListener(Event.INPUTCHANGE, handleInputChange);
-      }
-
-      for (var _i2 = 0, _len2 = formList.length; _i2 < _len2; _i2++) {
-        formList[_i2].removeEventListener(Event.FORMRESET, handleFormReset);
-
-        formList[_i2][customProperty] = undefined;
-      }
-    }
-  };
-
-  return bsCustomFileInput;
-
-})));
-//# sourceMappingURL=bs-custom-file-input.js.map
 
 
 /***/ })

@@ -10,7 +10,9 @@
 | contains the "web" middleware group. Now create something great!
 |
 */
-
+Route::get('/admin-panel{any}', function (){
+    return view('admin.app');
+})->where('any', '.*');
 
 Route::get('/admin/lte', function () {
     return view('admin.layouts.root');
@@ -100,7 +102,7 @@ Route::group([
     'middleware' => ['auth', 'verified', 'role.check:Admin']
 ], function (){
 
-    Route::get('/', 'Admin\HomeController@index')->name('dashboard.index');
+    Route::get('/index', 'Admin\HomeController@index')->name('dashboard.index');
 
     Route::resource('/order', 'Admin\OrderController');
     Route::post('/order/status/{order}/update', 'Admin\OrderController@updateStatus')->name('order.updateStatus');
