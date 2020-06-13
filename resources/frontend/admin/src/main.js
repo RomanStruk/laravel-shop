@@ -10,7 +10,7 @@ import Axios from 'axios'
 Vue.prototype.$http = Axios;
 
 const token = store.state.token;
-Vue.prototype.$http.defaults.baseURL = 'http://shop.test/api/v1'
+// Vue.prototype.$http.defaults.baseURL = 'http://shop.test/api/v1'
 if (token) {
     Vue.prototype.$http.defaults.headers.common['Authorization'] = 'Bearer '+token
 }

@@ -26,6 +26,12 @@ Route::group(['prefix' => 'v1'], function (){
     // order
     Route::apiResource('order', 'Api\v1\OrderController')->middleware(['auth:api']);
 
+    // Admin API
+    Route::apiResource('orders', 'Api\v1\Admin\OrderController')->middleware(['auth:api'])
+        ->names(['show' => 'api.admin.orders.show', 'destroy' => 'api.admin.orders.destroy']);
+    Route::apiResource('users', 'Api\v1\Admin\UserController')->middleware(['auth:api'])
+        ->names(['show' => 'api.admin.users.show', 'destroy' => 'api.admin.users.destroy']);
+
 
     Route::get('/product/index', 'Api\v1\ProductController@index');
     Route::get('/product/search', 'Api\v1\ProductController@search');

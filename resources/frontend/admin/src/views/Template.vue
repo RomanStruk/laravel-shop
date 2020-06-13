@@ -1,5 +1,39 @@
 <template>
     <v-app id="sandbox">
+        <v-snackbar
+            v-model="snackbarError"
+            color="error"
+            multi-line
+            right
+            top
+        >
+            <ul><li v-for="(error, i) in errors" :key="i">{{error}}</li></ul>
+            <template v-slot:action="{ attrs }">
+                <v-btn
+                    dark
+                    text
+                    v-bind="attrs"
+                    @click="clearErrors(0)"
+                >Close</v-btn>
+            </template>
+        </v-snackbar>
+        <v-snackbar
+            v-model="snackbarSuccess"
+            color="success"
+            multi-line
+            right
+            bottom
+        >
+            <ul><li v-for="(message, i) in success" :key="i">{{message}}</li></ul>
+            <template v-slot:action="{ attrs }">
+                <v-btn
+                    dark
+                    text
+                    v-bind="attrs"
+                    @click="clearSuccess(0)"
+                >Close</v-btn>
+            </template>
+        </v-snackbar>
         <v-navigation-drawer
             v-model="primaryDrawer.model"
             :clipped="primaryDrawer.clipped"
@@ -21,6 +55,11 @@
                         <v-list-item-title>Jane Smith</v-list-item-title>
                         <v-list-item-subtitle>Logged In</v-list-item-subtitle>
                     </v-list-item-content>
+                    <v-list-item-action>
+                        <v-btn icon @click="logout">
+                            <v-icon>{{svgPath.mdiLogoutVariant }}</v-icon>
+                        </v-btn>
+                    </v-list-item-action>
                 </v-list-item>
             </template>
 
@@ -55,6 +94,7 @@
             :clipped-left="primaryDrawer.clipped"
             app
             extended
+            hide-on-scroll
         >
             <v-app-bar-nav-icon
                 v-if="primaryDrawer.type !== 'permanent'"
@@ -82,9 +122,7 @@
             <v-spacer></v-spacer>
             <ChatMenuBar></ChatMenuBar>
             <NotificationMenuBar></NotificationMenuBar>
-            <v-btn icon @click="logout">
-                <v-icon>{{svgPath.mdiLogoutVariant }}</v-icon>
-            </v-btn>
+
             <template v-slot:extension>
                 <v-toolbar-title>Shop</v-toolbar-title>
                 <v-spacer></v-spacer>
@@ -110,7 +148,7 @@
             :inset="true"
             app
         >
-            <span class="px-4">&copy; {{ new Date().getFullYear() }} Roman St ruk</span>
+            <span class="px-4">&copy; {{ new Date().getFullYear() }} Roman Struk</span>
         </v-footer>
     </v-app>
 </template>
@@ -133,6 +171,9 @@
             isLoading: false,
             model: null,
             search: null,
+
+            snackbarError: false,
+            snackbarSuccess: false,
 
             breadcrumbs: [
                 {
@@ -225,6 +266,16 @@
             ]
         }),
         computed: {
+            errors:{
+                get(){
+                    return this.$store.state.errors;
+                }
+            },
+            success:{
+                get(){
+                    return this.$store.state.success;
+                }
+            },
             fields() {
                 if (!this.model) return []
 
@@ -245,6 +296,16 @@
             },
         },
         watch: {
+            errors(value){
+                if (value.length > 0){
+                    this.snackbarError = true;
+                }
+            },
+            success(value){
+                if (value.length > 0){
+                    this.snackbarSuccess = true;
+                }
+            },
             search(val) {
                 // Items have already been loaded
                 // if (this.itemsSearch.length > 0) return
@@ -268,6 +329,18 @@
             },
         },
         methods: {
+            clearErrors(index){
+                if (this.errors.length > 0){
+                    this.$store.commit('deleteError', index)
+                }
+                this.snackbarError = false;
+            },
+            clearSuccess(index){
+                if (this.success.length > 0){
+                    this.$store.commit('deleteSuccess', index)
+                }
+                this.snackbarSuccess = false;
+            },
             logout: function () {
                 this.$store.dispatch('logout')
                     .then(() => {

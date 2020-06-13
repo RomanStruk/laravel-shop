@@ -51,6 +51,22 @@ const routes = [
         ]
     },
     {
+        path: '/order/',
+        name: 'admin.order.index',
+        component: Template,
+        beforeEnter: ifAuthenticated,
+        children: [
+            {
+                path: '/order/index',
+                component: () => import(/* webpackChunkName: "order.index" */ '../views/Order/Index.vue')
+            },
+            {
+                path: '/order/show',
+                component: () => import(/* webpackChunkName: "order.show" */ '../views/Order/Show.vue')
+            }
+        ]
+    },
+    {
         path: '/about',
         name: 'About',
         // route level code-splitting

@@ -55,6 +55,7 @@
     export default {
         name: "NotificationMenuBar",
         data: () => ({
+            menu: null,
             item: 5, // який елемент вибрано
             items: [
                 {
