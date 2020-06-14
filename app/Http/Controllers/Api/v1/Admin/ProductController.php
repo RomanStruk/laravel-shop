@@ -1,25 +1,27 @@
 <?php
 
-namespace App\Http\Controllers\api\v1\Admin;
+namespace App\Http\Controllers\Api\v1\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Http\Resources\Admin\UserResource;
-use App\User;
+use App\Http\Resources\Admin\ProductResource;
+use App\Product;
 use Illuminate\Http\Request;
 
-class UserController extends Controller
+class ProductController extends Controller
 {
     /**
      * Display a listing of the resource.
      *
+     * @param Request $request
      * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
      */
     public function index(Request $request)
     {
         $filters = $request->except('limit');
-        $filters['dateDesc'] = 'true';
-        $users = User::filter($filters)->allRelations()->paginate();
-        return UserResource::collection($users)
+        $filters['date'] = 'desc';
+
+        $products = Product::filter($filters)->with('category')->paginate();
+        return ProductResource::collection($products)
             ->additional([
                 'message' => 'Retrieve Data is Successfully',
                 'success' => true
@@ -41,11 +43,11 @@ class UserController extends Controller
      * Display the specified resource.
      *
      * @param  int  $id
-     * @return UserResource
+     * @return ProductResource
      */
     public function show($id)
     {
-        return (new UserResource([]))->additional([
+        return (new ProductResource([]))->additional([
             'message' => 'Retrieve Data is Successfully',
             'success' => true
         ]);

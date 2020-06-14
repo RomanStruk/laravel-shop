@@ -58,12 +58,108 @@ const routes = [
         children: [
             {
                 path: '/order/index',
-                component: () => import(/* webpackChunkName: "order.index" */ '../views/Order/Index.vue')
+                component: () => import(/* webpackChunkName: "order.index" */ '../views/order/Index.vue')
             },
             {
                 path: '/order/show',
-                component: () => import(/* webpackChunkName: "order.show" */ '../views/Order/Show.vue')
+                component: () => import(/* webpackChunkName: "order.show" */ '../views/order/Show.vue')
             }
+        ]
+    },
+    {
+        path: '/category/',
+        name: 'admin.category.index',
+        component: Template,
+        beforeEnter: ifAuthenticated,
+        children: [
+            {
+                path: '/category/index',
+                component: () => import(/* webpackChunkName: "category.index" */ '../views/category/Index.vue')
+            },
+        ]
+    },
+    {
+        path: '/product/',
+        name: 'admin.product.index',
+        component: Template,
+        beforeEnter: ifAuthenticated,
+        children: [
+            {
+                path: '/product/index',
+                component: () => import(/* webpackChunkName: "product.index" */ '../views/product/Index.vue')
+            },
+        ]
+    },
+    {
+        path: '/user/',
+        name: 'admin.user.index',
+        component: Template,
+        beforeEnter: ifAuthenticated,
+        children: [
+            {
+                path: '/user/index',
+                component: () => import(/* webpackChunkName: "user.index" */ '../views/user/Index.vue')
+            },
+        ]
+    },
+    {
+        path: '/media/',
+        name: 'admin.media.index',
+        component: Template,
+        beforeEnter: ifAuthenticated,
+        children: [
+            {
+                path: '/media/index',
+                component: () => import(/* webpackChunkName: "media.index" */ '../views/media/Index.vue')
+            },
+        ]
+    },
+    {
+        path: '/filter/',
+        name: 'admin.filter.index',
+        component: Template,
+        beforeEnter: ifAuthenticated,
+        children: [
+            {
+                path: '/filter/index',
+                component: () => import(/* webpackChunkName: "filter.index" */ '../views/filter/Index.vue')
+            },
+        ]
+    },
+    {
+        path: '/supplier/',
+        name: 'admin.supplier.index',
+        component: Template,
+        beforeEnter: ifAuthenticated,
+        children: [
+            {
+                path: '/supplier/index',
+                component: () => import(/* webpackChunkName: "supplier.index" */ '../views/supplier/Index.vue')
+            },
+        ]
+    },
+    {
+        path: '/syllable/',
+        name: 'admin.syllable.index',
+        component: Template,
+        beforeEnter: ifAuthenticated,
+        children: [
+            {
+                path: '/syllable/index',
+                component: () => import(/* webpackChunkName: "syllable.index" */ '../views/syllable/Index.vue')
+            },
+        ]
+    },
+    {
+        path: '/filter/',
+        name: 'admin.filter.index',
+        component: Template,
+        beforeEnter: ifAuthenticated,
+        children: [
+            {
+                path: '/filter/index',
+                component: () => import(/* webpackChunkName: "filter.index" */ '../views/filter/Index.vue')
+            },
         ]
     },
     {

@@ -2,6 +2,34 @@
     <div>
         <v-row>
             <v-col>
+                <v-toolbar flat color="grey lighten-4">
+                    <v-toolbar-title >
+                        <v-icon left>mdi-tools</v-icon>Order (#267)
+                    </v-toolbar-title>
+                    <v-spacer></v-spacer>
+                    <v-dialog v-model="dialogCreateOrder" persistent max-width="600px">
+                        <template v-slot:activator="{ on, attrs }">
+                            <v-btn icon
+                                   v-bind="attrs"
+                                   v-on="on"
+                            >
+                                <v-icon>mdi-plus-circle</v-icon>
+                            </v-btn>
+                        </template>
+                        <CreateOrder @onDialog="onDialogCreateOrder()"></CreateOrder>
+                    </v-dialog>
+                    <v-btn icon >
+                        <v-icon>mdi-square-edit-outline</v-icon>
+                    </v-btn>
+                    <v-btn icon>
+                        <v-icon>mdi-printer</v-icon>
+                    </v-btn>
+                </v-toolbar>
+
+            </v-col>
+        </v-row>
+        <v-row>
+            <v-col>
                 <v-skeleton-loader
                     v-if="loading"
                     height="94"
@@ -126,8 +154,6 @@
                             <v-icon left>mdi-truck</v-icon>Адреса доставки
                         </v-toolbar-title>
                         <v-spacer></v-spacer>
-                        <ShippingDialog></ShippingDialog>
-
                     </v-toolbar>
                     <v-divider></v-divider>
                     <v-card-text>
@@ -167,12 +193,10 @@
                 >
                     <v-toolbar flat>
                         <v-toolbar-title >
-                            <v-icon left>mdi-camcorder</v-icon>Order (#267)
+                            <v-icon left>mdi-clipboard-list</v-icon>Products
                         </v-toolbar-title>
                         <v-spacer></v-spacer>
-                        <v-btn icon>
-                            <v-icon>mdi-square-edit-outline</v-icon>
-                        </v-btn>
+
                     </v-toolbar>
                     <v-card-text>
                         <v-data-table
@@ -243,11 +267,13 @@
 </template>
 
 <script>
-    import ShippingDialog from "../../components/order/ShippingDialog";
+    import CreateOrder from "../../components/order/CreateOrder";
     export default {
         name: "Show",
-        components: {ShippingDialog},
+        components: {CreateOrder},
         data: () => ({
+            dialogCreateOrder: false,
+
             loading: false,
             headers: [
                 {
@@ -313,7 +339,9 @@
             }
         },
         methods: {
-
+            onDialogCreateOrder(value){
+                this.dialogCreateOrder = value;
+            },
             initialize() {
                 this.loading = true
                 this.$store.commit('setApiUrl', {base: 'orders', page: 'show', url: this.$route.query.order})

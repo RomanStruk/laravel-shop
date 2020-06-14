@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Http\Controllers\api\v1\Admin;
+namespace App\Http\Controllers\Api\v1\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Http\Resources\Admin\UserResource;
-use App\User;
+use App\Http\Resources\Admin\SupplierResource;
+use App\Supplier;
 use Illuminate\Http\Request;
 
-class UserController extends Controller
+class SupplierController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -17,9 +17,9 @@ class UserController extends Controller
     public function index(Request $request)
     {
         $filters = $request->except('limit');
-        $filters['dateDesc'] = 'true';
-        $users = User::filter($filters)->allRelations()->paginate();
-        return UserResource::collection($users)
+        $filters['date'] = 'desc';
+        $suppliers = Supplier::filter($filters)->paginate();
+        return SupplierResource::collection($suppliers)
             ->additional([
                 'message' => 'Retrieve Data is Successfully',
                 'success' => true
@@ -41,11 +41,11 @@ class UserController extends Controller
      * Display the specified resource.
      *
      * @param  int  $id
-     * @return UserResource
+     * @return SupplierResource
      */
     public function show($id)
     {
-        return (new UserResource([]))->additional([
+        return (new SupplierResource([]))->additional([
             'message' => 'Retrieve Data is Successfully',
             'success' => true
         ]);

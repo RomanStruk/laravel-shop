@@ -1,25 +1,23 @@
 <?php
 
-namespace App\Http\Controllers\api\v1\Admin;
+namespace App\Http\Controllers\Api\v1\Admin;
 
+use App\Filter;
 use App\Http\Controllers\Controller;
-use App\Http\Resources\Admin\UserResource;
-use App\User;
+use App\Http\Resources\Admin\FilterResource;
 use Illuminate\Http\Request;
 
-class UserController extends Controller
+class FilterController extends Controller
 {
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
      */
-    public function index(Request $request)
+    public function index()
     {
-        $filters = $request->except('limit');
-        $filters['dateDesc'] = 'true';
-        $users = User::filter($filters)->allRelations()->paginate();
-        return UserResource::collection($users)
+        $filters = Filter::allRelations()->paginate();
+        return FilterResource::collection($filters)
             ->additional([
                 'message' => 'Retrieve Data is Successfully',
                 'success' => true
@@ -41,11 +39,11 @@ class UserController extends Controller
      * Display the specified resource.
      *
      * @param  int  $id
-     * @return UserResource
+     * @return FilterResource
      */
     public function show($id)
     {
-        return (new UserResource([]))->additional([
+        return (new FilterResource([]))->additional([
             'message' => 'Retrieve Data is Successfully',
             'success' => true
         ]);
