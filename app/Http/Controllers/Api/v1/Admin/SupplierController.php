@@ -18,7 +18,7 @@ class SupplierController extends Controller
     {
         $filters = $request->except('limit');
         $filters['date'] = 'desc';
-        $suppliers = Supplier::filter($filters)->paginate();
+        $suppliers = Supplier::filter($filters)->paginate($request->limit);
         return SupplierResource::collection($suppliers)
             ->additional([
                 'message' => 'Retrieve Data is Successfully',

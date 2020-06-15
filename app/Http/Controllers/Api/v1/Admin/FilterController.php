@@ -12,11 +12,12 @@ class FilterController extends Controller
     /**
      * Display a listing of the resource.
      *
+     * @param Request $request
      * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
      */
-    public function index()
+    public function index(Request $request)
     {
-        $filters = Filter::allRelations()->paginate();
+        $filters = Filter::with(['filterValues'])->paginate($request->limit);
         return FilterResource::collection($filters)
             ->additional([
                 'message' => 'Retrieve Data is Successfully',

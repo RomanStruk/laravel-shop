@@ -19,8 +19,8 @@ class SupplierResource extends JsonResource
             'name' => $this->name,
             'description' => $this->description,
             'links' => [
-                'self' => route('api.admin.suppliers.show', $this),
-                'destroy' => route('api.admin.suppliers.destroy', $this),
+                'self' => route('api.v1.admin.supplier.show', $this),
+                'destroy' => route('api.v1.admin.supplier.destroy', $this),
             ]
         ];
     }

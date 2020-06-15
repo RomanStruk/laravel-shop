@@ -151,18 +151,6 @@ const routes = [
         ]
     },
     {
-        path: '/filter/',
-        name: 'admin.filter.index',
-        component: Template,
-        beforeEnter: ifAuthenticated,
-        children: [
-            {
-                path: '/filter/index',
-                component: () => import(/* webpackChunkName: "filter.index" */ '../views/filter/Index.vue')
-            },
-        ]
-    },
-    {
         path: '/about',
         name: 'About',
         // route level code-splitting

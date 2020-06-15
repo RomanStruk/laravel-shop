@@ -12,11 +12,14 @@ class CategoryController extends Controller
     /**
      * Display a listing of the resource.
      *
+     * @param Request $request
      * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
      */
-    public function index()
+    public function index(Request $request)
     {
-        $categories = Category::allRelations(false)->select(['id', 'slug', 'name', 'parent_id', 'description'])->paginate();
+        $categories = Category::allRelations(false)
+            ->select(['id', 'slug', 'name', 'parent_id', 'description'])
+            ->paginate($request->limit);
 
         return CategoryResource::collection($categories)
             ->additional([

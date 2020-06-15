@@ -12,16 +12,17 @@ class SyllableController extends Controller
     /**
      * Display a listing of the resource.
      *
+     * @param Request $request
      * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
      */
-    public function index()
+    public function index(Request $request)
     {
         $syllables = Syllable::with(['supplier','product'])
             ->countProcessed()
             ->countAvailableRemains()
             ->orderBy('product_id')
             ->latest()
-            ->paginate();
+            ->paginate($request->limit);
         return SyllableResource::collection($syllables)
             ->additional([
                 'message' => 'Retrieve Data is Successfully',

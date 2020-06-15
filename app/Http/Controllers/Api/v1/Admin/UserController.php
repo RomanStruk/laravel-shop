@@ -18,7 +18,7 @@ class UserController extends Controller
     {
         $filters = $request->except('limit');
         $filters['dateDesc'] = 'true';
-        $users = User::filter($filters)->allRelations()->paginate();
+        $users = User::filter($filters)->allRelations()->paginate($request->limit);
         return UserResource::collection($users)
             ->additional([
                 'message' => 'Retrieve Data is Successfully',

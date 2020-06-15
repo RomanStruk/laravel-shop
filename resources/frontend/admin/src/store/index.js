@@ -11,52 +11,69 @@ export default new Vuex.Store({
         success:[],
 
         api: {
-            orders: {
-                index: 'http://shop.test/api/v1/orders',
+            order: {
+                index: 'http://shop.test/api/v1/admin/order',
+                show: null,
+                destroy: null
+            },
+            category: {
+                index: 'http://shop.test/api/v1/admin/category',
+                show: null,
+                destroy: null
+            },
+            product: {
+                index: 'http://shop.test/api/v1/admin/product',
+                show: null,
+                destroy: null
+            },
+            user: {
+                index: 'http://shop.test/api/v1/admin/user',
+                show: null,
+                destroy: null
+            },
+            media: {
+                index: 'http://shop.test/api/v1/admin/media',
+                show: null,
+                destroy: null
+            },
+            filter: {
+                index: 'http://shop.test/api/v1/admin/filter',
+                show: null,
+                destroy: null
+            },
+            supplier: {
+                index: 'http://shop.test/api/v1/admin/supplier',
+                show: null,
+                destroy: null
+            },
+            syllable: {
+                index: 'http://shop.test/api/v1/admin/syllable',
                 show: null,
                 destroy: null
             }
         },
-        orderLoadedData:null,
-        ordersLoadedData: {
-            data: [],
-            meta: []
+
+        // api loaded storage
+        apiLoadedData: {},
+
+        snake:{
+            snackStatus: false,
+            snackText: '',
+            snackColor: ''
         }
     },
     mutations: {
+        SET_API_LOADED_DATA(state, content) {
+            state.apiLoadedData = content;
+        },
+        SNAKE_BAR(state, content){
+            state.snake = content
+        },
 
         setApiUrl(state, content) {
             state.api[content.base][content.page] = content.url;
         },
 
-        //orders
-        setOrderData(state, content) {
-            state.orderLoadedData = content;
-            state.success.push(new Date().getHours() +':'+new Date().getMinutes()+' ' + content.message)             //DEBUG
-        },
-        setOrdersData(state, content) {
-            state.ordersLoadedData = content;
-            state.success.push(new Date().getHours() +':'+new Date().getMinutes()+' ' + content.message)             //DEBUG
-        },
-        setOrdersCurrentPage(state, page) {
-            state.ordersLoadedData.meta.current_page = page;
-        },
-        // end orders
-
-        //error success messages
-        createErrorMessage(state, message){
-            state.errors.push(message)
-        },
-        deleteError(state, index){
-            state.errors.splice(index, 1);
-        },
-        createSuccessMessage(state, message){
-            state.success.push(message)
-        },
-        deleteSuccess(state, index){
-            state.success.splice(index, 1);
-        },
-        //end error
 
         retrieveToken(state, token) {
             state.token = token;
@@ -74,11 +91,13 @@ export default new Vuex.Store({
         }
     },
     actions: {
-        getOrder(context) {
+        getApiContent(context, credentials){
             return new Promise((resolve, reject) => {
-                axios.get(this.state.api.orders.show).then(response => {
+                axios.get(credentials.url, {
+                    params: credentials.params
+                }).then(response => {
                     const content = response.data
-                    context.commit('setOrderData', content)
+                    context.commit('SET_API_LOADED_DATA', content)
                     resolve(response)
                 }).catch(error => {
                     reject(error)
@@ -86,21 +105,6 @@ export default new Vuex.Store({
             })
         },
 
-        getOrders(context, credentials) {
-            return new Promise((resolve, reject) => {
-                axios.get(this.state.api.orders.index, {
-                    params: {
-                        page: credentials.page,
-                    }
-                }).then(response => {
-                    const content = response.data
-                    context.commit('setOrdersData', content)
-                    resolve(response)
-                }).catch(error => {
-                    reject(error)
-                })
-            })
-        },
         // token
         retrieveToken(context, credentials) {
             return new Promise((resolve, reject) => {

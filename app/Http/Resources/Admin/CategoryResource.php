@@ -20,9 +20,10 @@ class CategoryResource extends JsonResource
             'name' => $this->name,
             'description' => $this->description,
             'parent_id' => $this->parent_id,
+            'parent' => new CategoryResource($this->whenLoaded('parent')),
             'links' => [
-                'self' => route('api.admin.categories.show', $this),
-                'destroy' => route('api.admin.categories.destroy', $this),
+                'self' => route('api.v1.admin.category.show', $this),
+                'destroy' => route('api.v1.admin.category.destroy', $this),
             ]
         ];
     }

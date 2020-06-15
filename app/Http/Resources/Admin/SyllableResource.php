@@ -31,8 +31,8 @@ class SyllableResource extends JsonResource
             'product' => new ProductResource($this->product),
 //            'orders' => OrderSimpleResource::collection($this->orders),
             'links' => [
-                'self' => route('api.admin.syllables.show', $this),
-                'destroy' => route('api.admin.syllables.destroy', $this),
+                'self' => route('api.v1.admin.syllable.show', $this),
+                'destroy' => route('api.v1.admin.syllable.destroy', $this),
             ]
         ];
     }

@@ -3,8 +3,9 @@
         <v-row>
             <v-col>
                 <v-toolbar flat color="grey lighten-4">
-                    <v-toolbar-title >
-                        <v-icon left>mdi-tools</v-icon>Order (#267)
+                    <v-toolbar-title>
+                        <v-icon left>mdi-tools</v-icon>
+                        Order (#267)
                     </v-toolbar-title>
                     <v-spacer></v-spacer>
                     <v-dialog v-model="dialogCreateOrder" persistent max-width="600px">
@@ -18,7 +19,7 @@
                         </template>
                         <CreateOrder @onDialog="onDialogCreateOrder()"></CreateOrder>
                     </v-dialog>
-                    <v-btn icon >
+                    <v-btn icon>
                         <v-icon>mdi-square-edit-outline</v-icon>
                     </v-btn>
                     <v-btn icon>
@@ -40,8 +41,9 @@
                     v-else
                 >
                     <v-toolbar flat>
-                        <v-toolbar-title >
-                            <v-icon left>mdi-cart</v-icon>Деталі замовлення
+                        <v-toolbar-title>
+                            <v-icon left>mdi-cart</v-icon>
+                            Деталі замовлення
                         </v-toolbar-title>
                         <v-spacer></v-spacer>
                     </v-toolbar>
@@ -95,8 +97,9 @@
                     min-width="300"
                 >
                     <v-toolbar flat>
-                        <v-toolbar-title >
-                            <v-icon left>mdi-account</v-icon>Інформація про клієнта
+                        <v-toolbar-title>
+                            <v-icon left>mdi-account</v-icon>
+                            Інформація про клієнта
                         </v-toolbar-title>
                         <v-spacer></v-spacer>
                     </v-toolbar>
@@ -150,14 +153,15 @@
                     min-width="300"
                 >
                     <v-toolbar flat>
-                        <v-toolbar-title >
-                            <v-icon left>mdi-truck</v-icon>Адреса доставки
+                        <v-toolbar-title>
+                            <v-icon left>mdi-truck</v-icon>
+                            Адреса доставки
                         </v-toolbar-title>
                         <v-spacer></v-spacer>
                     </v-toolbar>
                     <v-divider></v-divider>
                     <v-card-text>
-                        <v-list dense >
+                        <v-list dense>
                             <v-list-item>
                                 <v-list-item-icon>
                                     <v-icon>mdi-home-city-outline</v-icon>
@@ -192,8 +196,9 @@
                     v-else
                 >
                     <v-toolbar flat>
-                        <v-toolbar-title >
-                            <v-icon left>mdi-clipboard-list</v-icon>Products
+                        <v-toolbar-title>
+                            <v-icon left>mdi-clipboard-list</v-icon>
+                            Products
                         </v-toolbar-title>
                         <v-spacer></v-spacer>
 
@@ -268,6 +273,7 @@
 
 <script>
     import CreateOrder from "../../components/order/CreateOrder";
+
     export default {
         name: "Show",
         components: {CreateOrder},
@@ -327,28 +333,38 @@
                     subtitle: 'We should eat this: Grate, Squash, Corn, and tomatillo Tacos.',
                 },
             ],
+            order: null
         }),
         created() {
             this.initialize()
         },
-        computed:{
-            orderProducts:{
-                get(){
-                    return this.$store.state.orderLoadedData.data.order_products
+        computed: {
+            orderProducts: {
+                get() {
+                    return this.order.order_products
                 }
             }
         },
         methods: {
-            onDialogCreateOrder(value){
+            onDialogCreateOrder(value) {
                 this.dialogCreateOrder = value;
             },
             initialize() {
                 this.loading = true
-                this.$store.commit('setApiUrl', {base: 'orders', page: 'show', url: this.$route.query.order})
-                this.$store.dispatch('getOrder').finally(() => {
-                    this.loading = false
-                });
-                // this.$store.commit('createErrorMessage', 'Some error message creating')
+                this.$store.dispatch('getApiContent', {url: this.$route.query.order})
+                    .then(() => {
+                        this.order = this.$store.state.apiLoadedData.data
+                    })
+                    .catch((error) => {
+                        this.$store.commit('SNAKE_BAR', {
+                            snackStatus: true,
+                            snackText: error.message,
+                            snackColor: 'error'
+                        })
+                    })
+                    .finally(() => {
+                        this.loading = false
+                    });
             },
         }
     }

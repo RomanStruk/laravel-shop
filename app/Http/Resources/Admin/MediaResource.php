@@ -22,8 +22,8 @@ class MediaResource extends JsonResource
             'extension' => $this->extension,
             'disc' => $this->disc,
             'links' => [
-                'self' => route('api.admin.media.show', $this),
-                'destroy' => route('api.admin.media.destroy', $this),
+                'self' => route('api.v1.admin.media.show', $this),
+                'destroy' => route('api.v1.admin.media.destroy', $this),
             ]
         ];
     }

@@ -22,17 +22,18 @@ class ProductResource extends JsonResource
             'content' => $this->content,
             'price' => $this->price,
             'old_price' => $this->old_price,
+            'quality' => $this->quality(),
             'status' => $this->status,
             'keywords' => $this->keywords,
             'description' => $this->description,
             'visits' => $this->visits,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
-            'category' => new CategoryResource($this->category),
+            'category' => new CategoryResource($this->whenLoaded('category')),
 //            'category' => $this->category,
             'links' => [
-                'self' => route('api.admin.products.show', $this),
-                'destroy' => route('api.admin.products.destroy', $this),
+                'self' => route('api.v1.admin.product.show', $this),
+                'destroy' => route('api.v1.admin.product.destroy', $this),
             ]
         ];
     }

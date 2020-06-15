@@ -1,16 +1,13 @@
 <template>
-    <div>
-
-        <v-data-table
-            :headers="headers"
-            :items="orders"
-            sort-by="calories"
-            class="elevation-1"
-            :loading="loading"
-            loading-text="Loading... Please wait"
-            hide-default-footer
-            :options="{itemsPerPage: 15}"
-        >
+    <v-data-table
+        :headers="headers"
+        :items="items"
+        :options.sync="options"
+        :loading="loading"
+        loading-text="Loading... Please wait"
+        class="elevation-1"
+        :server-items-length="totalItems"
+    >
             <template v-slot:top>
                 <v-toolbar flat color="white">
                     <v-toolbar-title>My CRUD</v-toolbar-title>
@@ -100,18 +97,14 @@
                 </v-icon>
             </template>
             <template v-slot:no-data>
-                <v-btn color="primary" @click="initialize">Reset</v-btn>
+                <v-btn color="primary" @click="getDataFromApi">Reset</v-btn>
             </template>
         </v-data-table>
-        <Pagination state="ordersLoadedData" commit="setOrdersCurrentPage" getList="getOrders" @loading="onLoading"></Pagination>
-    </div>
 </template>
 
 <script>
-    import Pagination from "../../components/Pagination";
     export default {
         name: "Index",
-        components: {Pagination},
         data: () => ({
             loading: false,
             dialog: false,
@@ -128,8 +121,6 @@
                 {text: 'Статус', value: 'status_description'},
                 {text: 'Дія', value: 'actions', sortable: false},
             ],
-            desserts: [],
-            // orders: [],
 
             editedIndex: -1,
             editedItem: {
@@ -146,15 +137,13 @@
                 carbs: 0,
                 protein: 0,
             },
+
+            totalItems: 0,
+            items: [],
+            options: {},
         }),
 
         computed: {
-            orders:{
-                get(){
-                    return this.$store.state.ordersLoadedData.data;
-                }
-            },
-
             formTitle() {
                 return this.editedIndex === -1 ? 'New Item' : 'Edit Item'
             },
@@ -164,29 +153,53 @@
             dialog(val) {
                 val || this.close()
             },
-        },
-
-        created() {
-            this.initialize()
-        },
-
-        methods: {
-            onLoading(val){
-                this.loading = val
+            options: {
+                handler() {
+                    this.getDataFromApi().then(data => {
+                        this.items = data.items
+                        this.totalItems = data.total
+                    })
+                },
+                deep: true,
             },
-
-            initialize() {
+        },
+        created() {
+            this.$store.commit('SNAKE_BAR', {snackStatus: true, snackText: 'qw', snackColor: 'error'})
+        },
+        methods: {
+            getDataFromApi() {
                 this.loading = true
-                this.$store.dispatch('getOrders', {page:1}).finally(()=>{
-                    this.loading = false
-                });
+                return new Promise((resolve) => {
+                    const {sortBy, sortDesc, page, itemsPerPage} = this.options
+                    let credentials = {
+                        url: this.$store.state.api.order.index,
+                        params: {
+                            page: page,
+                            limit: itemsPerPage,
+                            sortBy: sortBy,
+                            sortDesc: sortDesc
+                        }
+                    }
+                    this.$store.dispatch('getApiContent', credentials)
+                        .then(() => {
+                            let items = this.$store.state.apiLoadedData.data
+                            let total = this.$store.state.apiLoadedData.meta.total;
+                            resolve({
+                                items,
+                                total
+                            })
+                        })
+                        .finally(() => {
+                            this.loading = false
+                        })
+                })
             },
             showItem(item){
                 console.log(item)
                 this.$router.push({ path: '/order/show', query: {order:item.links.self} })
             },
             editItem(item) {
-                this.editedIndex = this.desserts.indexOf(item)
+                this.editedIndex = this.items.indexOf(item)
                 this.editedItem = Object.assign({}, item)
                 this.dialog = true
             },

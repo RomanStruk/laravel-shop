@@ -17,7 +17,7 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::group(['prefix' => 'v1'], function (){
+Route::group(['prefix' => 'v1', 'as' => 'api.v1.'], function (){
     //auth
     Route::post('/login', 'Api\v1\AuthController@login');
     Route::post('/fast-register', 'Api\v1\AuthController@fastRegister');
@@ -27,23 +27,16 @@ Route::group(['prefix' => 'v1'], function (){
     Route::apiResource('order', 'Api\v1\OrderController')->middleware(['auth:api']);
 
     // Admin API
-    Route::apiResource('orders', 'Api\v1\Admin\OrderController')->middleware(['auth:api'])
-        ->names(['show' => 'api.admin.orders.show', 'destroy' => 'api.admin.orders.destroy']);
-    Route::apiResource('users', 'Api\v1\Admin\UserController')->middleware(['auth:api'])
-        ->names(['show' => 'api.admin.users.show', 'destroy' => 'api.admin.users.destroy']);
-    Route::apiResource('categories', 'Api\v1\Admin\CategoryController')->middleware(['auth:api'])
-        ->names(['show' => 'api.admin.categories.show', 'destroy' => 'api.admin.categories.destroy']);
-    Route::apiResource('filters', 'Api\v1\Admin\FilterController')->middleware(['auth:api'])
-        ->names(['show' => 'api.admin.filters.show', 'destroy' => 'api.admin.filters.destroy']);
-    Route::apiResource('media', 'Api\v1\Admin\MediaController')->middleware(['auth:api'])
-        ->names(['show' => 'api.admin.media.show', 'destroy' => 'api.admin.media.destroy']);
-    Route::apiResource('products', 'Api\v1\Admin\ProductController')->middleware(['auth:api'])
-        ->names(['show' => 'api.admin.products.show', 'destroy' => 'api.admin.products.destroy']);
-    Route::apiResource('suppliers', 'Api\v1\Admin\SupplierController')->middleware(['auth:api'])
-        ->names(['show' => 'api.admin.suppliers.show', 'destroy' => 'api.admin.suppliers.destroy']);
-    Route::apiResource('syllables', 'Api\v1\Admin\SyllableController')->middleware(['auth:api'])
-        ->names(['show' => 'api.admin.syllables.show', 'destroy' => 'api.admin.syllables.destroy']);
-
+    Route::group(['prefix' => 'admin', 'as' => 'admin.', 'middleware' => ['auth:api']], function () {
+        Route::apiResource('order', 'Api\v1\Admin\OrderController');
+        Route::apiResource('user', 'Api\v1\Admin\UserController');
+        Route::apiResource('category', 'Api\v1\Admin\CategoryController');
+        Route::apiResource('filter', 'Api\v1\Admin\FilterController');
+        Route::apiResource('media', 'Api\v1\Admin\MediaController');
+        Route::apiResource('product', 'Api\v1\Admin\ProductController');
+        Route::apiResource('supplier', 'Api\v1\Admin\SupplierController');
+        Route::apiResource('syllable', 'Api\v1\Admin\SyllableController');
+    });
 
     Route::get('/product/index', 'Api\v1\ProductController@index');
     Route::get('/product/search', 'Api\v1\ProductController@search');

@@ -4,7 +4,7 @@ namespace App\Http\Resources\Admin;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class FilterValuesResource extends JsonResource
+class RoleResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -14,13 +14,6 @@ class FilterValuesResource extends JsonResource
      */
     public function toArray($request)
     {
-        return [
-            'filter_value_id' => $this->id,
-            'value' => $this->value,
-            'links' => [
-                'self' => $this->id,
-                'destroy' => $this->id,
-            ]
-        ];
+        return parent::toArray($request);
     }
 }

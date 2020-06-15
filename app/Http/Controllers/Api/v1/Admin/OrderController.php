@@ -3,8 +3,7 @@
 namespace App\Http\Controllers\Api\v1\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Http\Resources\Admin\OrderAdvancedResource;
-use App\Http\Resources\OrderSimpleResource;
+use App\Http\Resources\Admin\OrderResource;
 use App\Order;
 use Illuminate\Http\Request;
 
@@ -19,8 +18,8 @@ class OrderController extends Controller
     {
         $filter = $request->except('limit');
         $filter['date-desc'] = 'true';
-        $orders = Order::filter($filter)->allRelations()->paginate($request->limit);
-        return OrderSimpleResource::collection($orders)
+        $orders = Order::filter($filter)->with(['orderProducts', 'user', 'user.detail'])->paginate($request->limit);
+        return OrderResource::collection($orders)
             ->additional([
                 'message' => 'Retrieve Data is Successfully',
                 'success' => true
@@ -42,12 +41,12 @@ class OrderController extends Controller
      * Display the specified resource.
      *
      * @param int $id
-     * @return OrderAdvancedResource
+     * @return OrderResource
      */
     public function show($id)
     {
         $order = Order::allRelations()->withTrashed()->findOrFail($id);
-        return (new OrderAdvancedResource($order))->additional([
+        return (new OrderResource($order))->additional([
             'message' => 'Retrieve Data is Successfully',
             'success' => true
         ]);

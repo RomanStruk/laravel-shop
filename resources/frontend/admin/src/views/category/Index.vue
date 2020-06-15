@@ -2,10 +2,12 @@
     <div>
         <v-data-table
             :headers="headers"
-            :items="desserts"
+            :items="categories"
+            :options.sync="options"
             :loading="loading"
             loading-text="Loading... Please wait"
             class="elevation-1"
+            :server-items-length="totalCategories"
         >
 
             <template v-slot:top>
@@ -37,19 +39,19 @@
                                 <v-container>
                                     <v-row>
                                         <v-col cols="12" sm="6" md="4">
-                                            <v-text-field  label="#"></v-text-field>
+                                            <v-text-field label="#"></v-text-field>
                                         </v-col>
                                         <v-col cols="12" sm="6" md="4">
-                                            <v-text-field  label="Замовник"></v-text-field>
+                                            <v-text-field label="Замовник"></v-text-field>
                                         </v-col>
                                         <v-col cols="12" sm="6" md="4">
-                                            <v-text-field  label="На суму"></v-text-field>
+                                            <v-text-field label="На суму"></v-text-field>
                                         </v-col>
                                         <v-col cols="12" sm="6" md="4">
-                                            <v-text-field  label="Дата зміни"></v-text-field>
+                                            <v-text-field label="Дата зміни"></v-text-field>
                                         </v-col>
                                         <v-col cols="12" sm="6" md="4">
-                                            <v-text-field  label="Статус"></v-text-field>
+                                            <v-text-field label="Статус"></v-text-field>
                                         </v-col>
                                     </v-row>
                                 </v-container>
@@ -84,9 +86,9 @@
                     </template>
                 </v-edit-dialog>
             </template>
-            <template v-slot:item.iron="props">
+            <template v-slot:item.slug="props">
                 <v-edit-dialog
-                    :return-value.sync="props.item.iron"
+                    :return-value.sync="props.item.slug"
                     large
                     persistent
                     @save="save"
@@ -94,13 +96,13 @@
                     @open="open"
                     @close="close"
                 >
-                    <div>{{ props.item.iron }}</div>
+                    <div>{{ props.item.slug }}</div>
                     <template v-slot:input>
                         <div class="mt-4 title">Update Iron</div>
                     </template>
                     <template v-slot:input>
                         <v-text-field
-                            v-model="props.item.iron"
+                            v-model="props.item.slug"
                             :rules="[max25chars]"
                             label="Edit"
                             single-line
@@ -115,7 +117,8 @@
                     small
                     class="mr-2"
                     @click="action(item)"
-                >mdi-eye</v-icon>
+                >mdi-eye
+                </v-icon>
                 <v-icon
                     small
                     class="mr-2"
@@ -145,7 +148,7 @@
 <script>
     export default {
         name: "Index",
-        data () {
+        data() {
             return {
                 loading: false,
                 dialog: false,
@@ -153,127 +156,100 @@
                 snackColor: '',
                 snackText: '',
                 max25chars: v => v.length <= 25 || 'Input too long!',
-                pagination: {},
                 headers: [
                     {
-                        text: 'Dessert (100g serving)',
+                        text: '#',
                         align: 'start',
                         sortable: false,
-                        value: 'name',
+                        value: 'category_id',
                     },
-                    { text: 'Calories', value: 'calories' },
-                    { text: 'Fat (g)', value: 'fat' },
-                    { text: 'Carbs (g)', value: 'carbs' },
-                    { text: 'Protein (g)', value: 'protein' },
-                    { text: 'Iron (%)', value: 'iron' },
-                    { text: 'Action', value: 'actions' },
+                    {text: 'Заголовок', value: 'name'},
+                    {text: 'Slug', value: 'slug'},
+                    {text: 'Опис', value: 'description'},
+                    {text: 'Батьківський елемент', value: 'parent.name'},
+                    {text: 'Action', value: 'actions'},
                 ],
-                desserts: [
-                    {
-                        name: 'Frozen Yogurt',
-                        calories: 159,
-                        fat: 6.0,
-                        carbs: 24,
-                        protein: 4.0,
-                        iron: '1%',
-                        action: ''
-                    },
-                    {
-                        name: 'Ice cream sandwich',
-                        calories: 237,
-                        fat: 9.0,
-                        carbs: 37,
-                        protein: 4.3,
-                        iron: '1%',
-                    },
-                    {
-                        name: 'Eclair',
-                        calories: 262,
-                        fat: 16.0,
-                        carbs: 23,
-                        protein: 6.0,
-                        iron: '7%',
-                    },
-                    {
-                        name: 'Cupcake',
-                        calories: 305,
-                        fat: 3.7,
-                        carbs: 67,
-                        protein: 4.3,
-                        iron: '8%',
-                    },
-                    {
-                        name: 'Gingerbread',
-                        calories: 356,
-                        fat: 16.0,
-                        carbs: 49,
-                        protein: 3.9,
-                        iron: '16%',
-                    },
-                    {
-                        name: 'Jelly bean',
-                        calories: 375,
-                        fat: 0.0,
-                        carbs: 94,
-                        protein: 0.0,
-                        iron: '0%',
-                    },
-                    {
-                        name: 'Lollipop',
-                        calories: 392,
-                        fat: 0.2,
-                        carbs: 98,
-                        protein: 0,
-                        iron: '2%',
-                    },
-                    {
-                        name: 'Honeycomb',
-                        calories: 408,
-                        fat: 3.2,
-                        carbs: 87,
-                        protein: 6.5,
-                        iron: '45%',
-                    },
-                    {
-                        name: 'Donut',
-                        calories: 452,
-                        fat: 25.0,
-                        carbs: 51,
-                        protein: 4.9,
-                        iron: '22%',
-                    },
-                    {
-                        name: 'KitKat',
-                        calories: 518,
-                        fat: 26.0,
-                        carbs: 65,
-                        protein: 7,
-                        iron: '6%',
-                    },
-                ],
+
+
+                totalCategories: 0,
+                categories: [],
+                options: {},
+
             }
         },
+        watch: {
+            options: {
+                handler() {
+                    this.getDataFromApi()
+                        .then(data => {
+                            this.categories = data.items
+                            this.totalCategories = data.total
+                        })
+                },
+                deep: true,
+            },
+        },
+        mounted() {
+
+        },
         methods: {
-            action () {
+            getDataFromApi() {
+                this.loading = true
+                return new Promise((resolve) => {
+                    const {sortBy, sortDesc, page, itemsPerPage} = this.options
+
+                    console.log('sortBy ' + sortBy)
+                    console.log('sortDesc ' + sortDesc)
+                    console.log('page ' + page)
+                    console.log('itemsPerPage ' + itemsPerPage)
+
+                    let credentials = {
+                        url: this.$store.state.api.category.index,
+                        params: {
+                            page: page,
+                            limit: itemsPerPage,
+                            sortBy: sortBy,
+                            sortDesc: sortDesc
+                        }
+                    }
+                    this.$store.dispatch('getApiContent', credentials)
+                        .then(() => {
+                            let items = this.$store.state.apiLoadedData.data
+                            let total = this.$store.state.apiLoadedData.meta.total;
+                            console.log('items ')
+                            console.log(items)
+                            resolve({
+                                items,
+                                total
+                            })
+                        })
+                        .finally(() => {
+                            this.loading = false
+                        })
+
+                })
+            },
+            action() {
 
             },
 
-            save () {
+            save() {
+                // console.log(this.categories)
                 this.snack = true
                 this.snackColor = 'success'
                 this.snackText = 'Data saved'
             },
-            cancel () {
+            cancel() {
                 this.snack = true
                 this.snackColor = 'error'
                 this.snackText = 'Canceled'
             },
-            open () {
+            open() {
                 this.snack = true
                 this.snackColor = 'info'
                 this.snackText = 'Dialog opened'
             },
-            close () {
+            close() {
                 console.log('Dialog closed')
             },
         },

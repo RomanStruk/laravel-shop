@@ -1,39 +1,24 @@
 <template>
     <v-app id="sandbox">
+
         <v-snackbar
-            v-model="snackbarError"
-            color="error"
+            v-model="snake.snackStatus"
+            :color="snake.snackColor"
             multi-line
             right
             top
         >
-            <ul><li v-for="(error, i) in errors" :key="i">{{error}}</li></ul>
+            {{snake.snackText}}
             <template v-slot:action="{ attrs }">
                 <v-btn
                     dark
                     text
                     v-bind="attrs"
-                    @click="clearErrors(0)"
+                    @click="snake.snackStatus=false"
                 >Close</v-btn>
             </template>
         </v-snackbar>
-        <v-snackbar
-            v-model="snackbarSuccess"
-            color="success"
-            multi-line
-            right
-            bottom
-        >
-            <ul><li v-for="(message, i) in success" :key="i">{{message}}</li></ul>
-            <template v-slot:action="{ attrs }">
-                <v-btn
-                    dark
-                    text
-                    v-bind="attrs"
-                    @click="clearSuccess(0)"
-                >Close</v-btn>
-            </template>
-        </v-snackbar>
+
         <v-navigation-drawer
             v-model="primaryDrawer.model"
             :clipped="primaryDrawer.clipped"
@@ -266,14 +251,12 @@
             ]
         }),
         computed: {
-            errors:{
+            snake:{
                 get(){
-                    return this.$store.state.errors;
-                }
-            },
-            success:{
-                get(){
-                    return this.$store.state.success;
+                    return this.$store.state.snake;
+                },
+                set(){
+                    this.$store.commit('SNAKE_BAR', {snackStatus:false})
                 }
             },
             fields() {
@@ -296,16 +279,6 @@
             },
         },
         watch: {
-            errors(value){
-                if (value.length > 0){
-                    this.snackbarError = true;
-                }
-            },
-            success(value){
-                if (value.length > 0){
-                    this.snackbarSuccess = true;
-                }
-            },
             search(val) {
                 // Items have already been loaded
                 // if (this.itemsSearch.length > 0) return
@@ -329,18 +302,6 @@
             },
         },
         methods: {
-            clearErrors(index){
-                if (this.errors.length > 0){
-                    this.$store.commit('deleteError', index)
-                }
-                this.snackbarError = false;
-            },
-            clearSuccess(index){
-                if (this.success.length > 0){
-                    this.$store.commit('deleteSuccess', index)
-                }
-                this.snackbarSuccess = false;
-            },
             logout: function () {
                 this.$store.dispatch('logout')
                     .then(() => {

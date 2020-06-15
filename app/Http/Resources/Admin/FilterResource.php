@@ -17,10 +17,10 @@ class FilterResource extends JsonResource
         return [
             'filter_id' => $this->id,
             'name' => $this->name,
-            'values' => FilterValuesResource::collection($this->filterValues),
+            'values' => FilterValuesResource::collection($this->whenLoaded('filterValues')),
             'links' => [
-                'self' => route('api.admin.filters.show', $this),
-                'destroy' => route('api.admin.filters.destroy', $this),
+                'self' => route('api.v1.admin.filter.show', $this),
+                'destroy' => route('api.v1.admin.filter.destroy', $this),
             ]
         ];
     }

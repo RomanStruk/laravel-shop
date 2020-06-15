@@ -20,7 +20,7 @@ class ProductController extends Controller
         $filters = $request->except('limit');
         $filters['date'] = 'desc';
 
-        $products = Product::filter($filters)->with('category')->paginate();
+        $products = Product::filter($filters)->with('category')->paginate($request->limit);
         return ProductResource::collection($products)
             ->additional([
                 'message' => 'Retrieve Data is Successfully',

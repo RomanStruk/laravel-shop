@@ -23,7 +23,7 @@ class OrderProductResource extends JsonResource
             'price' => $this->product->price,
             'total' => $this->getTotalPriceForProduct(),
             'links' => [
-                'product' => route('product.show', $this->product)
+                'product' => route('api.v1.admin.product.show', $this->product)
             ]
         ];
     }
