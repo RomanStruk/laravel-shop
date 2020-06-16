@@ -2,19 +2,19 @@
     <v-app id="sandbox">
 
         <v-snackbar
-            v-model="snake.snackStatus"
-            :color="snake.snackColor"
+            v-model="snack.status"
+            :color="snack.color"
             multi-line
             right
             top
         >
-            {{snake.snackText}}
+            {{snack.text}}
             <template v-slot:action="{ attrs }">
                 <v-btn
                     dark
                     text
                     v-bind="attrs"
-                    @click="snake.snackStatus=false"
+                    @click="snack.status=false"
                 >Close</v-btn>
             </template>
         </v-snackbar>
@@ -251,12 +251,12 @@
             ]
         }),
         computed: {
-            snake:{
+            snack:{
                 get(){
-                    return this.$store.state.snake;
+                    return this.$store.state.snack;
                 },
                 set(){
-                    this.$store.commit('SNAKE_BAR', {snackStatus:false})
+                    this.$store.commit('SNACK_BAR', {status:false})
                 }
             },
             fields() {

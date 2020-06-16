@@ -164,7 +164,7 @@
             },
         },
         created() {
-            this.$store.commit('SNAKE_BAR', {snackStatus: true, snackText: 'qw', snackColor: 'error'})
+            this.$store.commit('SNACK_BAR', {status: true, text: 'qw', color: 'error'})
         },
         methods: {
             getDataFromApi() {

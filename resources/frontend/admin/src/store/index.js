@@ -7,8 +7,8 @@ Vue.use(Vuex)
 export default new Vuex.Store({
     state: {
         token: localStorage.getItem('access_token') || null,
-        errors:[],
-        success:[],
+        errors: [],
+        success: [],
 
         api: {
             order: {
@@ -56,18 +56,18 @@ export default new Vuex.Store({
         // api loaded storage
         apiLoadedData: {},
 
-        snake:{
-            snackStatus: false,
-            snackText: '',
-            snackColor: ''
+        snack: {
+            status: false,
+            text: '',
+            color: ''
         }
     },
     mutations: {
         SET_API_LOADED_DATA(state, content) {
             state.apiLoadedData = content;
         },
-        SNAKE_BAR(state, content){
-            state.snake = content
+        SNACK_BAR(state, content) {
+            state.snack = content
         },
 
         setApiUrl(state, content) {
@@ -86,12 +86,28 @@ export default new Vuex.Store({
         loggedIn(state) {
             return state.token !== null;
         },
-        hasErrors(state){
+        hasErrors(state) {
             return state.errors;
         }
     },
     actions: {
-        getApiContent(context, credentials){
+        apiUpdate(context, credentials) {
+            return new Promise((resolve, reject) => {
+                let data = credentials.params
+                data["_method"] = 'patch';
+                axios.post(credentials.url, data)
+                    .then(response => {
+                        const content = response.data
+                        context.commit('SNACK_BAR', {status: true, text: content.message, color: 'info'})
+                        resolve(response)
+                    })
+                    .catch(error => {
+                        context.commit('SNACK_BAR', {status: true, text: error, color: 'error'})
+                        reject(error)
+                    })
+            })
+        },
+        getApiContent(context, credentials) {
             return new Promise((resolve, reject) => {
                 axios.get(credentials.url, {
                     params: credentials.params
