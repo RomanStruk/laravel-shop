@@ -211,7 +211,6 @@
                     icon: mdiViewList,
                     items: [
                         {title: 'Огляд', action: '/category/index'},
-                        {title: 'Додати', action: '/category/create'},
                     ],
                 },
                 {

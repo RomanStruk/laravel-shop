@@ -11,7 +11,7 @@ module.exports = {
 
     // modify the location of the generated HTML file.
     // make sure to do this only in production.
-    indexPath: '../../../resources/views/app.blade.php',
+    indexPath: '../../../resources/views/admin/app.blade.php',
 
     transpileDependencies: [
         "vuetify"

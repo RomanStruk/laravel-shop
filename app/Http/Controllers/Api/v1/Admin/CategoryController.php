@@ -6,6 +6,7 @@ use App\Category;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CategoryRequest;
 use App\Http\Resources\Admin\CategoryResource;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
@@ -33,12 +34,23 @@ class CategoryController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param \Illuminate\Http\Request $request
-     * @return \Illuminate\Http\Response
+     * @param CategoryRequest $request
+     * @return CategoryResource|JsonResponse
      */
-    public function store(Request $request)
+    public function store(CategoryRequest $request)
     {
-        //
+        $category = new Category($request->validated());
+        if ($category->save()) {
+            return (new CategoryResource($category))
+                ->additional([
+                    'message' => 'Категорія успішно створена',
+                    'success' => true
+                ])
+                ->response()
+                ->setStatusCode(Response::HTTP_CREATED);
+        } else {
+            return response()->json(['message' => 'Creating error', 'success' => false]);
+        }
     }
 
     /**
@@ -49,7 +61,8 @@ class CategoryController extends Controller
      */
     public function show($id)
     {
-        return (new CategoryResource([]))->additional([
+        $category = Category::with(['parent'])->findOrFail($id);
+        return (new CategoryResource($category))->additional([
             'message' => 'Retrieve Data is Successfully',
             'success' => true
         ]);
@@ -60,23 +73,22 @@ class CategoryController extends Controller
      *
      * @param CategoryRequest $request
      * @param int $id
-     * @return CategoryResource|\Illuminate\Http\JsonResponse
+     * @return CategoryResource|JsonResponse
      */
     public function update(CategoryRequest $request, $id)
     {
-//        dd($request->all());
         $updateCategory = Category::findOrFail($id);
         if ($updateCategory->update($request->validated())) {
             $updateCategory->load('parent');
             return (new CategoryResource($updateCategory))
                 ->additional([
-                    'message' => 'Retrieve Data is Successfully',
+                    'message' => 'Категорія успішно оновлена',
                     'success' => true
                 ])
                 ->response()
                 ->setStatusCode(Response::HTTP_ACCEPTED);
         } else {
-            return response()->json(['message' => 'error', 'success' => false]);
+            return response()->json(['message' => 'Updating error', 'success' => false]);
         }
     }
 
@@ -84,10 +96,17 @@ class CategoryController extends Controller
      * Remove the specified resource from storage.
      *
      * @param int $id
-     * @return \Illuminate\Http\Response
+     * @return JsonResponse
      */
     public function destroy($id)
     {
-        //
+        if (Category::destroy($id)) {
+            return response()->json([
+                'message' => 'Категорія успішно видалена',
+                'success' => true
+            ]);
+        } else {
+            return response()->json(['message' => 'Deleting error', 'success' => false]);
+        }
     }
 }

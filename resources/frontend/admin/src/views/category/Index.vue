@@ -12,7 +12,7 @@
 
             <template v-slot:top>
                 <v-toolbar flat color="white">
-                    <v-toolbar-title>My CRUD</v-toolbar-title>
+                    <v-toolbar-title>Категорії</v-toolbar-title>
                     <v-divider
                         class="mx-4"
                         inset
@@ -47,7 +47,7 @@
                                                 <v-text-field
                                                     v-model="editedItem.name"
                                                     label="Категорія"
-                                                    :rules="[v => !!v || 'Item is required']"
+                                                    :rules="categoryNameRules"
                                                 ></v-text-field>
                                             </v-col>
                                             <v-col cols="12">
@@ -59,7 +59,7 @@
                                             </v-col>
                                             <v-col cols="12">
                                                 <v-select
-                                                    :items="categories"
+                                                    :items="selectItems"
                                                     label="Батьківська категорія"
                                                     item-text="name"
                                                     item-value="category_id"
@@ -94,12 +94,14 @@
                 <v-icon
                     small
                     class="mr-2"
+                    color="blue"
                     @click="editItem(item)"
                 >
                     mdi-pencil
                 </v-icon>
                 <v-icon
                     small
+                    color="red"
                     @click="destroyItem(item)"
                 >mdi-delete
                 </v-icon>
@@ -120,6 +122,10 @@
 
                 parentRules: [
                     v => (v >= 0) || 'Помилка валідації',
+                ],
+                categoryNameRules: [
+                    v => !!v || 'Item is required',
+                    v => (v.length >= 4) || 'Мінімальна довжина 4 символи',
                 ],
 
                 loading: false,
@@ -160,6 +166,11 @@
             }
         },
         computed: {
+            selectItems() {
+                let temp = [...this.categories];
+                temp.push({name: 'No selected', category_id: 0})
+                return temp;
+            },
             formTitle() {
                 return this.editedIndex === -1 ? 'Нова категорія' : 'Редагувати категорію'
             },
@@ -217,7 +228,13 @@
                 })
             },
             destroyItem(item) {
-                console.log(item)
+                if (confirm('Are you sure you want to delete this item?')) {
+                    this.$store.dispatch('apiDestroy', {url: item.links.destroy})
+                        .then(() => {
+                            let index = this.categories.indexOf(item)
+                            this.categories.splice(index, 1)
+                        })
+                }
             },
             editItem(item) {
                 this.editedIndex = this.categories.indexOf(item)
@@ -226,7 +243,6 @@
             },
 
             close() {
-                // this.valid = true
                 this.dialog = false
                 this.$nextTick(() => {
                     this.editedItem = Object.assign({}, this.defaultItem)
@@ -244,19 +260,23 @@
                         params: this.editedItem
                     }
                     this.$store.dispatch('apiUpdate', data)
-                        .then((response) => {
-                            this.$set(this.categories, this.editedIndex, response.data.data)
-                            this.$store.commit('SNACK_BAR', {
-                                status: true,
-                                text: response.data.message,
-                                color: 'success'
-                            })
+                        .then((content) => {
+                            this.$set(this.categories, this.editedIndex, content.data)
                             this.close()
                         })
 
                 } else {
                     // create
-                    this.categories.push(this.editedItem)
+                    let data = {
+                        url: this.$store.state.api.category.index,
+                        params: this.editedItem
+                    }
+                    this.$store.dispatch('apiCreate', data)
+                        .then((content) => {
+                            this.categories.push(content.data);
+                            this.close()
+                        })
+
                 }
             },
         },

@@ -1,14 +1,12 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
 import axios from 'axios';
-
+import moduleSearchApi from './modules/searchApiModule';
 Vue.use(Vuex)
 
 export default new Vuex.Store({
     state: {
         token: localStorage.getItem('access_token') || null,
-        errors: [],
-        success: [],
 
         api: {
             order: {
@@ -91,6 +89,47 @@ export default new Vuex.Store({
         }
     },
     actions: {
+        apiDestroy(context, credentials){
+            return new Promise((resolve, reject) => {
+                let data = {}
+                data["_method"] = 'delete';
+                axios.post(credentials.url, data)
+                    .then(response => {
+                        const content = response.data
+                        if (content.success === true){
+                            context.commit('SNACK_BAR', {status: true, text: content.message, color: 'success'})
+                        }else {
+                            context.commit('SNACK_BAR', {status: true, text: content.message, color: 'error'})
+                        }
+                        resolve(content)
+                    })
+                    .catch(error => {
+                        const content = error.response.data
+                        context.commit('SNACK_BAR', {status: true, text: content.message, color: 'error'})
+                        reject(content)
+                    })
+            })
+        },
+        apiCreate(context, credentials) {
+            return new Promise((resolve, reject) => {
+                axios.post(credentials.url, credentials.params)
+                    .then(response => {
+                        const content = response.data
+                        context.commit('SNACK_BAR', {status: true, text: content.message, color: 'success'})
+                        resolve(content)
+                    })
+                    .catch(error => {
+                        const content = error.response.data
+                        let errors = Object.values(error.response.data.errors).flat();
+                        let text = '';
+                        for (let m of errors){
+                            text += m + ' ';
+                        }
+                        context.commit('SNACK_BAR', {status: true, text: text, color: 'error'})
+                        reject(content)
+                    })
+            })
+        },
         apiUpdate(context, credentials) {
             return new Promise((resolve, reject) => {
                 let data = credentials.params
@@ -98,12 +137,13 @@ export default new Vuex.Store({
                 axios.post(credentials.url, data)
                     .then(response => {
                         const content = response.data
-                        context.commit('SNACK_BAR', {status: true, text: content.message, color: 'info'})
-                        resolve(response)
+                        context.commit('SNACK_BAR', {status: true, text: content.message, color: 'success'})
+                        resolve(content)
                     })
                     .catch(error => {
-                        context.commit('SNACK_BAR', {status: true, text: error, color: 'error'})
-                        reject(error)
+                        const content = error.response.data
+                        context.commit('SNACK_BAR', {status: true, text: content.message, color: 'error'})
+                        reject(content)
                     })
             })
         },
@@ -145,5 +185,7 @@ export default new Vuex.Store({
             })
         }
     },
-    modules: {}
+    modules: {
+        searchApi: moduleSearchApi
+    }
 })
