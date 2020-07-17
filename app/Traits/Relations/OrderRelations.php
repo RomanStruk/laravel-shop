@@ -39,7 +39,7 @@ trait OrderRelations
      */
     public function histories()
     {
-        return $this->hasMany('App\OrderHistory');
+        return $this->hasMany('App\OrderHistory')->orderByDesc('date_added');
     }
 
     /**

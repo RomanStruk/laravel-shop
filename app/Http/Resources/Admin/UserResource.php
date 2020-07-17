@@ -27,8 +27,8 @@ class UserResource extends JsonResource
 
             'roles' => RoleResource::collection($this->whenLoaded('roles')),
             'links' => [
-                'self' => route('api.v1.admin.media.show', $this),
-                'destroy' => route('api.v1.admin.media.destroy', $this),
+                'self' => route('api.v1.admin.user.show', $this),
+                'destroy' => route('api.v1.admin.user.destroy', $this),
             ]
         ];
     }

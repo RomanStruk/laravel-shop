@@ -31,21 +31,24 @@
 
         >
             <template v-slot:prepend>
-                <v-list-item two-line>
-                    <v-list-item-avatar>
-                        <img src="https://randomuser.me/api/portraits/women/81.jpg">
-                    </v-list-item-avatar>
+                <v-list >
+                    <v-list-item two-line>
+                        <v-list-item-avatar>
+                            <img src="https://randomuser.me/api/portraits/women/81.jpg">
+                        </v-list-item-avatar>
 
-                    <v-list-item-content>
-                        <v-list-item-title>Jane Smith</v-list-item-title>
-                        <v-list-item-subtitle>Logged In</v-list-item-subtitle>
-                    </v-list-item-content>
-                    <v-list-item-action>
-                        <v-btn icon @click="logout">
-                            <v-icon>{{svgPath.mdiLogoutVariant }}</v-icon>
-                        </v-btn>
-                    </v-list-item-action>
-                </v-list-item>
+                        <v-list-item-content>
+                            <v-list-item-title>Jane Smith</v-list-item-title>
+                            <v-list-item-subtitle>Logged In</v-list-item-subtitle>
+                        </v-list-item-content>
+                        <v-list-item-action>
+                            <v-btn icon @click="logout">
+                                <v-icon>{{svgPath.mdiLogoutVariant }}</v-icon>
+                            </v-btn>
+                        </v-list-item-action>
+                    </v-list-item>
+                </v-list>
+
             </template>
 
             <v-divider></v-divider>
@@ -78,8 +81,8 @@
         <v-app-bar
             :clipped-left="primaryDrawer.clipped"
             app
-            extended
             hide-on-scroll
+            color="blue lighten-2"
         >
             <v-app-bar-nav-icon
                 v-if="primaryDrawer.type !== 'permanent'"
@@ -108,15 +111,6 @@
             <ChatMenuBar></ChatMenuBar>
             <NotificationMenuBar></NotificationMenuBar>
 
-            <template v-slot:extension>
-                <v-toolbar-title>Shop</v-toolbar-title>
-                <v-spacer></v-spacer>
-                <v-breadcrumbs :items="breadcrumbs">
-                    <template v-slot:divider>
-                        <v-icon>mdi-chevron-right</v-icon>
-                    </template>
-                </v-breadcrumbs>
-            </template>
         </v-app-bar>
 
         <v-main>
@@ -203,7 +197,6 @@
                     icon: mdiCamcorder,
                     items: [
                         {title: 'Огляд', action: '/order/index'},
-                        {title: 'Додати', action: '/order/create'},
                     ],
                 },
                 {

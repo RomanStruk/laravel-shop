@@ -94,7 +94,7 @@
                 <v-icon
                     small
                     class="mr-2"
-                    color="blue"
+                    color="teal lighten-2"
                     @click="editItem(item)"
                 >
                     mdi-pencil

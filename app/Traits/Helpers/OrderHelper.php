@@ -20,12 +20,6 @@ use Illuminate\Notifications\Notification;
 trait OrderHelper
 {
 
-    public function getSumPriceAttribute()
-    {
-        return $this->getSubTotalPrice();
-    }
-
-
     /**
      *
      * Calculated sum price for products

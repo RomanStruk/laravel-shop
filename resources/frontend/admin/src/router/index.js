@@ -67,6 +67,12 @@ const routes = [
         ]
     },
     {
+        path: '/order/print',
+        name: 'admin.order.print',
+        component: () => import(/* webpackChunkName: "order.show" */ '../views/order/PrintOrder.vue'),
+        beforeEnter: ifAuthenticated,
+    },
+    {
         path: '/category/',
         name: 'admin.category.index',
         component: Template,

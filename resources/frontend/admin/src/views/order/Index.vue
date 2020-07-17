@@ -10,21 +10,48 @@
     >
         <template v-slot:top>
             <v-toolbar flat color="white">
-                <v-toolbar-title>My CRUD</v-toolbar-title>
+                <v-toolbar-title>Список замовлень</v-toolbar-title>
                 <v-divider
                     class="mx-4"
                     inset
                     vertical
                 ></v-divider>
                 <v-spacer></v-spacer>
+                <v-select label="Статус"></v-select>
+                <v-menu
+                    ref="menu"
+                    v-model="calendar"
+                    :close-on-content-click="false"
+                    :return-value.sync="date"
+                    transition="scale-transition"
+                    offset-y
+                    min-width="290px"
+                >
+                    <template v-slot:activator="{ on, attrs }">
+                        <v-text-field
+                            v-model="date"
+                            label="Picker in menu"
+                            prepend-icon="mdi-calendar"
+                            readonly
+                            v-bind="attrs"
+                            v-on="on"
+                        ></v-text-field>
+                    </template>
+                    <v-date-picker v-model="date" no-title scrollable>
+                        <v-spacer></v-spacer>
+                        <v-btn text color="primary" @click="calendar = false">Cancel</v-btn>
+                        <v-btn text color="primary" @click="$refs.menu.save(date)">OK</v-btn>
+                    </v-date-picker>
+                </v-menu>
+                <v-spacer></v-spacer>
                 <CreateOrderDialog></CreateOrderDialog>
             </v-toolbar>
         </template>
         <template v-slot:item.user="{item}">
-            {{item.user.full_name}}
+            <b>{{item.user.full_name}}</b>
             <br>
             <small>
-                Created {{ item.created_at }}
+                Створений {{ item.created_at }}
             </small>
         </template>
         <template v-slot:item.status_description="{ item }">
@@ -38,17 +65,13 @@
             <v-icon
                 small
                 class="mr-2"
+                color="blue"
                 @click="showItem(item)"
             >mdi-eye
             </v-icon>
             <v-icon
                 small
-                class="mr-2"
-            >
-                mdi-pencil
-            </v-icon>
-            <v-icon
-                small
+                color="red"
                 @click="deleteItem(item)"
             >
                 mdi-delete
@@ -66,7 +89,8 @@
         name: "Index",
         components: {CreateOrderDialog},
         data: () => ({
-
+            date: new Date().toISOString().substr(0, 10),
+            calendar: false,
 
             loading: false,
             headers: [
@@ -77,7 +101,7 @@
                     value: 'order_id',
                 },
                 {text: 'Замовник', value: 'user', sortable: false},
-                {text: 'На суму', value: 'sum_price'},
+                {text: 'На суму', value: 'total_products_price'},
                 {text: 'Змінено', value: 'updated_at'},
                 {text: 'Статус', value: 'status_description'},
                 {text: 'Дія', value: 'actions', sortable: false},
