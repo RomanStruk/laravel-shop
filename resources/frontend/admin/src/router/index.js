@@ -106,6 +106,14 @@ const routes = [
                 path: '/user/index',
                 component: () => import(/* webpackChunkName: "user.index" */ '../views/user/Index.vue')
             },
+            {
+                path: '/user/create',
+                component: () => import(/* webpackChunkName: "user.create" */ '../views/user/CreateUser.vue')
+            },
+            {
+                path: '/user/show',
+                component: () => import(/* webpackChunkName: "user.show" */ '../views/user/ShowUser.vue')
+            },
         ]
     },
     {

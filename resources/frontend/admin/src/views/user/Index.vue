@@ -12,58 +12,20 @@
 
             <template v-slot:top>
                 <v-toolbar flat color="white">
-                    <v-toolbar-title>My CRUD</v-toolbar-title>
+                    <v-toolbar-title>Користувачі</v-toolbar-title>
                     <v-divider
                         class="mx-4"
                         inset
                         vertical
                     ></v-divider>
                     <v-spacer></v-spacer>
-                    <v-dialog v-model="dialog" max-width="500px">
-                        <template v-slot:activator="{ on, attrs }">
-                            <v-btn
-                                color="primary"
-                                dark
-                                class="mb-2"
-                                v-bind="attrs"
-                                v-on="on"
-                            >New Item
-                            </v-btn>
-                        </template>
-                        <v-card>
-                            <v-card-title>
-                                <span class="headline">Add Category</span>
-                            </v-card-title>
-
-                            <v-card-text>
-                                <v-container>
-                                    <v-row>
-                                        <v-col cols="12" sm="6" md="4">
-                                            <v-text-field  label="#"></v-text-field>
-                                        </v-col>
-                                        <v-col cols="12" sm="6" md="4">
-                                            <v-text-field  label="Замовник"></v-text-field>
-                                        </v-col>
-                                        <v-col cols="12" sm="6" md="4">
-                                            <v-text-field  label="На суму"></v-text-field>
-                                        </v-col>
-                                        <v-col cols="12" sm="6" md="4">
-                                            <v-text-field  label="Дата зміни"></v-text-field>
-                                        </v-col>
-                                        <v-col cols="12" sm="6" md="4">
-                                            <v-text-field  label="Статус"></v-text-field>
-                                        </v-col>
-                                    </v-row>
-                                </v-container>
-                            </v-card-text>
-
-                            <v-card-actions>
-                                <v-spacer></v-spacer>
-                                <v-btn color="blue darken-1" text @click="dialog = false">Cancel</v-btn>
-                                <v-btn color="blue darken-1" text @click="dialog = false">Save</v-btn>
-                            </v-card-actions>
-                        </v-card>
-                    </v-dialog>
+                    <v-btn
+                        color="primary"
+                        dark
+                        class="mb-2"
+                        to="/user/create"
+                    >Додати
+                    </v-btn>
                 </v-toolbar>
             </template>
 
@@ -87,23 +49,24 @@
                 </v-edit-dialog>
             </template>
             <template v-slot:item.roles="props">
-                <span v-for="role in props.item.roles" :key="role.id">{{ role.name }}, </span>
+                <span v-for="role in props.item.roles" :key="role.id">{{ role.name }} </span>
             </template>
             <template v-slot:item.actions="{ item }">
-                <v-icon
-                    small
+                <v-btn
+                    icon
                     class="mr-2"
-                    @click="action(item)"
-                >mdi-eye</v-icon>
-                <v-icon
-                    small
-                    class="mr-2"
-                    @click="action(item)"
+                    :to="'/user/show?user='+item.links.self"
                 >
-                    mdi-pencil
-                </v-icon>
+                    <v-icon
+                        small
+                        @click="action(item)"
+                        color="blue"
+                    >mdi-eye</v-icon>
+                </v-btn>
+
                 <v-icon
                     small
+                    color="red"
                     @click="action(item)"
                 >
                     mdi-delete

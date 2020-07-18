@@ -146,7 +146,7 @@
 
 <script>
     export default {
-        name: "CreateEditDialog",
+        name: "CreateDialog",
         data: () => ({
             valid: true,
             dialog: false,

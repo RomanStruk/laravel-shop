@@ -17,10 +17,16 @@ class MediaResource extends JsonResource
         return [
             'media_id' => $this->id,
             'url' => $this->url,
+            'path' => $this->path,
             'name' => $this->name,
+            'keywords' => $this->keywords,
+            'description' => $this->description,
             'size' => $this->size,
             'extension' => $this->extension,
-            'disc' => $this->disc,
+            'visibility' => $this->visibility,
+            'created_at' => $this->created_at,
+            'updated_at' => $this->updated_at,
+            'products' => ProductResource::collection($this->whenLoaded('products')),
             'links' => [
                 'self' => route('api.v1.admin.media.show', $this),
                 'destroy' => route('api.v1.admin.media.destroy', $this),

@@ -43,7 +43,7 @@ class MediaController extends Controller
      */
     public function show($id)
     {
-        return (new MediaResource([]))->additional([
+        return (new MediaResource(Media::with('products')->find($id)))->additional([
             'message' => 'Retrieve Data is Successfully',
             'success' => true
         ]);

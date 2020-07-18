@@ -12,90 +12,128 @@
 
             <template v-slot:top>
                 <v-toolbar flat color="white">
-                    <v-toolbar-title>My CRUD</v-toolbar-title>
+                    <v-toolbar-title>Зображення</v-toolbar-title>
                     <v-divider
                         class="mx-4"
                         inset
                         vertical
                     ></v-divider>
                     <v-spacer></v-spacer>
-                    <CreateEditDialog></CreateEditDialog>
+                    <CreateDialog></CreateDialog>
+                    <v-dialog v-model="editDialog" max-width="1000px">
+                        <v-card>
+                            <v-toolbar flat color="primary" dark>
+                                <v-toolbar-title>Редагувати</v-toolbar-title>
+                                <v-spacer></v-spacer>
+
+                                <v-btn icon>
+                                    <v-icon>mdi-content-save</v-icon>
+                                </v-btn>
+                                <v-btn icon @click="editDialog = false">
+                                    <v-icon>mdi-close</v-icon>
+                                </v-btn>
+
+                            </v-toolbar>
+                            <v-card-text>
+                                <v-container>
+                                    <v-row>
+                                        <v-col cols="6">
+                                            <v-text-field
+                                                label="Назва"
+                                                :value="editData.name"
+                                            ></v-text-field>
+                                            <v-text-field
+                                                label="Ключові слова"
+                                                :value="editData.keywords"
+                                                :rules="[v => !!v || 'Item is required']"
+                                            ></v-text-field>
+                                            <v-text-field
+                                                label="Опис"
+                                                :value="editData.description"
+                                                :rules="[v => !!v || 'Item is required']"
+                                            ></v-text-field>
+                                            <v-autocomplete
+                                                label="Прикріпити до товару"
+                                                item-text="title"
+                                                item-value="product_id"
+                                            ></v-autocomplete>
+                                            <v-select
+                                                label="Видимість"
+                                                :items="['Видимий', 'Скритий']"
+                                            ></v-select>
+                                        </v-col>
+                                        <v-col cols="6">
+
+                                            <v-img
+                                                :src="editData.url"
+                                                :lazy-src="editData.url"
+                                                aspect-ratio="1"
+                                                class="grey lighten-2"
+                                            >
+                                                <template v-slot:placeholder>
+                                                    <v-row
+                                                        class="fill-height ma-0"
+                                                        align="center"
+                                                        justify="center"
+                                                    >
+                                                        <v-progress-circular indeterminate
+                                                                             color="grey lighten-5"></v-progress-circular>
+                                                    </v-row>
+                                                </template>
+                                            </v-img>
+                                        </v-col>
+                                    </v-row>
+                                </v-container>
+                            </v-card-text>
+                        </v-card>
+                    </v-dialog>
                 </v-toolbar>
             </template>
 
             <template v-slot:item.img="props">
-                <v-card height="64"
-                        width="90"
+                <v-menu
+                    ref="menu"
+                    :close-on-content-click="false"
+                    transition="scale-transition"
+                    offset-y
+                    min-width="290px"
                 >
+                    <template v-slot:activator="{ on, attrs }">
+                        <v-card height="64"
+                                width="90"
+                        >
+                            <v-img
+                                :src="props.item.url"
+                                height="64"
+                                width="90"
+                                class="grey darken-4"
+                                v-bind="attrs"
+                                v-on="on"
+                            ></v-img>
+                        </v-card>
+
+                    </template>
                     <v-img
                         :src="props.item.url"
-                        height="64"
-                        width="90"
                         class="grey darken-4"
                     ></v-img>
-                </v-card>
+                </v-menu>
+
             </template>
 
-            <template v-slot:item.name="props">
-                <v-edit-dialog
-                    :return-value.sync="props.item.name"
-                    @save="save"
-                    @cancel="cancel"
-                    @open="open"
-                    @close="close"
-                > {{ props.item.name }}
-                    <template v-slot:input>
-                        <v-text-field
-                            v-model="props.item.name"
-                            :rules="[max25chars]"
-                            label="Edit"
-                            single-line
-                            counter
-                        ></v-text-field>
-                    </template>
-                </v-edit-dialog>
-            </template>
-            <template v-slot:item.iron="props">
-                <v-edit-dialog
-                    :return-value.sync="props.item.iron"
-                    large
-                    persistent
-                    @save="save"
-                    @cancel="cancel"
-                    @open="open"
-                    @close="close"
-                >
-                    <div>{{ props.item.iron }}</div>
-                    <template v-slot:input>
-                        <div class="mt-4 title">Update Iron</div>
-                    </template>
-                    <template v-slot:input>
-                        <v-text-field
-                            v-model="props.item.iron"
-                            :rules="[max25chars]"
-                            label="Edit"
-                            single-line
-                            counter
-                            autofocus
-                        ></v-text-field>
-                    </template>
-                </v-edit-dialog>
-            </template>
+
             <template v-slot:item.actions="{ item }">
                 <v-icon
                     small
                     class="mr-2"
-                    @click="action(item)"
-                >mdi-eye</v-icon>
-                <v-icon
-                    small
-                    class="mr-2"
-                    @click="action(item)"
+                    color="teal lighten-2"
+                    @click="editItem(item)"
                 >
                     mdi-pencil
                 </v-icon>
                 <v-icon
                     small
+                    color="red"
                     @click="action(item)"
                 >
                     mdi-delete
@@ -114,10 +152,10 @@
 </template>
 
 <script>
-    import CreateEditDialog from "./CreateEditDialog";
+    import CreateDialog from "./CreateDialog";
     export default {
         name: "Index",
-        components: {CreateEditDialog},
+        components: {CreateDialog},
         data () {
             return {
                 loading: false,
@@ -134,16 +172,21 @@
                         sortable: false,
                         value: 'media_id',
                     },
-                    { text: 'Зображення', value: 'img' },
+                    { text: 'Зображення', value: 'img', sortable: false, },
                     { text: 'Ім\'я', value: 'name' },
+                    { text: 'Ключові слова', value: 'keywords' },
+                    { text: 'Опис', value: 'description' },
                     { text: 'Розмір (Kb)', value: 'size' },
                     { text: 'Розширення', value: 'extension' },
-                    { text: 'Диск', value: 'disc' },
+                    { text: 'Видимість', value: 'visibility' },
                     { text: 'Action', value: 'actions' },
                 ],
                 totalItems: 0,
                 items: [],
                 options: {},
+
+                editDialog: false,
+                editData: {}
             }
         },
         watch: {
@@ -158,6 +201,12 @@
             },
         },
         methods: {
+            editItem(item){
+                console.log(item)
+                // TODO Запит на БД для отримання детальної інформації (method media/show)
+                this.editData = item;
+                this.editDialog = true
+            },
             getDataFromApi() {
                 this.loading = true
                 return new Promise((resolve) => {

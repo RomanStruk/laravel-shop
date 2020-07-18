@@ -19,29 +19,88 @@
                         vertical
                     ></v-divider>
                     <v-spacer></v-spacer>
-                    <CreateEditFilterDialog></CreateEditFilterDialog>
+                    <v-dialog v-model="dialog" max-width="1000px">
+                        <template v-slot:activator="{ on, attrs }">
+                            <v-btn
+                                color="primary"
+                                dark
+                                class="mb-2"
+                                v-bind="attrs"
+                                v-on="on"
+                            >New Item
+                            </v-btn>
+                        </template>
+                        <v-card>
+                            <v-card-title>
+                                <span class="headline">Create/Edit</span>
+
+                            </v-card-title>
+                            <v-card-text>
+                                <v-text-field
+                                    label="Назва групи фільтрів"
+                                ></v-text-field>
+                                <v-list>
+                                    <v-list-item v-for="item in values" :key="item.value">
+                                        <v-text-field
+                                            v-if="editing === item"
+                                            v-model="editing.value"
+                                            autofocus
+                                            flat
+                                            background-color="transparent"
+                                            hide-details
+                                            solo
+                                            @keyup.enter="edit(index, item)"
+                                        ></v-text-field>
+                                        <v-chip
+                                            v-else
+                                            :color="`${item.color} lighten-3`"
+                                            dark
+                                            label
+                                            small
+                                        >
+                                            {{ item.value }}
+                                        </v-chip>
+                                        <v-spacer></v-spacer>
+                                        <v-list-item-action @click.stop>
+                                            <v-btn
+                                                icon
+                                                @click.stop.prevent="edit(index, item)"
+                                            >
+                                                <v-icon>{{ editing !== item ? 'mdi-pencil' : 'mdi-check' }}</v-icon>
+                                            </v-btn>
+                                        </v-list-item-action>
+                                        <v-list-item-action @click.stop>
+                                            <v-btn
+                                                icon
+                                                @click.stop.prevent="destroy(index)"
+                                            >
+                                                <v-icon>mdi-trash-can</v-icon>
+                                            </v-btn>
+                                        </v-list-item-action>
+                                    </v-list-item>
+                                    <v-list-item>
+                                        <v-text-field
+                                            flat
+                                            background-color="transparent"
+                                            hide-details
+                                            label="Варіант"
+                                        ></v-text-field>
+                                        <v-list-item-action @click.stop>
+                                            <v-btn
+                                                icon
+                                                @click.stop.prevent="add()"
+                                            >
+                                                <v-icon>mdi-plus-box</v-icon>
+                                            </v-btn>
+                                        </v-list-item-action>
+                                    </v-list-item>
+                                </v-list>
+                            </v-card-text>
+                        </v-card>
+                    </v-dialog>
                 </v-toolbar>
             </template>
 
-            <template v-slot:item.name="props">
-                <v-edit-dialog
-                    :return-value.sync="props.item.name"
-                    @save="save"
-                    @cancel="cancel"
-                    @open="open"
-                    @close="close"
-                > {{ props.item.name }}
-                    <template v-slot:input>
-                        <v-text-field
-                            v-model="props.item.name"
-                            :rules="[max25chars]"
-                            label="Edit"
-                            single-line
-                            counter
-                        ></v-text-field>
-                    </template>
-                </v-edit-dialog>
-            </template>
             <template v-slot:item.values="props">
                     <span v-for="attribute in props.item.values" :key="attribute.id">{{ attribute.value }}, </span>
             </template>
@@ -54,7 +113,7 @@
                 <v-icon
                     small
                     class="mr-2"
-                    @click="action(item)"
+                    @click="editAction(item)"
                 >
                     mdi-pencil
                 </v-icon>
@@ -78,10 +137,8 @@
 </template>
 
 <script>
-    import CreateEditFilterDialog from "./CreateEditFilterDialog";
     export default {
         name: "Index",
-        components: {CreateEditFilterDialog},
         data () {
             return {
                 loading: false,
@@ -102,10 +159,26 @@
                     { text: 'Варіанти', value: 'values' },
                     { text: 'Action', value: 'actions' },
                 ],
+                items:[],
 
                 totalItems: 0,
-                items: [],
                 options: {},
+
+                // editing
+                activator: null,
+                colors: ['green', 'purple', 'indigo', 'cyan', 'teal', 'orange'],
+                editing: null,
+                index: -1,
+                values: [
+                    {
+                        text: 'Foo',
+                        color: 'blue',
+                    },
+                    {
+                        text: 'Bar',
+                        color: 'red',
+                    },
+                ],
             }
         },
         watch: {
@@ -120,6 +193,30 @@
             },
         },
         methods: {
+            //editing
+
+            editAction (item) {
+                console.log(item)
+                this.values = item.values;
+                this.dialog = true
+
+            },
+            edit(index, item) {
+                if (!this.editing) {
+                    this.editing = item
+                    this.index = index
+                } else {
+                    this.editing = null
+                    this.index = -1
+                }
+            },
+            add(){
+            },
+            destroy(index){
+                this.values.splice(index, 1)
+            },
+            //end editing
+
             getDataFromApi() {
                 this.loading = true
                 return new Promise((resolve) => {
