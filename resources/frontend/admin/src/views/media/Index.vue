@@ -1,5 +1,72 @@
 <template>
     <div>
+        <v-dialog v-model="editDialog" max-width="1000px">
+            <v-card>
+                <v-toolbar flat color="primary" dark>
+                    <v-toolbar-title>Редагувати</v-toolbar-title>
+                    <v-spacer></v-spacer>
+
+                    <v-btn icon>
+                        <v-icon>mdi-content-save</v-icon>
+                    </v-btn>
+                    <v-btn icon @click="editDialog = false">
+                        <v-icon>mdi-close</v-icon>
+                    </v-btn>
+
+                </v-toolbar>
+                <v-card-text>
+                    <v-container>
+                        <v-row>
+                            <v-col cols="6">
+                                <v-text-field
+                                    label="Назва"
+                                    :value="editData.name"
+                                ></v-text-field>
+                                <v-text-field
+                                    label="Ключові слова"
+                                    :value="editData.keywords"
+                                    :rules="[v => !!v || 'Item is required']"
+                                ></v-text-field>
+                                <v-text-field
+                                    label="Опис"
+                                    :value="editData.description"
+                                    :rules="[v => !!v || 'Item is required']"
+                                ></v-text-field>
+                                <v-autocomplete
+                                    label="Прикріпити до товару"
+                                    item-text="title"
+                                    item-value="product_id"
+                                ></v-autocomplete>
+                                <v-select
+                                    label="Видимість"
+                                    :items="['Видимий', 'Скритий']"
+                                ></v-select>
+                            </v-col>
+                            <v-col cols="6">
+
+                                <v-img
+                                    :src="editData.url"
+                                    :lazy-src="editData.url"
+                                    aspect-ratio="1"
+                                    class="grey lighten-2"
+                                >
+                                    <template v-slot:placeholder>
+                                        <v-row
+                                            class="fill-height ma-0"
+                                            align="center"
+                                            justify="center"
+                                        >
+                                            <v-progress-circular indeterminate
+                                                                 color="grey lighten-5"></v-progress-circular>
+                                        </v-row>
+                                    </template>
+                                </v-img>
+                            </v-col>
+                        </v-row>
+                    </v-container>
+                </v-card-text>
+            </v-card>
+        </v-dialog>
         <v-data-table
             :headers="headers"
             :items="items"
@@ -19,71 +86,34 @@
                         vertical
                     ></v-divider>
                     <v-spacer></v-spacer>
-                    <CreateDialog></CreateDialog>
-                    <v-dialog v-model="editDialog" max-width="1000px">
+                    <v-dialog v-model="dialog" max-width="1000px">
+                        <template v-slot:activator="{ on, attrs }">
+                            <v-btn
+                                color="primary"
+                                dark
+                                v-bind="attrs"
+                                v-on="on"
+                                icon
+                            >
+                                <v-icon>mdi-plus-circle</v-icon>
+                            </v-btn>
+                        </template>
                         <v-card>
+
                             <v-toolbar flat color="primary" dark>
-                                <v-toolbar-title>Редагувати</v-toolbar-title>
+                                <v-toolbar-title>Додати</v-toolbar-title>
                                 <v-spacer></v-spacer>
 
                                 <v-btn icon>
                                     <v-icon>mdi-content-save</v-icon>
                                 </v-btn>
-                                <v-btn icon @click="editDialog = false">
+                                <v-btn icon @click="dialog = false">
                                     <v-icon>mdi-close</v-icon>
                                 </v-btn>
 
                             </v-toolbar>
                             <v-card-text>
-                                <v-container>
-                                    <v-row>
-                                        <v-col cols="6">
-                                            <v-text-field
-                                                label="Назва"
-                                                :value="editData.name"
-                                            ></v-text-field>
-                                            <v-text-field
-                                                label="Ключові слова"
-                                                :value="editData.keywords"
-                                                :rules="[v => !!v || 'Item is required']"
-                                            ></v-text-field>
-                                            <v-text-field
-                                                label="Опис"
-                                                :value="editData.description"
-                                                :rules="[v => !!v || 'Item is required']"
-                                            ></v-text-field>
-                                            <v-autocomplete
-                                                label="Прикріпити до товару"
-                                                item-text="title"
-                                                item-value="product_id"
-                                            ></v-autocomplete>
-                                            <v-select
-                                                label="Видимість"
-                                                :items="['Видимий', 'Скритий']"
-                                            ></v-select>
-                                        </v-col>
-                                        <v-col cols="6">
-
-                                            <v-img
-                                                :src="editData.url"
-                                                :lazy-src="editData.url"
-                                                aspect-ratio="1"
-                                                class="grey lighten-2"
-                                            >
-                                                <template v-slot:placeholder>
-                                                    <v-row
-                                                        class="fill-height ma-0"
-                                                        align="center"
-                                                        justify="center"
-                                                    >
-                                                        <v-progress-circular indeterminate
-                                                                             color="grey lighten-5"></v-progress-circular>
-                                                    </v-row>
-                                                </template>
-                                            </v-img>
-                                        </v-col>
-                                    </v-row>
-                                </v-container>
+                                <UploadImages :bindToProduct="true"></UploadImages>
                             </v-card-text>
                         </v-card>
                     </v-dialog>
@@ -152,10 +182,10 @@
 </template>
 
 <script>
-    import CreateDialog from "./CreateDialog";
+    import UploadImages from "./UploadImages";
     export default {
         name: "Index",
-        components: {CreateDialog},
+        components: {UploadImages},
         data () {
             return {
                 loading: false,

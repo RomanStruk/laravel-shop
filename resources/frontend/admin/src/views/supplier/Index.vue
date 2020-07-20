@@ -1,5 +1,88 @@
 <template>
     <div>
+        <v-dialog v-model="showItemDialog" max-width="800px">
+            <v-card>
+                <v-card-title>
+                    <span class="headline">Перегляд</span>
+                </v-card-title>
+
+                <v-card-text>
+                    <v-list  subheader >
+
+                        <v-list-item>
+                            <v-list-item-content>
+                                <v-list-item-title>Greenfelder, Brakus and Green</v-list-item-title>
+                                <v-list-item-subtitle>Постачальник</v-list-item-subtitle>
+                            </v-list-item-content>
+                        </v-list-item>
+                        <v-list-item>
+                            <v-list-item-content>
+                                <v-list-item-title>description company description company description company
+                                </v-list-item-title>
+                                <v-list-item-subtitle>Опис</v-list-item-subtitle>
+                            </v-list-item-content>
+                        </v-list-item>
+                        <v-list-item>
+                            <v-list-item-content>
+                                <v-list-item-title>
+                                    <v-expansion-panels accordion>
+                                        <v-expansion-panel>
+                                            <v-expansion-panel-header class="pa-0">Товари на складі (21)
+                                            </v-expansion-panel-header>
+                                            <v-expansion-panel-content>
+                                                <v-list dense >
+                                                    <v-list-item-group >
+                                                        <v-list-item>
+                                                            <v-list-item-content>
+                                                                <v-list-item-title>Casio GA-1000-1 AER KXF - Касио ДЖА
+                                                                    АЕ К
+                                                                    <v-chip small color="primary" dark>1000</v-chip>
+                                                                    <v-chip small color="teal" dark>820</v-chip>
+                                                                    <v-chip small color="warning" dark>63</v-chip>
+                                                                </v-list-item-title>
+                                                            </v-list-item-content>
+                                                        </v-list-item>
+                                                        <v-list-item>
+                                                            <v-list-item-content>
+                                                                <v-list-item-title>Casio GA-1000-1 AER KXF - Касио ДЖА
+                                                                    АЕ К
+                                                                    <v-chip small color="primary" dark>1000</v-chip>
+                                                                    <v-chip small color="teal" dark>820</v-chip>
+                                                                    <v-chip small color="warning" dark>63</v-chip>
+                                                                </v-list-item-title>
+                                                            </v-list-item-content>
+                                                        </v-list-item>
+                                                        <v-list-item>
+                                                            <v-list-item-content>
+                                                                <v-list-item-title>Casio GA-1000-1 AER KXF - Касио ДЖА
+                                                                    АЕ К
+                                                                    <v-chip small color="primary" dark>1000</v-chip>
+                                                                    <v-chip small color="teal" dark>820</v-chip>
+                                                                    <v-chip small color="warning" dark>63</v-chip>
+                                                                </v-list-item-title>
+                                                            </v-list-item-content>
+                                                        </v-list-item>
+                                                    </v-list-item-group>
+                                                </v-list>
+                                                <v-chip small color="primary" dark>Поставка</v-chip>
+                                                <v-chip small color="teal" dark>В наявсності</v-chip>
+                                                <v-chip small color="warning" dark>Обробляється</v-chip>
+                                            </v-expansion-panel-content>
+                                        </v-expansion-panel>
+                                    </v-expansion-panels>
+                                </v-list-item-title>
+                            </v-list-item-content>
+                        </v-list-item>
+                    </v-list>
+
+                </v-card-text>
+
+                <v-card-actions>
+                    <v-spacer></v-spacer>
+                    <v-btn color="blue darken-1" text @click="showItemDialog = false">ok</v-btn>
+                </v-card-actions>
+            </v-card>
+        </v-dialog>
         <v-data-table
             :headers="headers"
             :items="items"
@@ -27,31 +110,26 @@
                                 class="mb-2"
                                 v-bind="attrs"
                                 v-on="on"
-                            >New Item
+                            >Додати
                             </v-btn>
                         </template>
                         <v-card>
                             <v-card-title>
-                                <span class="headline">Add Category</span>
+                                <span class="headline">{{formTitle}}</span>
                             </v-card-title>
 
                             <v-card-text>
                                 <v-container>
                                     <v-row>
-                                        <v-col cols="12" sm="6" md="4">
-                                            <v-text-field  label="#"></v-text-field>
+                                        <v-col cols="12">
+                                            <v-text-field
+                                                label="Назва постачальника"
+                                            ></v-text-field>
                                         </v-col>
-                                        <v-col cols="12" sm="6" md="4">
-                                            <v-text-field  label="Замовник"></v-text-field>
-                                        </v-col>
-                                        <v-col cols="12" sm="6" md="4">
-                                            <v-text-field  label="На суму"></v-text-field>
-                                        </v-col>
-                                        <v-col cols="12" sm="6" md="4">
-                                            <v-text-field  label="Дата зміни"></v-text-field>
-                                        </v-col>
-                                        <v-col cols="12" sm="6" md="4">
-                                            <v-text-field  label="Статус"></v-text-field>
+                                        <v-col cols="12">
+                                            <v-textarea
+                                                label="Опис"
+                                            ></v-textarea>
                                         </v-col>
                                     </v-row>
                                 </v-container>
@@ -67,66 +145,26 @@
                 </v-toolbar>
             </template>
 
-            <template v-slot:item.name="props">
-                <v-edit-dialog
-                    :return-value.sync="props.item.name"
-                    @save="save"
-                    @cancel="cancel"
-                    @open="open"
-                    @close="close"
-                > {{ props.item.name }}
-                    <template v-slot:input>
-                        <v-text-field
-                            v-model="props.item.name"
-                            :rules="[max25chars]"
-                            label="Edit"
-                            single-line
-                            counter
-                        ></v-text-field>
-                    </template>
-                </v-edit-dialog>
-            </template>
-            <template v-slot:item.iron="props">
-                <v-edit-dialog
-                    :return-value.sync="props.item.iron"
-                    large
-                    persistent
-                    @save="save"
-                    @cancel="cancel"
-                    @open="open"
-                    @close="close"
-                >
-                    <div>{{ props.item.iron }}</div>
-                    <template v-slot:input>
-                        <div class="mt-4 title">Update Iron</div>
-                    </template>
-                    <template v-slot:input>
-                        <v-text-field
-                            v-model="props.item.iron"
-                            :rules="[max25chars]"
-                            label="Edit"
-                            single-line
-                            counter
-                            autofocus
-                        ></v-text-field>
-                    </template>
-                </v-edit-dialog>
-            </template>
+
             <template v-slot:item.actions="{ item }">
                 <v-icon
                     small
                     class="mr-2"
-                    @click="action(item)"
-                >mdi-eye</v-icon>
+                    @click="showItem(item)"
+                    color="blue"
+                >mdi-eye
+                </v-icon>
                 <v-icon
                     small
                     class="mr-2"
-                    @click="action(item)"
+                    color="teal lighten-2"
+                    @click="editItem(item)"
                 >
                     mdi-pencil
                 </v-icon>
                 <v-icon
                     small
+                    color="red"
                     @click="action(item)"
                 >
                     mdi-delete
@@ -147,10 +185,9 @@
 <script>
     export default {
         name: "Index",
-        data () {
+        data() {
             return {
                 loading: false,
-                dialog: false,
                 snack: false,
                 snackColor: '',
                 snackText: '',
@@ -163,14 +200,40 @@
                         sortable: false,
                         value: 'supplier_id',
                     },
-                    { text: 'Назва', value: 'name' },
-                    { text: 'Опис', value: 'description' },
-                    { text: 'Action', value: 'actions' },
+                    {text: 'Назва', value: 'name'},
+                    {text: 'Опис', value: 'description'},
+                    {text: 'Action', value: 'actions'},
                 ],
                 totalItems: 0,
                 items: [],
                 options: {},
+
+                // show dialog
+                showItemDialog: false,
+                showItemData: null,
+
+                // create/edit dialog
+                dialog: false,
+                valid: true,
+                editedIndex: -1,
+                editedItem: {
+                    name: '',
+                    slug: '',
+                    description: '',
+                    parent_id: 0,
+                },
+                defaultItem: {
+                    name: '',
+                    slug: '',
+                    description: '',
+                    parent_id: 0,
+                },
             }
+        },
+        computed: {
+            formTitle() {
+                return this.editedIndex === -1 ? 'Новий постачальник' : 'Редагувати постачальника'
+            },
         },
         watch: {
             options: {
@@ -184,6 +247,17 @@
             },
         },
         methods: {
+            // onClick show Item
+            showItem(item) {
+                this.showItemData = item;
+                this.showItemDialog = true;
+            },
+            // onClick edit Item
+            editItem(item) {
+                this.editedIndex = this.items.indexOf(item)
+                this.editedItem = Object.assign({}, item)
+                this.dialog = true
+            },
             getDataFromApi() {
                 this.loading = true
                 return new Promise((resolve) => {
@@ -212,26 +286,26 @@
 
                 })
             },
-            action () {
+            action() {
 
             },
 
-            save () {
+            save() {
                 this.snack = true
                 this.snackColor = 'success'
                 this.snackText = 'Data saved'
             },
-            cancel () {
+            cancel() {
                 this.snack = true
                 this.snackColor = 'error'
                 this.snackText = 'Canceled'
             },
-            open () {
+            open() {
                 this.snack = true
                 this.snackColor = 'info'
                 this.snackText = 'Dialog opened'
             },
-            close () {
+            close() {
                 console.log('Dialog closed')
             },
         },

@@ -1,5 +1,69 @@
 <template>
     <div>
+
+        <v-dialog v-model="showItemDetails" max-width="500px">
+            <v-card>
+                <v-card-title>
+                    <span class="headline">Перегляд</span>
+                </v-card-title>
+
+                <v-card-text>
+                    <v-list two-line subheader>
+
+                        <v-list-item>
+                            <v-list-item-content>
+                                <v-list-item-title>Casio MRP-700-1 AVEFKXF - Касио МРП 700</v-list-item-title>
+                                <v-list-item-subtitle>Товар</v-list-item-subtitle>
+                            </v-list-item-content>
+                        </v-list-item>
+                        <v-list-item>
+                            <v-list-item-content>
+                                <v-list-item-title>1000</v-list-item-title>
+                                <v-list-item-subtitle>Ціна (грн.)</v-list-item-subtitle>
+                            </v-list-item-content>
+                        </v-list-item>
+                        <v-list-item>
+                            <v-list-item-content>
+                                <v-list-item-title>empty</v-list-item-title>
+                                <v-list-item-subtitle>Опис</v-list-item-subtitle>
+                            </v-list-item-content>
+                        </v-list-item>
+                        <v-list-item>
+                            <v-list-item-content>
+                                <v-list-item-title>
+                                    Кількість товарів
+                                    <SyllableChart :height="120" :datasets="dataForChart"></SyllableChart>
+                                </v-list-item-title>
+                            </v-list-item-content>
+                        </v-list-item>
+                        <v-list-item>
+                            <v-list-item-content>
+                                <v-list-item-title>
+                                    <v-expansion-panels accordion>
+                                        <v-expansion-panel>
+                                            <v-expansion-panel-header class="pa-0">Список замовлень (21)
+                                            </v-expansion-panel-header>
+                                            <v-expansion-panel-content>
+                                                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
+                                                tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim
+                                                veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea
+                                                commodo consequat.
+                                            </v-expansion-panel-content>
+                                        </v-expansion-panel>
+                                    </v-expansion-panels>
+                                </v-list-item-title>
+                            </v-list-item-content>
+                        </v-list-item>
+                    </v-list>
+
+                </v-card-text>
+
+                <v-card-actions>
+                    <v-spacer></v-spacer>
+                    <v-btn color="blue darken-1" text @click="showItemDetails = false">ok</v-btn>
+                </v-card-actions>
+            </v-card>
+        </v-dialog>
         <v-data-table
             :headers="headers"
             :items="items"
@@ -27,34 +91,48 @@
                                 class="mb-2"
                                 v-bind="attrs"
                                 v-on="on"
-                            >New Item
+                            >Додати
                             </v-btn>
                         </template>
                         <v-card>
                             <v-card-title>
-                                <span class="headline">Add Category</span>
+                                <span class="headline">{{formTitle}}</span>
                             </v-card-title>
 
                             <v-card-text>
-                                <v-container>
-                                    <v-row>
-                                        <v-col cols="12" sm="6" md="4">
-                                            <v-text-field  label="#"></v-text-field>
-                                        </v-col>
-                                        <v-col cols="12" sm="6" md="4">
-                                            <v-text-field  label="Замовник"></v-text-field>
-                                        </v-col>
-                                        <v-col cols="12" sm="6" md="4">
-                                            <v-text-field  label="На суму"></v-text-field>
-                                        </v-col>
-                                        <v-col cols="12" sm="6" md="4">
-                                            <v-text-field  label="Дата зміни"></v-text-field>
-                                        </v-col>
-                                        <v-col cols="12" sm="6" md="4">
-                                            <v-text-field  label="Статус"></v-text-field>
-                                        </v-col>
-                                    </v-row>
-                                </v-container>
+                                <v-form
+                                    ref="form"
+                                    v-model="valid"
+                                    lazy-validation
+                                >
+                                    <v-container>
+                                        <v-row>
+                                            <v-col cols="12">
+                                                <v-autocomplete label="Постачальник*"></v-autocomplete>
+                                            </v-col>
+                                            <v-col cols="12">
+                                                <v-autocomplete label="Товар*"></v-autocomplete>
+                                            </v-col>
+                                            <v-col cols="12">
+                                                <v-text-field
+                                                    label="Кількість товару*"
+                                                    hint="одиниць товару(шт)"
+                                                ></v-text-field>
+
+                                            </v-col>
+                                            <v-col cols="12">
+                                                <v-text-field
+                                                    label="Ціна товару*"
+                                                    hint="за одну шт"
+                                                ></v-text-field>
+                                            </v-col>
+                                            <v-col cols="12">
+                                                <v-textarea label="Опис"></v-textarea>
+                                            </v-col>
+                                        </v-row>
+                                    </v-container>
+                                </v-form>
+                                <small>*indicates required field</small>
                             </v-card-text>
 
                             <v-card-actions>
@@ -123,12 +201,13 @@
                 <v-icon
                     small
                     class="mr-2"
-                    @click="action(item)"
-                >mdi-eye</v-icon>
+                    @click="showItemAction(item)"
+                >mdi-eye
+                </v-icon>
                 <v-icon
                     small
                     class="mr-2"
-                    @click="action(item)"
+                    @click="editItem(item)"
                 >
                     mdi-pencil
                 </v-icon>
@@ -141,26 +220,26 @@
             </template>
         </v-data-table>
 
-        <v-snackbar v-model="snack" :timeout="3000" :color="snackColor">
-            {{ snackText }}
-
-            <template v-slot:action="{ attrs }">
-                <v-btn v-bind="attrs" text @click="snack = false">Close</v-btn>
-            </template>
-        </v-snackbar>
     </div>
 </template>
 
 <script>
+
+    import SyllableChart from "../../components/charts/SyllableChart";
+
     export default {
         name: "Index",
-        data () {
+        data() {
             return {
+                valid: true,
                 loading: false,
                 dialog: false,
-                snack: false,
-                snackColor: '',
-                snackText: '',
+                showItemDetails: false,
+
+                showChart: false,
+                dataForChart: null,
+
+
                 max25chars: v => v.length <= 25 || 'Input too long!',
                 pagination: {},
                 headers: [
@@ -170,18 +249,39 @@
                         sortable: false,
                         value: 'syllable_id',
                     },
-                    { text: 'Товар', value: 'product.title' },
-                    { text: 'Постачатьник', value: 'supplier.name' },
-                    { text: 'Додано (шт)', value: 'imported' },
-                    { text: 'Залишилось (шт)', value: 'remains' },
-                    { text: 'Обробляється (шт)', value: 'countProcessed' },
-                    { text: 'Опис', value: 'description' },
-                    { text: 'Action', value: 'actions' },
+                    {text: 'Товар', value: 'product.title'},
+                    {text: 'Постачатьник', value: 'supplier.name'},
+                    {text: 'Додано (шт)', value: 'imported'},
+                    {text: 'Залишилось (шт)', value: 'remains'},
+                    {text: 'Обробляється (шт)', value: 'countProcessed'},
+                    {text: 'Опис', value: 'description'},
+                    {text: 'Action', value: 'actions'},
                 ],
                 totalItems: 0,
                 items: [],
                 options: {},
+
+                // create/edit dialog
+                editedIndex: -1,
+                editedItem: {
+                    name: '',
+                    slug: '',
+                    description: '',
+                    parent_id: 0,
+                },
+                defaultItem: {
+                    name: '',
+                    slug: '',
+                    description: '',
+                    parent_id: 0,
+                },
             }
+        },
+        components: {
+            SyllableChart,
+        },
+        mounted() {
+
         },
         watch: {
             options: {
@@ -193,8 +293,29 @@
                 },
                 deep: true,
             },
+
+        },
+        computed: {
+            formTitle() {
+                return this.editedIndex === -1 ? 'Нова поставка товару' : 'Редагувати поставку товару'
+            },
         },
         methods: {
+            // onClick Show Item
+            showItemAction(item) {
+                this.showItemDetails = true;
+                this.dataForChart = {};
+                (new Promise((resolve) => setTimeout(resolve, 300))).then(() => {
+                    this.dataForChart = item;
+                });
+            },
+            // onClick edit Item
+            editItem(item) {
+                this.editedIndex = this.items.indexOf(item)
+                this.editedItem = Object.assign({}, item)
+                this.dialog = true
+            },
+
             getDataFromApi() {
                 this.loading = true
                 return new Promise((resolve) => {
@@ -223,32 +344,23 @@
 
                 })
             },
-            action () {
+            action() {
 
             },
 
-            save () {
-                this.snack = true
-                this.snackColor = 'success'
-                this.snackText = 'Data saved'
+            save() {
+
             },
-            cancel () {
-                this.snack = true
-                this.snackColor = 'error'
-                this.snackText = 'Canceled'
+            cancel() {
+
             },
-            open () {
-                this.snack = true
-                this.snackColor = 'info'
-                this.snackText = 'Dialog opened'
+            open() {
+
             },
-            close () {
+            close() {
                 console.log('Dialog closed')
             },
         },
     }
 </script>
 
-<style scoped>
-
-</style>

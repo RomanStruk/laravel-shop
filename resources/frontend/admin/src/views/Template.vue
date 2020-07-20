@@ -211,7 +211,6 @@
                     icon: mdiBasket,
                     items: [
                         {title: 'Огляд', action: '/product/index'},
-                        {title: 'Додати', action: '/product/create'},
                         {title: 'Постачальники', action: '/supplier/index'},
                         {title: 'Склад', action: '/syllable/index'},
                     ],
@@ -229,7 +228,6 @@
                     icon: mdiFolderMultipleImage,
                     items: [
                         {title: 'Огляд', action: '/media/index'},
-                        {title: 'Додати', action: '/media/create'},
                     ],
                 },
                 {
@@ -237,7 +235,6 @@
                     icon: mdiFilter,
                     items: [
                         {title: 'Огляд', action: '/filter/index'},
-                        {title: 'Додати', action: '/filter/create'},
                     ],
                 },
             ]
