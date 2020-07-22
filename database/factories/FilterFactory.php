@@ -7,6 +7,8 @@ use Faker\Generator as Faker;
 
 $factory->define(Filter::class, function (Faker $faker) {
     return [
-        'name' => $faker->unique()->slug
+        'id' => null,
+        'value' => $faker->slug,
+        'filter_group_id' => 1
     ];
 });

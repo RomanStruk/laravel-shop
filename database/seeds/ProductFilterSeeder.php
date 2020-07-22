@@ -2,7 +2,7 @@
 
 use Illuminate\Database\Seeder;
 
-class AttributeProductTableSeeder extends Seeder
+class ProductFilterSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -17,29 +17,29 @@ class AttributeProductTableSeeder extends Seeder
         foreach ($products as $key => $product){
             $data[] = [
                 'product_id' => $product->id,
-                'attribute_id' => rand(1, 7)
+                'filter_id' => rand(1, 7)
             ];
             $data[] = [
                 'product_id' => $product->id,
-                'attribute_id' => rand(8, 11)
+                'filter_id' => rand(8, 11)
             ];
             $data[] = [
                 'product_id' => $product->id,
-                'attribute_id' => rand(12, 16)
+                'filter_id' => rand(12, 16)
             ];
             $data[] = [
                 'product_id' => $product->id,
-                'attribute_id' => rand(17, 20)
+                'filter_id' => rand(17, 20)
             ];
             $data[] = [
                 'product_id' => $product->id,
-                'attribute_id' => rand(21, 24)
+                'filter_id' => rand(21, 24)
             ];
             $data[] = [
                 'product_id' => $product->id,
-                'attribute_id' => rand(25, 27)
+                'filter_id' => rand(25, 27)
             ];
         }
-        DB::table('attribute_product')->insert($data);
+        DB::table('filter_product')->insert($data);
     }
 }

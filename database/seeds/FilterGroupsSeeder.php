@@ -2,7 +2,7 @@
 
 use Illuminate\Database\Seeder;
 
-class GroupAttributesTableSeeder extends Seeder
+class FilterGroupsSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -31,6 +31,6 @@ class GroupAttributesTableSeeder extends Seeder
                 'name' => 'Цена', //6
             ],
         ];
-        DB::table('filters')->insert($data);
+        DB::table('filter_groups')->insert($data);
     }
 }

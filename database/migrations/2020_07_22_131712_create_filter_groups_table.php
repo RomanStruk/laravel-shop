@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateAttributesTable extends Migration
+class CreateFilterGroupsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,11 +13,9 @@ class CreateAttributesTable extends Migration
      */
     public function up()
     {
-        Schema::create('attributes', function (Blueprint $table) {
+        Schema::create('filter_groups', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->string('value', 255); //name filter  example: red/blue....
-            $table->bigInteger('filter_id')->unsigned();
-            $table->foreign('filter_id')->references('id')->on('filters')->onDelete('cascade');;
+            $table->string('name', 255);
         });
     }
 
@@ -28,6 +26,6 @@ class CreateAttributesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('attributes');
+        Schema::dropIfExists('filter_groups');
     }
 }

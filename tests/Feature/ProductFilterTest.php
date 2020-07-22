@@ -2,9 +2,9 @@
 
 namespace Tests\Feature;
 
-use App\Attribute;
-use App\Category;
 use App\Filter;
+use App\Category;
+use App\FilterGroup;
 use App\Product;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -75,8 +75,8 @@ class ProductFilterTest extends TestCase
         /*start prepare*/
         factory(Category::class)->create(); // category
         $productsDb = factory(Product::class,5)->create(); // 5 products
-        factory(Filter::class)->create(); // 1 group filter
-        factory(Attribute::class)->create(['id' => 1]); // один атрібут id = 1
+        factory(FilterGroup::class)->create(); // 1 group filter
+        factory(Filter::class)->create(['id' => 1]); // один атрібут id = 1
         foreach ($productsDb as $product){
             $product->product_attributes()->sync([1]);// один атрібут id = 1 для 5 продуктів
         }
@@ -95,11 +95,11 @@ class ProductFilterTest extends TestCase
         /*start prepare*/
         factory(Category::class)->create(); // category
         $productsDb = factory(Product::class,5)->create(); // 5 products
-        factory(Filter::class)->create(); // 1 group filter
-        factory(Filter::class)->create(); // 2 group filter
-        factory(Attribute::class)->create(
+        factory(FilterGroup::class)->create(); // 1 group filter
+        factory(FilterGroup::class)->create(); // 2 group filter
+        factory(Filter::class)->create(
             ['id' => 1, 'filter_id'=>1]); // атрібут id = 1 group 1
-        factory(Attribute::class)->create(
+        factory(Filter::class)->create(
             ['id' => 2, 'filter_id'=>2]); // атрібут id = 2 group 2
         foreach ($productsDb as $product){
             $product->product_attributes()->sync([1,2]);// атрібут id = 1, 2 для 5 продуктів
@@ -121,13 +121,13 @@ class ProductFilterTest extends TestCase
     {
         /*start prepare*/
         factory(Category::class)->create(); // category
-        factory(Filter::class)->create(); // 1 group filter
-        factory(Filter::class)->create(); // 2 group filter
-        factory(Attribute::class)->create(
+        factory(FilterGroup::class)->create(); // 1 group filter
+        factory(FilterGroup::class)->create(); // 2 group filter
+        factory(Filter::class)->create(
             ['id' => 1, 'filter_id'=>1]); // атрібут id = 1 group 1
-        factory(Attribute::class)->create(
+        factory(Filter::class)->create(
             ['id' => 2, 'filter_id'=>2]); // атрібут id = 2 group 2
-        factory(Attribute::class)->create(
+        factory(Filter::class)->create(
             ['id' => 3, 'filter_id'=>2]); // атрібут id = 3 group 2
 
         $productDb1 = factory(Product::class)->create(); // 1 product

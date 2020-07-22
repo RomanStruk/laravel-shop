@@ -27,8 +27,8 @@ class SyllableResource extends JsonResource
             'updated_at' => $this->updated_at,
             'countProcessed' => $this->countProcessed,
             'countAvailableRemains' => $this->countAvailableRemains,
-            'supplier' => new SupplierResource($this->supplier),
-            'product' => new ProductResource($this->product),
+            'supplier' => new SupplierResource($this->whenLoaded('supplier')),
+            'product' => new ProductResource($this->whenLoaded('product')),
 //            'orders' => OrderSimpleResource::collection($this->orders),
             'links' => [
                 'self' => route('api.v1.admin.syllable.show', $this),

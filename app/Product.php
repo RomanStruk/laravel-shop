@@ -40,7 +40,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property-read int|null $order_product_count
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Order[] $orders
  * @property-read int|null $orders_count
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Attribute[] $product_attributes
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Filter[] $product_attributes
  * @property-read int|null $product_attributes_count
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Product[] $related
  * @property-read int|null $related_count

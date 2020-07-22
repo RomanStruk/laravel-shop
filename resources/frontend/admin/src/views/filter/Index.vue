@@ -101,8 +101,8 @@
                 </v-toolbar>
             </template>
 
-            <template v-slot:item.values="props">
-                    <span v-for="attribute in props.item.values" :key="attribute.id">{{ attribute.value }}, </span>
+            <template v-slot:item.filters="props">
+                    <span v-for="attribute in props.item.filters" :key="attribute.id">{{ attribute.value }}, </span>
             </template>
             <template v-slot:item.actions="{ item }">
                 <v-icon
@@ -156,7 +156,7 @@
                         value: 'filter_id',
                     },
                     { text: 'Назва', value: 'name' },
-                    { text: 'Варіанти', value: 'values' },
+                    { text: 'Варіанти', value: 'filters' },
                     { text: 'Action', value: 'actions' },
                 ],
                 items:[],

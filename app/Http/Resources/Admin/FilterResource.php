@@ -16,11 +16,12 @@ class FilterResource extends JsonResource
     {
         return [
             'filter_id' => $this->id,
-            'name' => $this->name,
-            'values' => FilterValuesResource::collection($this->whenLoaded('filterValues')),
+            'value' => $this->value,
+            'filter_group' => new FilterGroupResource($this->whenLoaded('filter_group')),
+
             'links' => [
-                'self' => route('api.v1.admin.filter.show', $this),
-                'destroy' => route('api.v1.admin.filter.destroy', $this),
+                'self' => $this->id,
+                'destroy' => $this->id,
             ]
         ];
     }

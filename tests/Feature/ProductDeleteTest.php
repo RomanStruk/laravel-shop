@@ -2,9 +2,9 @@
 
 namespace Tests\Feature;
 
-use App\Attribute;
-use App\Category;
 use App\Filter;
+use App\Category;
+use App\FilterGroup;
 use App\Product;
 use App\User;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
@@ -24,8 +24,8 @@ class ProductDeleteTest extends TestCase
         parent::setUp();
         $this->user = factory(User::class)->create();
         factory(Category::class)->create();
-        factory(Filter::class,2)->create(); // 1 group filter
-        factory(Attribute::class,5)->create(['group_attribute_id' => 1]);
+        factory(FilterGroup::class,2)->create(); // 1 group filter
+        factory(Filter::class,5)->create(['group_attribute_id' => 1]);
         factory(Product::class, 5)->create();
 
     }

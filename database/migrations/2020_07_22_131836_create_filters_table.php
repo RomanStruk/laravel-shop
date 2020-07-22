@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateGroupAttributesTable extends Migration
+class CreateFiltersTable extends Migration
 {
     /**
      * Run the migrations.
@@ -15,7 +15,9 @@ class CreateGroupAttributesTable extends Migration
     {
         Schema::create('filters', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->string('name', 255);
+            $table->string('value', 255); //name filter  example: red/blue....
+            $table->bigInteger('filter_group_id')->unsigned();
+            $table->foreign('filter_group_id')->references('id')->on('filter_groups')->onDelete('cascade');;
         });
     }
 

@@ -83,7 +83,7 @@
                 <v-icon
                     small
                     class="mr-2"
-                    @click="editDialog(item)"
+                    @click="editDialog(item.links.self)"
                 >
                     mdi-pencil
                 </v-icon>
@@ -156,12 +156,13 @@
             },
         },
         methods: {
-            editDialog(item){
-                this.editProduct = item
+            editDialog(url){
+                console.log(url)
+                this.editProduct = url
                 this.dialogCreateEdit = true
             },
             showCreateEditDialog(){
-                this.editProduct = {}
+                this.editProduct = null
                 this.dialogCreateEdit = true
             },
 

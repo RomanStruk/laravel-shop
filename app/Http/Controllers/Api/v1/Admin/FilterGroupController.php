@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers\Api\v1\Admin;
 
-use App\Filter;
+use App\FilterGroup;
 use App\Http\Controllers\Controller;
-use App\Http\Resources\Admin\FilterResource;
+use App\Http\Resources\Admin\FilterGroupResource;
 use Illuminate\Http\Request;
 
-class FilterController extends Controller
+class FilterGroupController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -17,8 +17,8 @@ class FilterController extends Controller
      */
     public function index(Request $request)
     {
-        $filters = Filter::with(['filterValues'])->paginate($request->limit);
-        return FilterResource::collection($filters)
+        $filters = FilterGroup::with(['filters'])->paginate($request->limit);
+        return FilterGroupResource::collection($filters)
             ->additional([
                 'message' => 'Retrieve Data is Successfully',
                 'success' => true
@@ -40,11 +40,11 @@ class FilterController extends Controller
      * Display the specified resource.
      *
      * @param  int  $id
-     * @return FilterResource
+     * @return FilterGroupResource
      */
     public function show($id)
     {
-        return (new FilterResource([]))->additional([
+        return (new FilterGroupResource([]))->additional([
             'message' => 'Retrieve Data is Successfully',
             'success' => true
         ]);

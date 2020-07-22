@@ -1,5 +1,5 @@
 <template>
-    <v-dialog v-model="dialog" fullscreen hide-overlay transition="dialog-bottom-transition">
+    <v-dialog v-model="dialog" fullscreen hide-overlay transition="dialog-bottom-transition" >
         <v-card>
             <v-toolbar dark color="primary">
                 <v-btn icon dark @click="closeDialog()">
@@ -7,11 +7,23 @@
                 </v-btn>
                 <v-toolbar-title>{{formTitle}}</v-toolbar-title>
                 <v-spacer></v-spacer>
+                <v-btn @click="test">test</v-btn>
                 <v-toolbar-items>
                     <v-btn dark text @click="closeDialog()">Save</v-btn>
                 </v-toolbar-items>
             </v-toolbar>
-            <v-stepper v-model="e1">
+
+            <v-skeleton-loader
+                v-if="loading"
+            >
+                <div class="d-flex justify-center">
+                <v-progress-circular
+                    indeterminate
+                    color="primary"
+                ></v-progress-circular>
+                </div>
+            </v-skeleton-loader>
+            <v-stepper v-model="e1" v-else>
                 <v-stepper-header>
                     <v-divider></v-divider>
                     <v-stepper-step
@@ -38,10 +50,23 @@
                                 label="Назва товару"
                                 v-model="editedItem.title"
                             ></v-text-field>
-                            <v-text-field label="Alias"></v-text-field>
-                            <v-autocomplete label="Категорія"></v-autocomplete>
-                            <v-text-field label="Ціна"></v-text-field>
+                            <v-text-field
+                                label="Alias"
+                                v-model="editedItem.alias"
+                            ></v-text-field>
+                            <v-autocomplete
+                                item-text="name"
+                                item-value="category_id"
+                                :items="[editedItem.category]"
+                                v-model="editedItem.category_id"
+                                label="Категорія"
+                            ></v-autocomplete>
+                            <v-text-field
+                                label="Ціна"
+                                v-model="editedItem.price"
+                            ></v-text-field>
                             <v-switch
+                                v-model="editedItem.visibility"
                                 label="Опублікувати"
                             ></v-switch>
                         </v-form>
@@ -59,9 +84,18 @@
                         <v-form
                             class="mb-12"
                         >
-                            <v-text-field label="Ключові Слова"></v-text-field>
-                            <v-text-field label="Короткий опис"></v-text-field>
-                            <v-textarea label="Детальний опис"></v-textarea>
+                            <v-text-field
+                                label="Ключові Слова"
+                                v-model="editedItem.keywords"
+                            ></v-text-field>
+                            <v-text-field
+                                label="Короткий опис"
+                                v-model="editedItem.description"
+                            ></v-text-field>
+                            <v-textarea
+                                label="Детальний опис"
+                                v-model="editedItem.content"
+                            ></v-textarea>
                         </v-form>
 
                         <v-btn
@@ -73,9 +107,7 @@
 
                         <v-btn text @click="previousStep()">Назад</v-btn>
                     </v-stepper-content>
-                    <v-stepper-content
-                        step="3"
-                    >
+                    <v-stepper-content step="3">
                         <UploadImages v-bind:bind-to-product="false"></UploadImages>
 
                         <v-btn
@@ -87,29 +119,48 @@
 
                         <v-btn text @click="previousStep()">Назад</v-btn>
                     </v-stepper-content>
-                    <v-stepper-content
-                        step="4"
-                    >
-                        <v-expansion-panels flat class="mb-2">
-                            <v-expansion-panel>
-                                <v-expansion-panel-header>Фірма виробник - Casio</v-expansion-panel-header>
-                                <v-expansion-panel-content>
-                                    <v-radio-group :mandatory="false">
-                                        <v-radio label="Casio" value="radio-1"></v-radio>
-                                        <v-radio label="Citizen" value="radio-2"></v-radio>
-                                    </v-radio-group>
-                                </v-expansion-panel-content>
-                            </v-expansion-panel>
-                            <v-expansion-panel>
-                                <v-expansion-panel-header>Колір - Зелений</v-expansion-panel-header>
-                                <v-expansion-panel-content>
-                                    <v-radio-group :mandatory="false">
-                                        <v-radio label="Casio" value="radio-1"></v-radio>
-                                        <v-radio label="Citizen" value="radio-2"></v-radio>
-                                    </v-radio-group>
-                                </v-expansion-panel-content>
-                            </v-expansion-panel>
-                        </v-expansion-panels>
+                    <v-stepper-content step="4">
+                        <v-row align="center">
+                            <v-col
+                                v-for="(filter, i) in editedItem.filters"
+                                :key="filter.filter_id"
+                                class="shrink"
+                            >
+
+                                <v-chip
+                                    pill
+                                    close
+                                    @click:close="editedItem.filters.splice(i, 1)"
+                                >
+                                    {{ filter.filter_group.name }} - {{ filter.value }}
+                                </v-chip>
+                            </v-col>
+                        </v-row>
+                        <v-row align-content="center">
+                            <v-col cols="12" md="4">
+                                <v-combobox
+                                    label="Група фільтрів"
+                                    item-value="id"
+                                    item-text="title"
+                                    return-object
+                                ></v-combobox>
+                            </v-col>
+
+                            <v-col cols="12" md="3">
+                                <v-select
+                                    label="Фільтр"
+                                    item-value="id"
+                                    item-text="text"
+                                ></v-select>
+                            </v-col>
+
+
+                            <v-col cols="12" md="1">
+                                <v-btn color="primary" class="mt-2">
+                                    <v-icon>mdi-plus-circle</v-icon>
+                                </v-btn>
+                            </v-col>
+                        </v-row>
 
                         <v-btn color="primary" @click="nextStep(4)">Continue</v-btn>
                         <v-btn text @click="previousStep()">Назад</v-btn>
@@ -200,6 +251,17 @@
         components: {UploadImages},
         data() {
             return {
+                //filters
+                selected_filters: [
+                    {
+                        text: 'Android Watch BQ-1',
+                    },
+                    {
+                        text: 'Citizen AT0696-59E',
+                    }
+                ],
+
+
                 //related products
                 relatedProducts: [
                     {
@@ -279,12 +341,27 @@
                 editedItem: {
                     title: '',
                     alias: '',
+                    keywords: '',
                     description: '',
+                    content: '',
+                    price: '',
+                    old_price: '',
+                    quality: '',
+                    status: '',
+                    category: '',
+
                 },
                 defaultItem: {
                     title: '',
                     alias: '',
+                    keywords: '',
                     description: '',
+                    content: '',
+                    price: '',
+                    old_price: '',
+                    quality: '',
+                    status: '',
+                    category: '',
                 }
             }
         },
@@ -327,17 +404,47 @@
                     this.e1 = val
                 }
             },
-            product() {
-                if (this.product){
-                    this.edited = true;
-                    this.editedItem = this.product
-                }else {
-                    this.edited = false;
-                    this.editedItem = this.defaultItem;
-                }
+            product: {
+                handler(link) {
+                    // console.log(de)
+                    if (this.product !== null) {
+                        this.loading = true;
+                        this.edited = true;
+                        this.$store.dispatch('productApi/getProduct', link)
+                            .then((data) => {
+                                this.editedItem = data.data
+                                this.loading = false;
+                                // console.log(data)
+                                // console.log(this.$store.state.productApi.products)
+
+                            })
+
+
+                    } else {
+                        this.loading = false;
+                        this.edited = false;
+                        this.editedItem = this.defaultItem;
+                    }
+                },
+                deep: true,
             }
         },
         methods: {
+            test() {
+                let credentials = {
+                    params: {}
+                }
+                this.$store.dispatch('productApi/getProducts', credentials)
+                    .then((data) => {
+
+                        console.log(data)
+                        // console.log(this.$store.state.productApi.products)
+                    })
+
+            },
+            getProduct(){
+
+            },
             validStep(n) {
                 n;
                 return true;
@@ -347,7 +454,6 @@
                 this.$emit('event-on-close-dialog')
             },
             nextStep(n) {
-
                 if (this.validStep(n - 1)) {
                     this.configSteps[n - 1].complete = false
                 }

@@ -2,6 +2,7 @@ import Vue from 'vue';
 import Vuex from 'vuex';
 import axios from 'axios';
 import moduleSearchApi from './modules/searchApiModule';
+import productApiModule from "./modules/productApiModule";
 Vue.use(Vuex)
 
 export default new Vuex.Store({
@@ -35,7 +36,7 @@ export default new Vuex.Store({
                 destroy: null
             },
             filter: {
-                index: 'http://shop.test/api/v1/admin/filter',
+                index: 'http://shop.test/api/v1/admin/filter-group',
                 show: null,
                 destroy: null
             },
@@ -186,6 +187,7 @@ export default new Vuex.Store({
         }
     },
     modules: {
-        searchApi: moduleSearchApi
+        searchApi: moduleSearchApi,
+        productApi: productApiModule
     }
 })

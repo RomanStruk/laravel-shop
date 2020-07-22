@@ -14,7 +14,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\ProductRequest;
 use App\Product;
 use App\Category;
-use App\Filter;
+use App\FilterGroup;
 use App\Services\Analytics\Analytics;
 use App\Services\Analytics\DateGeneration;
 use App\Services\PaginateSession;
@@ -48,7 +48,7 @@ class ProductController extends Controller
     public function create()
     {
         $categories = Category::allRelations(false)->get();
-        $filters = Filter::allRelations()->get();
+        $filters = FilterGroup::allRelations()->get();
         $suppliers = Supplier::all();
 //        dd(count($filters->first()->filterValues->pluck('id')->intersect([1]))?:false);
         return view('admin.product.create')
@@ -86,7 +86,7 @@ class ProductController extends Controller
     {
         $product = Product::allRelations()->withTrashed()->avgRating()->countComments()->findOrFail($id);
 
-        $attributes = Filter::allRelations()->get();
+        $attributes = FilterGroup::allRelations()->get();
 
         // statistics card
         $range = (new DateGeneration())->generateStartEndMonth(now());
@@ -114,7 +114,7 @@ class ProductController extends Controller
     {
         $product = Product::allRelations()->withTrashed()->findOrFail($id);;
         $categories = Category::allRelations(false)->get();
-        $groups = Filter::allRelations()->get();
+        $groups = FilterGroup::allRelations()->get();
         $suppliers = Supplier::all();
 //        dd(in_array('4', $product->product_attributes->pluck('id')->toArray()));
 //        dd($product->product_attributes->pluck('id')->toArray());
