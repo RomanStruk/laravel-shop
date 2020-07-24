@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Services\ScopeFilters\GroupFiltersFilter;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
@@ -59,5 +60,17 @@ class FilterGroup extends Model
     public function scopeAllRelations($query)
     {
         return $query->with(['filterValues', 'allAttributes']);
+    }
+
+    /**
+     * Фільтри
+     * @param Builder $query
+     * @param $filter
+     * @return Builder
+     */
+
+    public function scopeFilter(Builder $query, $filter)
+    {
+        return (new GroupFiltersFilter())->apply($query, $filter);
     }
 }

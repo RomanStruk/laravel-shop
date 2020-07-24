@@ -17,8 +17,9 @@ class ProductResource extends JsonResource
 //        dd($request->order);
         return [
             'id' => $this->id,
+            'product_id' => $this->id,
             'title' => $this->title,
-            'content' => $this->content,
+            'description' => $this->description,
             'keywords' => $this->keywords,
             'syllables' => $this
                 ->syllableWithOutScope()

@@ -17,7 +17,7 @@ class FilterGroupController extends Controller
      */
     public function index(Request $request)
     {
-        $filters = FilterGroup::with(['filters'])->paginate($request->limit);
+        $filters = FilterGroup::filter($request->all())->with(['filters'])->paginate($request->limit);
         return FilterGroupResource::collection($filters)
             ->additional([
                 'message' => 'Retrieve Data is Successfully',

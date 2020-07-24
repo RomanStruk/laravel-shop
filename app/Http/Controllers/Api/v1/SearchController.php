@@ -27,7 +27,9 @@ class SearchController extends Controller
 
     public function products(Request $request, PaginateSession $paginateSession)
     {
-        $products = Product::filter(['search' => $request->q])->paginate($paginateSession->getLimit());
+        $filters = $request->all();
+        $filters['search'] = $request->q;
+        $products = Product::filter($filters)->paginate($paginateSession->getLimit());
 //        response()->header('Access-Control-Allow-Origin', '*')
         return ProductResource::collection($products);
     }
@@ -43,4 +45,5 @@ class SearchController extends Controller
         $shippingBase = new ShippingBase($shipping, $request->shipping_method);
         return SearchShippingCity::collection($shippingBase->listAvailableCities($request->q));
     }
+
 }

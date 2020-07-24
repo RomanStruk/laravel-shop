@@ -47,7 +47,7 @@ class ProductController extends Controller
      */
     public function show($id)
     {
-        return (new ProductResource(Product::with(['category', 'media', 'related', 'syllable', 'product_filters', 'product_filters.filter_group'])->findOrFail($id)))->additional([
+        return (new ProductResource(Product::with(['category', 'media', 'related', 'syllable', 'syllable.supplier', 'product_filters', 'product_filters.filter_group'])->findOrFail($id)))->additional([
             'message' => 'Retrieve Data is Successfully',
             'success' => true
         ]);

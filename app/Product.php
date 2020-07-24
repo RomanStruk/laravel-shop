@@ -135,8 +135,8 @@ class Product extends Model
             ->with('comments')
             ->with('comments.user')
             ->with('comments.user.detail')
-            ->with('product_attributes')
-            ->with('product_attributes.filter');
+            ->with('product_filters')
+            ->with('product_filters.filter_group');
     }
 
     public function attachMediaFiles($ids)

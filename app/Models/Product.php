@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use App\Models\Scope\ProductAvgRating;
-use App\Models\Scope\ProductTop;
 use App\Models\Traits\PriceMutators;
 use App\Order;
 use App\Traits\Relations\ProductRelations;

@@ -7,7 +7,6 @@
                 </v-btn>
                 <v-toolbar-title>{{formTitle}}</v-toolbar-title>
                 <v-spacer></v-spacer>
-                <v-btn @click="test">test</v-btn>
                 <v-toolbar-items>
                     <v-btn dark text @click="closeDialog()">Save</v-btn>
                 </v-toolbar-items>
@@ -37,7 +36,6 @@
                         {{step.label}}
                     </v-stepper-step>
                     <v-divider></v-divider>
-
                 </v-stepper-header>
                 <v-stepper-items>
                     <v-stepper-content
@@ -120,121 +118,38 @@
                         <v-btn text @click="previousStep()">Назад</v-btn>
                     </v-stepper-content>
                     <v-stepper-content step="4">
-                        <v-row align="center">
-                            <v-col
-                                v-for="(filter, i) in editedItem.filters"
-                                :key="filter.filter_id"
-                                class="shrink"
-                            >
-
-                                <v-chip
-                                    pill
-                                    close
-                                    @click:close="editedItem.filters.splice(i, 1)"
-                                >
-                                    {{ filter.filter_group.name }} - {{ filter.value }}
-                                </v-chip>
-                            </v-col>
-                        </v-row>
-                        <v-row align-content="center">
-                            <v-col cols="12" md="4">
-                                <v-combobox
-                                    label="Група фільтрів"
-                                    item-value="id"
-                                    item-text="title"
-                                    return-object
-                                ></v-combobox>
-                            </v-col>
-
-                            <v-col cols="12" md="3">
-                                <v-select
-                                    label="Фільтр"
-                                    item-value="id"
-                                    item-text="text"
-                                ></v-select>
-                            </v-col>
-
-
-                            <v-col cols="12" md="1">
-                                <v-btn color="primary" class="mt-2">
-                                    <v-icon>mdi-plus-circle</v-icon>
-                                </v-btn>
-                            </v-col>
-                        </v-row>
+                        <FilterProduct :default-items="editedItem.filters" @event-on-selected-filters="onFiltersProduct" class="mb-12"></FilterProduct>
 
                         <v-btn color="primary" @click="nextStep(4)">Continue</v-btn>
                         <v-btn text @click="previousStep()">Назад</v-btn>
                     </v-stepper-content>
-                    <v-stepper-content
-                        step="5"
-                    >
-                        <v-form
-                            class="mb-12"
-                        >
-                            <v-text-field label="Постачальник товару"></v-text-field>
-                            <v-text-field label="Кількість"></v-text-field>
+                    <v-stepper-content step="5">
+                        <v-form class="mb-12">
+                            <div v-for="(item) in editedItem.syllable" :key="item.syllable_id" >
+                                <v-chip pill class="primary" outlined>
+                                    {{item.supplier.name}} - {{item.imported}}/{{item.remains}}/{{item.countAvailableRemains}}
+                                </v-chip>
+                            </div>
+                            <v-row>
+                                <v-col>
+                                    <v-text-field label="Постачальник товару"></v-text-field>
+                                </v-col>
+                                <v-col>
+                                    <v-text-field label="Кількість"></v-text-field>
+                                </v-col>
+                                <v-col>
+                                    <v-btn color="primary" class="mt-2"><v-icon>mdi-plus-circle</v-icon></v-btn>
+                                </v-col>
+                            </v-row>
+
+
                         </v-form>
 
                         <v-btn color="primary" @click="nextStep(5)">Continue</v-btn>
                         <v-btn text @click="previousStep()">Назад</v-btn>
                     </v-stepper-content>
-                    <v-stepper-content
-                        step="6"
-                    >
-                        <v-container class="py-0">
-                            <v-row
-                                align="center"
-                                justify="start"
-                            >
-                                <v-col
-                                    v-for="(selection, i) in selections"
-                                    :key="selection.text"
-                                    class="shrink"
-                                >
-                                    <v-chip
-                                        :disabled="loading"
-                                        close
-                                        @click:close="selected.splice(i, 1)"
-                                    >
-                                        <v-icon>mdi-file-powerpoint-outline</v-icon>
-                                        {{ selection.text }}
-                                    </v-chip>
-                                </v-col>
-
-                                <v-col cols="12">
-                                    <v-text-field
-                                        ref="search"
-                                        v-model="search"
-                                        full-width
-                                        hide-details
-                                        label="Search"
-                                        single-line
-                                    ></v-text-field>
-                                </v-col>
-                            </v-row>
-                        </v-container>
-
-                        <v-divider v-if="!allSelected"></v-divider>
-
-                        <v-list>
-                            <template v-for="item in listRelatedProducts">
-                                <v-list-item
-                                    v-if="!selected.includes(item)"
-                                    :key="item.text"
-                                    :disabled="loading"
-                                    @click="selected.push(item)"
-                                >
-                                    <v-list-item-avatar>
-                                        <v-icon
-                                            :disabled="loading"
-                                        >mdi-file-powerpoint-outline
-                                        </v-icon>
-                                    </v-list-item-avatar>
-                                    <v-list-item-title v-text="item.text"></v-list-item-title>
-                                </v-list-item>
-                            </template>
-                        </v-list>
-                        <v-btn color="primary">Зберегти</v-btn>
+                    <v-stepper-content step="6">
+                        <RelatedProduct :default-items="editedItem.related" @event-on-selected-related="onRelatedProducts" class="mb-12"></RelatedProduct>
                         <v-btn text @click="previousStep()">Назад</v-btn>
                     </v-stepper-content>
                 </v-stepper-items>
@@ -245,50 +160,15 @@
 
 <script>
     import UploadImages from "../media/UploadImages";
+    import RelatedProduct from "../../components/product/RelatedProduct";
+    import FilterProduct from "../../components/product/FilterProduct";
 
     export default {
         name: "CreateEditProductDialog",
-        components: {UploadImages},
+        components: {FilterProduct, RelatedProduct, UploadImages},
         data() {
             return {
-                //filters
-                selected_filters: [
-                    {
-                        text: 'Android Watch BQ-1',
-                    },
-                    {
-                        text: 'Citizen AT0696-59E',
-                    }
-                ],
-
-
-                //related products
-                relatedProducts: [
-                    {
-                        text: 'Nature',
-                    },
-                    {
-                        text: 'Nightlife',
-                    },
-                    {
-                        text: 'November',
-                    },
-                    {
-                        text: 'Portland',
-                    },
-                    {
-                        text: 'Biking',
-                    },
-                ],
                 loading: false,
-                search: '',
-                selected: [],
-                //end related products
-
-
-                notifications: false,
-                sound: true,
-                widgets: false,
 
                 e1: 1,
                 steps: 6,
@@ -349,6 +229,9 @@
                     quality: '',
                     status: '',
                     category: '',
+                    syllable: [],
+                    related:[],
+                    filters:[]
 
                 },
                 defaultItem: {
@@ -362,34 +245,14 @@
                     quality: '',
                     status: '',
                     category: '',
+                    syllable: [],
+                    related:[],
+                    filters:[]
                 }
             }
         },
 
         computed: {
-            allSelected() {
-                return this.selected.length === this.relatedProducts.length
-            },
-            listRelatedProducts() {
-                const search = this.search.toLowerCase()
-
-                if (!search) return this.relatedProducts
-
-                return this.relatedProducts.filter(item => {
-                    const text = item.text.toLowerCase()
-
-                    return text.indexOf(search) > -1
-                })
-            },
-            selections() {
-                const selections = []
-
-                for (const selection of this.selected) {
-                    selections.push(selection)
-                }
-
-                return selections
-            },
 
             formTitle() {
                 return this.edited ? 'Редагувати товар' : 'Додавання товару'
@@ -413,13 +276,8 @@
                         this.$store.dispatch('productApi/getProduct', link)
                             .then((data) => {
                                 this.editedItem = data.data
-                                this.loading = false;
-                                // console.log(data)
-                                // console.log(this.$store.state.productApi.products)
-
                             })
-
-
+                            .finally(() => (this.loading = false))
                     } else {
                         this.loading = false;
                         this.edited = false;
@@ -430,17 +288,13 @@
             }
         },
         methods: {
-            test() {
-                let credentials = {
-                    params: {}
-                }
-                this.$store.dispatch('productApi/getProducts', credentials)
-                    .then((data) => {
-
-                        console.log(data)
-                        // console.log(this.$store.state.productApi.products)
-                    })
-
+            onFiltersProduct(val){
+                this.editedItem.filters = val;
+                console.log(val)
+            },
+            onRelatedProducts(val){
+                this.editedItem.related = val;
+                console.log(val)
             },
             getProduct(){
 
