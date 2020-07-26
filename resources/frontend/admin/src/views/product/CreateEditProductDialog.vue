@@ -76,12 +76,8 @@
                             Continue
                         </v-btn>
                     </v-stepper-content>
-                    <v-stepper-content
-                        step="2"
-                    >
-                        <v-form
-                            class="mb-12"
-                        >
+                    <v-stepper-content step="2">
+                        <v-form class="mb-12">
                             <v-text-field
                                 label="Ключові Слова"
                                 v-model="editedItem.keywords"
@@ -106,15 +102,9 @@
                         <v-btn text @click="previousStep()">Назад</v-btn>
                     </v-stepper-content>
                     <v-stepper-content step="3">
-                        <UploadImages v-bind:bind-to-product="false"></UploadImages>
+                        <UploadImages v-bind:bind-to-product="false" :media-files="editedItem.media"></UploadImages>
 
-                        <v-btn
-                            color="primary"
-                            @click="nextStep(3)"
-                        >
-                            Continue
-                        </v-btn>
-
+                        <v-btn color="primary" @click="nextStep(3)">Continue</v-btn>
                         <v-btn text @click="previousStep()">Назад</v-btn>
                     </v-stepper-content>
                     <v-stepper-content step="4">
@@ -136,9 +126,6 @@
                                 </v-col>
                                 <v-col>
                                     <v-text-field label="Кількість"></v-text-field>
-                                </v-col>
-                                <v-col>
-                                    <v-btn color="primary" class="mt-2"><v-icon>mdi-plus-circle</v-icon></v-btn>
                                 </v-col>
                             </v-row>
 
@@ -231,7 +218,8 @@
                     category: '',
                     syllable: [],
                     related:[],
-                    filters:[]
+                    filters:[],
+                    media: []
 
                 },
                 defaultItem: {
@@ -247,7 +235,8 @@
                     category: '',
                     syllable: [],
                     related:[],
-                    filters:[]
+                    filters:[],
+                    media: []
                 }
             }
         },

@@ -229,7 +229,7 @@
             },
             destroyItem(item) {
                 if (confirm('Are you sure you want to delete this item?')) {
-                    this.$store.dispatch('apiDestroy', {url: item.links.destroy})
+                    this.$store.dispatch('apiDestroy', item.links.destroy)
                         .then(() => {
                             let index = this.categories.indexOf(item)
                             this.categories.splice(index, 1)

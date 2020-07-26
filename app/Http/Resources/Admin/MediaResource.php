@@ -16,7 +16,7 @@ class MediaResource extends JsonResource
     {
         return [
             'media_id' => $this->id,
-            'url' => $this->url,
+            'url' => env('APP_URL').$this->url,
             'path' => $this->path,
             'name' => $this->name,
             'keywords' => $this->keywords,

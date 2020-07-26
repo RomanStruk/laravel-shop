@@ -3,9 +3,12 @@
 namespace App\Http\Controllers\Api\v1\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\ProductImageRequest;
 use App\Http\Resources\Admin\MediaResource;
 use App\Media;
+use App\Services\SaveFile;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 
 class MediaController extends Controller
 {
@@ -27,18 +30,28 @@ class MediaController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @param ProductImageRequest $request
+     * @param SaveFile $saveMediaFile
+     * @return MediaResource
      */
-    public function store(Request $request)
+    public function store(ProductImageRequest $request, SaveFile $saveMediaFile)
     {
-        //
+        $fileData = $saveMediaFile->handel($request->file('media_file'), 'shop/' . now()->format('F'));
+
+        $file = new Media($fileData);
+        $file->save();
+
+        return (new MediaResource($file))->additional([
+            'message' => 'Файл успішно завантажений',
+            'success' => true
+        ]);
     }
+
 
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param int $id
      * @return MediaResource
      */
     public function show($id)
@@ -52,8 +65,8 @@ class MediaController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param \Illuminate\Http\Request $request
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id)
@@ -64,11 +77,33 @@ class MediaController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param int $id
+     * @return \Illuminate\Http\JsonResponse|object
      */
     public function destroy($id)
     {
-        //
+        $media = Media::findOrFail($id);
+        try {
+            if($media->tryDelete()){
+                return response()
+                    ->json([
+                        'message' => 'Файл успішно видалений',
+                        'success' => true
+                    ]);
+            }else {
+                return response()
+                    ->json([
+                        'message' => 'Неможливо видалити зображення у якого є декілька прикріплених товарів',
+                        'success' => false
+                    ]);
+            }
+        } catch (\Exception $exception){
+            return response()
+                ->json([
+                    'message' => $exception->getMessage(),
+                    'success' => false
+                ]);
+        }
+
     }
 }

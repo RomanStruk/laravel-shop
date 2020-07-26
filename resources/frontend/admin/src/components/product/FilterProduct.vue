@@ -40,7 +40,7 @@
             </v-col>
 
             <v-col cols="12" md="2">
-                <v-btn color="primary" class="mt-2" @click="add" :disabled="!catAdd">
+                <v-btn color="primary" class="mt-2" @click="add" :disabled="!canAdd">
                     <v-icon>mdi-plus-circle</v-icon>
                 </v-btn>
             </v-col>
@@ -114,7 +114,7 @@
             }
         },
         computed: {
-            catAdd() {
+            canAdd() {
                 if (!this.currentSelectedFilter) return false
                 if (!this.currentSelectedFilter.filter_group) return false
                 return !this.selected.some(item => item.filter_group.filter_group_id === this.currentSelectedFilter.filter_group.filter_group_id);

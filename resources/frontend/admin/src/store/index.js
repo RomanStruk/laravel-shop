@@ -3,6 +3,7 @@ import Vuex from 'vuex';
 import axios from 'axios';
 import moduleSearchApi from './modules/searchApiModule';
 import productApiModule from "./modules/productApiModule";
+import mediaApiModule from "./modules/mediaApiModule";
 Vue.use(Vuex)
 
 export default new Vuex.Store({
@@ -90,11 +91,9 @@ export default new Vuex.Store({
         }
     },
     actions: {
-        apiDestroy(context, credentials){
+        apiDestroy(context, url){
             return new Promise((resolve, reject) => {
-                let data = {}
-                data["_method"] = 'delete';
-                axios.post(credentials.url, data)
+                axios.post(url, {'_method': 'delete'})
                     .then(response => {
                         const content = response.data
                         if (content.success === true){
@@ -188,6 +187,7 @@ export default new Vuex.Store({
     },
     modules: {
         searchApi: moduleSearchApi,
-        productApi: productApiModule
+        productApi: productApiModule,
+        mediaApi: mediaApiModule
     }
 })

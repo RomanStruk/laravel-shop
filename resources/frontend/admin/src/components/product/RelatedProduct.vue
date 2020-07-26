@@ -13,20 +13,29 @@
                 </v-chip>
             </v-col>
         </v-row>
-        <v-autocomplete
-            v-model="model"
-            :items="relatedProducts"
-            :loading="isLoading"
-            :search-input.sync="search"
-            hide-no-data
-            clearable
-            item-text="title"
-            item-value="product_id"
-            label="Додати товар "
-            placeholder="Начніть вводити для пошуку"
-            prepend-icon="mdi-database-search"
-            return-object
-        ></v-autocomplete>
+        <v-row>
+            <v-col cols="12" md="10">
+                <v-autocomplete
+                    v-model="model"
+                    :items="relatedProducts"
+                    :loading="isLoading"
+                    :search-input.sync="search"
+                    hide-no-data
+                    clearable
+                    item-text="title"
+                    item-value="product_id"
+                    label="Додати товар "
+                    placeholder="Начніть вводити для пошуку"
+                    prepend-icon="mdi-database-search"
+                    return-object
+                ></v-autocomplete>
+            </v-col>
+            <v-col cols="12" md="2">
+                <v-btn color="primary" class="mt-2" @click="add" :disabled="!canAdd">
+                    <v-icon>mdi-plus-circle</v-icon>
+                </v-btn>
+            </v-col>
+        </v-row>
     </div>
 </template>
 
@@ -43,14 +52,18 @@
             }
         },
 
-        computed: {},
+        computed: {
+            canAdd(){
+                return true
+            }
+        },
         created() {
         },
         props: {
             defaultItems: Array
         },
         watch: {
-            selected(){
+            selected() {
                 this.$emit('event-on-selected-related', this.selected)
             },
             model(val) {
@@ -89,7 +102,11 @@
             },
         },
 
-        methods: {},
+        methods: {
+            add(){
+
+            }
+        },
     }
 </script>
 
