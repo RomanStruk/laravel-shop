@@ -35,9 +35,9 @@ class ProductResource extends JsonResource
             'related' => ProductResource::collection($this->whenLoaded('related')),
             'syllable' => SyllableResource::collection($this->whenLoaded('syllable')),
             'filters' => FilterResource::collection($this->whenLoaded('product_filters')),
-//            'category' => $this->category,
             'links' => [
                 'self' => route('api.v1.admin.product.show', $this),
+                'update' => route('api.v1.admin.product.update', $this),
                 'destroy' => route('api.v1.admin.product.destroy', $this),
             ]
         ];

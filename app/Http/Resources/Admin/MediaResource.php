@@ -29,6 +29,7 @@ class MediaResource extends JsonResource
             'products' => ProductResource::collection($this->whenLoaded('products')),
             'links' => [
                 'self' => route('api.v1.admin.media.show', $this),
+                'update' => route('api.v1.admin.media.update', $this),
                 'destroy' => route('api.v1.admin.media.destroy', $this),
             ]
         ];

@@ -23,6 +23,7 @@ export default new Vuex.Store({
             },
             product: {
                 index: 'http://shop.test/api/v1/admin/product',
+                create: 'http://shop.test/api/v1/admin/product',
                 show: null,
                 destroy: null
             },
@@ -98,10 +99,10 @@ export default new Vuex.Store({
                         const content = response.data
                         if (content.success === true){
                             context.commit('SNACK_BAR', {status: true, text: content.message, color: 'success'})
+                            resolve(content)
                         }else {
                             context.commit('SNACK_BAR', {status: true, text: content.message, color: 'error'})
                         }
-                        resolve(content)
                     })
                     .catch(error => {
                         const content = error.response.data
@@ -133,6 +134,7 @@ export default new Vuex.Store({
         apiUpdate(context, credentials) {
             return new Promise((resolve, reject) => {
                 let data = credentials.params
+                // console.log(data)
                 data["_method"] = 'patch';
                 axios.post(credentials.url, data)
                     .then(response => {

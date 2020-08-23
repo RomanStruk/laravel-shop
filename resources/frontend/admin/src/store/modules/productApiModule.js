@@ -3,7 +3,7 @@ import axios from "axios";
 const productApiModule = {
     namespaced: true,
     state: () => ({
-        api:'http://shop.test/api/v1/admin/product',
+        api: 'http://shop.test/api/v1/admin/product',
         products: null
     }),
     mutations: {
@@ -12,6 +12,20 @@ const productApiModule = {
         },
     },
     actions: {
+        createProduct(context, data) {
+            return new Promise((resolve, reject) => {
+                axios.post(context.state.api, data)
+                    .then(response => {
+                        context.commit('SNACK_BAR', {status: true, text: response.data.message, color: 'success'}, {root: true})
+                        resolve(response.data)
+                    })
+                    .catch(error => {
+                        const content = error.response.data
+                        context.commit('SNACK_BAR', {status: true, text: content.message, color: 'error'}, {root: true})
+                        reject(error)
+                    })
+            })
+        },
         getProducts(context, credentials) {
             return new Promise((resolve, reject) => {
                 axios.get(context.state.api, {
@@ -26,13 +40,15 @@ const productApiModule = {
         },
         getProduct(context, productLinkForApi) {
             return new Promise((resolve, reject) => {
-                axios.get(productLinkForApi).then(response => {
-                    resolve(response.data)
-                }).catch(error => {
-                    const content = error.response.data
-                    context.commit('SNACK_BAR', {status: true, text: content.message, color: 'error'}, {root:true})
-                    reject(error)
-                })
+                axios.get(productLinkForApi)
+                    .then(response => {
+                        resolve(response.data)
+                    })
+                    .catch(error => {
+                        const content = error.response.data
+                        context.commit('SNACK_BAR', {status: true, text: content.message, color: 'error'}, {root: true})
+                        reject(error)
+                    })
             })
         },
     },

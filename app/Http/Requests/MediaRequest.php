@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Collection;
 
 class MediaRequest extends FormRequest
 {
@@ -24,31 +25,37 @@ class MediaRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => ['required', 'filled', 'between:4,255'],
-            'keywords' => ['required', 'string', 'filled', 'between:4,255'],
-            'description' => ['required', 'string', 'filled', 'between:4,255'],
+            'name' => ['nullable', 'filled', 'between:4,255'],
+            'keywords' => ['nullable', 'string', 'filled', 'between:4,255'],
+            'description' => ['nullable', 'string', 'filled', 'between:4,255'],
             'products' => ['nullable', 'array'],
             'products.*' => ['nullable', 'exists:products,id'],
             'media.*' => request()->method() == 'POST'?
                 ['mimes:png,jpeg,jpg']:
                 ['nullable'],
-            'disc' => ['required', 'in:public,local'],
-            'visibility' => ['required', 'in:public,private'],
+//            'disc' => ['required', 'in:public,local'],
+            'visibility' => ['nullable', 'boolean'],
         ];
     }
 
-    public function mediaFillData():array
+    public function mediaFillData():Collection
     {
-        return [
+        return collect([
             'name'          => $this->name,
             'keywords'      => $this->keywords,
             'description'   => $this->description,
-            'disc'          => $this->disc,
-            'visibility'    => $this->visibility,
-        ];
+//            'disc'          => $this->disc,
+            'disc'          => 'public',
+            'visibility'    => $this->visibility ? 'public':'private',
+        ]);
     }
-    public function productsFillData():array
+
+    public function willUpdateRelationProducts(): bool
     {
-        return $this->products ?? [];
+        return $this->products !== null;
+    }
+    public function productsFillData():Collection
+    {
+        return collect($this->products);
     }
 }

@@ -54,7 +54,9 @@
 
         computed: {
             canAdd(){
-                return true
+                 if (this.model == null) return false;
+                 if (this.model.product_id == null) return false;
+                return !this.selected.some(item => item.product_id === this.model.product_id)
             }
         },
         created() {
@@ -65,17 +67,6 @@
         watch: {
             selected() {
                 this.$emit('event-on-selected-related', this.selected)
-            },
-            model(val) {
-                if (!val) return
-                if (this.selected.some(item => item.product_id === val.product_id)) {
-
-                    console.log("Object found inside the array.");
-
-                } else {
-                    this.selected.push(val)
-                }
-
             },
 
             search(val) {
@@ -104,7 +95,8 @@
 
         methods: {
             add(){
-
+                this.selected.push(this.model)
+                this.model = {};
             }
         },
     }

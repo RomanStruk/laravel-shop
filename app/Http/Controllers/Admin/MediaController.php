@@ -51,9 +51,10 @@ class MediaController extends Controller
         foreach($request->file('media') as $file){
             $folder = $request['disc'] == 'public' ? ('shop/'.$request->input('products')[0] ?? 'none') : 'local';
             $fileData = $saveMediaFile->handel($file, $folder, '', $request['disc'], $request['visibility']);
-            $media = new Media(array_merge($fileData, $request->mediaFillData()));
+            $media = new Media(array_merge($fileData, $request->mediaFillData()->all()));
             $media->save();
-            ! $request->input('products')[0] ?: $media->syncProducts($request->productsFillData());
+            if($request->willUpdateRelationProducts())
+                $media->syncProducts($request->productsFillData()->all());
         }
         return redirect()->route('admin.media.index')
             ->with('success', __('media.save'));
@@ -98,8 +99,8 @@ class MediaController extends Controller
     {
 
         $media = Media::findOrFail($mediaId);
-        $media->update($request->mediaFillData());
-        $media->syncProducts($request->productsFillData());
+        $media->update($request->mediaFillData()->whereNotNull()->all());
+        $media->syncProducts($request->productsFillData()->all());
 
         return redirect()->back()->with('success', __('media.update'));
     }

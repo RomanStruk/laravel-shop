@@ -7,18 +7,18 @@
                 <v-text-field
                     label="Назва"
                     :disabled="!editing"
-                    :value="editFile.name"
+                    v-model="editFile.name"
                 ></v-text-field>
                 <v-text-field
                     label="Ключові слова"
                     :rules="[v => !!v || 'Item is required']"
                     :disabled="!editing"
-                    :value="editFile.keywords"
+                    v-model="editFile.keywords"
                 ></v-text-field>
                 <v-text-field
                     label="Опис"
                     :rules="[v => !!v || 'Item is required']"
-                    :value="editFile.description"
+                    v-model="editFile.description"
                     :disabled="!editing"
                 ></v-text-field>
                 <v-select
@@ -28,13 +28,16 @@
                     item-value="product_id"
                     :disabled="!editing"
                 ></v-select>
-                <v-select
-                    v-if="bindToProduct"
+                <v-switch
                     label="Видимість"
                     :disabled="!editing"
-                    :value="editFile.visibility"
-                ></v-select>
-                <v-btn :disabled="!editing" color="primary" @click="updateMedia(editFile)">Оновити</v-btn>
+                    v-model="editFile.visibility"
+                ></v-switch>
+                <v-btn :disabled="!editing" color="primary" @click="updateMedia(editFile)"
+                       :loading="updateMediaLoading"
+                >
+                    Оновити
+                </v-btn>
             </v-col>
             <v-col cols="6">
                 <v-file-input
@@ -100,8 +103,8 @@
                                                 </v-btn>
                                                 <v-btn
                                                     :color="hover ? 'yellow' : 'transparent'"
-                                                       icon
-                                                       v-on:click.prevent="moveUp(index, index+1)"
+                                                    icon
+                                                    v-on:click.prevent="moveUp(index, index+1)"
                                                 >
                                                     <v-icon>mdi-arrow-down-bold</v-icon>
                                                 </v-btn>
@@ -136,8 +139,14 @@
             return {
                 valid: true,
                 isLoading: false,
+                updateMediaLoading: false,
                 editing: false,
-                editFile: {},
+                editFile: {
+                    "name": null,
+                    "keywords": null,
+                    "description": null,
+                    "visibility": false,
+                },
 
                 file_rules: [
                     value => !value || value.size < 2000000 || 'Avatar size should be less than 2 MB!',
@@ -152,6 +161,14 @@
             }
         },
         props: ['bindToProduct', 'mediaFiles'],
+        mounted() {
+            console.log('mounted UploadImages')
+        },
+        watch: {
+            filesFinish() {
+                this.$emit('event-on-selected-images', this.filesFinish)
+            },
+        },
         methods: {
             async fileInputChange() {
                 let files = Array.from(event.target.files);
@@ -165,6 +182,7 @@
                             this.filesFinish.push(response.data);                       // додаємо відповідь в файли завантажень
                             this.filesOrder.splice(item, 1);                            // видаляємо файл з черги
                             this.filesDownloaded++;                                     // лічильник завант. файлів +1
+                            // this.$store.dispatch('mediaApi/associateWithProduct', {media:response.data.links.self, product_id:1})
                             console.log('Файл успішно завантажений' + item.name)
                         })
                         .catch(error => {
@@ -173,7 +191,7 @@
                         })
                 }
             },
-            moveUp(old_index, new_index){
+            moveUp(old_index, new_index) {
                 let arr = this.filesFinish;
                 if (new_index >= arr.length) {
                     let k = new_index - arr.length + 1;
@@ -184,14 +202,25 @@
                 arr.splice(new_index, 0, arr.splice(old_index, 1)[0]);
                 return this.filesFinish = arr; // for testing
             },
-            chooseMediaForEdit(file){
+            chooseMediaForEdit(file) {
                 this.editing = true;
-                this.editFile = file;
+                this.$set(this.editFile, 'media_id', file.media_id)
+                this.$set(this.editFile, 'name', file.name)
+                this.$set(this.editFile, 'keywords', file.keywords)
+                this.$set(this.editFile, 'description', file.description)
+                this.$set(this.editFile, 'visibility', file.visibility === 'public')
+                this.$set(this.editFile, 'links', file.links)
             },
-            updateMedia(file){
-                console.log(file);
+            updateMedia(file) {
+                this.updateMediaLoading = true;
+                let data = {
+                    url: file.links.update,
+                    params: file
+                }
+                this.$store.dispatch('apiUpdate', data)
+                    .finally(()=>{this.updateMediaLoading = false})
             },
-            destroyMedia(item){
+            destroyMedia(item) {
                 if (confirm('Are you sure you want to delete this item?')) {
                     this.$store.dispatch('apiDestroy', item.links.destroy)
                         .then(() => {
@@ -199,7 +228,8 @@
                             this.filesFinish.splice(index, 1)
                         })
                 }
-            }
+            },
+
         },
         computed: {
             downloadedProgress() {

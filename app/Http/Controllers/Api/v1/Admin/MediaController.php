@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\v1\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\MediaRequest;
 use App\Http\Requests\ProductImageRequest;
 use App\Http\Resources\Admin\MediaResource;
 use App\Media;
@@ -65,13 +66,20 @@ class MediaController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param \Illuminate\Http\Request $request
+     * @param MediaRequest $request
      * @param int $id
-     * @return \Illuminate\Http\Response
+     * @return MediaResource
      */
-    public function update(Request $request, $id)
+    public function update(MediaRequest $request, $id)
     {
-        //
+        $media = Media::findOrFail($id);
+        $media->update($request->mediaFillData()->whereNotNull()->all());
+        if ($request->willUpdateRelationProducts())
+            $media->syncProducts($request->productsFillData()->all());
+        return (new MediaResource($media))->additional([
+            'message' => 'Retrieve Data is Successfully',
+            'success' => true
+        ]);
     }
 
     /**

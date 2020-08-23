@@ -1,7 +1,7 @@
 <template>
     <div>
 
-        <CreateEditProductDialog :dialog="dialogCreateEdit" @event-on-close-dialog="dialogCreateEdit = false" :product="editProduct"></CreateEditProductDialog>
+        <CreateEditProductDialog :dialog="dialogCreateEdit" @event-on-close-dialog="dialogCreateEdit = false" :product="editProduct"  :key="componentKey"></CreateEditProductDialog>
         <v-data-table
             :headers="headers"
             :items="items"
@@ -142,6 +142,8 @@
                 items: [],
                 options: {},
 
+                componentKey: 0,
+
             }
         },
         watch: {
@@ -162,10 +164,13 @@
                 this.dialogCreateEdit = true
             },
             showCreateEditDialog(){
+                this.forceRerender()
                 this.editProduct = null
                 this.dialogCreateEdit = true
             },
-
+            forceRerender() {
+                this.componentKey += 1;
+            },
             getDataFromApi() {
                 this.loading = true
                 return new Promise((resolve) => {

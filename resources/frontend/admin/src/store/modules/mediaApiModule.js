@@ -16,6 +16,27 @@ const mediaApiModule = {
         },
     },
     actions: {
+        associateWithProduct(context, credentials){
+            return new Promise((resolve, reject) => {
+                let form = new FormData();
+                form.append("_method", 'patch');
+                form.append('products[]', credentials.product_id);
+                axios.post(credentials.media, form)
+                    .then(response => {
+                        if (response.data.success === true){
+                            resolve(response.data) // повернення даних
+                        }else {
+                            // error
+                            context.commit('SNACK_BAR', {status: true, text: response.data.message, color: 'warning'}, {root:true})
+                        }
+                    })
+                    .catch(error => {
+                        //server error
+                        context.commit('SNACK_BAR', {status: true, text: error.response.data.message, color: 'error'}, {root:true})
+                        reject(error)
+                    })
+            })
+        },
         async mediaStore(context, file) {
             return await new Promise((resolve, reject) => {
                 let form = new FormData();

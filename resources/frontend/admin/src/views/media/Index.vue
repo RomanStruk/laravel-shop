@@ -113,7 +113,7 @@
 
                             </v-toolbar>
                             <v-card-text>
-                                <UploadImages :bindToProduct="true"></UploadImages>
+                                <UploadImages :bindToProduct="true" :media-files="[]"></UploadImages>
                             </v-card-text>
                         </v-card>
                     </v-dialog>

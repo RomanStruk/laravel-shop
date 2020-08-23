@@ -8,7 +8,7 @@
                 <v-toolbar-title>{{formTitle}}</v-toolbar-title>
                 <v-spacer></v-spacer>
                 <v-toolbar-items>
-                    <v-btn dark text @click="closeDialog()">Save</v-btn>
+                    <v-btn dark text @click="saveProduct()">Save</v-btn>
                 </v-toolbar-items>
             </v-toolbar>
 
@@ -38,12 +38,8 @@
                     <v-divider></v-divider>
                 </v-stepper-header>
                 <v-stepper-items>
-                    <v-stepper-content
-                        step="1"
-                    >
-                        <v-form
-                            class="mb-12"
-                        >
+                    <v-stepper-content step="1">
+                        <v-form class="mb-12">
                             <v-text-field
                                 label="Назва товару"
                                 v-model="editedItem.title"
@@ -55,7 +51,8 @@
                             <v-autocomplete
                                 item-text="name"
                                 item-value="category_id"
-                                :items="[editedItem.category]"
+                                :search-input.sync="categorySearch"
+                                :items="categories"
                                 v-model="editedItem.category_id"
                                 label="Категорія"
                             ></v-autocomplete>
@@ -64,7 +61,7 @@
                                 v-model="editedItem.price"
                             ></v-text-field>
                             <v-switch
-                                v-model="editedItem.visibility"
+                                v-model="editedItem.status"
                                 label="Опублікувати"
                             ></v-switch>
                         </v-form>
@@ -102,7 +99,7 @@
                         <v-btn text @click="previousStep()">Назад</v-btn>
                     </v-stepper-content>
                     <v-stepper-content step="3">
-                        <UploadImages v-bind:bind-to-product="false" :media-files="editedItem.media"></UploadImages>
+                        <UploadImages v-bind:bind-to-product="false" :media-files="editedItem.media" @event-on-selected-images="onImagesProduct"></UploadImages>
 
                         <v-btn color="primary" @click="nextStep(3)">Continue</v-btn>
                         <v-btn text @click="previousStep()">Назад</v-btn>
@@ -122,10 +119,22 @@
                             </div>
                             <v-row>
                                 <v-col>
-                                    <v-text-field label="Постачальник товару"></v-text-field>
+                                    <v-autocomplete
+                                        v-model="editedItem.supplier_id"
+                                        :items="supplierItems"
+                                        :loading="isLoadingSuppliers"
+                                        :search-input.sync="supplierSearch"
+                                        hide-no-data
+                                        hide-selected
+                                        item-text="name"
+                                        item-value="supplier_id"
+                                        label="Постачальник товару"
+                                        placeholder="Start typing to Search"
+                                        prepend-icon="mdi-database-search"
+                                    ></v-autocomplete>
                                 </v-col>
                                 <v-col>
-                                    <v-text-field label="Кількість"></v-text-field>
+                                    <v-text-field v-model="editedItem.imported" label="Кількість"></v-text-field>
                                 </v-col>
                             </v-row>
 
@@ -206,6 +215,7 @@
 
                 edited: false,
                 editedItem: {
+                    product_id: '',
                     title: '',
                     alias: '',
                     keywords: '',
@@ -223,6 +233,7 @@
 
                 },
                 defaultItem: {
+                    product_id: '',
                     title: '',
                     alias: '',
                     keywords: '',
@@ -237,15 +248,22 @@
                     related:[],
                     filters:[],
                     media: []
-                }
+                },
+
+                supplierItems:[],
+                isLoadingSuppliers: false,
+                supplierSearch: null,
+
+
+                categories: [],
+                categorySearch: null
             }
         },
 
         computed: {
-
             formTitle() {
                 return this.edited ? 'Редагувати товар' : 'Додавання товару'
-            },
+            }
 
         },
 
@@ -270,13 +288,109 @@
                     } else {
                         this.loading = false;
                         this.edited = false;
-                        this.editedItem = this.defaultItem;
+                        // this.$set(this.editedItem, this.defaultItem)
+                        // this.editedItem = this.defaultItem;
+                        Object.assign(this.editedItem, this.defaultItem)
                     }
                 },
                 deep: true,
-            }
+            },
+            categorySearch(){
+                if (this.categories.length > 0) return
+
+                // Items have already been requested
+                // if (this.isLoadingSuppliers) return
+
+                // this.isLoadingSuppliers = true
+
+                // Lazily load input items
+                let data = {url:this.$store.state.api.category.index, params:{}}
+                this.$store.dispatch('getApiContent', data)
+                    .then(res => {this.categories = res.data.data})
+                    .catch(err => {console.log(err)})
+                // .finally(() => (this.isLoadingSuppliers = false))
+            },
+            supplierSearch () {
+                // Items have already been loaded
+                if (this.supplierItems.length > 0) return
+
+                // Items have already been requested
+                if (this.isLoadingSuppliers) return
+
+                this.isLoadingSuppliers = true
+
+                // Lazily load input items
+                let data = {url:this.$store.state.api.supplier.index, params:{}}
+                this.$store.dispatch('getApiContent', data)
+                    .then(res => {this.supplierItems = res.data.data})
+                    .catch(err => {console.log(err)})
+                    .finally(() => (this.isLoadingSuppliers = false))
+            },
         },
         methods: {
+            saveProduct(){
+                if (this.edited) {
+                    this.updateProduct()
+                } else {
+                    this.createProduct()
+                }
+            },
+            createProduct(){
+                let data = {
+                    title: this.editedItem.title,
+                    keywords: this.editedItem.keywords,
+                    description: this.editedItem.description,
+                    content: this.editedItem.content,
+                    price: this.editedItem.price,
+                    status: this.editedItem.status,
+                    category_id: this.editedItem.category_id,
+                    filters: [],
+                    related: [],
+                    media: [],
+                    supplier_id: this.editedItem.supplier_id,
+                    imported: this.editedItem.imported,
+                };
+                for (let m of this.editedItem.media){data.media.push(m.media_id)}
+                for (let m of this.editedItem.related){data.related.push(m.product_id)}
+                for (let m of this.editedItem.filters){data.filters.push(m.filter_id)}
+                this.$store.dispatch('productApi/createProduct', data)
+                    .then(response => {
+                        this.edited = true
+                        this.editedItem = response.data
+                    })
+                console.log('createProduct')
+            },
+            updateProduct(){
+                console.log('updateProduct')
+                let params = {
+                    title: this.editedItem.title,
+                    keywords: this.editedItem.keywords,
+                    description: this.editedItem.description,
+                    content: this.editedItem.content,
+                    price: this.editedItem.price,
+                    status: this.editedItem.status,
+                    category_id: this.editedItem.category.category_id,
+                    filters: [],
+                    related: [],
+                    media: [],
+                    supplier_id: this.editedItem.supplier_id,
+                    imported: this.editedItem.imported,
+                };
+                for (let m of this.editedItem.media){params.media.push(m.media_id)}
+                for (let m of this.editedItem.related){params.related.push(m.product_id)}
+                for (let m of this.editedItem.filters){params.filters.push(m.filter_id)}
+
+                let data = {
+                    url: this.editedItem.links.update,
+                    params: params
+                }
+                this.$store.dispatch('apiUpdate', data)
+                    // .then((data) => {this.editedItem = data.data;})
+                    // .finally(()=>{this.updateMediaLoading = false})
+            },
+            onImagesProduct(val){
+                this.editedItem.media = val;
+            },
             onFiltersProduct(val){
                 this.editedItem.filters = val;
                 console.log(val)
@@ -285,9 +399,7 @@
                 this.editedItem.related = val;
                 console.log(val)
             },
-            getProduct(){
 
-            },
             validStep(n) {
                 n;
                 return true;
@@ -300,7 +412,6 @@
                 if (this.validStep(n - 1)) {
                     this.configSteps[n - 1].complete = false
                 }
-
                 if (n === this.steps) {
                     this.e1 = 1
                 } else {
