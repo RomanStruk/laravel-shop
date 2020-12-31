@@ -17,7 +17,7 @@ class Product extends Model
     use ProductRelations;
     use PriceMutators; // мутатори для ціни
 
-    public $fillable = ['alias', 'title', 'category_id', 'keywords', 'description', 'content', 'price', 'in_stock', 'status'];
+    protected $fillable = ['alias', 'title', 'category_id', 'keywords', 'description', 'content', 'price', 'in_stock', 'status'];
 
     /**
      * The "booting" method of the model.

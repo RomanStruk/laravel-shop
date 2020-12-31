@@ -17,7 +17,7 @@ class DatabaseSeeder extends Seeder
         $this->call(ProductsTableSeeder::class); // Товари
         $this->call(SupplierTableSeeder::class); // Постачальники
         $this->call(SyllableTableSeeder::class); // Поставки
-        $this->call(FilterGroupsSeeder::class); //групи атрибутів
+        $this->call(FilterGroupsTableSeeder::class); //групи атрибутів
         $this->call(FiltersSeeder::class); // атрибути
         $this->call(OrderSeeder::class); // Замовлення
         $this->call(MediaSeeder::class); // медіа файли і звязки з товарами

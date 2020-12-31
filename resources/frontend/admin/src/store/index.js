@@ -12,43 +12,43 @@ export default new Vuex.Store({
 
         api: {
             order: {
-                index: 'http://shop.test/api/v1/admin/order',
+                index: '/api/v1/admin/order',
                 show: null,
                 destroy: null
             },
             category: {
-                index: 'http://shop.test/api/v1/admin/category',
+                index: '/api/v1/admin/category',
                 show: null,
                 destroy: null
             },
             product: {
-                index: 'http://shop.test/api/v1/admin/product',
-                create: 'http://shop.test/api/v1/admin/product',
+                index: '/api/v1/admin/product',
+                create: '/api/v1/admin/product',
                 show: null,
                 destroy: null
             },
             user: {
-                index: 'http://shop.test/api/v1/admin/user',
+                index: '/api/v1/admin/user',
                 show: null,
                 destroy: null
             },
             media: {
-                index: 'http://shop.test/api/v1/admin/media',
+                index: '/api/v1/admin/media',
                 show: null,
                 destroy: null
             },
             filter: {
-                index: 'http://shop.test/api/v1/admin/filter-group',
+                index: '/api/v1/admin/filter-group',
                 show: null,
                 destroy: null
             },
             supplier: {
-                index: 'http://shop.test/api/v1/admin/supplier',
+                index: '/api/v1/admin/supplier',
                 show: null,
                 destroy: null
             },
             syllable: {
-                index: 'http://shop.test/api/v1/admin/syllable',
+                index: '/api/v1/admin/syllable',
                 show: null,
                 destroy: null
             }
@@ -166,7 +166,7 @@ export default new Vuex.Store({
         // token
         retrieveToken(context, credentials) {
             return new Promise((resolve, reject) => {
-                axios.post('http://shop.test/api/v1/login', {
+                axios.post('/api/v1/login', {
                     email: credentials.email,
                     password: credentials.password,
                 }).then(response => {
