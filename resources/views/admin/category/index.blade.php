@@ -23,11 +23,11 @@
                     <table class="table table-striped projects">
                         <thead>
                         <tr>
-                            <td class="text-right col-1"><a class="desc">#</a></td>
-                            <td class="text-left col-3"><a href="">Заголовок</a></td>
-                            <td class="text-left col-4">Опис</td>
-                            <td class="text-left col-2">Батьківський елемент</td>
-                            <td class="text-center col-2">Дія</td>
+                            <td class="text-right"><a class="desc">#</a></td>
+                            <td class="text-left "><a href="">Заголовок</a></td>
+                            <td class="text-left ">Опис</td>
+                            <td class="text-left ">Батьківський елемент</td>
+                            <td class="text-center ">Дія</td>
                         </tr>
                         </thead>
                         <tbody>

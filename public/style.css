@@ -872,9 +872,6 @@ ul.ht-dropdown.dropdown-style-two li {
     font-size: 14px;
     line-height: 20px;
 }
-.product-rating i:nth-child(n+4){
-    color: #444;
-}
 .price {
     font-size: 14px;
 }
@@ -2610,7 +2607,7 @@ p.checkout-coupon input[type="submit"] {
 .payment-accordion h3.open a:after {
     content: "Ã¯Ââ€¢";
     display: inline-block;
-    font-family: fontawesome;
+    font-family: "Font Awesome 5 Free", serif;
     font-size: 20px;
     left: 0;
     position: absolute;
@@ -2629,7 +2626,7 @@ p.checkout-coupon input[type="submit"] {
     margin-left: 15px;
 }
 
-.order-button-payment input {
+.order-button-payment button {
     background: #f1ac06;
     border: medium none;
     color: #fff;
@@ -2645,7 +2642,7 @@ p.checkout-coupon input[type="submit"] {
     cursor: pointer;
 }
 
-.order-button-payment input:hover {
+.order-button-payment button:hover {
     background: #444
 }
 
@@ -2750,7 +2747,7 @@ p.checkout-coupon input[type="submit"] {
 .blog-pagination li a {
     display: block;
     font-size: 16px;
-    color: 808080;
+    color: #808080;
     border: 1px solid #e7e7e7;
     width: 40px;
     text-align: center;
@@ -3224,9 +3221,6 @@ p.checkout-coupon input[type="submit"] {
     color: #888;
 }
 
-#search-form input::-moz-input-placeholder {
-    color: #888;
-}
 
 #search-form button {
     background: rgba(0, 0, 0, 0) none repeat scroll 0 0;
@@ -3388,9 +3382,6 @@ legend {
     color: #888;
 }
 
-.address-wrapper input::-moz-input-placeholder {
-    color: #888;
-}
 
 .address-wrapper input::-ms-input-placeholder {
     color: #888;

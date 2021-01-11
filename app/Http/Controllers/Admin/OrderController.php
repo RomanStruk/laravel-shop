@@ -6,7 +6,7 @@ use App\Events\ChangeOrderStatusEvent;
 use App\Events\CompletedOrderStatusEvent;
 use App\Events\OrderCreatedEvent;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\OrderRequest;
+use App\Http\Requests\Admin\OrderRequest;
 use App\Http\Requests\StatusOrderRequest;
 use App\Order;
 use App\Services\PaginateSession;
@@ -44,6 +44,8 @@ class OrderController extends Controller
         /*foreach ($order->notifications as $notification) {
             dump($notification) ;
         }*/
+//        $firstOrderProduct = $order->orderProducts->first();
+//        dd($firstOrderProduct->product->syllable()->availableSyllable(824)->first(),$firstOrderProduct->product->getAvailableSyllableId(1));
         return view('admin.order.show')->with('order', $order);
     }
 

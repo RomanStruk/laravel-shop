@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Models\Traits\PriceMutators;
 use App\Services\ScopeFilters\ProductsFilter;
 use App\Traits\Helpers\ProductHelper;
 use App\Traits\Helpers\SerializeDate;
@@ -39,7 +40,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property-read int|null $order_product_count
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Order[] $orders
  * @property-read int|null $orders_count
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Attribute[] $product_attributes
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Filter[] $product_attributes
  * @property-read int|null $product_attributes_count
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Product[] $related
  * @property-read int|null $related_count
@@ -82,20 +83,24 @@ class Product extends Model
     use ProductHelper;
     use Status;
 
-    public $fillable = [
-        'title',
-        'alias',
-        'category_id',
-        'keywords',
-        'description',
-        'content',
-        'price',
-        'in_stock',
-        'status',
-        ];
+    use PriceMutators;
+
+    public $fillable = ['alias', 'title', 'category_id', 'keywords', 'description', 'content', 'price', 'in_stock', 'status'];
 
     const STATUS_HIDE       = 0;
     const STATUS_ACTIVE     = 1;
+
+
+    /**
+     * Повертає індитифікатор доступної з потрібною кількістю товарів поставку
+     * @param integer $count потрібна кількість товарів
+     * @return mixed
+     */
+    public function getAvailableSyllableId(int $count)
+    {
+        return $this->syllable()->availableSyllable($count)->first()->id;
+    }
+
 
     /**
      * Return list of status codes and labels
@@ -114,22 +119,7 @@ class Product extends Model
         return (new ProductsFilter())->apply($query, $filter);
     }
 
-    public function getPriceAttribute($value)
-    {
-        return round(($value/100), 2);
-    }
-    public function setPriceAttribute($value)
-    {
-        $this->attributes['price'] = (int)((float)$value*100);
-    }
-    public function getOldPriceAttribute($value)
-    {
-        return round(($value/100), 2);
-    }
-    public function setOldPriceAttribute($value)
-    {
-        $this->attributes['old_price'] = (int)((float)$value*100);
-    }
+
 
 
     /**
@@ -145,8 +135,8 @@ class Product extends Model
             ->with('comments')
             ->with('comments.user')
             ->with('comments.user.detail')
-            ->with('product_attributes')
-            ->with('product_attributes.filter');
+            ->with('product_filters')
+            ->with('product_filters.filter_group');
     }
 
     public function attachMediaFiles($ids)

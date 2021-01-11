@@ -26,12 +26,12 @@
                 <table class="table table-striped projects">
                     <thead>
                     <tr>
-                        <td class="text-right col-1"><a class="desc">#</a></td>
-                        <td class="text-left col-4"><a href="">Назва</a></td>
-                        <td class="text-left col-3">Категорія</td>
-                        <td class="text-left col-1">Ціна</td>
-                        <td class="text-left col-1">К-сть</td>
-                        <td class="text-center col-2">Дія</td>
+                        <td class="text-right"><a class="desc">#</a></td>
+                        <td class="text-left"><a href="">Назва</a></td>
+                        <td class="text-left">Категорія</td>
+                        <td class="text-left">Ціна</td>
+                        <td class="text-left">К-сть</td>
+                        <td class="text-center">Дія</td>
                     </tr>
                     </thead>
                     <tbody>

@@ -168,7 +168,7 @@
                             <li><a href="wishlist.html"><i class="fa fa-heart-o"></i></a></li>
 
 
-                            <basket-component></basket-component>
+                            <shopping-cart-menu-component></shopping-cart-menu-component>
 
                         </ul>
                     </div>
@@ -242,3 +242,4 @@
     </div>
     <!-- Header Bottom End -->
 </header>
+

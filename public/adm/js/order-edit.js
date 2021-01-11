@@ -34264,50 +34264,15 @@ $(function () {
     },
     placeholder: 'Виберіть відділення'
   };
-  var select2SyllableOptions = {
-    ajax: {
-      url: "/api/v1/syllable/index",
-      dataType: 'json',
-      delay: 250,
-      data: function data(params) {
-        return {
-          search: params.term,
-          // search term
-          page: params.page
-        };
-      },
-      processResults: function processResults(data, params) {
-        params.page = params.page || 1;
-        var res = $.map(data, function (obj) {
-          obj.text = obj.text || obj.title; // replace name with the property used for the text
-
-          obj.id = obj.code; // replace name with the property used for the text
-
-          return obj;
-        });
-        return {
-          results: res
-        };
-      },
-      cache: true
-    },
-    placeholder: 'Виберіть товар зі складу'
-  };
   $(".product-select2").select2(select2ProductsOptions);
   $("#user-select2").select2(select2UserOptions);
   $("#shipping-select2").select2(select2ShippingOptions);
   $("#address-select2").select2(select2AddressOptions);
   $('.product-select2').on('select2:select', function (e) {
     var select = $(e.target).parents(".form-group.row").find('.syllable-select2');
-    var Options = {
-      data: e.params.data.syllables
-    };
-
-    if ($(select).hasClass("select2-hidden-accessible")) {
-      select.find('option').remove().end();
-    }
-
-    select.select2(Options);
+    $.each(e.params.data.syllables, function (key, value) {
+      $(select).append('<option value="' + value.id + '">' + value.text + '</option>');
+    });
   });
   $('input[name="shipping_method"]').click(function () {
     $(this).tab('show');
@@ -34320,15 +34285,9 @@ $(function () {
     $(".product-select2").select2(select2ProductsOptions);
     $('.product-select2').on('select2:select', function (e) {
       var select = $(e.target).parents(".form-group.row").find('.syllable-select2');
-      var Options = {
-        data: e.params.data.syllables
-      };
-
-      if ($(select).hasClass("select2-hidden-accessible")) {
-        select.find('option').remove().end();
-      }
-
-      select.select2(Options);
+      $.each(e.params.data.syllables, function (key, value) {
+        $(select).append('<option value="' + value.id + '">' + value.text + '</option>');
+      });
     });
     return false;
   });
@@ -34343,7 +34302,7 @@ $(function () {
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(/*! C:\xampp\htdocs\Laravel-Shop-Learning\resources\js\admin\order-edit.js */"./resources/js/admin/order-edit.js");
+module.exports = __webpack_require__(/*! C:\xampp\htdocs\shop.test\resources\js\admin\order-edit.js */"./resources/js/admin/order-edit.js");
 
 
 /***/ })

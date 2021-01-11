@@ -11,7 +11,7 @@ class HomeController extends Controller
 {
     public function index(Analytics $analytics)
     {
-
+//        return view('admin.admin');
         $soldProducts = OrderProduct::top(5)->get();
         $topList = [];
         foreach ($soldProducts as $soldProduct) {

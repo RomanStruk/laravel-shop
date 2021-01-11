@@ -25,6 +25,8 @@ class OrderProductMinRule implements Rule
      */
     public function passes($attribute, $value)
     {
+        if(!is_array($value)) return false;
+
         foreach ($value as $element){
             if (array_key_exists('id', $element)) return true;
         }

@@ -19,7 +19,7 @@ class CourierMethod implements ShippingMethodInterface
     private function parseResult($value): City
     {
         $city = new City($value['Ref'], $value['Description']);
-        $city->description = $value['Description']. ' '.$value['RegionsDescription']. ' '.$value['AreaDescription'];
+        $city->description = $value['Description'] . ' ' . $value['RegionsDescription'] . ' ' . $value['AreaDescription'];
         return $city;
     }
 

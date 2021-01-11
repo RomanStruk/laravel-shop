@@ -54002,7 +54002,7 @@ window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(/*! C:\xampp\htdocs\Laravel-Shop-Learning\resources\js\admin\product.js */"./resources/js/admin/product.js");
+module.exports = __webpack_require__(/*! C:\xampp\htdocs\shop.test\resources\js\admin\product.js */"./resources/js/admin/product.js");
 
 
 /***/ })

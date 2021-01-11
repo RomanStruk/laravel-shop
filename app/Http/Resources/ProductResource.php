@@ -17,11 +17,16 @@ class ProductResource extends JsonResource
 //        dd($request->order);
         return [
             'id' => $this->id,
+            'product_id' => $this->id,
             'title' => $this->title,
-            'content' => $this->content,
+            'description' => $this->description,
             'keywords' => $this->keywords,
-            'syllables' => $this->syllableWithOutScope()->countAvailableRemains($request->order)->countProcessed($request->order)->get()->map(function ($syllable){
-
+            'syllables' => $this
+                ->syllableWithOutScope()
+                ->countAvailableRemains($request->order)
+                ->countProcessed($request->order)
+                ->get()
+                ->map(function ($syllable){
                     return [
                         'id' => $syllable->id,
                         'text' => $syllable->supplier->name. ' (' . $syllable->countAvailableRemains . ')',

@@ -58,9 +58,6 @@ class Syllable extends Model
         return $this->belongsToMany(Order::class, 'order_products');
     }
 
-
-
-
     /**
      * Видібка з підрахунком кількості товарів на розгляді
      * countProcessed
@@ -122,5 +119,21 @@ class Syllable extends Model
     public function scopeHavingCountProcessed(Builder $builder, $exclude = null)
     {
         return $this->scopeCountProcessed($builder, $exclude)->havingRaw('countProcessed < remains');
+    }
+
+    /**
+     * Повертає одну доступну поставку з максммальною кількістю доступних товарів
+     * availableSyllable
+     *
+     * @param Builder $builder
+     * @param integer $count потрібна кількість товарів
+     * @return Builder
+     */
+    public function scopeAvailableSyllable(Builder $builder, int $count)
+    {
+        return $this->scopeHavingCountAvailableRemains($builder)
+            ->havingRaw('countAvailableRemains > '.$count)
+            ->orderByDesc('countAvailableRemains')
+            ->limit(1);
     }
 }

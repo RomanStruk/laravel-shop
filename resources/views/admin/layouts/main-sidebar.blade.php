@@ -15,7 +15,7 @@
                 <img src="{{Auth::user()->detail->avatar}}" class="img-circle elevation-2" alt="User Image">
             </div>
             <div class="info">
-                <a href="#" class="d-block">{{Auth::user()->fullName}}</a>
+                <a href="{{route('admin.user.show', Auth::user())}}" class="d-block">{{Auth::user()->fullName}}</a>
             </div>
         </div>
 
@@ -35,16 +35,30 @@
                     </a>
                 </li>
 
-                <li class="nav-item">
-                    <a href="{{ route('admin.order.index') }}" class="nav-link @if(Route::currentRouteName() == 'admin.order.index') active @endif">
+                <li class="nav-item has-treeview @if(request()->routeIs('admin.order*')) menu-open @endif">
+                    <a href="{{ route('admin.order.index') }}" class="nav-link  @if(request()->routeIs('admin.order*')) active @endif">
                         <i class="nav-icon fas fa-list-alt"></i>
                         <p>
                             Замовлення
                             <i class="right fas fa-angle-left"></i>
                         </p>
                     </a>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a href="{{ route('admin.order.index') }}" class="nav-link @if(request()->routeIs('admin.order.index')) active @endif">
+                                <i class="nav-icon fas fa-lira-sign"></i>
+                                <p>Замовлення</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ route('admin.order.create') }}" class="nav-link @if(request()->routeIs('admin.order.create')) active @endif">
+                                <i class="icon fas fa-plus nav-icon"></i>
+                                <p>Додати замовлення</p>
+                            </a>
+                        </li>
+                    </ul>
                 </li>
-                <li class="nav-item">
+                <li class="nav-item has-treeview @if(request()->routeIs('admin.category*')) menu-open @endif">
                     <a href="{{ route('admin.category.index') }}" class="nav-link @if(request()->routeIs('admin.category*')) active @endif">
                         <i class="nav-icon fas fa-book"></i>
                         <p>
@@ -52,8 +66,24 @@
                             <i class="right fas fa-angle-left"></i>
                         </p>
                     </a>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a href="{{ route('admin.category.index') }}" class="nav-link @if(request()->routeIs('admin.category.index')) active @endif">
+                                <i class="nav-icon fas fa-lira-sign"></i>
+                                <p>Категорії</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ route('admin.category.create') }}" class="nav-link @if(request()->routeIs('admin.category.create')) active @endif">
+                                <i class="icon fas fa-plus nav-icon"></i>
+                                <p>Додати категорію</p>
+                            </a>
+                        </li>
+                    </ul>
                 </li>
-                <li class="nav-item has-treeview @if(request()->routeIs('admin.product*') or request()->routeIs('admin.supplier*') or request()->routeIs('admin.syllable*')) menu-open @endif">
+                <li class="nav-item has-treeview
+@if(request()->routeIs('admin.product*') or request()->routeIs('admin.supplier*') or request()->routeIs('admin.syllable*')) menu-open @endif
+                    ">
                     <a href="{{ route('admin.product.index') }}" class="nav-link @if(request()->routeIs('admin.product*') or request()->routeIs('admin.supplier*') or request()->routeIs('admin.syllable*')) active @endif">
                         <i class="nav-icon fas fa-lira-sign"></i>
                         <p>
@@ -88,32 +118,71 @@
                         </li>
                     </ul>
                 </li>
-                <li class="nav-item">
-                    <a href="{{ route('admin.user.index') }}" class="nav-link @if(Route::currentRouteName() == 'admin.user.index') active @endif">
+                <li class="nav-item has-treeview @if(request()->routeIs('admin.user*')) menu-open @endif">
+                    <a href="{{ route('admin.user.index') }}" class="nav-link @if(request()->routeIs('admin.user.*')) active @endif">
                         <i class="nav-icon fas fa-user"></i>
                         <p>
                             Користувачі
                             <i class="right fas fa-angle-left"></i>
                         </p>
                     </a>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a href="{{ route('admin.user.index') }}" class="nav-link @if(request()->routeIs('admin.user.index')) active @endif">
+                                <i class="nav-icon fas fa-lira-sign"></i>
+                                <p>Користувачі</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ route('admin.user.create') }}" class="nav-link @if(request()->routeIs('admin.user.create')) active @endif">
+                                <i class="icon fas fa-plus nav-icon"></i>
+                                <p>Додати користувача</p>
+                            </a>
+                        </li>
+                    </ul>
                 </li>
-                <li class="nav-item">
-                    <a href="{{ route('admin.media.index') }}" class="nav-link @if(Route::currentRouteName() == 'admin.media.index') active @endif">
+                <li class="nav-item has-treeview @if(request()->routeIs('admin.media*')) menu-open @endif">
+                    <a href="{{ route('admin.media.index') }}" class="nav-link @if(request()->routeIs('admin.media.*')) active @endif">
                         <i class="nav-icon fas fa-images"></i>
-                        <p>
-                            Медіа
-                            <i class="right fas fa-angle-left"></i>
-                        </p>
+                        <p>Медіа<i class="right fas fa-angle-left"></i></p>
                     </a>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a href="{{ route('admin.media.index') }}" class="nav-link @if(request()->routeIs('admin.media.index')) active @endif">
+                                <i class="nav-icon fas fa-lira-sign"></i>
+                                <p>Медіа</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ route('admin.media.create') }}" class="nav-link @if(request()->routeIs('admin.media.create')) active @endif">
+                                <i class="icon fas fa-plus nav-icon"></i>
+                                <p>Додати медіа</p>
+                            </a>
+                        </li>
+                    </ul>
                 </li>
-                <li class="nav-item">
-                    <a href="{{ route('admin.filter.index') }}" class="nav-link @if(Route::currentRouteName() == 'admin.filter.index') active @endif">
+                <li class="nav-item has-treeview @if(request()->routeIs('admin.filter*')) menu-open @endif">
+                    <a href="{{ route('admin.filter.index') }}" class="nav-link @if(request()->routeIs('admin.filter.*')) active @endif">
                         <i class="nav-icon fas fa-filter"></i>
                         <p>
                             Фільтри
                             <i class="right fas fa-angle-left"></i>
                         </p>
                     </a>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a href="{{ route('admin.filter.index') }}" class="nav-link @if(request()->routeIs('admin.filter.index')) active @endif">
+                                <i class="nav-icon fas fa-lira-sign"></i>
+                                <p>Фільтри</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ route('admin.filter.create') }}" class="nav-link @if(request()->routeIs('admin.filter.create')) active @endif">
+                                <i class="icon fas fa-plus nav-icon"></i>
+                                <p>Додати фільтр</p>
+                            </a>
+                        </li>
+                    </ul>
                 </li>
             </ul>
         </nav>

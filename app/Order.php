@@ -162,6 +162,7 @@ class Order extends Model
             ->with('orderProducts.product.category')
             ->with('user')
             ->with('user.detail')
+            ->with('user.roles')
             ->with('histories')
             ->with('histories.user')
             ->with('payment')

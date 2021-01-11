@@ -30169,7 +30169,7 @@ $(document).ready(function () {
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(/*! C:\xampp\htdocs\Laravel-Shop-Learning\resources\js\admin\syllable.js */"./resources/js/admin/syllable.js");
+module.exports = __webpack_require__(/*! C:\xampp\htdocs\shop.test\resources\js\admin\syllable.js */"./resources/js/admin/syllable.js");
 
 
 /***/ })

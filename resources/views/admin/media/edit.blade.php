@@ -64,8 +64,8 @@
                     <label class="col-sm-2 col-form-label" for="visibility">Видимість</label>
                     <div class="col-sm-10">
                         <select name="visibility" id="visibility" class="form-control">
-                            <option value="public" @if($media->visibility == 'public') selected @endif>Публічно</option>
-                            <option value="private" @if($media->visibility == 'private') selected @endif>Приватно</option>
+                            <option value="1" @if($media->visibility == 'public') selected @endif>Публічно</option>
+                            <option value="0" @if($media->visibility == 'private') selected @endif>Приватно</option>
                         </select>
                     </div>
                 </div>

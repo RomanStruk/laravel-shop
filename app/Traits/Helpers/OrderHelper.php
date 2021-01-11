@@ -20,12 +20,6 @@ use Illuminate\Notifications\Notification;
 trait OrderHelper
 {
 
-    public function getSumPriceAttribute()
-    {
-        return $this->getSubTotalPrice();
-    }
-
-
     /**
      *
      * Calculated sum price for products
@@ -62,6 +56,18 @@ trait OrderHelper
     public function syncProducts(array $fields)
     {
         $this->orderProducts()->delete();;
+        return $this->orderProducts()->createMany($fields);
+
+    }
+
+    /**
+     * Updating products
+     *
+     * @param array $fields
+     * @return mixed
+     */
+    public function saveProducts(array $fields)
+    {
         return $this->orderProducts()->createMany($fields);
 
     }
@@ -172,7 +178,7 @@ trait OrderHelper
         $this->notify(
             (new OrderStatusChangeNotification(
                 $this->user->fullName,
-                $this->products,
+                $this->orderProducts,
                 $this->id,
                 $this->getStatus($this->status))
             )->onQueue('default')

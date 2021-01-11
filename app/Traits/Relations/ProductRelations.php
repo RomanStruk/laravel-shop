@@ -4,6 +4,7 @@
 namespace App\Traits\Relations;
 
 
+use App\Filter;
 use App\Media;
 use App\Order;
 use App\OrderProduct;
@@ -21,12 +22,17 @@ trait ProductRelations
     {
         return $this->hasMany(Syllable::class);
     }
-
+//old
     public function product_attributes()
     {
-        return $this->belongsToMany('App\Attribute');
+        return $this->belongsToMany('App\Filter');
     }
 
+// actual
+    public function product_filters()
+    {
+        return $this->belongsToMany(Filter::class);
+    }
     public function category()
     {
         return $this->belongsTo('App\Category')->withDefault(['name' => 'Deleted']);

@@ -10,15 +10,15 @@
 | contains the "web" middleware group. Now create something great!
 |
 */
-
+Route::get('/admin-panel{any}', function (){
+    return view('admin.app');
+})->where('any', '.*');
 
 Route::get('/admin/lte', function () {
     return view('admin.layouts.root');
 });
 
-Route::get('/', function () {
-    return view('index');
-});
+Route::get('/', 'IndexPageController@index');
 Route::get('/index-2', function () {
     return view('index-2');
 });
@@ -39,8 +39,7 @@ Route::group(['prefix' => '/shop'], function () {
 });
 
 Route::get('/product/{alias}', 'ProductController@show')
-    ->name('product.index')
-    ->middleware('test');
+    ->name('product.show');
 
 Route::post('/product/{id}/comment/create', 'CommentController@create')
     ->name('comment.create');
@@ -103,7 +102,7 @@ Route::group([
     'middleware' => ['auth', 'verified', 'role.check:Admin']
 ], function (){
 
-    Route::get('/', 'Admin\HomeController@index')->name('dashboard.index');
+    Route::get('/index', 'Admin\HomeController@index')->name('dashboard.index');
 
     Route::resource('/order', 'Admin\OrderController');
     Route::post('/order/status/{order}/update', 'Admin\OrderController@updateStatus')->name('order.updateStatus');

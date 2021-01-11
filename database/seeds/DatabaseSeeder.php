@@ -17,11 +17,11 @@ class DatabaseSeeder extends Seeder
         $this->call(ProductsTableSeeder::class); // Товари
         $this->call(SupplierTableSeeder::class); // Постачальники
         $this->call(SyllableTableSeeder::class); // Поставки
-        $this->call(GroupAttributesTableSeeder::class); //групи атрибутів
-        $this->call(AttributeTableSeeder::class); // атрибути
+        $this->call(FilterGroupsTableSeeder::class); //групи атрибутів
+        $this->call(FiltersSeeder::class); // атрибути
         $this->call(OrderSeeder::class); // Замовлення
         $this->call(MediaSeeder::class); // медіа файли і звязки з товарами
         $this->call(CommentsTableSeeder::class); // Коментарі до товарів
-        $this->call(AttributeProductTableSeeder::class); // связь атрибутів і продуктів
+        $this->call(ProductFilterSeeder::class); // связь атрибутів і продуктів
     }
 }

@@ -70,7 +70,7 @@
                             </div>
                         </div>
                         <div class="pro-price mb-10">
-                            <p>$
+                            <p>{{config('shop.currency_short')}}
                                 <span class="price">{{$product->price}}</span>
                                 @if($product->old_price > $product->price)
                                 <del class="prev-price">-{{$product->old_price}}</del>
@@ -81,7 +81,7 @@
                             <p><span class="in-stock">в наявності</span><span class="sku">{{$product->quality()}}</span>
                             </p>
                         </div>
-                        <basket-button-component v-bind:data='@json($product)'></basket-button-component>
+                        <product-component v-bind:product='@json($product)'></product-component>
                         <div class="product-link">
                             <ul class="list-inline">
                                 <li><a href="/wishlist">Додати до списку бажань</a></li>

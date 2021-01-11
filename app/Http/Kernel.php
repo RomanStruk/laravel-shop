@@ -14,6 +14,7 @@ class Kernel extends HttpKernel
      * @var array
      */
     protected $middleware = [
+        \Fruitcake\Cors\HandleCors::class, // laravel-cors
         \App\Http\Middleware\TrustProxies::class,
         \App\Http\Middleware\CheckForMaintenanceMode::class,
         \Illuminate\Foundation\Http\Middleware\ValidatePostSize::class,
@@ -63,7 +64,8 @@ class Kernel extends HttpKernel
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
         'test' => \App\Http\Middleware\TestMiddleware::class,
-        'role.check' => \App\Http\Middleware\RoleCheckMiddleware::class
+        'role.check' => \App\Http\Middleware\RoleCheckMiddleware::class,
+        'cors' => \App\Http\Middleware\CorsMiddleware::class
     ];
 
     /**

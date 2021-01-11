@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Attribute;
 use App\Filter;
+use App\FilterGroup;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\FilterRequest;
 use App\Services\PaginateSession;
@@ -21,7 +21,7 @@ class FilterController extends Controller
      */
     public function index(PaginateSession $paginateSession)
     {
-        $filters = Filter::allRelations()->paginate($paginateSession->getLimit());
+        $filters = FilterGroup::allRelations()->paginate($paginateSession->getLimit());
         return view('admin.filter.index')->with('filters', $filters);
     }
 
@@ -33,7 +33,7 @@ class FilterController extends Controller
      */
     public function show($id)
     {
-        $filter = Filter::findOrFail($id);
+        $filter = FilterGroup::findOrFail($id);
         return view('admin.filter.show')->with('filter', $filter);
     }
 
@@ -55,13 +55,13 @@ class FilterController extends Controller
      */
     public function store(FilterRequest $request)
     {
-        $filter = new Filter();
+        $filter = new FilterGroup();
         $filter->name = $request->get('name');
         $filter->save();
         $attributes = [];
         foreach ($request->get('value') as $item){
             if (! empty($item))
-                $attributes[] = new Attribute(['value' => $item]);
+                $attributes[] = new Filter(['value' => $item]);
         }
         $filter->allAttributes()->saveMany($attributes);
 
@@ -78,7 +78,7 @@ class FilterController extends Controller
      */
     public function edit($id)
     {
-        $filter = Filter::findOrFail($id);
+        $filter = FilterGroup::findOrFail($id);
         return view('admin.filter.edit')->with('filter', $filter);
     }
 
@@ -92,7 +92,7 @@ class FilterController extends Controller
     public function update(FilterRequest $request, $id)
     {
         $update = $request->validated();
-        $filterModel = Filter::allRelations()->findOrFail($id);
+        $filterModel = FilterGroup::allRelations()->findOrFail($id);
         $filterModel->update(
             ['name' => $update['name']]
         );
@@ -101,7 +101,7 @@ class FilterController extends Controller
         $result = [];
         foreach ($update['value'] as $item){
             if (! empty($item))
-                $result[] = new Attribute(['value' => $item]);
+                $result[] = new Filter(['value' => $item]);
         }
         $filterModel->filterValues()->saveMany($result);
 
@@ -116,7 +116,7 @@ class FilterController extends Controller
      */
     public function destroy($id)
     {
-        Filter::destroy($id);
+        FilterGroup::destroy($id);
         return redirect()->route('admin.filter.index')->with('success', __('filter.deleted'));
     }
 }

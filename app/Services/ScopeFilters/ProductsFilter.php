@@ -105,4 +105,9 @@ class ProductsFilter extends BaseFilter
     {
         $this->builder->withTrashed(); //withTrashed
     }
+
+    public function excludeFilter($value)
+    {
+        $this->builder->whereNotIn('id', $value);
+    }
 }
